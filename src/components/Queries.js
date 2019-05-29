@@ -20,5 +20,66 @@ export function basicStructureItemInfoQuery(itemExpressionUri){
     "ORDER BY ?expressionTitle"].join('');
     return query
   }
+  // gets all structure items with basic item information
+  export function basicStructureAllItemsInfoQuery(topLevelExpressionUrl){
+    const query = [
+      "SELECT DISTINCT ?item ?itemTitle ?topLevel ?itemQuestionTitle ?cm ?cmTitle ?ct ?next ?previous ",
+      "WHERE { ",
+      "<" + topLevelExpressionUrl + "> <http://scta.info/property/hasStructureItem> ?item .",
+      "?item <http://scta.info/property/isPartOfTopLevelExpression> ?topLevel .",
+      "?item <http://purl.org/dc/elements/1.1/title> ?itemTitle .",
+      "OPTIONAL {",
+      "?item <http://scta.info/property/questionTitle> ?itemQuestionTitle .",
+      "}",
+      "OPTIONAL",
+      "{",
+      "?item <http://scta.info/property/next> ?next .",
+      "}",
+      "OPTIONAL",
+      "{",
+      "?item <http://scta.info/property/previous> ?previous .",
+      "}",
+      "?item <http://scta.info/property/hasCanonicalManifestation> ?cm .",
+      "?item <http://scta.info/property/totalOrderNumber> ?totalOrderNumber .",
+      "?cm <http://purl.org/dc/elements/1.1/title> ?cmTitle .",
+      "?cm <http://scta.info/property/hasCanonicalTranscription> ?ct .",
+      "}",
+      "ORDER BY ?totalOrderNumber"].join('');
+      return query
+    }
+    // gets all structure items with basic item information
+    export function basicStructureAllItemsInfoFromItemIdQuery(itemUrl){
+      const query = [
+        "SELECT DISTINCT ?item ?itemTitle ?itemQuestionTitle ?cm ?cmTitle ?ct ?next ?previous ?topLevel ",
+        "WHERE { ",
+        "<" + itemUrl + "> <http://scta.info/property/isPartOfTopLevelExpression> ?topLevel .",
+        "?topLevel <http://scta.info/property/hasStructureItem> ?item .",
+        "?item <http://purl.org/dc/elements/1.1/title> ?itemTitle .",
+        "OPTIONAL {",
+        "?item <http://scta.info/property/questionTitle> ?itemQuestionTitle .",
+        "}",
+        "OPTIONAL",
+        "{",
+        "?item <http://scta.info/property/next> ?next .",
+        "}",
+        "OPTIONAL",
+        "{",
+        "?item <http://scta.info/property/previous> ?previous .",
+        "}",
+        "?item <http://scta.info/property/hasCanonicalManifestation> ?cm .",
+        "?item <http://scta.info/property/totalOrderNumber> ?totalOrderNumber .",
+        "?cm <http://purl.org/dc/elements/1.1/title> ?cmTitle .",
+        "?cm <http://scta.info/property/hasCanonicalTranscription> ?ct .",
+        "}",
+        "ORDER BY ?totalOrderNumber"].join('');
+        return query
+      }
 
-export const basicStructureBlockInfoQuery = []
+  export function getStructureType(resourceurl){
+    const query = [
+      "SELECT DISTINCT ?structureType ",
+      "WHERE { ",
+      "<" + resourceurl + "> <http://scta.info/property/structureType> ?structureType . ",
+      "}"].join('');
+      return query
+    }
