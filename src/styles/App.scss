@@ -1,0 +1,52 @@
+@import "variables";
+@import "base";
+@import "footer";
+
+.Home {
+  text-align: center;
+
+  height: 100%;
+}
+
+#lbp-home{
+  padding-top: 50px;
+  background: #fff url("http://localhost:3000/coverimage.jpg") repeat center top;
+  height: 90vh;
+
+}
+
+#lbp-jumbo{
+
+  opacity: .8;
+  background-color: $light
+}
+
+.SideWindow{
+  position: fixed;
+  width: 40%;
+  left: 0;
+  top: 0;
+  background-color: $dark;
+  z-index: 1;
+  height: 100vh;
+  overflow: scroll;
+  transition: width 2s;
+}
+// .SideWindowClosed{
+//   width: 0;
+//   transition: 'width 0.5s'
+// }
+.BottomWindow{
+  position: fixed;
+  height: 40%;
+  top: 60%;
+  background-color: $dark;
+  z-index: 1;
+  width: 100%;
+  overflow: scroll;
+  transition: width 2s;
+}
+// .BottomWindowClosed{
+//   width: 0;
+//   transition: 'width 0.5s'
+// }

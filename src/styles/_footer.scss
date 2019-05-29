@@ -1,0 +1,14 @@
+@import "variables";
+
+.lbp-footer, .lbp-footer-fixed {
+
+  background-color: $dark;
+  text-align: center;
+
+}
+.lbp-footer-fixed {
+  top: 90vh;
+  height: 10vh;
+  width: 100%;
+  position: fixed;
+}
