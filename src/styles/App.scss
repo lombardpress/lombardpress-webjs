@@ -3,6 +3,24 @@
 @import "footer";
 @import "text";
 
+body {
+  margin: 0;
+  margin-top: 56px;
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  // these properties needed on body to get "always on bottom footer" (see https://codepen.io/cbracco/pen/zekgx)
+  // position: relative;
+  // padding-bottom: 6rem;
+  // min-height: 100%;
+}
+
+
 .Home {
   text-align: center;
 
@@ -52,7 +70,7 @@
   overflow: scroll;
   transition: width 2s;
   box-shadow: 0px 0px 5px black;
-  
+
 }
 // .BottomWindowClosed{
 //   width: 0;

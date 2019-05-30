@@ -10,6 +10,7 @@ import Footer from './Footer';
 
 import 'bootstrap/dist/css/bootstrap.css'
 import '../styles/App.scss';
+//import '../styles/index.scss';
 
 const AppRouter = () => (
   <BrowserRouter forceRefresh={false}>
