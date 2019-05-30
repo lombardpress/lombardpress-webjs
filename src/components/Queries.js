@@ -47,39 +47,55 @@ export function basicStructureItemInfoQuery(itemExpressionUri){
       "ORDER BY ?totalOrderNumber"].join('');
       return query
     }
-    // gets all structure items with basic item information
-    export function basicStructureAllItemsInfoFromItemIdQuery(itemUrl){
+    // gets all parts
+    export function partsInfoQuery(resourceurl){
       const query = [
-        "SELECT DISTINCT ?item ?itemTitle ?itemQuestionTitle ?cm ?cmTitle ?ct ?next ?previous ?topLevel ",
+        "SELECT DISTINCT ?part ?partTitle ?partQuestionTitle ?partType ?partLevel ",
         "WHERE { ",
-        "<" + itemUrl + "> <http://scta.info/property/isPartOfTopLevelExpression> ?topLevel .",
-        "?topLevel <http://scta.info/property/hasStructureItem> ?item .",
-        "?item <http://purl.org/dc/elements/1.1/title> ?itemTitle .",
+        "<" + resourceurl + "> <http://purl.org/dc/terms/hasPart> ?part .",
+        "?part <http://purl.org/dc/elements/1.1/title> ?partTitle .",
+        "?part <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?partType . ",
         "OPTIONAL {",
-        "?item <http://scta.info/property/questionTitle> ?itemQuestionTitle .",
+        "?part <http://scta.info/property/questionTitle> ?partQuestionTitle .",
         "}",
-        "OPTIONAL",
-        "{",
-        "?item <http://scta.info/property/next> ?next .",
+        "OPTIONAL {",
+        "?part <http://scta.info/property/level> ?partLevel .",
         "}",
-        "OPTIONAL",
-        "{",
-        "?item <http://scta.info/property/previous> ?previous .",
+        "OPTIONAL {",
+        "?part <http://scta.info/property/totalOrderNumber> ?totalOrderNumber .",
         "}",
-        "?item <http://scta.info/property/hasCanonicalManifestation> ?cm .",
-        "?item <http://scta.info/property/totalOrderNumber> ?totalOrderNumber .",
-        "?cm <http://purl.org/dc/elements/1.1/title> ?cmTitle .",
-        "?cm <http://scta.info/property/hasCanonicalTranscription> ?ct .",
         "}",
         "ORDER BY ?totalOrderNumber"].join('');
         return query
       }
+    // gets all expressions for work Group
+    export function workGroupExpressionQuery(resourceurl){
+      const query = [
+        "SELECT DISTINCT ?item ?itemTitle ?itemAuthor ?itemAuthorTitle ",
+        "WHERE { ",
+        "<" + resourceurl + "> <http://scta.info/property/hasExpression> ?item .",
+        "?item <http://purl.org/dc/elements/1.1/title> ?itemTitle .",
+        "?item <http://www.loc.gov/loc.terms/relators/AUT> ?itemAuthor .",
+        "?itemAuthor <http://purl.org/dc/elements/1.1/title> ?itemAuthorTitle .",
+        "}"].join('');
+        return query
+      }
 
+  // get basic info, structure type, level, and top Level
   export function getStructureType(resourceurl){
     const query = [
-      "SELECT DISTINCT ?structureType ",
+      "SELECT DISTINCT ?type ?structureType ?level ?topLevel ",
       "WHERE { ",
+      "<" + resourceurl + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type . ",
+      "OPTIONAL {",
       "<" + resourceurl + "> <http://scta.info/property/structureType> ?structureType . ",
+      "}",
+      "OPTIONAL {",
+      "<" + resourceurl + "> <http://scta.info/property/level> ?level . ",
+      "}",
+      "OPTIONAL {",
+      "<" + resourceurl + "> <http://scta.info/property/isPartOfTopLevelExpression> ?topLevel . ",
+      "}",
       "}"].join('');
       return query
     }
