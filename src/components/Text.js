@@ -3,6 +3,8 @@ import Qs from "query-string"
 import Container from 'react-bootstrap/Container';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
+import Table from 'react-bootstrap/Table';
+
 import {loadXMLDoc, convertXMLDoc, runQuery} from './utils'
 import {basicStructureItemInfoQuery, basicStructureAllItemsInfoQuery, getStructureType, partsInfoQuery,workGroupExpressionQuery} from './Queries'
 import Axios from 'axios'
@@ -13,6 +15,7 @@ import $ from 'jquery';
 import SideWindow from "./SideWindow"
 import BottomWindow from "./BottomWindow"
 import TextNavBar from "./TextNavBar"
+import Item from "./Item"
 
 //import Lbp from "lbp.js/lib"
 
@@ -26,6 +29,8 @@ class Text extends React.Component {
     this.makeRequests = this.makeRequests.bind(this)
     this.handleItemFilter = this.handleItemFilter.bind(this)
     this.handlePartsFilter = this.handlePartsFilter.bind(this)
+    this.itemFilter = React.createRef();
+    this.partsFilter = React.createRef();
     this.state = {
       blockFocus: null,
       itemFocus: "",
@@ -33,7 +38,8 @@ class Text extends React.Component {
       items: {},
       parts: {},
       itemFilter: "",
-      partsFilter: ""
+      partsFilter: "",
+      surfaceFocus: "",
     }
   }
   handleItemFilter(e){
@@ -51,11 +57,14 @@ class Text extends React.Component {
   retrieveText(){
     const _this = this;
     if (this.state.items[this.state.itemFocus]){
-      const ct = this.state.items[this.state.itemFocus].ct;
-      console.log(ct)
-      const urlFragment = ct.split("/resource/")[1]
-      console.log(urlFragment)
-      const xmlurl = "http://exist.scta.info/exist/apps/scta-app/document/" + urlFragment
+
+      //construct file url request ot exist db to get a cors enabled copy of the text (github does not serve files with cors enabled)
+      const doc = this.state.items[this.state.itemFocus].doc;
+      const topLevel = this.state.items[this.state.itemFocus].topLevel;
+      const docFragment = doc.split("/master/")[1]
+      const topLevelFragment = topLevel.split("/resource/")[1]
+
+      const xmlurl = "http://exist.scta.info/exist/apps/scta-app/text/" + topLevelFragment + "/" + docFragment;
       const xslurl = "http://localhost:3000/xslt/main_view.xsl"
       const resultDocument = convertXMLDoc(xmlurl, xslurl)
       // append resultDoc to div in DOM
@@ -64,11 +73,17 @@ class Text extends React.Component {
     }
 
     // bind events to dom
+    // only seems to be working when they are here; not yet sure why
+
     $('.para_wrap').click(function() {
       const id = $(this).attr('id').split("pwrap_")[1]
 
       _this.setState({blockFocus: id})
 
+    });
+    $('.js-show-folio-image').click(function() {
+      const id = $(this).attr('data-surfaceid')
+      _this.setState({surfaceFocus: "http://scta.info/resource/" + id})
     });
   }
 
@@ -81,10 +96,11 @@ class Text extends React.Component {
         bindings.forEach((b) => {
           const pId = b.part.value
           partsObject[pId] = {
-            partTitle: b.partTitle.value,
-            partType: b.partType.value,
-            partQuestionTitle: b.partQuestionTitle ? b.partQuestionTitle.value : null,
-            partLevel: b.partLevel ? b.partLevel.value : "unknown",
+            id: b.part.value,
+            title: b.partTitle.value,
+            type: b.partType.value,
+            questionTitle: b.partQuestionTitle ? b.partQuestionTitle.value : null,
+            level: b.partLevel ? b.partLevel.value : "unknown",
         }
       });
       _this.setState(
@@ -104,16 +120,18 @@ class Text extends React.Component {
         const itemId = b.item.value
         itemsObject[itemId] = {
           title: b.itemTitle.value,
-          item: b.item.value,
-          itemQuestionTitle: b.itemQuestionTitle ? b.itemQuestionTitle.value : null,
-          itemAuthor: b.itemAuthor ? b.itemAuthor.value : null,
-          itemAuthorTitle: b.itemAuthorTitle ? b.itemAuthorTitle.value : null,
+          id: b.item.value,
+          type: b.itemType.value,
+          questionTitle: b.itemQuestionTitle ? b.itemQuestionTitle.value : null,
+          author: b.itemAuthor ? b.itemAuthor.value : null,
+          authorTitle: b.itemAuthorTitle ? b.itemAuthorTitle.value : null,
           next: b.next ? b.next.value : null,
           previous: b.previous ? b.previous.value : null,
           cm: b.cm ? b.cm.value : null,
           cmTitle: b.cmTitle ? b.cmTitle.value : null,
           ct: b.ct ? b.ct.value : null,
-          topLevel: b.topLevel ? b.topLevel.value : null
+          topLevel: b.topLevel ? b.topLevel.value : null,
+          doc: b.doc ? b.doc.value : null
         }
       });
       _this.setState(
@@ -193,15 +211,16 @@ class Text extends React.Component {
     const newResourceId = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).resourceid
     this.setState({resourceid: newResourceId})
     this.makeRequests(newResourceId)
+    this.retrieveText()
   }
 
   componentWillReceiveProps(nextProps) {
     const newResourceId = Qs.parse(nextProps.location.search, { ignoreQueryPrefix: true }).resourceid
-    this.refs.itemFilter.value = ""
-    this.refs.partsFilter.value = ""
+    this.refs.itemFilter ? this.refs.itemFilter.value = "" :
+    this.refs.partsFilter ? this.refs.partsFilter.value = "" :
     this.setState({resourceid: newResourceId, itemFilter: "", partsFilter: ""})
     console.log("refs", this.refs)
-
+    this.retrieveText()
     this.makeRequests(newResourceId)
   }
   render(){
@@ -209,53 +228,68 @@ class Text extends React.Component {
     const displayText = () => {
       return(
         <div>
-          <Container className={this.state.blockFocus ? "lbp-text skinnyText" : "lbp-text fullText"} id="text">
+          <Container className={this.state.blockFocus ? "lbp-text skinnyText" : "lbp-text fullText"}>
+          <div id="text"></div>
           </Container>
           <TextNavBar next={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].next} previous={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].previous} topLevel={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].topLevel}/>
-          {this.state.focus && <SideWindow key={"side" + this.state.blockFocus} handleClose={this.handleClose} resourceid={this.state.blockFocus} />}
-          {this.state.focus && <BottomWindow key={"bottom" + this.state.blockFocus} handleClose={this.handleClose} resourceid={this.state.blockFocus}/>}
+          {this.state.blockFocus && <SideWindow key={"side" + this.state.blockFocus} handleClose={this.handleClose} resourceid={this.state.blockFocus} />}
+          {this.state.blockFocus && <BottomWindow key={"bottom" + this.state.blockFocus} handleClose={this.handleClose} resourceid={this.state.blockFocus}/>}
+          {this.state.surfaceFocus && <BottomWindow key={"bottom" + this.state.surfaceFocus} handleClose={this.handleClose} resourceid={this.state.surfaceFocus} resourceType="surface" topLevel={this.state.items[this.state.itemFocus].topLevel}/>}
         </div>
       )
     }
     const displayQuestions = () => {
       const questions = []
       Object.keys(this.state.items).forEach((key) => {
-        const filterCheck = this.state.items[key].title + " " + this.state.items[key].itemAuthorTitle
-        if (filterCheck.toLowerCase().includes(this.state.itemFilter)){
+        const filterCheck = this.state.items[key].title + " " + this.state.items[key].authorTitle
+        if (filterCheck.toLowerCase().includes(this.state.itemFilter.toLowerCase())){
         questions.push(
-          <p>{this.state.items[key].itemAuthor && <Link to={"/text?resourceid=" + this.state.items[key].itemAuthor}>{this.state.items[key].itemAuthorTitle}</Link>} | <Link to={"/text?resourceid=" + this.state.items[key].item}>{this.state.items[key].title}: {this.state.items[key].itemQuestionTitle}</Link></p>
+          <Item item={this.state.items[key]}/>
         )}
       });
       return (
-        <div>
+        <Container>
+
         <h1>Items</h1>
-        <FormControl ref="itemFilter" id="item-filter" onChange={this.handleItemFilter}/>
+        <FormControl ref={this.itemFilter} id="item-filter" placeholder="type to filter" onChange={this.handleItemFilter}/>
+        <br/>
+        <Table striped bordered hover size="sm">
+        <tbody>
         {questions}
-        </div>
+        </tbody>
+        </Table>
+        </Container>
       )
     }
     const displayParts = () => {
         const questions = []
         Object.keys(this.state.parts).forEach((key) => {
-
-          //check against top level expression as parts; if parts are top level expression; don't display parts
-          if (!(this.state.parts[key].partType === "http://scta.info/resource/expression" && this.state.parts[key].partLevel === "1")){
-            //check against filter
-            if (this.state.parts[key].partTitle.includes(this.state.partsFilter)){
+          //check against filter
+            if (this.state.parts[key].title.toLowerCase().includes(this.state.partsFilter.toLowerCase())){
             questions.push(
-              <p><Link to={"/text?resourceid=" + key}>{this.state.parts[key].partTitle}: {this.state.parts[key].partQuestionTitle}</Link></p>
+              <Item item={this.state.parts[key]}/>
               )
             }
-          }
+
         });
-        if (questions.length > 0){
-          return (
-            <div>
-            <h1>Parts</h1>
-            <FormControl id="parts-filter" onChange={this.handlePartsFilter}/>
-            {questions};
-            </div>
-          )
+        //check against top level expression as parts; if parts are top level expression; don't display parts
+        const testPart = this.state.parts[Object.keys(this.state.parts)[0]]
+        console.log("test", testPart)
+        if (testPart){
+          if (!(testPart.type === "http://scta.info/resource/expression" && testPart.level === "1")){
+            return (
+              <Container>
+              <h1>Parts</h1>
+              <FormControl ref={this.partsFilter} id="parts-filter" placeholder="type to filter" onChange={this.handlePartsFilter}/>
+              <br/>
+              <Table striped bordered hover size="sm">
+              <tbody>
+              {questions}
+              </tbody>
+              </Table>
+              </Container>
+            )
+          }
         }
       }
 

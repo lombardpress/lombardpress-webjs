@@ -7,6 +7,7 @@
     "bootstrap": "^4.3.1",
     "jquery": "^3.4.1",
     "lbp.js": "../lbp.js/",
+    "mirador": "^3.0.0-alpha.7",
     "node-sass": "^4.12.0",
     "query-string": "^6.5.0",
     "react": "^16.8.6",

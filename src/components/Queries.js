@@ -23,11 +23,12 @@ export function basicStructureItemInfoQuery(itemExpressionUri){
   // gets all structure items with basic item information
   export function basicStructureAllItemsInfoQuery(topLevelExpressionUrl){
     const query = [
-      "SELECT DISTINCT ?item ?itemTitle ?topLevel ?itemQuestionTitle ?cm ?cmTitle ?ct ?next ?previous ",
+      "SELECT DISTINCT ?item ?itemTitle ?topLevel ?itemQuestionTitle ?cm ?cmTitle ?ct ?next ?previous ?itemType ?doc ",
       "WHERE { ",
       "<" + topLevelExpressionUrl + "> <http://scta.info/property/hasStructureItem> ?item .",
       "?item <http://scta.info/property/isPartOfTopLevelExpression> ?topLevel .",
       "?item <http://purl.org/dc/elements/1.1/title> ?itemTitle .",
+      "?item <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?itemType . ",
       "OPTIONAL {",
       "?item <http://scta.info/property/questionTitle> ?itemQuestionTitle .",
       "}",
@@ -43,6 +44,7 @@ export function basicStructureItemInfoQuery(itemExpressionUri){
       "?item <http://scta.info/property/totalOrderNumber> ?totalOrderNumber .",
       "?cm <http://purl.org/dc/elements/1.1/title> ?cmTitle .",
       "?cm <http://scta.info/property/hasCanonicalTranscription> ?ct .",
+      "?ct <http://scta.info/property/hasDocument> ?doc .",
       "}",
       "ORDER BY ?totalOrderNumber"].join('');
       return query
@@ -71,9 +73,10 @@ export function basicStructureItemInfoQuery(itemExpressionUri){
     // gets all expressions for work Group
     export function workGroupExpressionQuery(resourceurl){
       const query = [
-        "SELECT DISTINCT ?item ?itemTitle ?itemAuthor ?itemAuthorTitle ",
+        "SELECT DISTINCT ?item ?itemTitle ?itemAuthor ?itemAuthorTitle ?itemType ",
         "WHERE { ",
         "<" + resourceurl + "> <http://scta.info/property/hasExpression> ?item .",
+        "?item <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?itemType . ",
         "?item <http://purl.org/dc/elements/1.1/title> ?itemTitle .",
         "?item <http://www.loc.gov/loc.terms/relators/AUT> ?itemAuthor .",
         "?itemAuthor <http://purl.org/dc/elements/1.1/title> ?itemAuthorTitle .",
@@ -96,6 +99,16 @@ export function basicStructureItemInfoQuery(itemExpressionUri){
       "OPTIONAL {",
       "<" + resourceurl + "> <http://scta.info/property/isPartOfTopLevelExpression> ?topLevel . ",
       "}",
+      "}"].join('');
+      return query
+    }
+  //surface id query, gets canvas and manifestation
+  export function getSurfaceInfo(resourceurl){
+    const query = [
+      "SELECT DISTINCT ?canvas",
+      "WHERE { ",
+      "<" + resourceurl + "> <http://scta.info/property/hasCanonicalISurface> ?isurface . ",
+      "?isurface <http://scta.info/property/hasCanvas> ?canvas .",
       "}"].join('');
       return query
     }

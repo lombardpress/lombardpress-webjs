@@ -11,7 +11,7 @@ import Button from 'react-bootstrap/Button';
 
 function NavBar() {
   return (
-    <Navbar bg="dark" variant="light" expand="lg">
+    <Navbar bg="dark" variant="light" expand="lg" fixed="top">
       <Navbar.Brand href="/">SCTA</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
