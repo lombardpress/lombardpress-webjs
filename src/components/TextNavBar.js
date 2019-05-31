@@ -25,6 +25,8 @@ class TextNavBar extends React.Component {
           {this.props.previous && <NavLink className="nav-link" to={"/text?resourceid=" + this.props.previous}>Previous</NavLink>}
           {this.props.next && <NavLink className="nav-link" to={"/text?resourceid=" + this.props.next}>Next</NavLink>}
           {this.props.next && <NavLink className="nav-link" to={"/text?resourceid=" + this.props.topLevel}>Text Home</NavLink>}
+          <a className="nav-link" onClick={() => {this.props.handleClose("sideWindow")}}>Toggle Side Window</a>
+          <a className="nav-link" onClick={() => {this.props.handleClose("bottomWindow")}}>Toggle Bottom Window</a>
 
         </Nav>
         </Navbar.Collapse>

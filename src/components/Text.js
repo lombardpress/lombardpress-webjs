@@ -12,8 +12,8 @@ import {Link} from 'react-router-dom';
 
 import $ from 'jquery';
 
-import SideWindow from "./SideWindow"
-import BottomWindow from "./BottomWindow"
+import Window from "./Window"
+
 import TextNavBar from "./TextNavBar"
 import Item from "./Item"
 
@@ -40,6 +40,18 @@ class Text extends React.Component {
       itemFilter: "",
       partsFilter: "",
       surfaceFocus: "",
+      windows: {
+        sideWindow: {
+          open: false,
+          windowLoad: "info",
+          position: "sideWindow",
+        },
+        bottomWindow: {
+          open: false,
+          windowLoad: "info",
+          position: "bottomWindow",
+        }
+      }
     }
   }
   handleItemFilter(e){
@@ -51,8 +63,15 @@ class Text extends React.Component {
     const part = e.target.value
     this.setState({partsFilter: part})
   }
-  handleClose(){
-    this.setState({blockFocus: ""})
+  handleClose(window){
+
+    this.setState((prevState) => {
+      const windows = prevState.windows
+      console.log("test", windows[window].open)
+      windows[window].open = !windows[window].open
+      return {windows: windows}
+
+    })
   }
   retrieveText(){
     const _this = this;
@@ -66,6 +85,7 @@ class Text extends React.Component {
 
       const xmlurl = "http://exist.scta.info/exist/apps/scta-app/text/" + topLevelFragment + "/" + docFragment;
       const xslurl = "http://localhost:3000/xslt/main_view.xsl"
+      console.log("xmlurl", xmlurl)
       const resultDocument = convertXMLDoc(xmlurl, xslurl)
       // append resultDoc to div in DOM
       document.getElementById("text").innerHTML = "";
@@ -78,12 +98,31 @@ class Text extends React.Component {
     $('.para_wrap').click(function() {
       const id = $(this).attr('id').split("pwrap_")[1]
 
-      _this.setState({blockFocus: id})
+      //_this.setState({blockFocus: id})
+      _this.setState((prevState) => {
+        const windows = prevState.windows
+        windows.sideWindow.open = true
+        return {
+          windows: windows,
+          blockFocus: id
+        }
+
+      })
 
     });
     $('.js-show-folio-image').click(function() {
       const id = $(this).attr('data-surfaceid')
-      _this.setState({surfaceFocus: "http://scta.info/resource/" + id})
+      //_this.setState({surfaceFocus: "http://scta.info/resource/" + id})
+      _this.setState((prevState) => {
+        const windows = prevState.windows
+        windows.bottomWindow.open = !windows.sideWindow.open
+        windows.bottomWindow.windowLoad = "surface"
+        return {
+          windows: windows,
+          surfaceFocus: "http://scta.info/resource/" + id
+        }
+
+      })
     });
   }
 
@@ -231,10 +270,32 @@ class Text extends React.Component {
           <Container className={this.state.blockFocus ? "lbp-text skinnyText" : "lbp-text fullText"}>
           <div id="text"></div>
           </Container>
-          <TextNavBar next={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].next} previous={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].previous} topLevel={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].topLevel}/>
-          {this.state.blockFocus && <SideWindow key={"side" + this.state.blockFocus} handleClose={this.handleClose} resourceid={this.state.blockFocus} />}
-          {this.state.blockFocus && <BottomWindow key={"bottom" + this.state.blockFocus} handleClose={this.handleClose} resourceid={this.state.blockFocus}/>}
-          {this.state.surfaceFocus && <BottomWindow key={"bottom" + this.state.surfaceFocus} handleClose={this.handleClose} resourceid={this.state.surfaceFocus} resourceType="surface" topLevel={this.state.items[this.state.itemFocus].topLevel}/>}
+          <TextNavBar
+          next={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].next}
+          previous={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].previous}
+          topLevel={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].topLevel}
+          handleClose={this.handleClose}
+          />
+          {this.state.windows.sideWindow.open &&
+            <Window windowLoad={this.state.windows.sideWindow.windowLoad}
+            key={"side" + this.state.blockFocus}
+            handleClose={this.handleClose}
+            resourceid={this.state.blockFocus}
+            windowType="SideWindow"
+            windowLoad={this.state.windows.sideWindow.windowLoad}
+            surfaceid={this.state.surfaceFocus}
+            topLevel={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].topLevel}/>
+          }
+          {this.state.windows.bottomWindow.open &&
+            <Window windowLoad={this.state.windows.bottomWindow.windowLoad}
+            key={"bottom" + this.state.blockFocus}
+            handleClose={this.handleClose}
+            resourceid={this.state.blockFocus}
+            windowType="BottomWindow"
+            windowLoad={this.state.windows.bottomWindow.windowLoad}
+            surfaceid={this.state.surfaceFocus}
+            topLevel={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].topLevel}/>}
+
         </div>
       )
     }

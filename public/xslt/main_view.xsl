@@ -436,6 +436,10 @@
 
     </div>
   </xsl:template>
+  <xsl:template match="tei:div[@xml:id='include-list']">
+  </xsl:template>
+  <xsl:template match="tei:div[@xml:id='includeList']">
+  </xsl:template>
 
   <xsl:template name="footnotes">
     <ul>

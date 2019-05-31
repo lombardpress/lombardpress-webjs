@@ -1,7 +1,7 @@
 import React from 'react';
 import Axios from "axios"
 
-class SideWindow extends React.Component {
+class Info extends React.Component {
   constructor(props){
     super(props)
     this.state = {
@@ -37,10 +37,11 @@ class SideWindow extends React.Component {
       return newManifestations
     }
   return (
-    <div className="SideWindow">
-      <h1>SideWindow</h1>
+
+    <div>
+      <h1>Window</h1>
       <p>Title: {this.state.title}</p>
-      <button onClick={this.props.handleClose}>Close</button>
+      
       {displayManifestations()}
 
     </div>
@@ -48,4 +49,4 @@ class SideWindow extends React.Component {
   }
 }
 
-export default SideWindow;
+export default Info;

@@ -4,6 +4,8 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
+import {resourceEndpoint} from './config';
+
 import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
@@ -17,7 +19,7 @@ function NavBar() {
       <Navbar.Collapse id="basic-navbar-nav">
       <Nav>
 
-        <NavLink className="nav-link" to="/text">Text</NavLink>
+        <NavLink className="nav-link" to={"/text?resourceid=" + resourceEndpoint}>Text</NavLink>
         <NavLink className="nav-link" to="/index">Index</NavLink>
         {// example drop down
           // <NavDropdown title="Dropdown" id="basic-nav-dropdown">

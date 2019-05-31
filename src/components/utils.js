@@ -1,4 +1,5 @@
 import Axios from 'axios'
+import {sparqlEndpoint} from './config';
 
 export function loadXMLDoc(filename)
   {
@@ -20,7 +21,7 @@ export function convertXMLDoc(xmlurl, xslurl){
 
 export function runQuery(query){
   //const sparqlEndpoint = "https://sparql-docker.scta.info/ds/query"
-  const sparqlEndpoint = "http://localhost:3030/ds/query"
+  //const sparqlEndpoint = sparqlEndpoint
   const queryPromise = Axios.get(sparqlEndpoint, { params: { "query": query, "output": "json" } })
   return queryPromise
 }
