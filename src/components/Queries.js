@@ -103,12 +103,40 @@ export function basicStructureItemInfoQuery(itemExpressionUri){
       return query
     }
   //surface id query, gets canvas and manifestation
-  export function getSurfaceInfo(resourceurl){
+  export function getSurfaceInfo(surfaceid){
     const query = [
-      "SELECT DISTINCT ?canvas",
-      "WHERE { ",
-      "<" + resourceurl + "> <http://scta.info/property/hasCanonicalISurface> ?isurface . ",
-      "?isurface <http://scta.info/property/hasCanvas> ?canvas .",
-      "}"].join('');
+      "SELECT DISTINCT ?surfaceTitle ?c_height ?c_width ?isurface ?isurfaceTitle ?icodexTitle ?canvas ?imageurl ?next_surface ?previous_surface ",
+        "{",
+  				"<" + surfaceid + "> <http://purl.org/dc/elements/1.1/title> ?surfaceTitle .",
+  				"<" + surfaceid + "> <http://scta.info/property/hasISurface> ?isurface .",
+  				"OPTIONAL {",
+  					"<" + surfaceid + "> <http://scta.info/property/next> ?next_surface .",
+  				"}",
+  				"OPTIONAL {",
+  					"<" + surfaceid + "> <http://scta.info/property/previous> ?previous_surface .",
+          "}",
+  				"OPTIONAL {",
+  					"?isurface <http://purl.org/dc/elements/1.1/title> ?isurfaceTitle .",
+  					"?isurface <http://purl.org/dc/elements/1.1/isPartOf> ?icodex .",
+  					"?icodex <http://purl.org/dc/elements/1.1/title> ?icodexTitle .",
+  				"}",
+  				"?isurface <http://scta.info/property/hasCanvas> ?canvas .",
+  				"OPTIONAL{",
+  					"?canvas <http://iiif.io/api/presentation/2#hasImageAnnotations> ?blank .",
+  				"}",
+  				"OPTIONAL{",
+  					"?canvas <http://www.shared-canvas.org/ns/hasImageAnnotations> ?blank .",
+  				"}",
+  				"?canvas <http://www.w3.org/2003/12/exif/ns#width> ?c_width .",
+  				"?canvas <http://www.w3.org/2003/12/exif/ns#height> ?c_height .",
+  		     "?blank <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?o .",
+  		     "?o <http://www.w3.org/ns/oa#hasBody> ?o2 .",
+  		    "OPTIONAL{",
+  					 "?o2 <http://rdfs.org/sioc/services#has_service> ?imageurl .",
+  				 "}",
+  				 "OPTIONAL{",
+  					 "?o2 <http://www.shared-canvas.org/ns/hasRelatedService> ?imageurl .",
+  				 "}",
+        "}"].join('');
       return query
     }

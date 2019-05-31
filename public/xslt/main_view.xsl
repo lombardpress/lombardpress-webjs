@@ -82,12 +82,12 @@
       </span>
       <xsl:apply-templates/>
       <xsl:if test="./@xml:id">
-        <span class="lbp-paragraphmenu">
-          <span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>
+        <span class="lbp-paragraphmenu" data-id="{@xml:id}">
+          <span class="glyphicon glyphicon-tasks" aria-hidden="true">Menu</span>
         </span>
       </xsl:if>
       </p>
-      <xsl:if test="./@xml:id">
+      <!-- <xsl:if test="./@xml:id">
         <nav class="navbar navbar-default paradiv" id="menu_{@xml:id}" style="display: none;">
           <div class="navbar-header navbar-right">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#para-navbar-collapse-{@xml:id}">
@@ -125,7 +125,7 @@
             </ul>
           </div>
         </nav>
-      </xsl:if>
+      </xsl:if> -->
     </div>
   </xsl:template>
 

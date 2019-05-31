@@ -13,14 +13,19 @@ import * as actions from 'mirador/dist/es/src/state/actions';
 import createStore from 'mirador/dist/es/src/state/createStore';
 
 class Surface extends React.Component {
+  constructor(props){
+    super(props)
+    this.store = createStore();
+
+  }
+
   componentWillMount(){
-      console.log("this props", this.props.surfaceid)
-      const store = createStore();
+
       settings.id = "yolo";
       // manifest id should be retrieved from query
       // this is a temporary measure until db is corrected and query is posible
       const manifest = "http://scta.info/iiif/" + this.props.topLevel.split("/resource/")[1] + "/" + this.props.surfaceid.split("/resource/")[1].split("/")[0] + "/" + "manifest";
-      console.log("manifest", manifest)
+      
       const settings2 = {
         ...settings,
         windows: [{
@@ -46,10 +51,10 @@ class Surface extends React.Component {
         }
       }
 
-      store.dispatch(actions.setConfig(settings2));
-      store.dispatch(actions.fetchManifest(manifest))
-      store.dispatch(actions.addWindow({canvasIndex: 1, sideBarOpen: false, sideBarPanel: false}))
-      this.setState({store: store})
+      this.store.dispatch(actions.setConfig(settings2));
+      this.store.dispatch(actions.fetchManifest(manifest))
+      this.store.dispatch(actions.addWindow({canvasIndex: 1, sideBarOpen: false, sideBarPanel: false}))
+      this.setState({store: this.store})
 //
 //       function select(state, manifest) {
 //         return state.manifests[manifest].isFetching
@@ -74,6 +79,13 @@ class Surface extends React.Component {
 
 
 
+  }
+  componentWillReceiveProps(){
+    // manifest id should be retrieved from query
+    // this is a temporary measure until db is corrected and query is posible
+    const manifest = "http://scta.info/iiif/" + this.props.topLevel.split("/resource/")[1] + "/" + this.props.surfaceid.split("/resource/")[1].split("/")[0] + "/" + "manifest";
+    this.store.dispatch(actions.fetchManifest(manifest))
+    this.store.dispatch(actions.addWindow({canvasIndex: 1, sideBarOpen: false, sideBarPanel: false}))
   }
   render() {
     return (

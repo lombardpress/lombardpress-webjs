@@ -40,13 +40,14 @@ body {
   background-color: $light
 }
 
-.SideWindow{
+.sideWindow{
   position: fixed;
   width: 40%;
   left: 0;
   top: 0;
   background-color: $dark;
   z-index: 1;
+  margin-top: 56px;
   height: 100vh;
   overflow: scroll;
   transition: width 2s;
@@ -60,7 +61,7 @@ body {
 //   width: 0;
 //   transition: 'width 0.5s'
 // }
-.BottomWindow{
+.bottomWindow{
   position: fixed;
   height: 40%;
   top: 60%;
@@ -80,4 +81,15 @@ body {
 //sets min width on first column of table
 table.table.table-striped tr > td:first-child {
     width:20%;
+}
+
+//surface navigation controls
+.surface-navigation{
+  display: flex;
+  justify-content: flex-start;
+  width: 1000px;
+  text-align: center
+}
+.surface-navigation p{
+  padding: 0 10px
 }

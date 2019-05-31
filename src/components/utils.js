@@ -1,5 +1,6 @@
 import Axios from 'axios'
 import {sparqlEndpoint} from './config';
+import $ from 'jquery';
 
 export function loadXMLDoc(filename)
   {
@@ -25,3 +26,22 @@ export function runQuery(query){
   const queryPromise = Axios.get(sparqlEndpoint, { params: { "query": query, "output": "json" } })
   return queryPromise
 }
+
+//handles scroll to paragraph procedure
+export function scrollToParagraph(hash, highlight){
+    const element = $("#" + hash);
+
+    // TODO: highlighting is NOT working
+    if (highlight){
+      element.css({backgroundColor: "yellow"});
+      element.animate({backgroundColor: "none"}, 5000);
+    }
+  	if (element.length > 0) {
+  	    $('html, body')
+              .stop()
+              .animate({
+                  scrollTop: element.offset().top - 100
+              }, 1000);
+     }
+
+  }

@@ -5,7 +5,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import Table from 'react-bootstrap/Table';
 
-import {loadXMLDoc, convertXMLDoc, runQuery} from './utils'
+import {loadXMLDoc, convertXMLDoc, runQuery, scrollToParagraph} from './utils'
 import {basicStructureItemInfoQuery, basicStructureAllItemsInfoQuery, getStructureType, partsInfoQuery,workGroupExpressionQuery} from './Queries'
 import Axios from 'axios'
 import {Link} from 'react-router-dom';
@@ -24,6 +24,10 @@ class Text extends React.Component {
   constructor(props){
     super(props)
     this.handleClose = this.handleClose.bind(this)
+    this.handleBlockFocusChange = this.handleBlockFocusChange.bind(this)
+    this.handleSurfaceFocusChange = this.handleSurfaceFocusChange.bind(this)
+    this.handleTabChange = this.handleTabChange.bind(this)
+    this.handleSwitchWindow = this.handleSwitchWindow.bind(this)
     this.retrieveText = this.retrieveText.bind(this)
     this.retrieveCollectionInfo = this.retrieveCollectionInfo.bind(this)
     this.makeRequests = this.makeRequests.bind(this)
@@ -44,12 +48,10 @@ class Text extends React.Component {
         sideWindow: {
           open: false,
           windowLoad: "info",
-          position: "sideWindow",
         },
         bottomWindow: {
           open: false,
           windowLoad: "info",
-          position: "bottomWindow",
         }
       }
     }
@@ -67,12 +69,53 @@ class Text extends React.Component {
 
     this.setState((prevState) => {
       const windows = prevState.windows
-      console.log("test", windows[window].open)
       windows[window].open = !windows[window].open
       return {windows: windows}
 
     })
   }
+  handleSwitchWindow(window){
+    this.setState((prevState) => {
+      const windows = prevState.windows
+      if (window === "sideWindow"){
+        const currentWindow =
+        windows["bottomWindow"] = {...windows["sideWindow"]}
+        windows["sideWindow"] = {...windows["sideWindow"], open: false}
+      }
+      else if (window === "bottomWindow"){
+        windows["sideWindow"] = {...windows["bottomWindow"]}
+        windows["bottomWindow"] = {...windows["bottomWindow"], open: false}
+      }
+      return {windows: windows}
+
+    })
+  }
+  handleTabChange(windowLoad, window){
+
+    this.setState((prevState) => {
+      const windows = prevState.windows
+      windows[window].windowLoad = windowLoad
+      return {windows: windows}
+
+    })
+
+  }
+  //changes block focus; todo/note: could also work for structureDivions
+  handleBlockFocusChange(resourceid){
+    // check to make sure we're using shortId
+    const id = resourceid.includes("http") ? resourceid.split("/resource/")[1] : resourceid
+    this.setState({blockFocus: id})
+
+    scrollToParagraph(id, true)
+  }
+
+
+
+
+  handleSurfaceFocusChange(surfaceid){
+    this.setState({surfaceFocus: surfaceid})
+  }
+
   retrieveText(){
     const _this = this;
     if (this.state.items[this.state.itemFocus]){
@@ -85,7 +128,6 @@ class Text extends React.Component {
 
       const xmlurl = "http://exist.scta.info/exist/apps/scta-app/text/" + topLevelFragment + "/" + docFragment;
       const xslurl = "http://localhost:3000/xslt/main_view.xsl"
-      console.log("xmlurl", xmlurl)
       const resultDocument = convertXMLDoc(xmlurl, xslurl)
       // append resultDoc to div in DOM
       document.getElementById("text").innerHTML = "";
@@ -95,8 +137,9 @@ class Text extends React.Component {
     // bind events to dom
     // only seems to be working when they are here; not yet sure why
 
-    $('.para_wrap').click(function() {
-      const id = $(this).attr('id').split("pwrap_")[1]
+    $('.lbp-paragraphmenu').click(function(e) {
+      e.preventDefault();
+      const id = $(this).attr('data-id')
 
       //_this.setState({blockFocus: id})
       _this.setState((prevState) => {
@@ -110,13 +153,14 @@ class Text extends React.Component {
       })
 
     });
-    $('.js-show-folio-image').click(function() {
+    $('.js-show-folio-image').click(function(e) {
+      e.preventDefault();
       const id = $(this).attr('data-surfaceid')
       //_this.setState({surfaceFocus: "http://scta.info/resource/" + id})
       _this.setState((prevState) => {
         const windows = prevState.windows
-        windows.bottomWindow.open = !windows.sideWindow.open
-        windows.bottomWindow.windowLoad = "surface"
+        windows.bottomWindow.open = true
+        windows.bottomWindow.windowLoad = "surface2"
         return {
           windows: windows,
           surfaceFocus: "http://scta.info/resource/" + id
@@ -129,7 +173,6 @@ class Text extends React.Component {
   arrangeParts(partsPromise){
     const _this = this
     partsPromise.then((d) => {
-      console.log('d', d)
         const bindings = d.data.results.bindings
         let partsObject = {}
         bindings.forEach((b) => {
@@ -152,7 +195,6 @@ class Text extends React.Component {
   arrangeItems(itemsPromise){
     const _this = this
     itemsPromise.then((d) => {
-      console.log("d", d)
       const bindings = d.data.results.bindings
       let itemsObject = {}
       bindings.forEach((b) => {
@@ -206,7 +248,6 @@ class Text extends React.Component {
   makeRequests(newResourceId){
     const structureTypePromise = runQuery(getStructureType(newResourceId))
     structureTypePromise.then((t) => {
-      console.log("t", t)
       const type = t.data.results.bindings[0].type.value
       const structureType = t.data.results.bindings[0].structureType ? t.data.results.bindings[0].structureType.value : null
       const level = t.data.results.bindings[0].level ? t.data.results.bindings[0].level.value : null
@@ -258,7 +299,6 @@ class Text extends React.Component {
     this.refs.itemFilter ? this.refs.itemFilter.value = "" :
     this.refs.partsFilter ? this.refs.partsFilter.value = "" :
     this.setState({resourceid: newResourceId, itemFilter: "", partsFilter: ""})
-    console.log("refs", this.refs)
     this.retrieveText()
     this.makeRequests(newResourceId)
   }
@@ -278,23 +318,36 @@ class Text extends React.Component {
           />
           {this.state.windows.sideWindow.open &&
             <Window windowLoad={this.state.windows.sideWindow.windowLoad}
-            key={"side" + this.state.blockFocus}
+            key={"side"}
             handleClose={this.handleClose}
+            handleTabChange={this.handleTabChange}
+            handleBlockFocusChange={this.handleBlockFocusChange}
+            handleSurfaceFocusChange={this.handleSurfaceFocusChange}
+            handleSwitchWindow={this.handleSwitchWindow}
             resourceid={this.state.blockFocus}
-            windowType="SideWindow"
+            windowType="sideWindow"
             windowLoad={this.state.windows.sideWindow.windowLoad}
             surfaceid={this.state.surfaceFocus}
-            topLevel={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].topLevel}/>
+            topLevel={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].topLevel}
+
+
+            />
           }
           {this.state.windows.bottomWindow.open &&
             <Window windowLoad={this.state.windows.bottomWindow.windowLoad}
-            key={"bottom" + this.state.blockFocus}
+            key={"bottom"}
             handleClose={this.handleClose}
-            resourceid={this.state.blockFocus}
-            windowType="BottomWindow"
+            handleTabChange={this.handleTabChange}
+            handleBlockFocusChange={this.handleBlockFocusChange}
+            handleSurfaceFocusChange={this.handleSurfaceFocusChange}
+            handleSwitchWindow={this.handleSwitchWindow}
+            resourceid={this.state.blockFocus ? this.state.blockFocus : this.state.itemFocus}
+            windowType="bottomWindow"
             windowLoad={this.state.windows.bottomWindow.windowLoad}
             surfaceid={this.state.surfaceFocus}
-            topLevel={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].topLevel}/>}
+            topLevel={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].topLevel}
+
+            />}
 
         </div>
       )
@@ -335,7 +388,6 @@ class Text extends React.Component {
         });
         //check against top level expression as parts; if parts are top level expression; don't display parts
         const testPart = this.state.parts[Object.keys(this.state.parts)[0]]
-        console.log("test", testPart)
         if (testPart){
           if (!(testPart.type === "http://scta.info/resource/expression" && testPart.level === "1")){
             return (
