@@ -66,13 +66,16 @@ class Text extends React.Component {
     this.setState({partsFilter: part})
   }
   handleClose(window){
-
     this.setState((prevState) => {
       const windows = prevState.windows
       windows[window].open = !windows[window].open
       return {windows: windows}
 
     })
+    //scroll is supposed to re-align text scroll to focused paragraph after side bar close.
+    //but it is not quite working
+    scrollToParagraph(this.state.blockFocus, true)
+
   }
   handleSwitchWindow(window){
     this.setState((prevState) => {
@@ -151,6 +154,7 @@ class Text extends React.Component {
         }
 
       })
+      scrollToParagraph(id, true)
 
     });
     $('.js-show-folio-image').click(function(e) {
@@ -307,7 +311,7 @@ class Text extends React.Component {
     const displayText = () => {
       return(
         <div>
-          <Container className={this.state.blockFocus ? "lbp-text skinnyText" : "lbp-text fullText"}>
+          <Container className={this.state.windows.sideWindow.open ? "lbp-text skinnyText" : "lbp-text fullText"}>
           <div id="text"></div>
           </Container>
           <TextNavBar
