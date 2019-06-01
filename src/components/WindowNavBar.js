@@ -23,6 +23,9 @@ function WindowNavBar(props) {
     <Nav.Link onClick={() => {props.handleTabChange("surface2", props.windowType)}}>Surface2</Nav.Link>
   </Nav.Item>
   <Nav.Item>
+    <Nav.Link onClick={() => {props.handleTabChange("xml", props.windowType)}}>Xml</Nav.Link>
+  </Nav.Item>
+  <Nav.Item>
     <Nav.Link onClick={() => {props.handleClose(props.windowType)}}>Close</Nav.Link>
   </Nav.Item>
   <Nav.Item>

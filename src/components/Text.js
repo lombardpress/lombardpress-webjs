@@ -7,7 +7,6 @@ import Table from 'react-bootstrap/Table';
 
 import {loadXMLDoc, convertXMLDoc, runQuery, scrollToParagraph} from './utils'
 import {basicStructureItemInfoQuery, basicStructureAllItemsInfoQuery, getStructureType, partsInfoQuery,workGroupExpressionQuery} from './Queries'
-import Axios from 'axios'
 import {Link} from 'react-router-dom';
 
 import $ from 'jquery';
@@ -286,6 +285,8 @@ class Text extends React.Component {
   componentDidUpdate(){
     // TODO: might want to restrict this update to only when the itemFocus changes;
     // text doesn't need to be retrieved on other updates.
+
+    // TODO: try commenting this out
     this.retrieveText()
 
 

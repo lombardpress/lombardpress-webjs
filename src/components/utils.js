@@ -20,6 +20,14 @@ export function convertXMLDoc(xmlurl, xslurl){
   return resultDocument;
 }
 
+export function nsResolver(prefix) {
+    if(prefix == "tei") {
+      return 'http://www.tei-c.org/ns/1.0'
+    }
+}
+
+
+
 export function runQuery(query){
   //const sparqlEndpoint = "https://sparql-docker.scta.info/ds/query"
   //const sparqlEndpoint = sparqlEndpoint
