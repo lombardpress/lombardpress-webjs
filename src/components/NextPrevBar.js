@@ -7,7 +7,7 @@ import Nav from 'react-bootstrap/Nav';
 function NextPrevBar(props) {
   return (
     <Nav variant="tabs">
-    <Navbar.Brand>{props.info.title}</Navbar.Brand>
+    <Nav.Link onClick={() => {props.handleBlockFocusChange(props.info.resourceid)}}>{props.info.title}</Nav.Link>
     <Nav.Item>
       {props.info.next && <Nav.Link onClick={() => {props.handleBlockFocusChange(props.info.next)}}>Next</Nav.Link>}
     </Nav.Item>

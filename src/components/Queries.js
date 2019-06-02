@@ -98,7 +98,7 @@ export function basicInfoQuery(itemExpressionUri){
   // get basic info, structure type, level, and top Level
   export function getStructureType(resourceurl){
     const query = [
-      "SELECT DISTINCT ?type ?structureType ?level ?topLevel ",
+      "SELECT DISTINCT ?type ?structureType ?level ?topLevel ?itemParent ",
       "WHERE { ",
       "<" + resourceurl + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type . ",
       "OPTIONAL {",
@@ -109,6 +109,9 @@ export function basicInfoQuery(itemExpressionUri){
       "}",
       "OPTIONAL {",
       "<" + resourceurl + "> <http://scta.info/property/isPartOfTopLevelExpression> ?topLevel . ",
+      "}",
+      "OPTIONAL {",
+      "<" + resourceurl + "> <http://scta.info/property/isPartOfStructureItem> ?itemParent . ",
       "}",
       "}"].join('');
       return query

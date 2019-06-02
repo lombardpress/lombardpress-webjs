@@ -159,6 +159,9 @@ class Text extends React.Component {
       // append resultDoc to div in DOM
       document.getElementById("text").innerHTML = "";
       document.getElementById("text").appendChild(resultDocument);
+      if (this.state.blockFocus){
+        scrollToParagraph(this.state.blockFocus, true)
+      }
     }
 
     // bind events to dom
@@ -324,6 +327,7 @@ class Text extends React.Component {
       const structureType = t.data.results.bindings[0].structureType ? t.data.results.bindings[0].structureType.value : null
       const level = t.data.results.bindings[0].level ? t.data.results.bindings[0].level.value : null
       const topLevel = t.data.results.bindings[0].topLevel ? t.data.results.bindings[0].topLevel.value : newResourceId
+      const itemParent = t.data.results.bindings[0].itemParent ? t.data.results.bindings[0].itemParent.value : null
 
       // get all expressions for this workGroup
       if (type === "http://scta.info/resource/workGroup"){
@@ -344,6 +348,18 @@ class Text extends React.Component {
 
         }
         this.setState({itemFocus: newResourceId})
+
+      }
+      else if (structureType === "http://scta.info/resource/structureBlock" || structureType === "http://scta.info/resource/structureDivision" ){
+        // if structureType is item but state.items is empty
+        // re-initate top level items request
+        console.log("item parent", itemParent)
+        if (!this.state.items[itemParent]){
+          //this.retrieveInfo(newResourceId)
+          this.retrieveCollectionInfo(itemParent, structureType, topLevel)
+
+        }
+        this.setState({itemFocus: itemParent, blockFocus: newResourceId.split("/resource/")[1]})
 
       }
     });
@@ -369,7 +385,8 @@ class Text extends React.Component {
     const newResourceId = Qs.parse(nextProps.location.search, { ignoreQueryPrefix: true }).resourceid
     this.refs.itemFilter ? this.refs.itemFilter.value = "" :
     this.refs.partsFilter ? this.refs.partsFilter.value = "" :
-    this.setState({resourceid: newResourceId, itemFilter: "", partsFilter: ""})
+
+    this.setState({resourceid: newResourceId, itemFilter: "", partsFilter: "", blockFocus: ""})
     this.makeRequests(newResourceId)
   }
   render(){
