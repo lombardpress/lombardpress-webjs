@@ -62,7 +62,7 @@ class Surface2 extends React.Component {
   }
   render() {
     return (
-      <Container>
+      <Container className={this.props.hidden ? "hidden" : "showing"}>
       {this.state.currentSurfaceId ?
         <div>
           <div className="surface-navigation">

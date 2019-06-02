@@ -1,7 +1,7 @@
 import React from 'react';
 import {BrowserRouter, HashRouter, Route, Switch, Link, NavLink} from 'react-router-dom';
 import Home from "./Home"
-import Search from "./Search"
+import SearchWrapper from "./SearchWrapper"
 import Text from "./Text"
 import About from "./About"
 import NavBar from './NavBar';
@@ -22,7 +22,7 @@ const AppRouter = () => (
         <Route path="/" exact={true} component={Home}/>
         <Route path="/text"  exact={true} component={Text}/>
         <Route path="/about" exact={true} component={About}/>
-        <Route path="/search" exact={true} component={Search}/>
+        <Route path="/search" exact={true} render={(props) => <SearchWrapper {...props} hidden={false}/>}/>
         {
           //<Route path="/edit/:id" exact={true} component={EditExpensePage}/>
         //<Route path="/help" exact={true} component={HelpPage}/>

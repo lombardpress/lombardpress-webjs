@@ -5,6 +5,7 @@ import Axios from 'axios'
 class TextCompareItem extends React.Component {
   constructor(props){
     super(props)
+    this.mounted = ""
     this.state = {
       compareText: "",
       rawText: ","
@@ -19,18 +20,24 @@ class TextCompareItem extends React.Component {
             // Result: [(-1, "Hell"), (1, "G"), (0, "o"), (1, "odbye"), (0, " World.")]
             dmp.diff_cleanupSemantic(diff);
             const ds = dmp.diff_prettyHtml(diff);
-            this.setState({compareText: ds, rawText: text.data})
+            if (this.mounted === true){
+              this.setState({compareText: ds, rawText: text.data})
+            }
 
           })
         }
 
   componentDidMount(){
+    this.mounted = true;
     this.createCompare(this.props.base, this.props.compareTranscription)
   }
   componentWillReceiveProps(newProps){
     //this.refs.text.innerHTML = ""
     this.createCompare(newProps.base, newProps.compareTranscription)
   }
+  componentWillUnmount(){
+      this.mounted = false;
+    }
 
 
   render(){

@@ -16,33 +16,51 @@ class Search extends React.Component {
     const _this = this
     Axios.get("http://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-expressionid.xq?query=" + query + "&expressionid=" + expressionid).
           then((d) => {
+            console.log("search restuls", d)
             _this.setState({searchResults: d.data.results, count: d.data.count})
           })
   }
   componentDidMount(){
-    const query = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).query
-    const eid = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).eid
-    console.log(query, eid)
+    // const query = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).query
+    // const eid = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).eid
+    const query = this.props.query
+    const eid =  this.props.eid
+
     this.retrieveResults(query, eid)
   }
-  componentWillReceiveProps(){
-    const query = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).query
-    const eid = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).eid
+  componentWillReceiveProps(nextProps){
+    const query = nextProps.query
+    const eid =  nextProps.eid
     this.retrieveResults(query, eid)
   }
   render(){
     const displayResults = () => {
-      const results = this.state.searchResults.map((r) => {
-        return (
-          <div>
-          <p><Link to={"/text?resourceid=http://scta.info/resource/" + r.id}>{r.id}</Link></p>
-          <p dangerouslySetInnerHTML={{ __html: r.text}}/>
-          </div>
-        )
+      if (this.state.searchResults.length > 1){
+        const results = this.state.searchResults.map((r, i) => {
+          return (
+            <div key={i}>
+            <p><Link to={"/text?resourceid=http://scta.info/resource/" + r.pid}>{r.pid}</Link></p>
+            <p dangerouslySetInnerHTML={{ __html: r.text}}/>
+            </div>
+          )
 
-      })
+        })
       return results
     }
+    else if (this.state.searchResults){
+      return (
+        <div key={this.state.searchResults.pid}>
+        <p><Link to={"/text?resourceid=http://scta.info/resource/" + this.state.searchResults.pid}>{this.state.searchResults.pid}</Link></p>
+        <p dangerouslySetInnerHTML={{ __html: this.state.searchResults.text}}/>
+        </div>
+      )
+    }
+    else{
+      return (
+        <div><p>No results</p></div>
+      )
+    }
+  }
   return (
     <div>
     {displayResults()}

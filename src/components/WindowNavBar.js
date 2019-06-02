@@ -12,7 +12,7 @@ import Button from 'react-bootstrap/Button';
 
 
 function WindowNavBar(props) {
-  console.log("windownavbarprops", props)
+  
   return (
   <Nav variant="tabs">
   {
@@ -29,6 +29,9 @@ function WindowNavBar(props) {
   </Nav.Item>
   <Nav.Item>
     <Nav.Link onClick={() => {props.handleTabChange("textCompare", props.windowId)}}>Compare</Nav.Link>
+  </Nav.Item>
+  <Nav.Item>
+    <Nav.Link onClick={() => {props.handleTabChange("search", props.windowId)}}>Search</Nav.Link>
   </Nav.Item>
   <Nav.Item>
     <Nav.Link onClick={() => {props.handleClose(props.windowId)}}>Close</Nav.Link>

@@ -17,18 +17,15 @@ class Info extends React.Component {
   }
 
   render(){
-    const displayManifestations = () => {
-      const newManifestations = this.props.info.manifestations.map((m) => {return <p>{m.value}</p>})
-      return newManifestations
-    }
+
   return (
 
-    <div>
+    <div className={this.props.hidden ? "hidden" : "showing"}>
       <h1>Info</h1>
-      <p>Resourceid: {this.props.info.resourceid.includes('http') ? this.props.info.resourceid : "http://scta.info/resource/" + this.props.info.resourceid}</p>
-      <p>LDN Inbox: {this.props.info.inbox}</p>
+      <p key="id">Resourceid: {this.props.info.resourceid.includes('http') ? this.props.info.resourceid : "http://scta.info/resource/" + this.props.info.resourceid}</p>
+      <p key="inbox">LDN Inbox: {this.props.info.inbox}</p>
 
-      {displayManifestations()}
+
 
     </div>
     );

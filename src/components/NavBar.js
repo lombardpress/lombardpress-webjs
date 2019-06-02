@@ -20,7 +20,7 @@ function NavBar() {
       <Nav>
 
         <NavLink className="nav-link" to={"/text?resourceid=" + resourceEndpoint}>Text</NavLink>
-        <NavLink className="nav-link" to="/index">Index</NavLink>
+        
         {// example drop down
           // <NavDropdown title="Dropdown" id="basic-nav-dropdown">
         //   <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
@@ -30,11 +30,9 @@ function NavBar() {
         //   <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
         // </NavDropdown>
       }
+      <NavLink className="nav-link" to="/Search">Search</NavLink>
       </Nav>
-      <Form inline>
-        <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-        <Button variant="outline-success">Search</Button>
-      </Form>
+
       <Nav>
         <NavLink className="nav-link" to="/about">About</NavLink>
         <NavLink className="nav-link" to="/donate">Donate</NavLink>

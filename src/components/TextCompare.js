@@ -1,6 +1,7 @@
 import React from 'react';
 import Diff from 'diff-match-patch'
 import Axios from 'axios'
+
 import TextCompareItem from './TextCompareItem'
 
 class TextCompare extends React.Component {
@@ -8,7 +9,7 @@ class TextCompare extends React.Component {
     super(props)
     this.getText = this.getText.bind(this)
     this.handleChangeBase = this.handleChangeBase.bind(this)
-
+    this.mounted = ""
     this.state = {
       baseText: ""
     }
@@ -18,18 +19,26 @@ class TextCompare extends React.Component {
     this.setState({baseText: rawText})
   }
   getText(ctranscription){
+
+
     Axios.get("http://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + ctranscription).
           then((text) => {
-            this.setState({baseText: text.data})
+            if (this.mounted === true){
+              this.setState({baseText: text.data})
+            }
           })
         }
   componentDidMount(){
+    this.mounted = true;
     this.getText(this.props.info.ctranscription)
   }
 
 
   componentWillReceiveProps(nextProps){
     this.getText(nextProps.info.ctranscription)
+  }
+    componentWillUnmount(){
+        this.mounted = false;
   }
 
   render(){
@@ -48,7 +57,7 @@ class TextCompare extends React.Component {
     }
 
   return (
-    <div>
+    <div className={this.props.hidden ? "hidden" : "showing"}>
     {displayComparisons()}
     </div>
 

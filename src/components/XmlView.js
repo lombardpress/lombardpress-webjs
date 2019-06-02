@@ -16,7 +16,7 @@ class XmlView extends React.Component {
     }
   }
   retrieveXML(info){
-    console.log('info', info)
+
     //construct file url request ot exist db to get a cors enabled copy of the text (github does not serve files with cors enabled)
     // const doc = info.cdoc
     // const topLevel = info.topLevel
@@ -30,7 +30,7 @@ class XmlView extends React.Component {
     // const p = xmlDoc.evaluate("//tei:p[@xml:id='" + info.resourceid + "']", xmlDoc, nsResolver, XPathResult.ANY_TYPE, null);
     // console.log("paragraph", p)
     Axios.get(xmlurl).then((d) => {
-      console.log("xmldata", d.data)
+
       this.setState({xmlstring: d.data})
     })
 
@@ -46,9 +46,11 @@ class XmlView extends React.Component {
   render(){
     const codeString = '<xml><div>Test</div></xml>';
     return (
+      <div className={this.props.hidden ? "hidden" : "showing"}>
       <SyntaxHighlighter language="xml" style={docco} showLineNumbers>
         {this.state.xmlstring}
       </SyntaxHighlighter>
+      </div>
     )
   }
 }

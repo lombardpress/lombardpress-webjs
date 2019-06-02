@@ -6,6 +6,7 @@ import Info from "./Info"
 import WindowNavBar from "./WindowNavBar"
 import NextPrevBar from "./NextPrevBar"
 import TextCompare from "./TextCompare"
+import SearchWrapper from "./SearchWrapper"
 
 
 
@@ -35,20 +36,20 @@ class Window extends React.Component {
       return newManifestations
     }
     const displayChild = () => {
-      switch(this.state.windowLoad){
-        case "surface":
-          return <Surface surfaceid={this.props.surfaceid} topLevel={this.props.topLevel}/>
-        case "surface2":
-          return <Surface2 surfaceid={this.props.surfaceid} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange}/>
-        case "xml":
-          return <XmlView info={this.props.info}/>
-        case "info":
-          return <Info info={this.props.info} topLevel={this.props.topLevel}/>
-        case "textCompare":
-          return <TextCompare info={this.props.info}/>
-        default:
-          return <h1>BottomWindow</h1>
-      }
+      return(
+        <div>
+          {// including search wrapper here as hidden instead of above in switch, so that results don't have to be reload
+          }
+          <SearchWrapper info={this.props.info} hidden={this.state.windowLoad != "search"} topLevel={this.props.info.topLevel}/>
+          <TextCompare info={this.props.info} hidden={this.state.windowLoad != "textCompare"}/>
+          <XmlView info={this.props.info} hidden={this.state.windowLoad != "xml"}/>
+          <Info info={this.props.info} topLevel={this.props.topLevel} hidden={this.state.windowLoad != "info"}/>
+          <Surface2 surfaceid={this.props.surfaceid} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad != "surface2"}/>
+          {
+            //<Surface surfaceid={this.props.surfaceid} topLevel={this.props.topLevel}/>
+          }
+        </div>
+      )
 
     }
   return (
@@ -63,6 +64,7 @@ class Window extends React.Component {
       <NextPrevBar info={this.props.info} handleBlockFocusChange={this.props.handleBlockFocusChange}/>
 
       {displayChild()}
+
     </div>
     );
   }

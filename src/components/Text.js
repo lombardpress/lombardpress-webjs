@@ -263,12 +263,8 @@ class Text extends React.Component {
   }
   arrangeTextInfo(info, resourceid){
       info.then((d) => {
-        console.log("d", d)
         const bindings = d.data.results.bindings[0]
-        console.log("bindings", bindings)
-
         const manifestations = d.data.results.bindings.map((b) => {
-          console.log(b)
           return {
             manifestation: b.manifestation.value,
             manifestationTitle: b.manifestationTitle.value,
@@ -353,12 +349,12 @@ class Text extends React.Component {
       else if (structureType === "http://scta.info/resource/structureBlock" || structureType === "http://scta.info/resource/structureDivision" ){
         // if structureType is item but state.items is empty
         // re-initate top level items request
-        console.log("item parent", itemParent)
         if (!this.state.items[itemParent]){
           //this.retrieveInfo(newResourceId)
           this.retrieveCollectionInfo(itemParent, structureType, topLevel)
 
         }
+        this.handleBlockFocusChange(newResourceId)
         this.setState({itemFocus: itemParent, blockFocus: newResourceId.split("/resource/")[1]})
 
       }
