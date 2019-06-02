@@ -6,7 +6,7 @@ import FormControl from 'react-bootstrap/FormControl';
 import Table from 'react-bootstrap/Table';
 
 import {loadXMLDoc, convertXMLDoc, runQuery, scrollToParagraph} from './utils'
-import {basicStructureItemInfoQuery, basicStructureAllItemsInfoQuery, getStructureType, partsInfoQuery,workGroupExpressionQuery} from './Queries'
+import {basicInfoQuery, basicStructureItemInfoQuery, basicStructureAllItemsInfoQuery, getStructureType, partsInfoQuery,workGroupExpressionQuery} from './Queries'
 import {Link} from 'react-router-dom';
 
 import $ from 'jquery';
@@ -39,18 +39,23 @@ class Text extends React.Component {
       itemFocus: "",
       resourceid: "",
       items: {},
+      info: {},
       parts: {},
       itemFilter: "",
       partsFilter: "",
       surfaceFocus: "",
       windows: {
-        sideWindow: {
+        window1: {
+          windowId: "window1",
           open: false,
           windowLoad: "info",
+          position: "sideWindow"
         },
-        bottomWindow: {
+        window2: {
+          windowId: "window2",
           open: false,
           windowLoad: "info",
+          position: "bottomWindow"
         }
       }
     }
@@ -64,10 +69,10 @@ class Text extends React.Component {
     const part = e.target.value
     this.setState({partsFilter: part})
   }
-  handleClose(window){
+  handleClose(windowId){
     this.setState((prevState) => {
       const windows = prevState.windows
-      windows[window].open = !windows[window].open
+      windows[windowId].open = !windows[windowId].open
       return {windows: windows}
 
     })
@@ -76,27 +81,42 @@ class Text extends React.Component {
     scrollToParagraph(this.state.blockFocus, true)
 
   }
-  handleSwitchWindow(window){
+  handleSwitchWindow(windowId, windowType){
     this.setState((prevState) => {
       const windows = prevState.windows
-      if (window === "sideWindow"){
-        const currentWindow =
-        windows["bottomWindow"] = {...windows["sideWindow"]}
-        windows["sideWindow"] = {...windows["sideWindow"], open: false}
+      if (windows[windowId].position === "sideWindow"){
+        windows[windowId].position = "bottomWindow"
+        // these conditionals control whether an already existing window will be closed when the other is moved
+        // while commented they allow window1 and window2 to stack on top of each other
+
+        // if (windowId === "window1"){
+        //   windows["window2"].open = false
+        // }
+        // else if ((windowId === "window2")){
+        //   windows["window1"].open = false
+        // }
       }
-      else if (window === "bottomWindow"){
-        windows["sideWindow"] = {...windows["bottomWindow"]}
-        windows["bottomWindow"] = {...windows["bottomWindow"], open: false}
+      else if (windows[windowId].position === "bottomWindow"){
+        windows[windowId].position = "sideWindow"
+        // these conditionals control whether an already existing window will be closed when the other is moved
+        // while commented they allow window1 and window2 to stack on top of each other
+
+        // if (windowId === "window1"){
+        //   windows["window2"].open = false
+        // }
+        // else if ((windowId === "window2")){
+        //   windows["window1"].open = false
+        // }
       }
       return {windows: windows}
 
     })
   }
-  handleTabChange(windowLoad, window){
+  handleTabChange(windowLoad, windowId){
 
     this.setState((prevState) => {
       const windows = prevState.windows
-      windows[window].windowLoad = windowLoad
+      windows[windowId].windowLoad = windowLoad
       return {windows: windows}
 
     })
@@ -107,6 +127,11 @@ class Text extends React.Component {
     // check to make sure we're using shortId
     const id = resourceid.includes("http") ? resourceid.split("/resource/")[1] : resourceid
     this.setState({blockFocus: id})
+
+    // set block info to state.info
+    const fullid = "http://scta.info/resource/" + id
+    const info = runQuery(basicInfoQuery(fullid))
+    this.arrangeTextInfo(info, fullid)
 
     scrollToParagraph(id, true)
   }
@@ -146,13 +171,18 @@ class Text extends React.Component {
       //_this.setState({blockFocus: id})
       _this.setState((prevState) => {
         const windows = prevState.windows
-        windows.sideWindow.open = true
+        windows.window1.open = true
         return {
           windows: windows,
           blockFocus: id
         }
 
       })
+      // set block info to state.info
+      const fullid = "http://scta.info/resource/" + id
+      const info = runQuery(basicInfoQuery(fullid))
+      _this.arrangeTextInfo(info, fullid)
+      // scroll to paragraph
       scrollToParagraph(id, true)
 
     });
@@ -162,8 +192,8 @@ class Text extends React.Component {
       //_this.setState({surfaceFocus: "http://scta.info/resource/" + id})
       _this.setState((prevState) => {
         const windows = prevState.windows
-        windows.bottomWindow.open = true
-        windows.bottomWindow.windowLoad = "surface2"
+        windows.window2.open = true
+        windows.window2.windowLoad = "surface2"
         return {
           windows: windows,
           surfaceFocus: "http://scta.info/resource/" + id
@@ -228,6 +258,39 @@ class Text extends React.Component {
       console.log(err)
     })
   }
+  arrangeTextInfo(info, resourceid){
+      info.then((d) => {
+        console.log("d", d)
+        const bindings = d.data.results.bindings[0]
+        console.log("bindings", bindings)
+
+        const manifestations = d.data.results.bindings.map((b) => {
+          console.log(b)
+          return {
+            manifestation: b.manifestation.value,
+            manifestationTitle: b.manifestationTitle.value,
+            transcription: b.manifestationCTranscription.value
+          }
+        })
+
+        this.setState({
+          info: {
+            resourceid: resourceid,
+            title: bindings.title.value,
+            structureType: bindings.structureType.value,
+            inbox: bindings.inbox.value,
+            next: bindings.next ? bindings.next.value : "",
+            previous: bindings.previous ? bindings.previous.value : "",
+            cdoc: bindings.cdoc.value,
+            cxml: bindings.cxml.value,
+            topLevel: bindings.topLevelExpression.value,
+            cmanifestation: bindings.cmanifestation.value,
+            ctranscription: bindings.ctranscription.value,
+            manifestations: manifestations
+          }
+        });
+      });
+    }
   retrieveWorkGroupInfo(resourceid){
     const _this = this;
     const expressionsInfo = runQuery(workGroupExpressionQuery(resourceid))
@@ -245,6 +308,12 @@ class Text extends React.Component {
     this.arrangeParts(partsInfo)
     /// add items to state
     this.arrangeItems(collectionInfo)
+    // add info to state for structure items, divisions, and blocks
+    if (structureType != "http://scta.info/resource/structureCollection"){
+      const id = resourceid.includes("http") ? resourceid : "http://scta.info/resource/" + resourceid
+      const info = runQuery(basicInfoQuery(id))
+      this.arrangeTextInfo(info, id)
+    }
 
 
   }
@@ -276,19 +345,16 @@ class Text extends React.Component {
         }
         this.setState({itemFocus: newResourceId})
 
-
-
-
       }
     });
   }
-  componentDidUpdate(){
-    // TODO: might want to restrict this update to only when the itemFocus changes;
-    // text doesn't need to be retrieved on other updates.
-
-    // TODO: try commenting this out
-    this.retrieveText()
-
+  componentDidUpdate(prevProps, prevState){
+    // this is necessary because item transcription is getting recieved from "items query"
+    // and if it is no yet there, it can't find the document/file url
+    // so we not only have to check if the itemid changes, but also when the "items array update"
+    if ((prevState.items != this.state.items) || (prevState.itemFocus != this.state.itemFocus)){
+      this.retrieveText()
+    }
 
   }
   componentDidMount(){
@@ -296,7 +362,7 @@ class Text extends React.Component {
     const newResourceId = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).resourceid
     this.setState({resourceid: newResourceId})
     this.makeRequests(newResourceId)
-    this.retrieveText()
+
   }
 
   componentWillReceiveProps(nextProps) {
@@ -304,15 +370,22 @@ class Text extends React.Component {
     this.refs.itemFilter ? this.refs.itemFilter.value = "" :
     this.refs.partsFilter ? this.refs.partsFilter.value = "" :
     this.setState({resourceid: newResourceId, itemFilter: "", partsFilter: ""})
-    this.retrieveText()
     this.makeRequests(newResourceId)
   }
   render(){
     const resourceid = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).resourceid;
     const displayText = () => {
+      let aSideWindowOpen = false;
+      if (this.state.windows.window1.open && this.state.windows.window1.position === "sideWindow"){
+        aSideWindowOpen = true
+      }
+      else if (this.state.windows.window2.open && this.state.windows.window2.position === "sideWindow"){
+        aSideWindowOpen = true
+      }
+
       return(
         <div>
-          <Container className={this.state.windows.sideWindow.open ? "lbp-text skinnyText" : "lbp-text fullText"}>
+          <Container className={aSideWindowOpen ? "lbp-text skinnyText" : "lbp-text fullText"}>
           <div id="text"></div>
           </Container>
           <TextNavBar
@@ -321,36 +394,40 @@ class Text extends React.Component {
           topLevel={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].topLevel}
           handleClose={this.handleClose}
           />
-          {this.state.windows.sideWindow.open &&
-            <Window windowLoad={this.state.windows.sideWindow.windowLoad}
-            key={"side"}
+          {this.state.windows.window1.open &&
+            <Window windowLoad={this.state.windows.window1.windowLoad}
+            key={"window1"}
             handleClose={this.handleClose}
             handleTabChange={this.handleTabChange}
             handleBlockFocusChange={this.handleBlockFocusChange}
             handleSurfaceFocusChange={this.handleSurfaceFocusChange}
             handleSwitchWindow={this.handleSwitchWindow}
             resourceid={this.state.blockFocus}
-            windowType="sideWindow"
-            windowLoad={this.state.windows.sideWindow.windowLoad}
+            windowType={this.state.windows.window1.position}
+            windowId={this.state.windows.window1.windowId}
+            windowLoad={this.state.windows.window1.windowLoad}
             surfaceid={this.state.surfaceFocus}
             topLevel={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].topLevel}
+            info={this.state.info}
 
 
             />
           }
-          {this.state.windows.bottomWindow.open &&
-            <Window windowLoad={this.state.windows.bottomWindow.windowLoad}
-            key={"bottom"}
+          {this.state.windows.window2.open &&
+            <Window windowLoad={this.state.windows.window2.windowLoad}
+            key={"window2"}
             handleClose={this.handleClose}
             handleTabChange={this.handleTabChange}
             handleBlockFocusChange={this.handleBlockFocusChange}
             handleSurfaceFocusChange={this.handleSurfaceFocusChange}
             handleSwitchWindow={this.handleSwitchWindow}
             resourceid={this.state.blockFocus ? this.state.blockFocus : this.state.itemFocus}
-            windowType="bottomWindow"
-            windowLoad={this.state.windows.bottomWindow.windowLoad}
+            windowType={this.state.windows.window2.position}
+            windowId={this.state.windows.window2.windowId}
+            windowLoad={this.state.windows.window2.windowLoad}
             surfaceid={this.state.surfaceFocus}
             topLevel={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].topLevel}
+            info={this.state.info}
 
             />}
 

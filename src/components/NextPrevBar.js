@@ -1,12 +1,20 @@
 import React from 'react';
 
+import {NavLink} from 'react-router-dom';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+
 function NextPrevBar(props) {
   return (
-    <div>
-      <p>Title: {props.info.title}</p>
-      {props.info.next && <p onClick={() => {props.handleBlockFocusChange(props.info.next)}}>Next</p>}
-      {props.info.previous && <p onClick={() => {props.handleBlockFocusChange(props.info.previous)}}>Previous</p>}
-    </div>
+    <Nav variant="tabs">
+    <Navbar.Brand>{props.info.title}</Navbar.Brand>
+    <Nav.Item>
+      {props.info.next && <Nav.Link onClick={() => {props.handleBlockFocusChange(props.info.next)}}>Next</Nav.Link>}
+    </Nav.Item>
+    <Nav.Item>
+      {props.info.previous && <Nav.Link onClick={() => {props.handleBlockFocusChange(props.info.previous)}}>Previous</Nav.Link>}
+    </Nav.Item>
+    </Nav>
   );
 }
 

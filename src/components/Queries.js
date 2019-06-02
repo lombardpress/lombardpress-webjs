@@ -4,7 +4,7 @@
 // query info block, division, or item (possible also collection)
 export function basicInfoQuery(itemExpressionUri){
   const query = [
-    "SELECT DISTINCT ?title ?structureType ?cmanifestation ?cmanifestationTitle ?manifestation ?manifestationTitle ?ctranscription ?cdoc ?cxml ?expressionShortId ?longTitle ?topLevelExpression ?next ?previous ?inbox ",
+    "SELECT DISTINCT ?title ?structureType ?cmanifestation ?cmanifestationTitle ?manifestation ?manifestationTitle ?ctranscription ?manifestationCTranscription ?cdoc ?cxml ?expressionShortId ?longTitle ?topLevelExpression ?next ?previous ?inbox ",
     "WHERE { ",
     "<" + itemExpressionUri + "> <http://purl.org/dc/elements/1.1/title> ?title .",
     "<" + itemExpressionUri + "> <http://scta.info/property/structureType> ?structureType .",
@@ -12,6 +12,7 @@ export function basicInfoQuery(itemExpressionUri){
     "?cmanifestation <http://purl.org/dc/elements/1.1/title> ?cmanifestationTitle .",
     "<" + itemExpressionUri + "> <http://scta.info/property/hasManifestation> ?manifestation .",
     "?manifestation <http://purl.org/dc/elements/1.1/title> ?manifestationTitle .",
+    "?manifestation <http://scta.info/property/hasCanonicalTranscription> ?manifestationCTranscription .",
     "?cmanifestation <http://scta.info/property/hasCanonicalTranscription> ?ctranscription .",
     "?ctranscription <http://scta.info/property/hasDocument> ?cdoc . ",
     "?ctranscription <http://scta.info/property/hasXML> ?cxml . ",
