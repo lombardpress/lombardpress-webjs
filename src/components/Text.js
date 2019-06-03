@@ -6,7 +6,7 @@ import FormControl from 'react-bootstrap/FormControl';
 import Table from 'react-bootstrap/Table';
 
 import {loadXMLDoc, convertXMLDoc, runQuery, scrollToParagraph} from './utils'
-import {basicInfoQuery, basicStructureItemInfoQuery, basicStructureAllItemsInfoQuery, getStructureType, partsInfoQuery,workGroupExpressionQuery} from './Queries'
+import {getRelatedExpressions, basicInfoQuery, basicStructureItemInfoQuery, basicStructureAllItemsInfoQuery, getStructureType, partsInfoQuery,workGroupExpressionQuery} from './Queries'
 import {Link} from 'react-router-dom';
 
 import $ from 'jquery';
@@ -40,6 +40,7 @@ class Text extends React.Component {
       resourceid: "",
       items: {},
       info: {},
+      relatedExpressions: [],
       parts: {},
       itemFilter: "",
       partsFilter: "",
@@ -132,6 +133,8 @@ class Text extends React.Component {
     const fullid = "http://scta.info/resource/" + id
     const info = runQuery(basicInfoQuery(fullid))
     this.arrangeTextInfo(info, fullid)
+    const relatedExpressions = runQuery(getRelatedExpressions(resourceid))
+    this.arrangeRelatedInfo(relatedExpressions)
 
     scrollToParagraph(id, true)
   }
@@ -290,6 +293,18 @@ class Text extends React.Component {
         });
       });
     }
+    arrangeRelatedInfo(relatedInfo){
+        relatedInfo.then((d) => {
+          const bindings = d.data.results.bindings
+          console.log("related", bindings)
+          const relatedExpressions = bindings.map((r) => {
+              return r.isRelatedTo.value
+            });
+          this.setState({
+            relatedExpressions: relatedExpressions
+          });
+        });
+      }
   retrieveWorkGroupInfo(resourceid){
     const _this = this;
     const expressionsInfo = runQuery(workGroupExpressionQuery(resourceid))
@@ -303,6 +318,7 @@ class Text extends React.Component {
 
     const collectionInfo = runQuery(basicStructureAllItemsInfoQuery(topLevel))
     const partsInfo = runQuery(partsInfoQuery(resourceid))
+
     //add parts to state
     this.arrangeParts(partsInfo)
     /// add items to state
@@ -312,6 +328,8 @@ class Text extends React.Component {
       const id = resourceid.includes("http") ? resourceid : "http://scta.info/resource/" + resourceid
       const info = runQuery(basicInfoQuery(id))
       this.arrangeTextInfo(info, id)
+      const relatedExpressions = runQuery(getRelatedExpressions(resourceid))
+      this.arrangeRelatedInfo(relatedExpressions)
     }
 
 
@@ -422,6 +440,7 @@ class Text extends React.Component {
             surfaceid={this.state.surfaceFocus}
             topLevel={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].topLevel}
             info={this.state.info}
+            relatedExpressions={this.state.relatedExpressions}
 
 
             />
@@ -441,6 +460,7 @@ class Text extends React.Component {
             surfaceid={this.state.surfaceFocus}
             topLevel={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].topLevel}
             info={this.state.info}
+            relatedExpressions={this.state.relatedExpressions}
 
             />}
 

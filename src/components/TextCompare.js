@@ -30,12 +30,22 @@ class TextCompare extends React.Component {
         }
   componentDidMount(){
     this.mounted = true;
-    this.getText(this.props.info.ctranscription)
+    if (this.props.isMainText){
+      this.getText(this.props.info.ctranscription)
+    }
+    else{
+
+    }
   }
 
 
   componentWillReceiveProps(nextProps){
-    this.getText(nextProps.info.ctranscription)
+    if (nextProps.isMainText){
+      this.getText(nextProps.info.ctranscription)
+    }
+    else{
+
+    }
   }
     componentWillUnmount(){
         this.mounted = false;
@@ -57,7 +67,7 @@ class TextCompare extends React.Component {
     }
 
   return (
-    <div className={this.props.hidden ? "hidden" : "showing"}>
+    <div>
     {displayComparisons()}
     </div>
 

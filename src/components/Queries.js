@@ -1,6 +1,18 @@
 //note; each query here represents an attempt an efficient single request for related information
 //each query therefore could be tranformed into a restful api
 
+//get Related Expressions
+export function getRelatedExpressions(itemExpressionUri){
+  const query = [
+    "SELECT DISTINCT ?isRelatedTo ",
+    "WHERE { ",
+    "<" + itemExpressionUri + "> <http://scta.info/property/isRelatedTo> ?isRelatedTo .",
+    "}"
+  ].join('');
+
+    return query
+}
+
 // query info block, division, or item (possible also collection)
 export function basicInfoQuery(itemExpressionUri){
   const query = [
@@ -28,7 +40,7 @@ export function basicInfoQuery(itemExpressionUri){
     "<" + itemExpressionUri + "> <http://www.w3.org/ns/ldp#inbox> ?inbox . ",
     "}",
     "ORDER BY ?title"].join('');
-    
+
     return query
   }
   // gets all structure items with basic item information
