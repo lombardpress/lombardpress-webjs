@@ -1,74 +1,129 @@
 import React from 'react';
 import Diff from 'diff-match-patch'
 import Axios from 'axios'
+import {Link} from 'react-router-dom';
+import { FaEyeSlash, FaEye } from 'react-icons/fa';
+
+
+
+import {runQuery} from './utils'
+import {basicInfoQuery} from './Queries'
+
 
 import TextCompareItem from './TextCompareItem'
+
+
 
 class TextCompare extends React.Component {
   constructor(props){
     super(props)
-    this.getText = this.getText.bind(this)
-    this.handleChangeBase = this.handleChangeBase.bind(this)
+    this.handleToggleShowAll = this.handleToggleShowAll.bind(this)
     this.mounted = ""
     this.state = {
-      baseText: ""
+      info: "",
+      show: false
     }
 
   }
-  handleChangeBase(rawText){
-    this.setState({baseText: rawText})
+
+  handleToggleShowAll(){
+    this.setState((prevState) => {
+      return{
+        show: !prevState.show
+      }
+    })
   }
-  getText(ctranscription){
 
+  // TODO dupblicate of function in Text Component
+  // needs refactoring
+  arrangeTextInfo(info, resourceid){
+      info.then((d) => {
+        const bindings = d.data.results.bindings[0]
+        const manifestations = d.data.results.bindings.map((b) => {
+          return {
+            manifestation: b.manifestation.value,
+            manifestationTitle: b.manifestationTitle.value,
+            transcription: b.manifestationCTranscription.value
+          }
+        })
 
-    Axios.get("http://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + ctranscription).
-          then((text) => {
-            if (this.mounted === true){
-              this.setState({baseText: text.data})
-            }
-          })
-        }
+        this.setState({
+          info: {
+            resourceid: resourceid,
+            title: bindings.title.value,
+            structureType: bindings.structureType.value,
+            inbox: bindings.inbox.value,
+            next: bindings.next ? bindings.next.value : "",
+            previous: bindings.previous ? bindings.previous.value : "",
+            cdoc: bindings.cdoc.value,
+            cxml: bindings.cxml.value,
+            topLevel: bindings.topLevelExpression.value,
+            cmanifestation: bindings.cmanifestation.value,
+            ctranscription: bindings.ctranscription.value,
+            manifestations: manifestations
+          }
+        });
+      });
+    }
+  getTextInfo(id){
+    const info = runQuery(basicInfoQuery(id))
+    this.arrangeTextInfo(info, id)
+  }
+
   componentDidMount(){
     this.mounted = true;
+    this.setState({show: this.props.show})
+
     if (this.props.isMainText){
-      this.getText(this.props.info.ctranscription)
+
+      this.setState({info: this.props.info})
     }
     else{
-
+      this.getTextInfo(this.props.expressionid)
     }
   }
 
 
   componentWillReceiveProps(nextProps){
     if (nextProps.isMainText){
-      this.getText(nextProps.info.ctranscription)
+      this.setState({info: nextProps.info})
     }
     else{
+      this.getTextInfo(nextProps.expressionid)
 
     }
   }
     componentWillUnmount(){
-        this.mounted = false;
   }
 
   render(){
     const displayComparisons = () => {
-      const texts = this.props.info.manifestations.map((m) => {
-        return (
-          <TextCompareItem
-          key={m.transcription}
-          base={this.state.baseText}
-          compareTranscription={m.transcription}
-          handleChangeBase={this.handleChangeBase}
-          />
-        )
-      })
-      return texts
+      if (this.state.info.manifestations && this.props.baseText){
+        const texts = this.state.info.manifestations.map((m) => {
+          return (
+            <TextCompareItem
+            key={m.transcription}
+            base={this.props.baseText}
+            compareTranscription={m.transcription}
+            handleChangeBase={this.props.handleChangeBase}
+            show={this.state.show}
+            />
+          )
+        })
+        return texts
+      }
     }
 
   return (
     <div>
-    {displayComparisons()}
+      {
+        // the link to reroute is not quite working, because the base Text is not resetting, focusBlockChange might be better; but item structure will also need to be changed.
+      }
+      <p><Link to={"/text?resourceid=" + this.state.info.resourceid}>{this.state.info.resourceid}</Link>
+      <span onClick={() => this.handleToggleShowAll()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span></p>
+      <div className={this.state.show ? "unhidden" : "hidden"}>
+      {displayComparisons()}
+      </div>
     </div>
 
   );

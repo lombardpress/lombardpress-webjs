@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { FaAngleLeft, FaAngleRight} from 'react-icons/fa';
+
 import {NavLink} from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
@@ -9,11 +11,12 @@ function NextPrevBar(props) {
     <Nav variant="tabs">
     <Nav.Link onClick={() => {props.handleBlockFocusChange(props.info.resourceid)}}>{props.info.title}</Nav.Link>
     <Nav.Item>
-      {props.info.next && <Nav.Link onClick={() => {props.handleBlockFocusChange(props.info.next)}}>Next</Nav.Link>}
+      {props.info.previous && <Nav.Link onClick={() => {props.handleBlockFocusChange(props.info.previous)}}><FaAngleLeft/></Nav.Link>}
     </Nav.Item>
     <Nav.Item>
-      {props.info.previous && <Nav.Link onClick={() => {props.handleBlockFocusChange(props.info.previous)}}>Previous</Nav.Link>}
+      {props.info.next && <Nav.Link onClick={() => {props.handleBlockFocusChange(props.info.next)}}><FaAngleRight/></Nav.Link>}
     </Nav.Item>
+
     </Nav>
   );
 }

@@ -131,8 +131,10 @@ class Text extends React.Component {
 
     // set block info to state.info
     const fullid = "http://scta.info/resource/" + id
+    // get block/divisio info
     const info = runQuery(basicInfoQuery(fullid))
     this.arrangeTextInfo(info, fullid)
+    // get related expressions info
     const relatedExpressions = runQuery(getRelatedExpressions(resourceid))
     this.arrangeRelatedInfo(relatedExpressions)
 
@@ -188,6 +190,13 @@ class Text extends React.Component {
       const fullid = "http://scta.info/resource/" + id
       const info = runQuery(basicInfoQuery(fullid))
       _this.arrangeTextInfo(info, fullid)
+
+      // retrieve relatedExpressions info
+      // get related expressions info
+      // TODO/Note this is getting called in handleBlockFocusChange as well;
+      // Strong candidate for  refactor
+      const relatedExpressions = runQuery(getRelatedExpressions(fullid))
+      _this.arrangeRelatedInfo(relatedExpressions)
       // scroll to paragraph
       scrollToParagraph(id, true)
 
@@ -365,15 +374,15 @@ class Text extends React.Component {
 
       }
       else if (structureType === "http://scta.info/resource/structureBlock" || structureType === "http://scta.info/resource/structureDivision" ){
-        // if structureType is item but state.items is empty
+        // if structureType is block/division and block/division parent item is not in state.items
         // re-initate top level items request
         if (!this.state.items[itemParent]){
           //this.retrieveInfo(newResourceId)
           this.retrieveCollectionInfo(itemParent, structureType, topLevel)
 
         }
+        this.setState({itemFocus: itemParent})
         this.handleBlockFocusChange(newResourceId)
-        this.setState({itemFocus: itemParent, blockFocus: newResourceId.split("/resource/")[1]})
 
       }
     });

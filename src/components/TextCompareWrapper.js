@@ -9,11 +9,17 @@ class TextCompareWrapper extends React.Component {
   constructor(props){
     super(props)
     this.handleCompare = this.handleToggleCompare.bind(this)
+    this.handleChangeBase = this.handleChangeBase.bind(this)
+    this.getText = this.getText.bind(this)
     this.mounted = ""
     this.state = {
-      expressions: {}
+      expressions: {},
+      baseText: ""
     }
 
+  }
+  handleChangeBase(rawText){
+    this.setState({baseText: rawText})
   }
   handleToggleCompare(expressionid){
     this.setState((prevState) => {
@@ -24,18 +30,26 @@ class TextCompareWrapper extends React.Component {
       }
     })
   }
+  getText(ctranscription){
+    Axios.get("http://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + ctranscription).
+      then((text) => {
+        this.setState({baseText: text.data})
+      })
+    }
 
   componentDidMount(){
+    this.getText(this.props.info.ctranscription)
     const expressions = {}
-    expressions[this.props.info.resourceid] = {id: this.props.info.resourceid, show: false}
+    expressions[this.props.info.resourceid] = {id: this.props.info.resourceid, show: true}
     this.props.relatedExpressions.forEach((r) => {
       expressions[r] = {id: r, show: false}
     })
     this.setState({expressions: expressions})
   }
   componentWillReceiveProps(nextProps){
+    this.getText(nextProps.info.ctranscription)
     const expressions = {}
-    expressions[nextProps.info.resourceid] = {id: nextProps.info.resourceid, show: false}
+    expressions[nextProps.info.resourceid] = {id: nextProps.info.resourceid, show: true}
     nextProps.relatedExpressions.forEach((r) => {
       expressions[r] = {id: r, show: false}
     })
@@ -48,8 +62,14 @@ class TextCompareWrapper extends React.Component {
         const isMainText = this.props.info.resourceid === exObject[key].id ? true : false
         return (
           <div>
-            <p key={exObject[key].id} onClick={() => this.handleToggleCompare(exObject[key].id)}>{exObject[key].id}</p>
-            {exObject[key].show && <TextCompare info={this.props.info} expressionid={exObject[key].id} isMainText={isMainText}/>}
+            {<TextCompare
+              info={this.props.info}
+              expressionid={exObject[key].id}
+              isMainText={isMainText}
+              handleChangeBase={this.handleChangeBase}
+              baseText={this.state.baseText}
+              show={exObject[key].show}
+              />}
           </div>
         )
       })

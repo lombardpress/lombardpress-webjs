@@ -2,14 +2,25 @@ import React from 'react';
 import Diff from 'diff-match-patch'
 import Axios from 'axios'
 
+import { FaEyeSlash, FaEye, FaStar } from 'react-icons/fa';
+
 class TextCompareItem extends React.Component {
   constructor(props){
     super(props)
+    this.handleToggleShow = this.handleToggleShow.bind(this)
     this.mounted = ""
     this.state = {
       compareText: "",
-      rawText: ","
+      rawText: "",
+      show: true
     }
+  }
+  handleToggleShow(){
+    this.setState((prevState) => {
+      return{
+        show: !prevState.show
+      }
+    })
   }
   createCompare(base, transcription){
     Axios.get("http://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + transcription).
@@ -44,9 +55,13 @@ class TextCompareItem extends React.Component {
 
     return (
       <div>
-        <div ref="text" dangerouslySetInnerHTML={{ __html: this.state.compareText}}></div>
-        <button onClick={() => this.props.handleChangeBase(this.state.rawText)}/>
+      <span onClick={() => this.handleToggleShow()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>
+      <span onClick={() => this.props.handleChangeBase(this.state.rawText)}><FaStar/></span>
+        <div className={this.state.show ? "unhidden" : "hidden"}>
+          <div ref="text" dangerouslySetInnerHTML={{ __html: this.state.compareText}}></div>
 
+
+        </div>
 
       </div>
     );
