@@ -20,7 +20,8 @@ function NavBar() {
       <Nav>
 
         <NavLink className="nav-link" to={"/text?resourceid=" + resourceEndpoint}>Text</NavLink>
-        
+        <NavLink className="nav-link" to={"/text2?doc=https://github.com/scta-texts/plaoulcommentary/raw/master/lectio1/lectio1.xml"}>Text2</NavLink>
+
         {// example drop down
           // <NavDropdown title="Dropdown" id="basic-nav-dropdown">
         //   <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>

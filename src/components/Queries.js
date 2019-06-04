@@ -40,7 +40,7 @@ export function basicInfoQuery(itemExpressionUri){
     "<" + itemExpressionUri + "> <http://www.w3.org/ns/ldp#inbox> ?inbox . ",
     "}",
     "ORDER BY ?title"].join('');
-
+    
     return query
   }
   // gets all structure items with basic item information
