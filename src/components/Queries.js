@@ -40,9 +40,35 @@ export function basicInfoQuery(itemExpressionUri){
     "<" + itemExpressionUri + "> <http://www.w3.org/ns/ldp#inbox> ?inbox . ",
     "}",
     "ORDER BY ?title"].join('');
-    
+
     return query
   }
+
+  export function itemTranscriptionInfoQuery(itemTranscriptionUri){
+    const query = [
+      "SELECT DISTINCT ?title ?manifestation ?doc ?xml ?expression ?expressionShortId ?longTitle ?topLevelExpression ?next ?previous ?inbox ",
+      "WHERE { ",
+      "<" + itemTranscriptionUri + "> <http://purl.org/dc/elements/1.1/title> ?title .",
+      "<" + itemTranscriptionUri + "> <http://scta.info/property/isTranscriptionOf> ?manifestation .",
+      "<" + itemTranscriptionUri + "> <http://scta.info/property/hasDocument> ?doc . ",
+      "<" + itemTranscriptionUri + "> <http://scta.info/property/hasXML> ?xml . ",
+      "?manifestation <http://scta.info/property/isManifestationOf> ?expression .",
+      "?expression <http://purl.org/dc/elements/1.1/title> ?expressionTitle .",
+      "?expression <http://scta.info/property/shortId> ?expressionShortId .",
+      "?expression <http://scta.info/property/longTitle> ?longTitle .",
+      "?expression <http://scta.info/property/isPartOfTopLevelExpression> ?topLevelExpression .",
+      "OPTIONAL {",
+      "?expression <http://scta.info/property/next> ?next .",
+      "}",
+      "OPTIONAL {",
+      "?expression <http://scta.info/property/previous> ?previous .",
+      "}",
+      "?expression <http://www.w3.org/ns/ldp#inbox> ?inbox . ",
+      "}",
+      "ORDER BY ?expressionTitle"].join('');
+
+      return query
+    }
   // gets all structure items with basic item information
   export function basicStructureAllItemsInfoQuery(topLevelExpressionUrl){
     const query = [
@@ -107,7 +133,57 @@ export function basicInfoQuery(itemExpressionUri){
         return query
       }
 
-  // get basic info, structure type, level, and top Level
+  export function getItemTranscription(resourceurl){
+    const query = [
+      "SELECT DISTINCT ?ctranscription ",
+      "WHERE { ",
+        "{",
+          "<" + resourceurl + "> <http://scta.info/property/hasCanonicalManifestation> ?cmanifestation . ",
+          "?cmanifestation <http://scta.info/property/hasCanonicalTranscription> ?ctranscription . ",
+        "}",
+        "UNION",
+        "{",
+          "<" + resourceurl + "> <http://scta.info/property/hasCanonicalTranscription> ?ctranscription . ",
+        "}",
+      "}"].join('');
+      return query
+  }
+  export function getItemTranscriptionFromBlockDiv(resourceurl){
+    const query = [
+      "SELECT DISTINCT ?ctranscription ?blockDivExpression ",
+      "WHERE { ",
+        "OPTIONAL",
+        "{",
+        "<" + resourceurl + "> <http://scta.info/property/isPartOfStructureItem> ?itemParent . ",
+        "{",
+          "{",
+            "?itemParent <http://scta.info/property/hasCanonicalManifestation> ?cmanifestation . ",
+            "?cmanifestation <http://scta.info/property/hasCanonicalTranscription> ?ctranscription . ",
+          "}",
+          "UNION",
+          "{",
+            "?itemParent <http://scta.info/property/hasCanonicalTranscription> ?ctranscription . ",
+          "}",
+        "}",
+        "}",
+        "OPTIONAL",
+        "{",
+        "{",
+          "{",
+            "<" + resourceurl + "> <http://scta.info/property/isManifestationOf> ?blockDivExpression . ",
+          "}",
+          "UNION",
+          "{",
+            "<" + resourceurl + "> <http://scta.info/property/isTranscriptionOf> ?blockDivManifestation . ",
+            "?blockDivManifestation <http://scta.info/property/isManifestationOf> ?blockDivExpression . ",
+          "}",
+        "}",
+        "}",
+      "}"].join('');
+      console.log(query)
+      return query
+  }
+  //TODO rename to getType
   export function getStructureType(resourceurl){
     const query = [
       "SELECT DISTINCT ?type ?structureType ?level ?topLevel ?itemParent ",
@@ -121,6 +197,12 @@ export function basicInfoQuery(itemExpressionUri){
       "}",
       "OPTIONAL {",
       "<" + resourceurl + "> <http://scta.info/property/isPartOfTopLevelExpression> ?topLevel . ",
+      "}",
+      "OPTIONAL {",
+      "<" + resourceurl + "> <http://scta.info/property/isPartOfTopLevelManifestation> ?topLevel . ",
+      "}",
+      "OPTIONAL {",
+      "<" + resourceurl + "> <http://scta.info/property/isPartOfTopLevelTransription> ?topLevel . ",
       "}",
       "OPTIONAL {",
       "<" + resourceurl + "> <http://scta.info/property/isPartOfStructureItem> ?itemParent . ",

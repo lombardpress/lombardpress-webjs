@@ -1,6 +1,8 @@
 import React from 'react';
 import Axios from "axios"
 
+import {Link} from 'react-router-dom';
+
 class Info extends React.Component {
   constructor(props){
     super(props)
@@ -19,13 +21,13 @@ class Info extends React.Component {
   render(){
     const displayRelatedExpressions = () => {
       const relatedExpressions = this.props.relatedExpressions.map((r) => {
-        return <p key={r}>{r}</p>
+        return <p key={r}><Link to={"/text?resourceid=" + r}>{r}</Link></p>
       })
       return relatedExpressions
     }
     const displayManifestations = () => {
       const manifestations = this.props.info.manifestations.map((i) => {
-        return <p key={i.manifestation}>{i.manifestationTitle} : {i.manifestation}</p>
+        return <p key={i.manifestation}>{i.manifestationTitle} : <Link to={"/text?resourceid=" + i.manifestation}>{i.manifestation}</Link></p>
       })
       return manifestations
     }

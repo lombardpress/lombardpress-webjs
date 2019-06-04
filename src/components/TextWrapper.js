@@ -8,7 +8,7 @@ import TextNavBar from "./TextNavBar"
 import Text2 from "./Text2"
 import {runQuery, scrollToParagraph} from './utils'
 
-import {getRelatedExpressions, basicInfoQuery} from './Queries'
+import {getRelatedExpressions, basicInfoQuery, itemTranscriptionInfoQuery} from './Queries'
 
 
 class TextWrapper extends React.Component {
@@ -23,6 +23,7 @@ class TextWrapper extends React.Component {
       doc: "",
       focus: "",
       focusRelatedExpressions: "",
+      itemFocus: "",
       surfaceid: "",
       windows: {
         window1: {
@@ -48,22 +49,6 @@ class TextWrapper extends React.Component {
         windows: windows,
       }
     })
-  }
-  setFocus(id){
-    const fullid = id.includes("http") ? id : "http://scta.info/resource/" + id
-    const shortid = id.includes("http") ? id.split("/resource/")[1] : id
-
-    // get info
-    const info = runQuery(basicInfoQuery(fullid))
-    //arrange info and set it to state
-    this.arrangeTextInfo(info, fullid)
-    // get related expressions info
-    const relatedExpressions = runQuery(getRelatedExpressions(fullid))
-    //arrange info and set it to state
-    this.arrangeRelatedInfo(relatedExpressions)
-
-    scrollToParagraph(shortid, true)
-
   }
   handleClose(windowId){
     this.setState((prevState) => {
@@ -119,7 +104,24 @@ class TextWrapper extends React.Component {
 
   }
 
-  arrangeTextInfo(info, resourceid){
+
+  setFocus(id){
+    const fullid = id.includes("http") ? id : "http://scta.info/resource/" + id
+    const shortid = id.includes("http") ? id.split("/resource/")[1] : id
+    // get info
+    const info = runQuery(basicInfoQuery(fullid))
+    //arrange info and set it to state
+    this.arrangeFocusInfo(info, fullid)
+    // get related expressions info
+    const relatedExpressions = runQuery(getRelatedExpressions(fullid))
+    //arrange info and set it to state
+    this.arrangeFocusRelatedInfo(relatedExpressions)
+
+    scrollToParagraph(shortid, true)
+
+  }
+
+  arrangeFocusInfo(info, resourceid){
       info.then((d) => {
         const bindings = d.data.results.bindings[0]
         const manifestations = d.data.results.bindings.map((b) => {
@@ -148,7 +150,7 @@ class TextWrapper extends React.Component {
         });
       });
     }
-    arrangeRelatedInfo(relatedInfo){
+    arrangeFocusRelatedInfo(relatedInfo){
         relatedInfo.then((d) => {
           const bindings = d.data.results.bindings
           const relatedExpressions = bindings.map((r) => {
@@ -159,15 +161,45 @@ class TextWrapper extends React.Component {
           });
         });
       }
-
+    setItemFocus(id){
+      const fullid = id.includes("http") ? id : "http://scta.info/resource/" + id
+      const shortid = id.includes("http") ? id.split("/resource/")[1] : id
+      // get info
+      const info = runQuery(itemTranscriptionInfoQuery(fullid))
+      this.arrangeItemFocusInfo(info)
+    }
+    arrangeItemFocusInfo(itemFocusInfo){
+        itemFocusInfo.then((d) => {
+          const bindings = d.data.results.bindings[0]
+          console.log("title", bindings.title)
+          this.setState({
+            itemFocus: {
+              title: bindings.title.value,
+              manifestation: bindings.manifestation.value,
+              expression: bindings.expression.value,
+              doc: bindings.doc.value,
+              xml: bindings.xml.value,
+              next: bindings.next ? bindings.next.value : "",
+              previous: bindings.previous ? bindings.previous.value : "",
+              inbox: bindings.inbox.value,
+              topLevel: bindings.topLevelExpression.value
+            }
+          });
+        });
+      }
 
   componentWillMount(){
-    const doc = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).doc
-    this.setState({doc: doc})
+    this.setItemFocus(this.props.transcriptionid)
+    if (this.props.blockDivFocus){
+      console.log("block div focus", this.props.blockDivFocus)
+      this.setFocus(this.props.blockDivFocus)
+    }
   }
   componentWillReceiveProps(newProps){
-    const doc = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).doc
-    this.setState({doc: doc})
+    this.setItemFocus(newProps.transcriptionid)
+    if (newProps.blockDivFocus){
+      this.setFocus(newProps.blockDivFocus)
+    }
   }
   render(){
     const displayWindows = () => {
@@ -207,12 +239,22 @@ class TextWrapper extends React.Component {
     return (
       <div>
         <Container className={textClass() ? "lbp-text skinnyText" : "lbp-text fullText"}>
+          {this.state.itemFocus &&
           <Text2
-            doc={this.state.doc}
-            topLevel="http://scta.info/resource/plaoulcommentary"
+            doc={this.state.itemFocus.doc}
+            topLevel={this.state.itemFocus.topLevel}
             setFocus={this.setFocus}
-            openWindow={this.openWindow}/>
+            openWindow={this.openWindow}
+            scrollTo={this.state.focus ? this.state.focus.resourceid.split("/resource/")[1] : null}
+            />
+          }
         </Container>
+        <TextNavBar
+          next={this.state.itemFocus && this.state.itemFocus.next}
+          previous={this.state.itemFocus && this.state.itemFocus.previous}
+          topLevel={this.state.itemFocus && this.state.itemFocus.topLevel}
+          handleClose={this.handleClose}
+        />
         <div>
         {
         // <TextNavBar

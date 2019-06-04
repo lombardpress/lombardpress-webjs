@@ -3,7 +3,7 @@ import {BrowserRouter, HashRouter, Route, Switch, Link, NavLink} from 'react-rou
 import Home from "./Home"
 import SearchWrapper from "./SearchWrapper"
 import Text from "./Text"
-import TextWrapper from "./TextWrapper"
+import TextSwitch from "./TextSwitch"
 import About from "./About"
 import NavBar from './NavBar';
 
@@ -22,7 +22,7 @@ const AppRouter = () => (
       <Switch>
         <Route path="/" exact={true} component={Home}/>
         <Route path="/text"  exact={true} component={Text}/>
-        <Route path="/text2"  exact={true} component={TextWrapper}/>
+        <Route path="/text2"  exact={true} component={TextSwitch}/>
         <Route path="/about" exact={true} component={About}/>
         <Route path="/search" exact={true} render={(props) => <SearchWrapper {...props} hidden={false}/>}/>
         {

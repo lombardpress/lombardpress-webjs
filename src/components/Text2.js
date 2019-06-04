@@ -11,7 +11,7 @@ class Text2 extends React.Component {
 
 
   }
-  retrieveText(doc, topLevel){
+  retrieveText(doc, topLevel, scrollTo){
     const _this = this;
     if (doc){
       //construct file url request ot exist db to get a cors enabled copy of the text (github does not serve files with cors enabled)
@@ -39,6 +39,8 @@ class Text2 extends React.Component {
          _this.props.setFocus(id)
          _this.props.openWindow("window1")
     });
+
+    scrollToParagraph(scrollTo, true)
 
   //   $('.lbp-paragraphmenu').click(function(e) {
   //     e.preventDefault();
@@ -88,10 +90,10 @@ class Text2 extends React.Component {
   }
 
   componentDidMount(){
-    this.retrieveText(this.props.doc, this.props.topLevel)
+    this.retrieveText(this.props.doc, this.props.topLevel, this.props.scrollTo)
   }
   componentWillReceiveProps(newProps){
-    this.retrieveText(newProps.doc, newProps.topLevel)
+    this.retrieveText(newProps.doc, newProps.topLevel, this.props.scrollTo)
   }
   render(){
 
