@@ -1,6 +1,7 @@
 import React from 'react';
 import Qs from "query-string"
 import TextWrapper from "./TextWrapper"
+import Collection from "./Collection"
 
 import {runQuery} from './utils'
 import {getItemTranscription, getItemTranscriptionFromBlockDiv, getStructureType} from './Queries'
@@ -10,7 +11,7 @@ class TextSwitch extends React.Component {
     super(props)
     this.state = {
       displayType: "",
-      resourceInfo: "",
+      resourceid: "",
       itemTranscriptionId: "",
       blockDivFocus: ""
     }
@@ -27,20 +28,20 @@ class TextSwitch extends React.Component {
       const itemTranscriptionId = t.data.results.bindings[0].ctranscription ? t.data.results.bindings[0].ctranscription.value : null
       console.log(t)
       if (type === "http://scta.info/resource/workGroup"){
-          this.setState({displayType: "workGroup", resourceInfo: t})
+          this.setState({displayType: "collection", resourceid: resourceid, structureType: structureType, topLevel: topLevel, type: type})
       }
       else if (structureType === "http://scta.info/resource/structureCollection"){
-          this.setState({displayType: "collection", resourceInfo: t})
+          this.setState({displayType: "collection", resourceid: resourceid, structureType: structureType, topLevel: topLevel, type: type})
       }
       else if (structureType === "http://scta.info/resource/structureItem" ){
         if (type === "http://scta.info/resource/transcription"){
-          this.setState({itemTranscriptionId: resourceid})
+          this.setState({itemTranscriptionId: resourceid, displayType: "item"})
         }
         else {
           const structureTypePromise = runQuery(getItemTranscription(resourceid))
           structureTypePromise.then((t) => {
             console.log("t", t)
-            this.setState({itemTranscriptionId: t.data.results.bindings[0].ctranscription.value})
+            this.setState({itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, displayType: "item"})
           });
         }
       }
@@ -48,13 +49,13 @@ class TextSwitch extends React.Component {
         const structureTypePromise = runQuery(getItemTranscriptionFromBlockDiv(resourceid))
         structureTypePromise.then((t) => {
           if (type === "http://scta.info/resource/transcription"){
-            this.setState({itemTranscriptionId: itemParent, blockDivFocus: t.data.results.bindings[0].blockDivExpression.value})
+            this.setState({itemTranscriptionId: itemParent, blockDivFocus: t.data.results.bindings[0].blockDivExpression.value, displayType: "item"})
           }
           else if (type === "http://scta.info/resource/expression"){
-            this.setState({itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, blockDivFocus: resourceid})
+            this.setState({itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, blockDivFocus: resourceid, displayType: "item"})
           }
           else {
-            this.setState({itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, blockDivFocus: t.data.results.bindings[0].blockDivExpression.value})
+            this.setState({itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, blockDivFocus: t.data.results.bindings[0].blockDivExpression.value, displayType: "item"})
           }
         });
       }
@@ -68,18 +69,31 @@ class TextSwitch extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     const newResourceId = Qs.parse(nextProps.location.search, { ignoreQueryPrefix: true }).resourceid
+    console.log("next props", newResourceId)
     this.getInfo(newResourceId)
   }
 
 
 
   render(){
+    const display = () => {
+      if (this.state.displayType === "collection"){
+        console.log("state resource id", this.state.resourceid)
+        return (<Collection resourceid={this.state.resourceid} structureType={this.state.structureType} topLevel={this.state.topLevel} type={this.state.type}/>)
+
+      }
+      else if (this.state.displayType === "item"){
+        return (<TextWrapper transcriptionid={this.state.itemTranscriptionId} blockDivFocus={this.state.blockDivFocus}/>)
+      }
+      else{
+        return null
+      }
+    }
   return (
-    <div>
-      {this.state.itemTranscriptionId && <TextWrapper transcriptionid={this.state.itemTranscriptionId} blockDivFocus={this.state.blockDivFocus}/>}
-    </div>
-  );
+    display()
+    );
   }
+
 }
 
 export default TextSwitch;

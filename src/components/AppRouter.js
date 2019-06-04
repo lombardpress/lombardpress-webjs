@@ -21,8 +21,7 @@ const AppRouter = () => (
       <NavBar/>
       <Switch>
         <Route path="/" exact={true} component={Home}/>
-        <Route path="/text"  exact={true} component={Text}/>
-        <Route path="/text2"  exact={true} component={TextSwitch}/>
+        <Route path="/text"  exact={true} component={TextSwitch}/>
         <Route path="/about" exact={true} component={About}/>
         <Route path="/search" exact={true} render={(props) => <SearchWrapper {...props} hidden={false}/>}/>
         {

@@ -5,7 +5,7 @@ import Container from 'react-bootstrap/Container';
 
 import Window from "./Window"
 import TextNavBar from "./TextNavBar"
-import Text2 from "./Text2"
+import Text from "./Text"
 import {runQuery, scrollToParagraph} from './utils'
 
 import {getRelatedExpressions, basicInfoQuery, itemTranscriptionInfoQuery} from './Queries'
@@ -14,11 +14,13 @@ import {getRelatedExpressions, basicInfoQuery, itemTranscriptionInfoQuery} from 
 class TextWrapper extends React.Component {
   constructor(props){
     super(props)
+    this.mount = false
     this.openWindow = this.openWindow.bind(this)
     this.setFocus = this.setFocus.bind(this)
     this.handleTabChange = this.handleTabChange.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.handleSwitchWindow = this.handleSwitchWindow.bind(this)
+    this.handleSurfaceFocusChange = this.handleSurfaceFocusChange.bind(this)
     this.state = {
       doc: "",
       focus: "",
@@ -42,6 +44,7 @@ class TextWrapper extends React.Component {
     }
   }
   openWindow(id){
+    console.log("test", id)
     this.setState((prevState) => {
       const windows = prevState.windows
       windows[id].open = true
@@ -104,6 +107,10 @@ class TextWrapper extends React.Component {
 
   }
 
+  handleSurfaceFocusChange(surfaceid){
+    this.setState({surfaceFocus: surfaceid})
+  }
+
 
   setFocus(id){
     const fullid = id.includes("http") ? id : "http://scta.info/resource/" + id
@@ -131,23 +138,24 @@ class TextWrapper extends React.Component {
             transcription: b.manifestationCTranscription.value
           }
         })
-
-        this.setState({
-          focus: {
-            resourceid: resourceid,
-            title: bindings.title.value,
-            structureType: bindings.structureType.value,
-            inbox: bindings.inbox.value,
-            next: bindings.next ? bindings.next.value : "",
-            previous: bindings.previous ? bindings.previous.value : "",
-            cdoc: bindings.cdoc.value,
-            cxml: bindings.cxml.value,
-            topLevel: bindings.topLevelExpression.value,
-            cmanifestation: bindings.cmanifestation.value,
-            ctranscription: bindings.ctranscription.value,
-            manifestations: manifestations
-          }
-        });
+        if (this.mount){
+          this.setState({
+            focus: {
+              resourceid: resourceid,
+              title: bindings.title.value,
+              structureType: bindings.structureType.value,
+              inbox: bindings.inbox.value,
+              next: bindings.next ? bindings.next.value : "",
+              previous: bindings.previous ? bindings.previous.value : "",
+              cdoc: bindings.cdoc.value,
+              cxml: bindings.cxml.value,
+              topLevel: bindings.topLevelExpression.value,
+              cmanifestation: bindings.cmanifestation.value,
+              ctranscription: bindings.ctranscription.value,
+              manifestations: manifestations
+            }
+          });
+        }
       });
     }
     arrangeFocusRelatedInfo(relatedInfo){
@@ -156,9 +164,11 @@ class TextWrapper extends React.Component {
           const relatedExpressions = bindings.map((r) => {
               return r.isRelatedTo.value
             });
+        if (this.mount){
           this.setState({
             focusRelatedExpressions: relatedExpressions
           });
+          }
         });
       }
     setItemFocus(id){
@@ -172,23 +182,26 @@ class TextWrapper extends React.Component {
         itemFocusInfo.then((d) => {
           const bindings = d.data.results.bindings[0]
           console.log("title", bindings.title)
-          this.setState({
-            itemFocus: {
-              title: bindings.title.value,
-              manifestation: bindings.manifestation.value,
-              expression: bindings.expression.value,
-              doc: bindings.doc.value,
-              xml: bindings.xml.value,
-              next: bindings.next ? bindings.next.value : "",
-              previous: bindings.previous ? bindings.previous.value : "",
-              inbox: bindings.inbox.value,
-              topLevel: bindings.topLevelExpression.value
-            }
-          });
+          if (this.mount){
+            this.setState({
+              itemFocus: {
+                title: bindings.title.value,
+                manifestation: bindings.manifestation.value,
+                expression: bindings.expression.value,
+                doc: bindings.doc.value,
+                xml: bindings.xml.value,
+                next: bindings.next ? bindings.next.value : "",
+                previous: bindings.previous ? bindings.previous.value : "",
+                inbox: bindings.inbox.value,
+                topLevel: bindings.topLevelExpression.value
+              }
+            });
+          }
         });
       }
 
-  componentWillMount(){
+  componentDidMount(){
+    this.mount = true
     this.setItemFocus(this.props.transcriptionid)
     if (this.props.blockDivFocus){
       console.log("block div focus", this.props.blockDivFocus)
@@ -200,6 +213,9 @@ class TextWrapper extends React.Component {
     if (newProps.blockDivFocus){
       this.setFocus(newProps.blockDivFocus)
     }
+  }
+  componentWillUnmount(){
+    this.mount = false
   }
   render(){
     const displayWindows = () => {
@@ -240,10 +256,11 @@ class TextWrapper extends React.Component {
       <div>
         <Container className={textClass() ? "lbp-text skinnyText" : "lbp-text fullText"}>
           {this.state.itemFocus &&
-          <Text2
+          <Text
             doc={this.state.itemFocus.doc}
             topLevel={this.state.itemFocus.topLevel}
             setFocus={this.setFocus}
+            handleSurfaceFocusChange={this.handleSurfaceFocusChange}
             openWindow={this.openWindow}
             scrollTo={this.state.focus ? this.state.focus.resourceid.split("/resource/")[1] : null}
             />
