@@ -21,7 +21,8 @@ class TextCompare extends React.Component {
     this.mounted = ""
     this.state = {
       info: "",
-      show: false
+      show: false,
+      baseText: ""
     }
 
   }
@@ -46,23 +47,24 @@ class TextCompare extends React.Component {
             transcription: b.manifestationCTranscription.value
           }
         })
-
-        this.setState({
-          info: {
-            resourceid: resourceid,
-            title: bindings.title.value,
-            structureType: bindings.structureType.value,
-            inbox: bindings.inbox.value,
-            next: bindings.next ? bindings.next.value : "",
-            previous: bindings.previous ? bindings.previous.value : "",
-            cdoc: bindings.cdoc.value,
-            cxml: bindings.cxml.value,
-            topLevel: bindings.topLevelExpression.value,
-            cmanifestation: bindings.cmanifestation.value,
-            ctranscription: bindings.ctranscription.value,
-            manifestations: manifestations
-          }
-        });
+        if (this.mounted === true){
+          this.setState({
+            info: {
+              resourceid: resourceid,
+              title: bindings.title.value,
+              structureType: bindings.structureType.value,
+              inbox: bindings.inbox.value,
+              next: bindings.next ? bindings.next.value : "",
+              previous: bindings.previous ? bindings.previous.value : "",
+              cdoc: bindings.cdoc.value,
+              cxml: bindings.cxml.value,
+              topLevel: bindings.topLevelExpression.value,
+              cmanifestation: bindings.cmanifestation.value,
+              ctranscription: bindings.ctranscription.value,
+              manifestations: manifestations
+            }
+          });
+        }
       });
     }
   getTextInfo(id){
@@ -72,7 +74,7 @@ class TextCompare extends React.Component {
 
   componentDidMount(){
     this.mounted = true;
-    this.setState({show: this.props.show})
+    this.setState({show: this.props.show, baseText: this.props.baseText})
 
     if (this.props.isMainText){
 
@@ -85,6 +87,8 @@ class TextCompare extends React.Component {
 
 
   componentWillReceiveProps(nextProps){
+    this.setState({baseText: nextProps.baseText})
+
     if (nextProps.isMainText){
       this.setState({info: nextProps.info})
     }
@@ -94,11 +98,12 @@ class TextCompare extends React.Component {
     }
   }
     componentWillUnmount(){
+      this.mounted = false;
   }
 
   render(){
     const displayComparisons = () => {
-      if (this.state.info.manifestations && this.props.baseText){
+      if (this.state.info.manifestations){
         const texts = this.state.info.manifestations.map((m) => {
           return (
             <TextCompareItem

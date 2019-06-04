@@ -16,7 +16,6 @@ class Search extends React.Component {
     const _this = this
     Axios.get("http://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-expressionid.xq?query=" + query + "&expressionid=" + expressionid).
           then((d) => {
-            console.log("search restuls", d)
             _this.setState({searchResults: d.data.results, count: d.data.count})
           })
   }

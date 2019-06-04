@@ -305,7 +305,6 @@ class Text extends React.Component {
     arrangeRelatedInfo(relatedInfo){
         relatedInfo.then((d) => {
           const bindings = d.data.results.bindings
-          console.log("related", bindings)
           const relatedExpressions = bindings.map((r) => {
               return r.isRelatedTo.value
             });

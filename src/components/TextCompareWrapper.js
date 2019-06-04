@@ -31,9 +31,10 @@ class TextCompareWrapper extends React.Component {
     })
   }
   getText(ctranscription){
+    const _this = this;
     Axios.get("http://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + ctranscription).
       then((text) => {
-        this.setState({baseText: text.data})
+        _this.setState({baseText: text.data})
       })
     }
 
@@ -47,7 +48,12 @@ class TextCompareWrapper extends React.Component {
     this.setState({expressions: expressions})
   }
   componentWillReceiveProps(nextProps){
-    this.getText(nextProps.info.ctranscription)
+    // this conditional is needed, because props are waiting on multiple async calls.
+    // when an async call finishes it will up; and the related Expression query last,
+    // it will use the old ctranscription prop overriding the the update from the prop update from the other async call
+    if (this.props.info.ctranscription != nextProps.info.ctranscription){
+      this.getText(nextProps.info.ctranscription)
+    }
     const expressions = {}
     expressions[nextProps.info.resourceid] = {id: nextProps.info.resourceid, show: true}
     nextProps.relatedExpressions.forEach((r) => {
@@ -73,7 +79,6 @@ class TextCompareWrapper extends React.Component {
           </div>
         )
       })
-      console.log("expressions", expressions)
       return expressions
     }
 
