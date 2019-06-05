@@ -47,7 +47,7 @@ class TextCompare extends React.Component {
             transcription: b.manifestationCTranscription.value
           }
         })
-        if (this.mounted === true){
+        if (this.mounted === true && bindings){
           this.setState({
             info: {
               resourceid: resourceid,
