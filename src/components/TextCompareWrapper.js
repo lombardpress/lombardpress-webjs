@@ -39,27 +39,32 @@ class TextCompareWrapper extends React.Component {
     }
 
   componentDidMount(){
-    this.getText(this.props.info.ctranscription)
-    const expressions = {}
-    expressions[this.props.info.resourceid] = {id: this.props.info.resourceid, show: true}
-    this.props.relatedExpressions.forEach((r) => {
-      expressions[r] = {id: r, show: false}
-    })
-    this.setState({expressions: expressions})
+    if (this.props.relatedExpressions){
+      this.getText(this.props.info.ctranscription)
+      const expressions = {}
+      expressions[this.props.info.resourceid] = {id: this.props.info.resourceid, show: true}
+
+      this.props.relatedExpressions.forEach((r) => {
+        expressions[r] = {id: r, show: false}
+      })
+      this.setState({expressions: expressions})
+    }
   }
   componentWillReceiveProps(nextProps){
     // this conditional is needed, because props are waiting on multiple async calls.
     // when an async call finishes it will up; and the related Expression query last,
     // it will use the old ctranscription prop overriding the the update from the prop update from the other async call
-    if (this.props.info.ctranscription != nextProps.info.ctranscription){
-      this.getText(nextProps.info.ctranscription)
+    if (this.props.relatedExpressions){
+      if (this.props.info.ctranscription != nextProps.info.ctranscription){
+        this.getText(nextProps.info.ctranscription)
+      }
+      const expressions = {}
+      expressions[nextProps.info.resourceid] = {id: nextProps.info.resourceid, show: true}
+      nextProps.relatedExpressions.forEach((r) => {
+        expressions[r] = {id: r, show: false}
+      })
+      this.setState({expressions: expressions})
     }
-    const expressions = {}
-    expressions[nextProps.info.resourceid] = {id: nextProps.info.resourceid, show: true}
-    nextProps.relatedExpressions.forEach((r) => {
-      expressions[r] = {id: r, show: false}
-    })
-    this.setState({expressions: expressions})
   }
   render(){
     const displayExpressions = () => {

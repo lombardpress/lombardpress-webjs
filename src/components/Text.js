@@ -37,7 +37,7 @@ class Text extends React.Component {
          e.preventDefault();
          const id = $(this).attr('data-id')
          _this.props.setFocus(id)
-         _this.props.openWindow("window1")
+         _this.props.openWindow("window1", "info")
     });
 
     scrollToParagraph(scrollTo, true)
@@ -84,8 +84,8 @@ class Text extends React.Component {
       //     surfaceFocus: "http://scta.info/resource/" + id
       //   }
 
-        //_this.props.handleSurfaceFocusChange("http://scta.info/resource/" + id)
-        //_this.props.openWindow("window2")
+        _this.props.handleSurfaceFocusChange("http://scta.info/resource/" + id)
+        _this.props.openWindow("window2", "surface2")
     });
   }
 

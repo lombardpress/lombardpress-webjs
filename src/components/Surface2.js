@@ -31,8 +31,10 @@ class Surface2 extends React.Component {
 
   }
   retrieveSurfaceInfo(surfaceid){
+    console.log('surfaceid', surfaceid)
     // manifest id should be retrieved from query
     // this is a temporary measure until db is corrected and query is posible
+    
     const manifest = "http://scta.info/iiif/" + this.props.topLevel.split("/resource/")[1] + "/" + surfaceid.split("/resource/")[1].split("/")[0] + "/" + "manifest";
     const surfaceInfo = runQuery(getSurfaceInfo(surfaceid))
     surfaceInfo.then((d) => {
@@ -52,6 +54,7 @@ class Surface2 extends React.Component {
   }
   componentDidMount(){
     if (this.props.surfaceid){
+      console.log('surfaceid', this.props.surfaceid)
       this.retrieveSurfaceInfo(this.props.surfaceid)
     }
   }

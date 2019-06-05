@@ -43,11 +43,12 @@ class TextWrapper extends React.Component {
       }
     }
   }
-  openWindow(id){
+  openWindow(id, windowLoad){
     console.log("test", id)
     this.setState((prevState) => {
       const windows = prevState.windows
       windows[id].open = true
+      windows[id].windowLoad = windowLoad
       return {
         windows: windows,
       }
@@ -108,7 +109,7 @@ class TextWrapper extends React.Component {
   }
 
   handleSurfaceFocusChange(surfaceid){
-    this.setState({surfaceFocus: surfaceid})
+    this.setState({surfaceid: surfaceid})
   }
 
 
@@ -220,7 +221,7 @@ class TextWrapper extends React.Component {
   render(){
     const displayWindows = () => {
       const windows = Object.keys(this.state.windows).map((key) => {
-        if (this.state.windows[key].open && this.state.focus && this.state.focusRelatedExpressions){
+        if (this.state.windows[key].open && ((this.state.focus && this.state.focusRelatedExpressions) || this.state.surfaceid)){
           return (<Window windowLoad={this.state.windows[key].windowLoad}
               key={key}
               handleClose={this.handleClose}
@@ -232,9 +233,10 @@ class TextWrapper extends React.Component {
               windowType={this.state.windows[key].position}
               windowId={this.state.windows[key].windowId}
               windowLoad={this.state.windows[key].windowLoad}
-              surfaceid={this.state.surfaceFocus}
+              surfaceid={this.state.surfaceid}
               info={this.state.focus}
               relatedExpressions={this.state.focusRelatedExpressions}
+              topLevel={this.state.itemFocus.topLevel}
               />
             )
           }
