@@ -161,9 +161,13 @@ class TextWrapper extends React.Component {
     }
     arrangeFocusRelatedInfo(relatedInfo){
         relatedInfo.then((d) => {
+          console.log("new data", d)
           const bindings = d.data.results.bindings
           const relatedExpressions = bindings.map((r) => {
-              return r.isRelatedTo.value
+              return {
+                resourceid: r.isRelatedTo.value,
+                relationLabel: r.label.value
+              }
             });
         if (this.mount){
           this.setState({

@@ -45,7 +45,7 @@ class TextCompareWrapper extends React.Component {
       expressions[this.props.info.resourceid] = {id: this.props.info.resourceid, show: true}
 
       this.props.relatedExpressions.forEach((r) => {
-        expressions[r] = {id: r, show: false}
+        expressions[r.resourceid] = {id: r.resourceid, relationLabel: r.relationLabel, show: false}
       })
       this.setState({expressions: expressions})
     }
@@ -65,7 +65,7 @@ class TextCompareWrapper extends React.Component {
       const expressions = {}
       expressions[nextProps.info.resourceid] = {id: nextProps.info.resourceid, show: true}
       nextProps.relatedExpressions.forEach((r) => {
-        expressions[r] = {id: r, show: false}
+        expressions[r.resourceid] = {id: r.resourceid, relationLabel: r.relationLabel, show: false}
       })
       this.setState({expressions: expressions})
     }
@@ -81,6 +81,7 @@ class TextCompareWrapper extends React.Component {
             {<TextCompare
               info={this.props.info}
               expressionid={exObject[key].id}
+              relationLabel={exObject[key].relationLabel}
               isMainText={isMainText}
               handleChangeBase={this.handleChangeBase}
               baseText={this.state.baseText}

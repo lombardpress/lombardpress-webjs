@@ -1,59 +1,82 @@
 //note; each query here represents an attempt an efficient single request for related information
 //each query therefore could be tranformed into a restful api
 
-//get Related Expressions
-export function getRelatedExpressions(itemExpressionUri){
-  const query = [
-    "SELECT DISTINCT ?isRelatedTo ",
-    "WHERE { ",
-    "{",
-    "<" + itemExpressionUri + "> <http://scta.info/property/isRelatedTo> ?isRelatedTo .",
-    "}",
-    "UNION",
-    "{",
-    "<" + itemExpressionUri + "> <http://scta.info/property/quotes> ?quote .",
-    "?quote a <http://scta.info/resource/quotation> .",
-    "?quote <http://scta.info/property/source> ?isRelatedTo .",
-    "}",
-    "UNION",
-    "{",
-    "<" + itemExpressionUri + "> <http://scta.info/property/quotes> ?quote .",
-    "?quote a <http://scta.info/resource/expression> .",
-    "<" + itemExpressionUri + "> <http://scta.info/property/quotes> ?isRelatedTo .",
-    "}",
-    "UNION",
-    "{",
-    "<" + itemExpressionUri + "> <http://scta.info/property/quotedBy> ?isRelatedTo .",
-    "}",
-    "UNION",
-    "{",
-    "<" + itemExpressionUri + "> <http://scta.info/property/abbreviates> ?isRelatedTo .",
-    "}",
-    "UNION",
-    "{",
-    "<" + itemExpressionUri + "> <http://scta.info/property/abbreviatedBy> ?isRelatedTo .",
-    "}",
-    "UNION",
-    "{",
-    "<" + itemExpressionUri + "> <http://scta.info/property/references> ?isRelatedTo .",
-    "}",
-    "UNION",
-    "{",
-    "<" + itemExpressionUri + "> <http://scta.info/property/referencedBy> ?isRelatedTo .",
-    "}",
-    "UNION",
-    "{",
-    "<" + itemExpressionUri + "> <http://scta.info/property/copies> ?isRelatedTo .",
-    "}",
-    "UNION",
-    "{",
-    "<" + itemExpressionUri + "> <http://scta.info/property/isCopiedBy> ?isRelatedTo .",
-    "}",
-    "}"
-  ].join('');
 
-    return query
-}
+ export function getRelatedExpressions(itemExpressionUri){
+   const query = [
+     "SELECT DISTINCT ?isRelatedTo ?label ",
+     "WHERE { ",
+     "{",
+     "<" + itemExpressionUri + "> ?o ?isRelatedTo .",
+     "?o a <http://scta.info/resource/textRelation> .",
+     "?o <http://www.w3.org/1999/02/22-rdf-syntax-ns#label> ?label . ",
+     "?isRelatedTo a <http://scta.info/resource/expression> .",
+     "}",
+     "UNION",
+     "{",
+     "<" + itemExpressionUri + "> ?o ?p .",
+     "?o a <http://scta.info/resource/textRelation> .",
+     "?o <http://www.w3.org/1999/02/22-rdf-syntax-ns#label> ?label . ",
+     "?p a <http://scta.info/resource/quotation> .",
+     "?p <http://scta.info/property/source> ?isRelatedTo .",
+     "}",
+     "}"
+   ].join('');
+     return query
+ }
+//get Related Expressions
+// export function getRelatedExpressions(itemExpressionUri){
+//   const query = [
+//     "SELECT DISTINCT ?isRelatedTo ",
+//     "WHERE { ",
+//     "{",
+//     "<" + itemExpressionUri + "> <http://scta.info/property/isRelatedTo> ?isRelatedTo .",
+//     "}",
+//     "UNION",
+//     "{",
+//     "<" + itemExpressionUri + "> <http://scta.info/property/quotes> ?quote .",
+//     "?quote a <http://scta.info/resource/quotation> .",
+//     "?quote <http://scta.info/property/source> ?isRelatedTo .",
+//     "}",
+//     "UNION",
+//     "{",
+//     "<" + itemExpressionUri + "> <http://scta.info/property/quotes> ?quote .",
+//     "?quote a <http://scta.info/resource/expression> .",
+//     "<" + itemExpressionUri + "> <http://scta.info/property/quotes> ?isRelatedTo .",
+//     "}",
+//     "UNION",
+//     "{",
+//     "<" + itemExpressionUri + "> <http://scta.info/property/quotedBy> ?isRelatedTo .",
+//     "}",
+//     "UNION",
+//     "{",
+//     "<" + itemExpressionUri + "> <http://scta.info/property/abbreviates> ?isRelatedTo .",
+//     "}",
+//     "UNION",
+//     "{",
+//     "<" + itemExpressionUri + "> <http://scta.info/property/abbreviatedBy> ?isRelatedTo .",
+//     "}",
+//     "UNION",
+//     "{",
+//     "<" + itemExpressionUri + "> <http://scta.info/property/references> ?isRelatedTo .",
+//     "}",
+//     "UNION",
+//     "{",
+//     "<" + itemExpressionUri + "> <http://scta.info/property/referencedBy> ?isRelatedTo .",
+//     "}",
+//     "UNION",
+//     "{",
+//     "<" + itemExpressionUri + "> <http://scta.info/property/copies> ?isRelatedTo .",
+//     "}",
+//     "UNION",
+//     "{",
+//     "<" + itemExpressionUri + "> <http://scta.info/property/isCopiedBy> ?isRelatedTo .",
+//     "}",
+//     "}"
+//   ].join('');
+//
+//     return query
+// }
 
 // query info block, division, or item (possible also collection)
 export function basicInfoQuery(itemExpressionUri){
