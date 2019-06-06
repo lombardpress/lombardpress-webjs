@@ -51,10 +51,14 @@ class TextCompareWrapper extends React.Component {
     }
   }
   componentWillReceiveProps(nextProps){
+    // only fire reload if "info resource" has changed"
+    if (this.props.info.resourceid != nextProps.info.resourceid){
+
     // this conditional is needed, because props are waiting on multiple async calls.
     // when an async call finishes it will up; and the related Expression query last,
     // it will use the old ctranscription prop overriding the the update from the prop update from the other async call
     if (this.props.relatedExpressions){
+      // this conditional may no longer be necessary based on first conditional check
       if (this.props.info.ctranscription != nextProps.info.ctranscription){
         this.getText(nextProps.info.ctranscription)
       }
@@ -66,13 +70,14 @@ class TextCompareWrapper extends React.Component {
       this.setState({expressions: expressions})
     }
   }
+  }
   render(){
     const displayExpressions = () => {
       const exObject = this.state.expressions
       const expressions = Object.keys(exObject).map((key) => {
         const isMainText = this.props.info.resourceid === exObject[key].id ? true : false
         return (
-          <div>
+          <div key={this.state.expressions[key].id}>
             {<TextCompare
               info={this.props.info}
               expressionid={exObject[key].id}

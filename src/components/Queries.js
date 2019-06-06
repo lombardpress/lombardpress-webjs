@@ -222,7 +222,6 @@ export function basicInfoQuery(itemExpressionUri){
         "}",
         "}",
       "}"].join('');
-      console.log(query)
       return query
   }
   //TODO rename to getType

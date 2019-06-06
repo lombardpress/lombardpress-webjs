@@ -40,6 +40,7 @@ class Text extends React.Component {
          _this.props.openWindow("window1", "info")
     });
 
+    // scroll to paragraph after document has been appended
     scrollToParagraph(scrollTo, true)
 
   //   $('.lbp-paragraphmenu').click(function(e) {
@@ -90,14 +91,17 @@ class Text extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState){
-    // this is necessary because item transcription is getting recieved from "items query"
-    // and if it is no yet there, it can't find the document/file url
-    // so we not only have to check if the itemid changes, but also when the "items array update"
-    // console.log("prevProps", prevProps)
-    // console.log("this.props", this.props)
-    if (prevProps.doc != this.doc){
+
+    //check to see if doc has changed
+    if (prevProps.doc != this.props.doc){
       this.retrieveText(this.props.doc, this.props.topLevel, this.props.scrollTo)
     }
+    // if doc has already been appended, still scroll to target block
+    else{
+      scrollToParagraph(this.props.scrollTo, true)
+    }
+
+
     //this.retrieveText(this.props.doc, this.props.topLevel, this.props.scrollTo)
   }
 
@@ -105,8 +109,7 @@ class Text extends React.Component {
     this.retrieveText(this.props.doc, this.props.topLevel, this.props.scrollTo)
   }
   componentWillReceiveProps(newProps){
-    // console.log("newProps", newProps)
-    // this.retrieveText(newProps.doc, newProps.topLevel, this.props.scrollTo)
+
   }
   render(){
 

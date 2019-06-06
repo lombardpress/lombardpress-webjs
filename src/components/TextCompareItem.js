@@ -46,9 +46,11 @@ class TextCompareItem extends React.Component {
     this.createCompare(this.props.base, this.props.compareTranscription)
   }
   componentWillReceiveProps(newProps){
-    //this.refs.text.innerHTML = ""
-    this.setState({rawText: "", compareText: ""})
-    this.createCompare(newProps.base, newProps.compareTranscription)
+    // conditional try to restrict new async calls to only when props.info changes
+    if (newProps.base != this.props.base || newProps.compareTranscription != this.props.compareTranscription){
+      this.setState({rawText: "", compareText: ""})
+      this.createCompare(newProps.base, newProps.compareTranscription)
+    }
   }
   componentWillUnmount(){
       this.mounted = false;

@@ -87,14 +87,17 @@ class TextCompare extends React.Component {
 
 
   componentWillReceiveProps(nextProps){
-    this.setState({baseText: nextProps.baseText})
+    // conditional try to restrict new async calls to only when props.info changes
+    if (this.props.info.resourceid != nextProps.info.resourceid){
+      this.setState({baseText: nextProps.baseText})
 
-    if (nextProps.isMainText){
-      this.setState({info: nextProps.info})
-    }
-    else{
-      this.getTextInfo(nextProps.expressionid)
+      if (nextProps.isMainText){
+        this.setState({info: nextProps.info})
+      }
+      else{
+        this.getTextInfo(nextProps.expressionid)
 
+      }
     }
   }
     componentWillUnmount(){
