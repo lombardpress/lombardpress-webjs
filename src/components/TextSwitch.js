@@ -2,6 +2,7 @@ import React from 'react';
 import Qs from "query-string"
 import TextWrapper from "./TextWrapper"
 import Collection from "./Collection"
+import AuthorCollection from "./AuthorCollection"
 
 import {runQuery} from './utils'
 import {getItemTranscription, getItemTranscriptionFromBlockDiv, getStructureType} from './Queries'
@@ -25,7 +26,10 @@ class TextSwitch extends React.Component {
       const topLevel = t.data.results.bindings[0].topLevel ? t.data.results.bindings[0].topLevel.value : resourceid
       const itemParent = t.data.results.bindings[0].itemParent ? t.data.results.bindings[0].itemParent.value : null
       const itemTranscriptionId = t.data.results.bindings[0].ctranscription ? t.data.results.bindings[0].ctranscription.value : null
-      if (type === "http://scta.info/resource/workGroup"){
+      if (type === "http://scta.info/resource/person"){
+          this.setState({displayType: "person", resourceid: resourceid, structureType: "", topLevel: "", type: type})
+      }
+      else if (type === "http://scta.info/resource/workGroup"){
           this.setState({displayType: "collection", resourceid: resourceid, structureType: structureType, topLevel: topLevel, type: type})
       }
       else if (structureType === "http://scta.info/resource/structureCollection"){
@@ -73,7 +77,11 @@ class TextSwitch extends React.Component {
 
   render(){
     const display = () => {
-      if (this.state.displayType === "collection"){
+      if (this.state.displayType === "person"){
+        return (<AuthorCollection resourceid={this.state.resourceid}/>)
+
+      }
+      else if (this.state.displayType === "collection"){
         return (<Collection resourceid={this.state.resourceid} structureType={this.state.structureType} topLevel={this.state.topLevel} type={this.state.type}/>)
 
       }

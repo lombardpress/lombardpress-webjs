@@ -312,3 +312,33 @@ export function basicInfoQuery(itemExpressionUri){
         "}"].join('');
       return query
     }
+
+//surface id query, gets canvas and manifestation
+export function getAuthorInformation(authorid){
+    const query = [
+      "CONSTRUCT",
+      "{",
+      "?author  <http://purl.org/dc/elements/1.1/title> ?authorTitle ;",
+      "<http://scta.info/resource/hasTopLevelExpression> ?expression ;",
+      "<http://scta.info/property/authorArticle> ?authorArticle;",
+      "<http://scta.info/property/textArticle> ?textArticle .",
+    	"?authorArticle <http://purl.org/dc/elements/1.1/title> ?authorArticleTitle . ",
+      "?textArticle <http://purl.org/dc/elements/1.1/title> ?textArticleTitle . ",
+    	"?expression <http://purl.org/dc/elements/1.1/title> ?topLevelExpressionTitle .",
+      "}",
+      "WHERE ",
+      "{",
+      "<" + authorid + "> <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
+      "BIND(<" + authorid + "> as ?author) . ",
+      "?expression <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
+      "?expression a <http://scta.info/resource/expression> .",
+      "?expression <http://scta.info/property/level> '1' .",
+      "?expression <http://purl.org/dc/elements/1.1/title> ?topLevelExpressionTitle .",
+      "?expression2 <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
+      "?textArticle <http://scta.info/property/isArticleOf> ?expression2 .",
+      "?textArticle <http://purl.org/dc/elements/1.1/title> ?textArticleTitle .",
+      "?authorArticle <http://scta.info/property/isArticleOf> ?author .",
+      "?authorArticle <http://purl.org/dc/elements/1.1/title> ?authorArticleTitle",
+      "}"].join('');
+      return query
+      }
