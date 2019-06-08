@@ -42,7 +42,6 @@ body {
 
 .sideWindow{
   position: fixed;
-  width: 40%;
   left: 0;
   top: 0;
   background-color: $dark;
@@ -53,18 +52,23 @@ body {
   transition: width 200ms;
   box-shadow: 0px 0px 5px black;
   padding-bottom: 40%;
-
-
-
 }
-// .SideWindowClosed{
-//   width: 0;
-//   transition: 'width 0.5s'
-// }
+.sideWindowmiddle{
+  width: 40%;
+  transition: width 200ms;
+}
+.sideWindowminimum{
+  width: 10%;
+  transition: width 200ms;
+}
+.sideWindowmaximum{
+  width: 100%;
+  transition: width 200ms;
+}
 .bottomWindow{
+  //margin-top: 56px;
+  //margin-bottom: 56px;
   position: fixed;
-  height: 40%;
-  top: 60%;
   background-color: $dark;
   z-index: 2;
   width: 100%;
@@ -72,6 +76,21 @@ body {
   transition: width 200ms;
   box-shadow: 0px 0px 5px black;
 
+}
+.bottomWindowmiddle{
+  height: 40%;
+  bottom: 56px;
+  transition: height 200ms;
+}
+.bottomWindowminimum{
+  height: 56px;
+  bottom: 56px;
+  transition: height 200ms;
+}
+.bottomWindowmaximum{
+  height: calc(100% - 112px);
+  bottom: 56px;
+  transition: height 200ms;
 }
 // .BottomWindowClosed{
 //   width: 0;

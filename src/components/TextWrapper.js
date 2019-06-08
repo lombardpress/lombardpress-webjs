@@ -19,6 +19,9 @@ class TextWrapper extends React.Component {
     this.setFocus = this.setFocus.bind(this)
     this.handleTabChange = this.handleTabChange.bind(this)
     this.handleClose = this.handleClose.bind(this)
+    this.handleMinimize = this.handleMinimize.bind(this)
+    this.handleMaximize = this.handleMaximize.bind(this)
+    this.handleMiddlize = this.handleMiddlize.bind(this)
     this.handleSwitchWindow = this.handleSwitchWindow.bind(this)
     this.handleSurfaceFocusChange = this.handleSurfaceFocusChange.bind(this)
     this.state = {
@@ -32,13 +35,15 @@ class TextWrapper extends React.Component {
           windowId: "window1",
           open: false,
           windowLoad: "info",
-          position: "sideWindow"
+          position: "sideWindow",
+          openWidthHeight: "middle"
         },
         window2: {
           windowId: "window2",
           open: false,
           windowLoad: "info",
-          position: "bottomWindow"
+          position: "bottomWindow",
+          openWidthHeight: "middle"
         }
       }
     }
@@ -65,6 +70,30 @@ class TextWrapper extends React.Component {
     //but it is not quite working
     scrollToParagraph(this.state.blockFocus, true)
 
+  }
+  handleMinimize(windowId){
+    this.setState((prevState) => {
+      const windows = prevState.windows
+      windows[windowId].openWidthHeight = "minimum"
+      return {windows: windows}
+
+    })
+  }
+  handleMaximize(windowId){
+    this.setState((prevState) => {
+      const windows = prevState.windows
+      windows[windowId].openWidthHeight = "maximum"
+      return {windows: windows}
+
+    })
+  }
+  handleMiddlize(windowId){
+    this.setState((prevState) => {
+      const windows = prevState.windows
+      windows[windowId].openWidthHeight = "middle"
+      return {windows: windows}
+
+    })
   }
   handleSwitchWindow(windowId, windowType){
     this.setState((prevState) => {
@@ -229,6 +258,9 @@ class TextWrapper extends React.Component {
           return (<Window windowLoad={this.state.windows[key].windowLoad}
               key={key}
               handleClose={this.handleClose}
+              handleMinimize={this.handleMinimize}
+              handleMaximize={this.handleMaximize}
+              handleMiddlize={this.handleMiddlize}
               handleTabChange={this.handleTabChange}
               handleBlockFocusChange={this.setFocus}
               handleSurfaceFocusChange={this.handleSurfaceFocusChange}
@@ -237,6 +269,7 @@ class TextWrapper extends React.Component {
               windowType={this.state.windows[key].position}
               windowId={this.state.windows[key].windowId}
               windowLoad={this.state.windows[key].windowLoad}
+              openWidthHeight={this.state.windows[key].openWidthHeight}
               surfaceid={this.state.surfaceid}
               info={this.state.focus}
               relatedExpressions={this.state.focusRelatedExpressions}
@@ -249,7 +282,7 @@ class TextWrapper extends React.Component {
       }
     const textClass = () => {
       let aSideWindowOpen = false;
-      if (this.state.windows.window1.open && this.state.windows.window1.position === "sideWindow"){
+      if (this.state.windows.window1.open && this.state.windows.window1.position === "sideWindow" && this.state.windows.window1.openWidthHeight === "middle"){
         aSideWindowOpen = true
       }
       else if (this.state.windows.window2.open && this.state.windows.window2.position === "sideWindow"){
