@@ -20,8 +20,8 @@ class Info extends React.Component {
 
   render(){
     const displayRelatedExpressions = () => {
-      if (this.props.info){
-        const relatedExpressions = this.props.relatedExpressions.map((r) => {
+      if (this.props.info.relatedExpressions){
+        const relatedExpressions = this.props.info.relatedExpressions.map((r) => {
           return <p key={r.resourceid}>{r.relationLabel} <Link to={"/text?resourceid=" + r.resourceid}>{r.resourceid}</Link></p>
         })
         return relatedExpressions

@@ -27,7 +27,7 @@ class TextWrapper extends React.Component {
     this.state = {
       doc: "",
       focus: "",
-      focusRelatedExpressions: "",
+      //focusRelatedExpressions: "",
       itemFocus: "",
       surfaceid: "",
       windows: {
@@ -150,9 +150,11 @@ class TextWrapper extends React.Component {
     //arrange info and set it to state
     this.arrangeFocusInfo(info, fullid)
     // get related expressions info
-    const relatedExpressions = runQuery(getRelatedExpressions(fullid))
+// removed these second calls and embed the query in arrange focus info to keep information in sync.
+// TODO remove below three lines
+    //const relatedExpressions = runQuery(getRelatedExpressions(fullid))
     //arrange info and set it to state
-    this.arrangeFocusRelatedInfo(relatedExpressions)
+    //this.arrangeFocusRelatedInfo(relatedExpressions)
 
     scrollToParagraph(shortid, true)
 
@@ -168,43 +170,61 @@ class TextWrapper extends React.Component {
             transcription: b.manifestationCTranscription.value
           }
         })
-        if (this.mount){
-          this.setState({
-            focus: {
-              resourceid: resourceid,
-              title: bindings.title.value,
-              structureType: bindings.structureType.value,
-              inbox: bindings.inbox.value,
-              next: bindings.next ? bindings.next.value : "",
-              previous: bindings.previous ? bindings.previous.value : "",
-              cdoc: bindings.cdoc.value,
-              cxml: bindings.cxml.value,
-              topLevel: bindings.topLevelExpression.value,
-              cmanifestation: bindings.cmanifestation.value,
-              ctranscription: bindings.ctranscription.value,
-              manifestations: manifestations
-            }
-          });
-        }
-      });
-    }
-    arrangeFocusRelatedInfo(relatedInfo){
-        relatedInfo.then((d) => {
+        // TODO the need for this 2nd query and async call might
+        // be able to be removed using a construct query
+        // see example pattern in articles collection
+        const relatedExpressions = runQuery(getRelatedExpressions(resourceid))
+        relatedExpressions.then((d) => {
           console.log("new data", d)
-          const bindings = d.data.results.bindings
-          const relatedExpressions = bindings.map((r) => {
+          const bindings2 = d.data.results.bindings
+          const relatedExpressions = bindings2.map((r) => {
               return {
                 resourceid: r.isRelatedTo.value,
                 relationLabel: r.label.value
               }
             });
-        if (this.mount){
-          this.setState({
-            focusRelatedExpressions: relatedExpressions
-          });
+
+          if (this.mount){
+            this.setState({
+              focus: {
+                resourceid: resourceid,
+                title: bindings.title.value,
+                structureType: bindings.structureType.value,
+                inbox: bindings.inbox.value,
+                next: bindings.next ? bindings.next.value : "",
+                previous: bindings.previous ? bindings.previous.value : "",
+                cdoc: bindings.cdoc.value,
+                cxml: bindings.cxml.value,
+                topLevel: bindings.topLevelExpression.value,
+                cmanifestation: bindings.cmanifestation.value,
+                ctranscription: bindings.ctranscription.value,
+                manifestations: manifestations,
+                relatedExpressions: relatedExpressions
+              }
+            });
           }
-        });
-      }
+        })
+      });
+    }
+  // embeded this within arrang focus info, so that information remains in sync
+  // TODO remove this
+    // arrangeFocusRelatedInfo(relatedInfo){
+    //     relatedInfo.then((d) => {
+    //       console.log("new data", d)
+    //       const bindings = d.data.results.bindings
+    //       const relatedExpressions = bindings.map((r) => {
+    //           return {
+    //             resourceid: r.isRelatedTo.value,
+    //             relationLabel: r.label.value
+    //           }
+    //         });
+    //     if (this.mount){
+    //       this.setState({
+    //         focusRelatedExpressions: relatedExpressions
+    //       });
+    //       }
+    //     });
+    //   }
     setItemFocus(id){
       const fullid = id.includes("http") ? id : "http://scta.info/resource/" + id
       const shortid = id.includes("http") ? id.split("/resource/")[1] : id
@@ -254,7 +274,7 @@ class TextWrapper extends React.Component {
   render(){
     const displayWindows = () => {
       const windows = Object.keys(this.state.windows).map((key) => {
-        if (this.state.windows[key].open && ((this.state.focus && this.state.focusRelatedExpressions) || this.state.surfaceid)){
+        if (this.state.windows[key].open && (this.state.focus || this.state.surfaceid)){
           return (<Window windowLoad={this.state.windows[key].windowLoad}
               key={key}
               handleClose={this.handleClose}
@@ -272,7 +292,6 @@ class TextWrapper extends React.Component {
               openWidthHeight={this.state.windows[key].openWidthHeight}
               surfaceid={this.state.surfaceid}
               info={this.state.focus}
-              relatedExpressions={this.state.focusRelatedExpressions}
               topLevel={this.state.itemFocus.topLevel}
               />
             )

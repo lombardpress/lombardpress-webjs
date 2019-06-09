@@ -25,6 +25,7 @@ class SearchWrapper extends React.Component {
   render(){
     return (
       <div className={this.props.hidden ? "hidden" : "showing"}>
+        <h1>Search</h1>
         <SearchQuery handleRunSearch={this.handleRunSearch} eid={this.props.info && this.props.info.topLevel.split("/resource/")[1]}/>
         {this.state.query && <Search query={this.state.query} eid={this.state.eid}/>}
       </div>

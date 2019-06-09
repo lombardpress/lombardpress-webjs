@@ -39,12 +39,12 @@ class TextCompareWrapper extends React.Component {
     }
 
   componentDidMount(){
-    if (this.props.relatedExpressions){
+    if (this.props.info.relatedExpressions){
       this.getText(this.props.info.ctranscription)
       const expressions = {}
       expressions[this.props.info.resourceid] = {id: this.props.info.resourceid, show: true}
 
-      this.props.relatedExpressions.forEach((r) => {
+      this.props.info.relatedExpressions.forEach((r) => {
         expressions[r.resourceid] = {id: r.resourceid, relationLabel: r.relationLabel, show: false}
       })
       this.setState({expressions: expressions})
@@ -57,14 +57,14 @@ class TextCompareWrapper extends React.Component {
     // this conditional is needed, because props are waiting on multiple async calls.
     // when an async call finishes it will up; and the related Expression query last,
     // it will use the old ctranscription prop overriding the the update from the prop update from the other async call
-    if (this.props.relatedExpressions){
+    if (this.props.info.relatedExpressions){
       // this conditional may no longer be necessary based on first conditional check
       if (this.props.info.ctranscription != nextProps.info.ctranscription){
         this.getText(nextProps.info.ctranscription)
       }
       const expressions = {}
       expressions[nextProps.info.resourceid] = {id: nextProps.info.resourceid, show: true}
-      nextProps.relatedExpressions.forEach((r) => {
+      nextProps.info.relatedExpressions.forEach((r) => {
         expressions[r.resourceid] = {id: r.resourceid, relationLabel: r.relationLabel, show: false}
       })
       this.setState({expressions: expressions})
