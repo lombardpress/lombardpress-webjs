@@ -20,7 +20,13 @@ class Text extends React.Component {
       const docFragment = doc.split("/master/")[1]
       const topLevelFragment = topLevel.split("/resource/")[1]
 
-      const xmlurl = "http://exist.scta.info/exist/apps/scta-app/text/" + topLevelFragment + "/" + docFragment;
+      let xmlurl = ""
+      if (doc.includes("ipfs")){
+        xmlurl = doc
+      }
+      else{
+        xmlurl = "http://exist.scta.info/exist/apps/scta-app/text/" + topLevelFragment + "/" + docFragment;
+      }
       const xslurl = "http://localhost:3000/xslt/main_view.xsl"
       const resultDocument = convertXMLDoc(xmlurl, xslurl)
       // append resultDoc to div in DOM

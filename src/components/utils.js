@@ -21,7 +21,7 @@ export function convertXMLDoc(xmlurl, xslurl){
 }
 
 export function nsResolver(prefix) {
-    if(prefix == "tei") {
+    if(prefix === "tei") {
       return 'http://www.tei-c.org/ns/1.0'
     }
 }

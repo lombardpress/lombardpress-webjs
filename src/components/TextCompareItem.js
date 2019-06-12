@@ -25,8 +25,8 @@ class TextCompareItem extends React.Component {
   }
   createCompare(base, transcription){
 
-    Axios.get("http://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + transcription).
-          then((text) => {
+    Axios.get("http://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + transcription)
+          .then((text) => {
 
             const dmp = new Diff.diff_match_patch();
 
@@ -48,7 +48,7 @@ class TextCompareItem extends React.Component {
   }
   componentWillReceiveProps(newProps){
     // conditional try to restrict new async calls to only when props.info changes
-    if (newProps.base != this.props.base || newProps.compareTranscription != this.props.compareTranscription){
+    if (newProps.base !== this.props.base || newProps.compareTranscription !== this.props.compareTranscription){
       this.setState({rawText: "", compareText: ""})
       this.createCompare(newProps.base, newProps.compareTranscription)
     }

@@ -2,7 +2,7 @@ import React from 'react';
 import Qs from "query-string"
 
 import Container from 'react-bootstrap/Container';
-import Alert from 'react-bootstrap/Alert';
+
 
 import Window from "./Window"
 import TextNavBar from "./TextNavBar"
@@ -51,7 +51,6 @@ class TextWrapper extends React.Component {
     }
   }
   openWindow(id, windowLoad){
-    console.log("test", id)
     this.setState((prevState) => {
       const windows = prevState.windows
       windows[id].open = true
@@ -177,7 +176,6 @@ class TextWrapper extends React.Component {
         // see example pattern in articles collection
         const relatedExpressions = runQuery(getRelatedExpressions(resourceid))
         relatedExpressions.then((d) => {
-          console.log("new data", d)
           const bindings2 = d.data.results.bindings
           const relatedExpressions = bindings2.map((r) => {
               return {
@@ -237,7 +235,6 @@ class TextWrapper extends React.Component {
     arrangeItemFocusInfo(itemFocusInfo){
         itemFocusInfo.then((d) => {
           const bindings = d.data.results.bindings[0]
-          console.log("bindings", d)
           if (this.mount){
             this.setState({
               itemFocus: {
@@ -250,10 +247,7 @@ class TextWrapper extends React.Component {
                 previous: bindings.previous ? bindings.previous.value : "",
                 inbox: bindings.inbox.value,
                 topLevel: bindings.topLevelExpression.value,
-                transcriptionid: bindings.t.value,
-                tVersionOrderNumber: bindings.tVersionOrderNumber ? bindings.tVersionOrderNumber.value : "",
-                tVersionLabel: bindings.tVersionLabel ? bindings.tVersionLabel.value : "",
-                tHasReview: bindings.tHasReview ? bindings.tHasReview.value : "",
+                transcriptionid: bindings.t.value
               }
             });
           }
@@ -264,7 +258,6 @@ class TextWrapper extends React.Component {
     this.mount = true
     this.setItemFocus(this.props.transcriptionid)
     if (this.props.blockDivFocus){
-      console.log("block div focus", this.props.blockDivFocus)
       this.setFocus(this.props.blockDivFocus)
     }
   }
@@ -318,9 +311,9 @@ class TextWrapper extends React.Component {
 
     return (
       <div>
-        <Alert variant="info">
+        {this.state.itemFocus &&
           <VersionChain itemInfo={this.state.itemFocus}/>
-        </Alert>
+        }
         <Container className={textClass() ? "lbp-text skinnyText" : "lbp-text fullText"}>
           {this.state.itemFocus &&
           <Text
