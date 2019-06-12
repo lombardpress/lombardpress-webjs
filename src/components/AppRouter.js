@@ -16,7 +16,7 @@ import '../styles/App.scss';
 //import '../styles/index.scss';
 
 const AppRouter = () => (
-  <BrowserRouter forceRefresh={false}>
+  <HashRouter forceRefresh={false}>
     <div>
       <NavBar/>
       <Switch>
@@ -32,7 +32,7 @@ const AppRouter = () => (
       </Switch>
       <Footer/>
     </div>
-  </BrowserRouter>
+  </HashRouter>
 )
 
 export default AppRouter
