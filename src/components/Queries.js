@@ -111,12 +111,22 @@ export function basicInfoQuery(itemExpressionUri){
 
   export function itemTranscriptionInfoQuery(itemTranscriptionUri){
     const query = [
-      "SELECT DISTINCT ?title ?manifestation ?doc ?xml ?expression ?expressionShortId ?longTitle ?topLevelExpression ?next ?previous ?inbox ",
+      "SELECT DISTINCT ?title ?manifestation ?doc ?xml ?expression ?expressionShortId ?longTitle ?topLevelExpression ?next ?previous ?inbox ?tVersionOrderNumber ?tVersionLabel ?tHasReview ?t ",
       "WHERE { ",
-      "<" + itemTranscriptionUri + "> <http://purl.org/dc/elements/1.1/title> ?title .",
-      "<" + itemTranscriptionUri + "> <http://scta.info/property/isTranscriptionOf> ?manifestation .",
-      "<" + itemTranscriptionUri + "> <http://scta.info/property/hasDocument> ?doc . ",
-      "<" + itemTranscriptionUri + "> <http://scta.info/property/hasXML> ?xml . ",
+      "BIND(<" + itemTranscriptionUri + "> as ?t) . ",
+      "?t <http://purl.org/dc/elements/1.1/title> ?title .",
+      "?t <http://scta.info/property/isTranscriptionOf> ?manifestation .",
+      "?t <http://scta.info/property/hasDocument> ?doc . ",
+      "?t <http://scta.info/property/hasXML> ?xml . ",
+      "OPTIONAL",
+      "{",
+      "?t <http://scta.info/property/versionOrderNumber> ?tVersionOrderNumber .",
+      "?t <http://scta.info/property/versionLabel> ?tVersionLabel .",
+      "}",
+      "OPTIONAL",
+      "{",
+      "?t <http://scta.info/property/hasReview> ?tHasReview .",
+      "}",
       "?manifestation <http://scta.info/property/isManifestationOf> ?expression .",
       "?expression <http://purl.org/dc/elements/1.1/title> ?expressionTitle .",
       "?expression <http://scta.info/property/shortId> ?expressionShortId .",
@@ -342,3 +352,31 @@ export function getAuthorInformation(authorid){
       "}"].join('');
       return query
       }
+
+  export function versionHistoryInfo(transcriptionUri){
+     	 	const query = [
+     	 		"SELECT ?version ?version_shortId ?order_number ?version_label ?review",
+     	    "{",
+            "{",
+     	         "<" + transcriptionUri + "> <http://scta.info/property/hasAncestor> ?version .",
+     					 "?version <http://scta.info/property/shortId> ?version_shortId .",
+     	         "?version <http://scta.info/property/versionOrderNumber> ?order_number .",
+     					 "?version <http://scta.info/property/versionLabel> ?version_label .",
+     					 "OPTIONAL {",
+     					 	"?version <http://scta.info/property/hasReview> ?review .",
+     				   "}",
+     				 "}",
+     	       "UNION",
+     	       "{",
+     	         "<" + transcriptionUri + "> <http://scta.info/property/hasDescendant> ?version .",
+     					 "?version <http://scta.info/property/shortId> ?version_shortId .",
+     	         "?version <http://scta.info/property/versionOrderNumber> ?order_number .",
+     					 "?version <http://scta.info/property/versionLabel> ?version_label .",
+     					 "OPTIONAL {",
+     					 	"?version <http://scta.info/property/hasReview> ?review .",
+     				   "}",
+     				 "}",
+     	     "}",
+     	     "ORDER BY DESC(?order_number)"].join('');
+           return query
+           }

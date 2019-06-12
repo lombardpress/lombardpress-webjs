@@ -30,30 +30,22 @@ class Collection extends React.Component {
     //this.retrieveText = this.retrieveText.bind(this)
     this.retrieveCollectionInfo = this.retrieveCollectionInfo.bind(this)
     this.makeRequests = this.makeRequests.bind(this)
-    this.handleItemFilter = this.handleItemFilter.bind(this)
-    this.handlePartsFilter = this.handlePartsFilter.bind(this)
-    this.itemFilter = React.createRef();
-    this.partsFilter = React.createRef();
+    this.handleFilter = this.handleFilter.bind(this)
+    this.filter = React.createRef();
     this.mount = false
     this.state = {
       items: {},
       parts: {},
-      itemFilter: "",
-      partsFilter: "",
+      filter: "",
       surfaceFocus: ""
     }
 
   }
-  handleItemFilter(e){
+  handleFilter(e){
     const item = e.target.value
-    this.setState({itemFilter: item})
+    this.setState({filter: item})
 
   }
-  handlePartsFilter(e){
-    const part = e.target.value
-    this.setState({partsFilter: part})
-  }
-
   handleSurfaceFocusChange(surfaceid){
     this.setState({surfaceFocus: surfaceid})
   }
@@ -162,10 +154,8 @@ class Collection extends React.Component {
 
   componentWillReceiveProps(nextProps) {
 
-    this.refs.itemFilter ? this.refs.itemFilter.value = "" :
-    this.refs.partsFilter ? this.refs.partsFilter.value = "" :
-
-    this.setState({resourceid: nextProps.resourceid, itemFilter: "", partsFilter: "", blockFocus: ""})
+    this.refs.filter ? this.refs.filter.value = "" :
+    this.setState({resourceid: nextProps.resourceid, filter: "", blockFocus: ""})
     this.makeRequests(nextProps.resourceid, nextProps.structureType, nextProps.topLevel, nextProps.type)
   }
   componentWillUnmount(){
@@ -177,8 +167,8 @@ class Collection extends React.Component {
     const displayQuestions = () => {
       const questions = []
       Object.keys(this.state.items).forEach((key) => {
-        const filterCheck = this.state.items[key].title + " " + this.state.items[key].authorTitle
-        if (filterCheck.toLowerCase().includes(this.state.itemFilter.toLowerCase())){
+        const filterCheck = this.state.items[key].title + " " + this.state.items[key].authorTitle + " " + this.state.items[key].questionTitle
+        if (filterCheck.toLowerCase().includes(this.state.filter.toLowerCase())){
         questions.push(
           <Item item={this.state.items[key]}/>
         )}
@@ -187,7 +177,6 @@ class Collection extends React.Component {
         <Container>
 
         <h1>Items</h1>
-        <FormControl ref={this.itemFilter} id="item-filter" placeholder="type to filter" onChange={this.handleItemFilter}/>
         <br/>
         <Table striped bordered hover size="sm">
         <tbody>
@@ -201,7 +190,7 @@ class Collection extends React.Component {
         const questions = []
         Object.keys(this.state.parts).forEach((key) => {
           //check against filter
-            if (this.state.parts[key].title.toLowerCase().includes(this.state.partsFilter.toLowerCase())){
+            if (this.state.parts[key].title.toLowerCase().includes(this.state.filter.toLowerCase())){
             questions.push(
               <Item item={this.state.parts[key]}/>
               )
@@ -215,7 +204,6 @@ class Collection extends React.Component {
             return (
               <Container>
               <h1>Parts</h1>
-              <FormControl ref={this.partsFilter} id="parts-filter" placeholder="type to filter" onChange={this.handlePartsFilter}/>
               <br/>
               <Table striped bordered hover size="sm">
               <tbody>
@@ -229,7 +217,11 @@ class Collection extends React.Component {
       }
 
     return (
-      <div>{displayParts()}{displayQuestions()}</div>
+      <Container>
+      <FormControl ref={this.filter} id="filter" placeholder="type to filter" onChange={this.handleFilter}/>
+      {displayParts()}
+      {displayQuestions()}
+      </Container>
     );
   }
 }

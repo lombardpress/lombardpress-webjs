@@ -2,10 +2,12 @@ import React from 'react';
 import Qs from "query-string"
 
 import Container from 'react-bootstrap/Container';
+import Alert from 'react-bootstrap/Alert';
 
 import Window from "./Window"
 import TextNavBar from "./TextNavBar"
 import Text from "./Text"
+import VersionChain from "./VersionChain"
 import {runQuery, scrollToParagraph} from './utils'
 
 import {getRelatedExpressions, basicInfoQuery, itemTranscriptionInfoQuery} from './Queries'
@@ -235,7 +237,7 @@ class TextWrapper extends React.Component {
     arrangeItemFocusInfo(itemFocusInfo){
         itemFocusInfo.then((d) => {
           const bindings = d.data.results.bindings[0]
-          console.log("title", bindings.title)
+          console.log("bindings", d)
           if (this.mount){
             this.setState({
               itemFocus: {
@@ -247,7 +249,11 @@ class TextWrapper extends React.Component {
                 next: bindings.next ? bindings.next.value : "",
                 previous: bindings.previous ? bindings.previous.value : "",
                 inbox: bindings.inbox.value,
-                topLevel: bindings.topLevelExpression.value
+                topLevel: bindings.topLevelExpression.value,
+                transcriptionid: bindings.t.value,
+                tVersionOrderNumber: bindings.tVersionOrderNumber ? bindings.tVersionOrderNumber.value : "",
+                tVersionLabel: bindings.tVersionLabel ? bindings.tVersionLabel.value : "",
+                tHasReview: bindings.tHasReview ? bindings.tHasReview.value : "",
               }
             });
           }
@@ -312,6 +318,9 @@ class TextWrapper extends React.Component {
 
     return (
       <div>
+        <Alert variant="info">
+          <VersionChain itemInfo={this.state.itemFocus}/>
+        </Alert>
         <Container className={textClass() ? "lbp-text skinnyText" : "lbp-text fullText"}>
           {this.state.itemFocus &&
           <Text
