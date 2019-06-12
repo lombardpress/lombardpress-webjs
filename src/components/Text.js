@@ -27,7 +27,7 @@ class Text extends React.Component {
       else{
         xmlurl = "http://exist.scta.info/exist/apps/scta-app/text/" + topLevelFragment + "/" + docFragment;
       }
-      const xslurl = "http://localhost:3000/xslt/main_view.xsl"
+      const xslurl = "/xslt/main_view.xsl"
       const resultDocument = convertXMLDoc(xmlurl, xslurl)
       // append resultDoc to div in DOM
       document.getElementById("text").innerHTML = "";
