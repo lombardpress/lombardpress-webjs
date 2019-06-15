@@ -119,3 +119,12 @@ table.table.table-striped tr > td:first-child {
 .currentlyViewing{
   font-weight: bold;
 }
+
+.highlight {
+    background-color: yellow;
+    transition: all 1s ease-in;
+}
+.highlightNone {
+    background-color: white;
+    transition: all 1s ease-in;
+}

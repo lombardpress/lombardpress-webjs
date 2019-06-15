@@ -41,8 +41,11 @@ export function scrollToParagraph(hash, highlight){
 
     // TODO: highlighting is NOT working
     if (highlight){
-      element.css({backgroundColor: "yellow"});
-      element.animate({backgroundColor: "none"}, 5000);
+      element.addClass( "highlight");
+      setTimeout(function(){
+        element.addClass("highlightNone");
+    }, 2000);
+
     }
   	if (element.length > 0) {
   	    $('html, body')
