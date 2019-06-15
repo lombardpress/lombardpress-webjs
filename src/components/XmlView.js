@@ -1,7 +1,7 @@
 import React from 'react';
 import Axios from 'axios'
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
-import xml from 'react-syntax-highlighter/dist/esm/languages/hljs/xml';
+//import xml from 'react-syntax-highlighter/dist/esm/languages/hljs/xml';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 import {loadXMLDoc, nsResolver} from './utils'
