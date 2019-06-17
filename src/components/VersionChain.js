@@ -62,9 +62,10 @@ class VersionChain extends React.Component {
       })
     }
   componentDidMount(){
-    //this.setState({versions: []}, () => {
+    //prevents call when itemInfo prop is not present
+    if (this.props.itemInfo){
       this.getVersionHistory(this.props.itemInfo)
-    //})
+    }
   }
   componentWillReceiveProps(newProps){
       if (newProps.itemInfo.transcriptionid !== this.props.itemInfo.transcriptionid){
@@ -114,7 +115,6 @@ class VersionChain extends React.Component {
     }
     return (
       displayAlert()
-
     );
   }
 }

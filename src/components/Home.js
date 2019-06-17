@@ -8,7 +8,7 @@ import Qs from "query-string"
 
 
 function Home(props) {
-  const resourceid = Qs.parse(props.location.search, { ignoreQueryPrefix: true }).resourceid;
+  const resourceid = props.location ? Qs.parse(props.location.search, { ignoreQueryPrefix: true }).resourceid : null;
   const displayBody = () => {
     if (resourceid){
       return <Text resourceid={props.location.search.resourceid}/>

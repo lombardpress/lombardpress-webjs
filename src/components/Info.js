@@ -20,11 +20,15 @@ class Info extends React.Component {
 
   render(){
     const displayRelatedExpressions = () => {
-      if (this.props.info.relatedExpressions){
-        const relatedExpressions = this.props.info.relatedExpressions.map((r) => {
-          return <p key={r.resourceid}>{r.relationLabel} <Link to={"/text?resourceid=" + r.resourceid}>{r.resourceid}</Link></p>
-        })
-        return relatedExpressions
+      //prevents against rendering if info is not present
+      if (this.props.info){
+        //prevents against rendering if relatedExpressions is not present
+        if (this.props.info.relatedExpressions){
+          const relatedExpressions = this.props.info.relatedExpressions.map((r) => {
+            return <p key={r.resourceid}>{r.relationLabel} <Link to={"/text?resourceid=" + r.resourceid}>{r.resourceid}</Link></p>
+          })
+          return relatedExpressions
+        }
       }
     }
     const displayManifestations = () => {

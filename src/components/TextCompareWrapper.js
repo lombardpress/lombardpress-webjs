@@ -39,15 +39,19 @@ class TextCompareWrapper extends React.Component {
     }
 
   componentDidMount(){
-    if (this.props.info.relatedExpressions){
-      this.getText(this.props.info.ctranscription)
-      const expressions = {}
-      expressions[this.props.info.resourceid] = {id: this.props.info.resourceid, show: true}
+    // prevents check when prop.info is not set
+    if (this.props.info){
+      // prevents check when prop.info.relatedExpressions is not set
+      if (this.props.info.relatedExpressions){
+        this.getText(this.props.info.ctranscription)
+        const expressions = {}
+        expressions[this.props.info.resourceid] = {id: this.props.info.resourceid, show: true}
 
-      this.props.info.relatedExpressions.forEach((r) => {
-        expressions[r.resourceid] = {id: r.resourceid, relationLabel: r.relationLabel, show: false}
-      })
-      this.setState({expressions: expressions})
+        this.props.info.relatedExpressions.forEach((r) => {
+          expressions[r.resourceid] = {id: r.resourceid, relationLabel: r.relationLabel, show: false}
+        })
+        this.setState({expressions: expressions})
+      }
     }
   }
   componentWillReceiveProps(nextProps){

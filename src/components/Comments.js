@@ -30,9 +30,6 @@ handleSumbitComment(comment){
     },
     "target": this.state.resourceid
   }
-
-  console.log("annotat", annotat)
-  console.log("inbox", this.state.inbox)
   Axios({
     method: 'post',
     url: this.state.inbox,
@@ -75,10 +72,14 @@ handleSumbitComment(comment){
     })
   }
   componentDidMount(){
-    this.setState({inbox: this.props.info.inbox, resourceid: this.props.info.resourceid})
-    this.retrieveComments(this.props.info.inbox)
+    // conditional prevents against needless attempt to retreive comments with info is not present
+    if (this.props.info){
+      this.setState({inbox: this.props.info.inbox, resourceid: this.props.info.resourceid})
+      this.retrieveComments(this.props.info.inbox)
+    }
   }
   componentWillReceiveProps(newProps){
+    // conditional prevents against needlessly rerequesting information when "info" is the same
     if (newProps.info != this.props.info){
       this.setState({inbox: newProps.info.inbox, resourceid: newProps.info.resourceid})
       this.retrieveComments(newProps.info.inbox)
