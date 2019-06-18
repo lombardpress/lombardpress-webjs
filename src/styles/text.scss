@@ -76,3 +76,12 @@ h1, h2, h3, h4, h5, h6 {font-size: 20px; text-align: center;
 	width: 50%;
 
 }
+
+.highlight {
+    background-color: yellow;
+    transition: all 1s ease-in;
+}
+.highlightNone {
+    background-color: white;
+    transition: all 1s ease-in;
+}

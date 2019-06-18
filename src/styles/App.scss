@@ -1,7 +1,10 @@
 @import "variables";
 @import "base";
-@import "footer";
-@import "text";
+@import "Footer";
+@import "Home";
+@import "Surface2";
+@import "Text";
+@import "Window";
 
 body {
   margin: 0;
@@ -21,110 +24,16 @@ body {
 }
 
 
-.Home {
-  text-align: center;
-
-  height: 100%;
-}
-
-#lbp-home{
-  padding-top: 50px;
-  background: #fff url("/coverimage.jpg") repeat center top;
-  height: 90vh;
-
-}
-
-#lbp-jumbo{
-
-  opacity: .8;
-  background-color: $light
-}
-
-.sideWindow{
-  position: fixed;
-  left: 0;
-  top: 0;
-  background-color: $dark;
-  z-index: 1;
-  margin-top: 56px;
-  height: 100vh;
-  overflow: scroll;
-  transition: width 200ms;
-  box-shadow: 0px 0px 5px black;
-  padding-bottom: 40%;
-}
-.sideWindowmiddle{
-  width: 40%;
-  transition: width 200ms;
-}
-.sideWindowminimum{
-  width: 56px;
-  transition: width 200ms;
-}
-.sideWindowmaximum{
-  width: 100%;
-  transition: width 200ms;
-}
-.bottomWindow{
-  //margin-top: 56px;
-  //margin-bottom: 56px;
-  position: fixed;
-  background-color: $dark;
-  z-index: 2;
-  width: 100%;
-  overflow: scroll;
-  transition: width 200ms;
-  box-shadow: 0px 0px 5px black;
-
-}
-.bottomWindowmiddle{
-  height: 40%;
-  bottom: 56px;
-  transition: height 200ms;
-}
-.bottomWindowminimum{
-  height: 56px;
-  bottom: 56px;
-  transition: height 200ms;
-}
-.bottomWindowmaximum{
-  height: calc(100% - 112px);
-  bottom: 56px;
-  transition: height 200ms;
-}
-// .BottomWindowClosed{
-//   width: 0;
-//   transition: 'width 0.5s'
-// }
-
-//sets min width on first column of table
+// global setting for tables sets min width on first column of table
 table.table.table-striped tr > td:first-child {
     width:20%;
 }
 
-//surface navigation controls
-.surface-navigation{
-  display: flex;
-  justify-content: flex-start;
-  width: 1000px;
-  text-align: center
-}
-.surface-navigation p{
-  padding: 0 10px
-}
+// global setting for hidden classs
 .hidden{
   display: none;
 }
 
 .currentlyViewing{
   font-weight: bold;
-}
-
-.highlight {
-    background-color: yellow;
-    transition: all 1s ease-in;
-}
-.highlightNone {
-    background-color: white;
-    transition: all 1s ease-in;
 }
