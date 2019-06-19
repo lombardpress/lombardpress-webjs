@@ -94,6 +94,31 @@ class Text extends React.Component {
         _this.props.handleSurfaceFocusChange("http://scta.info/resource/" + id)
         _this.props.openWindow("window2", "surface2")
     });
+    $('.appnote, .footnote').click(function(e) {
+      e.preventDefault();
+    });
+    $('.appnote, .footnote').parent().mouseover(function(e) {
+         e.preventDefault();
+         const link = $(this).children('.appnote, .footnote')
+         const target = $(link).attr('href')
+         const text = $(target).html()
+         const top = $(target).position().top;
+         const left = $(target).position().left;
+         const noteDisplay = $(link).next(".note-display")
+         $(noteDisplay).removeClass("hidden")
+         $(noteDisplay).html(text)
+    });
+     $('.appnote, .footnote').parent().mouseout(function(e) {
+          e.preventDefault();
+          $(".note-display").addClass("hidden")
+      });
+
+      //TODO: this bind is working in the bottom list, but not inthe popup footnotes
+      $(document).on("click", '.js-show-reference-paragraph', function(e){
+        const target = $(this).attr('data-url')
+        window.location = "#/text?resourceid=" + target
+      })
+
   }
 
   componentDidUpdate(prevProps, prevState){
@@ -112,6 +137,7 @@ class Text extends React.Component {
   }
 
   componentDidMount(){
+
     this.retrieveText(this.props.doc, this.props.topLevel, this.props.scrollTo)
   }
   componentWillReceiveProps(newProps){

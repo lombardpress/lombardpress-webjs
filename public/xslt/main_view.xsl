@@ -343,7 +343,9 @@
         <a href="#lbp-footnote{$id}" id="lbp-footnotereference{$id}" name="lbp-footnotereference{$id}" class="footnote">
         [<xsl:value-of select="$id"/>]
         </a>
+        <span class="note-display hidden"/>
       </sup>
+
     <xsl:text> </xsl:text>
   </xsl:template>
 
@@ -352,7 +354,13 @@
     <xsl:variable name="id"><xsl:number count="//tei:app" level="any" format="1"/></xsl:variable>
     <span id="lbp-app-lem-{$id}" class="lemma"><xsl:apply-templates select="tei:lem"/>
     <xsl:text> </xsl:text>
-    <sup><a href="#lbp-variant{$id}" id="lbp-variantreference{$id}" name="lbp-variantreference{$id}" class="appnote">[<xsl:value-of select="$id"/>]</a></sup>
+    <sup>
+      <a href="#lbp-variant{$id}" id="lbp-variantreference{$id}" name="lbp-variantreference{$id}" class="appnote">[<xsl:value-of select="$id"/>]
+    </a>
+    <span class="note-display hidden"/>
+
+    </sup>
+
     </span>
     <xsl:text> </xsl:text>
   </xsl:template>
