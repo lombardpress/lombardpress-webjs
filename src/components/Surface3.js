@@ -40,11 +40,10 @@ class Surface3 extends React.Component {
       return {annotationsDisplay: view}
     })
   }
-  retrieveSurfaceInfo(info){
-    console.log('surfaceid', info)
+  retrieveSurfaceInfo(manifestationid){
     // manifest id should be retrieved from query
     // this is a temporary measure until db is corrected and query is posible
-    const blockLineInfo = runQuery(getBlockLines(info.resourceid + "/lon"))
+    const blockLineInfo = runQuery(getBlockLines(manifestationid))
     blockLineInfo.then((d1) => {
       console.log("line data", d1)
       d1.data.results.bindings.forEach((z) => {
@@ -53,7 +52,7 @@ class Surface3 extends React.Component {
       const lastLine = z.last.value
       const order = z.order.value
       console.log('surfaceid', surfaceid)
-      const manifest = "http://scta.info/iiif/" + this.props.topLevel.split("/resource/")[1] + "/" + surfaceid.split("/resource/")[1].split("/")[0] + "/" + "manifest";
+      //const manifest = "http://scta.info/iiif/" + this.props.topLevel.split("/resource/")[1] + "/" + surfaceid.split("/resource/")[1].split("/")[0] + "/" + "manifest";
       const surfaceInfo = runQuery(getSurfaceInfo(surfaceid))
       surfaceInfo.then((d) => {
         const b = d.data.results.bindings[0]
@@ -65,7 +64,7 @@ class Surface3 extends React.Component {
               const newSurface = {
                 currentSurfaceId: surfaceid,
                 surfaceTitle: b.surfaceTitle.value,
-                manifest: manifest,
+                //manifest: manifest,
                 canvas: b.canvas.value,
                 imageurl: b.imageurl.value,
                 next: b.next_surface ? b.next_surface.value : "",
@@ -91,7 +90,7 @@ class Surface3 extends React.Component {
               const newSurface = {
                 currentSurfaceId: surfaceid,
                 surfaceTitle: b.surfaceTitle.value,
-                manifest: manifest,
+                //manifest: manifest,
                 canvas: b.canvas.value,
                 imageurl: b.imageurl.value,
                 next: b.next_surface ? b.next_surface.value : "",
@@ -116,27 +115,25 @@ class Surface3 extends React.Component {
   })
 }
 componentDidMount(){
-    if (this.props.info){
-      console.log('surfaceid', this.props.info)
-
+    if (this.props.manifestationid){
       this.setState((prevState) => {
         return {
           surfaces: []
         }
       },
-      this.retrieveSurfaceInfo(this.props.info)
+      this.retrieveSurfaceInfo(this.props.manifestationid)
     )
     }
   }
   componentWillReceiveProps(nextProps){
-    if (nextProps.info != this.props.info){
+    if (nextProps.manifestationid != this.props.manifestationid){
       this.setState((prevState) => {
         return {
           surfaces: []
         }
 
       },
-    this.retrieveSurfaceInfo(nextProps.info))
+    this.retrieveSurfaceInfo(nextProps.manifestationid))
     }
   }
   render() {
