@@ -384,3 +384,19 @@ export function getAuthorInformation(authorid){
      	     "ORDER BY DESC(?order_number)"].join('');
            return query
            }
+
+  //gets lines and zone order for
+  export function getBlockLines(manifestationBlockId){
+     const query = [
+       "SELECT ?first ?last ?order ?surface",
+       "{",
+         "<" + manifestationBlockId + "> <http://scta.info/property/isOnZone> ?zone . ",
+         "?zone <http://scta.info/property/isOnZone> ?zone2 .",
+         "?zone2 <http://scta.info/property/firstLine> ?first .",
+         "?zone2 <http://scta.info/property/lastLine> ?last .",
+         "?zone2 <http://scta.info/property/isPartOfSurface> ?surface .",
+         "?zone <http://scta.info/property/isOnZoneOrder> ?order .",
+       "}"].join('');
+       console.log(query)
+       return query
+     }

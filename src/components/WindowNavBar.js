@@ -24,7 +24,7 @@ function WindowNavBar(props) {
     <Nav.Link onClick={() => {props.handleTabChange("info", props.windowId)}}><FaInfo/></Nav.Link>
   </Nav.Item>
   <Nav.Item>
-    <Nav.Link onClick={() => {props.handleTabChange("surface2", props.windowId)}}><FaRegImage/></Nav.Link>
+    <Nav.Link onClick={() => {props.handleTabChange("surface3", props.windowId)}}><FaRegImage/></Nav.Link>
   </Nav.Item>
   <Nav.Item>
     <Nav.Link onClick={() => {props.handleTabChange("xml", props.windowId)}}><FaCode/></Nav.Link>

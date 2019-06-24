@@ -92,7 +92,7 @@ class Text extends React.Component {
       //   }
 
         _this.props.handleSurfaceFocusChange("http://scta.info/resource/" + id)
-        _this.props.openWindow("window2", "surface2")
+        _this.props.openWindow("window2", "surface3")
     });
     $('.appnote, .footnote').click(function(e) {
       e.preventDefault();
