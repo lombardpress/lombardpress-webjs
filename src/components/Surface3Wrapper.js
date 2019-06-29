@@ -13,11 +13,14 @@ class Surface3Wrapper extends React.Component {
     this.handleChangeManifestation = this.handleChangeManifestation.bind(this)
     this.state = {
       manifestations: [],
-      focusedManifestation: ""
+      focusedManifestation: "",
+      focusedManifestationSlug: null,
     }
   }
   handleChangeManifestation(focusedManifestation){
-    this.setState({focusedManifestation: focusedManifestation})
+    //TODO not best way to get manifestation slug; it should probably be retrieved from info query
+    const slug = focusedManifestation.split("/resource/")[1].split("/")[1]
+    this.setState({focusedManifestation: focusedManifestation, focusedManifestationSlug: slug})
   }
   componentDidMount(){
     if (this.props.info){
@@ -40,14 +43,14 @@ class Surface3Wrapper extends React.Component {
   render() {
     const displayManifestationsList = () => {
       const list = this.state.manifestations.map((m) => {
-        return <a onClick={() => {this.handleChangeManifestation(m.manifestation)}}>{m.manifestationTitle}</a>
+        return <p key={"title-" + m.manifestation}><a onClick={() => {this.handleChangeManifestation(m.manifestation)}}>{m.manifestationTitle}</a></p>
       })
       return list
     }
     const displayManifestation = () => {
       const manifestation = this.state.manifestations.map((m) => {
-        if (m.manifestation === this.state.focusedManifestation){
-          return <Surface3 manifestationid={m.manifestation}/>
+        if (m.manifestation.includes(this.state.focusedManifestationSlug)){
+          return <Surface3 key={"surface-" + m.manifestation} manifestationid={m.manifestation}/>
         }
       })
       return manifestation
@@ -55,10 +58,14 @@ class Surface3Wrapper extends React.Component {
     }
 
     return (
-      <Container className={this.props.hidden ? "hidden" : "showing"}>
-        {displayManifestationsList()}
-        {displayManifestation()}
-      </Container>
+      <div className={this.props.hidden ? "hidden surfaceWrapper" : "showing surfaceWrapper"}>
+        <div className="manifestationsList">
+          {displayManifestationsList()}
+        </div>
+        <div className="imagesDisplay">
+          {displayManifestation()}
+        </div>
+      </div>
     );
   }
 }

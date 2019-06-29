@@ -17,7 +17,7 @@ class Surface3 extends React.Component {
     this.handlePrevious = this.handlePrevious.bind(this)
     this.handleToggleTextLinesView = this.handleToggleTextLinesView.bind(this)
     this.state = {
-      annotationsDisplay: "paragraph",
+      annotationsDisplay: "lines",
       width: "1000",
       region: "full",
       surfaces: [

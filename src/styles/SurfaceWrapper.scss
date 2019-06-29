@@ -1,0 +1,10 @@
+//surface navigation controls
+.surfaceWrapper{
+  display: flex;
+  justify-content: space-between;
+}
+
+.manifestationsList, .imagesDisplay {
+  height: 100vh;
+  overflow: scroll;
+}

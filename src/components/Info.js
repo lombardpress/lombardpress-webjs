@@ -1,15 +1,22 @@
 import React from 'react';
 import Axios from "axios"
-
+import { FaClipboard} from 'react-icons/fa';
 import {Link} from 'react-router-dom';
 
 class Info extends React.Component {
   constructor(props){
     super(props)
-
+    this.copyToClipboard = this.copyToClipboard.bind(this)
 
   }
-
+  copyToClipboard(string){
+    var dummy = document.createElement("textarea");
+    document.body.appendChild(dummy);
+    dummy.value = string;
+    dummy.select();
+    document.execCommand("copy");
+    document.body.removeChild(dummy);
+  }
   componentDidMount(){
 
 
@@ -41,9 +48,10 @@ class Info extends React.Component {
     }
     const displayInfo = () => {
       if (this.props.info){
+        const resourceid = this.props.info.resourceid.includes('http') ? this.props.info.resourceid : "http://scta.info/resource/" + this.props.info.resourceid
         return(
           <div>
-          <p key="id">Resourceid: {this.props.info.resourceid.includes('http') ? this.props.info.resourceid : "http://scta.info/resource/" + this.props.info.resourceid}</p>
+          <p key="id">Resourceid: {resourceid}  <a href="#" title="Copy resource id" onClick={(e) => {e.preventDefault(); this.copyToClipboard(resourceid)}}><FaClipboard /></a></p>
           <p key="inbox">LDN Inbox: {this.props.info.inbox}</p>
           </div>
         )
