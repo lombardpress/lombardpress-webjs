@@ -132,8 +132,9 @@ class AuthorCollection extends React.Component {
 
 
     return (
-      <div>
+      <div className="collectionBody">
       <h1>{this.state.authorTitle}</h1>
+      <br/>
       {this.state.expressions &&
         <Container>
         <h1>Expressions</h1>

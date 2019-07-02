@@ -195,7 +195,8 @@ export function basicInfoQuery(itemExpressionUri){
         "?item <http://purl.org/dc/elements/1.1/title> ?itemTitle .",
         "?item <http://www.loc.gov/loc.terms/relators/AUT> ?itemAuthor .",
         "?itemAuthor <http://purl.org/dc/elements/1.1/title> ?itemAuthorTitle .",
-        "}"].join('');
+        "}",
+        "ORDER BY ?itemAuthorTitle"].join('');
         return query
       }
 

@@ -5,15 +5,18 @@ import Button from 'react-bootstrap/Button';
 import Text from './Text';
 import Qs from "query-string"
 
+import {Link} from 'react-router-dom';
+import {resourceEndpoint} from './config';
+
 
 
 function Home(props) {
-  const resourceid = props.location ? Qs.parse(props.location.search, { ignoreQueryPrefix: true }).resourceid : null;
+  //const resourceid = props.location ? Qs.parse(props.location.search, { ignoreQueryPrefix: true }).resourceid : null;
   const displayBody = () => {
-    if (resourceid){
-      return <Text resourceid={props.location.search.resourceid}/>
-    }
-    else
+    // if (resourceid){
+    //   return <Text resourceid={props.location.search.resourceid}/>
+    // }
+    // else
     return (
       <div className="Home">
         <Container id="lbp-home" fluid>
@@ -21,7 +24,7 @@ function Home(props) {
               <Jumbotron id="lbp-jumbo">
               	<h1>The SCTA Reading Room</h1>
               	<p>A site for reading, viewing, and studying the scholastic tradition</p>
-                <Button>View the text</Button> | <Button>Learn More</Button>
+                <Button><Link className="nav-link" to={"/text?resourceid=" + resourceEndpoint} style={{color: "black"}}>Enter</Link></Button>
               </Jumbotron>
             </Container>
           </Container>

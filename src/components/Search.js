@@ -34,7 +34,12 @@ class Search extends React.Component {
   }
   render(){
     const displayResults = () => {
-      if (this.state.searchResults.length > 1){
+      if (!this.state.searchResults){
+        return (<div>
+          <p>No results found</p>
+        </div>)
+      }
+      else if (this.state.searchResults.length > 1){
         const results = this.state.searchResults.map((r, i) => {
           return (
             <div key={i}>

@@ -22,12 +22,6 @@ import Item from "./Item"
 class Collection extends React.Component {
   constructor(props){
     super(props)
-    //this.handleClose = this.handleClose.bind(this)
-    //this.handleBlockFocusChange = this.handleBlockFocusChange.bind(this)
-    //this.handleSurfaceFocusChange = this.handleSurfaceFocusChange.bind(this)
-    //this.handleTabChange = this.handleTabChange.bind(this)
-    //this.handleSwitchWindow = this.handleSwitchWindow.bind(this)
-    //this.retrieveText = this.retrieveText.bind(this)
     this.retrieveCollectionInfo = this.retrieveCollectionInfo.bind(this)
     this.makeRequests = this.makeRequests.bind(this)
     this.handleFilter = this.handleFilter.bind(this)
@@ -36,8 +30,7 @@ class Collection extends React.Component {
     this.state = {
       items: {},
       parts: {},
-      filter: "",
-      surfaceFocus: ""
+      filter: ""
     }
 
   }
@@ -45,9 +38,6 @@ class Collection extends React.Component {
     const item = e.target.value
     this.setState({filter: item})
 
-  }
-  handleSurfaceFocusChange(surfaceid){
-    this.setState({surfaceFocus: surfaceid})
   }
   arrangeParts(partsPromise){
     const _this = this
@@ -154,9 +144,15 @@ class Collection extends React.Component {
 
   componentWillReceiveProps(nextProps) {
 
-    this.refs.filter ? this.refs.filter.value = "" :
-    this.setState({resourceid: nextProps.resourceid, filter: "", blockFocus: ""})
-    this.makeRequests(nextProps.resourceid, nextProps.structureType, nextProps.topLevel, nextProps.type)
+    // conditional prevents new information requestion if resource id has not changed
+    if (nextProps.resourceid != this.props.resourceid){
+      this.setState({resourceid: nextProps.resourceid, filter: ""})
+      // this conditional resets form value if ref is present
+      if (this.filter){
+        this.filter.current.value = ""
+      }
+      this.makeRequests(nextProps.resourceid, nextProps.structureType, nextProps.topLevel, nextProps.type)
+    }
   }
   componentWillUnmount(){
     this.mount = false
@@ -170,7 +166,7 @@ class Collection extends React.Component {
         const filterCheck = this.state.items[key].title + " " + this.state.items[key].authorTitle + " " + this.state.items[key].questionTitle
         if (filterCheck.toLowerCase().includes(this.state.filter.toLowerCase())){
         questions.push(
-          <Item item={this.state.items[key]}/>
+          <Item key={key} item={this.state.items[key]}/>
         )}
       });
       return (
@@ -192,7 +188,7 @@ class Collection extends React.Component {
           //check against filter
             if (this.state.parts[key].title.toLowerCase().includes(this.state.filter.toLowerCase())){
             questions.push(
-              <Item item={this.state.parts[key]}/>
+              <Item key={key} item={this.state.parts[key]}/>
               )
             }
 
@@ -217,8 +213,11 @@ class Collection extends React.Component {
       }
 
     return (
-      <Container>
-      <FormControl ref={this.filter} id="filter" placeholder="type to filter" onChange={this.handleFilter}/>
+      <Container className="collectionBody">
+      {}
+      <Container className="collectionFilter">
+        <FormControl ref={this.filter} id="filter" placeholder="type to filter" onChange={this.handleFilter}/>
+      </Container>
       {displayParts()}
       {displayQuestions()}
       </Container>
