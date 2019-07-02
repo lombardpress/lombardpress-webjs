@@ -45,13 +45,11 @@ class Surface3 extends React.Component {
     // this is a temporary measure until db is corrected and query is posible
     const blockLineInfo = runQuery(getBlockLines(manifestationid))
     blockLineInfo.then((d1) => {
-      console.log("line data", d1)
       d1.data.results.bindings.forEach((z) => {
       const surfaceid = z.surface.value
       const firstLine = z.first.value
       const lastLine = z.last.value
       const order = z.order.value
-      console.log('surfaceid', surfaceid)
       //const manifest = "http://scta.info/iiif/" + this.props.topLevel.split("/resource/")[1] + "/" + surfaceid.split("/resource/")[1].split("/")[0] + "/" + "manifest";
       const surfaceInfo = runQuery(getSurfaceInfo(surfaceid))
       surfaceInfo.then((d) => {
@@ -63,7 +61,7 @@ class Surface3 extends React.Component {
             this.setState((prevState) => {
               const newSurface = {
                 currentSurfaceId: surfaceid,
-                surfaceTitle: b.surfaceTitle.value,
+                surfaceTitle: b.surfaceTitle ? b.surfaceTitle.value : "",
                 //manifest: manifest,
                 canvas: b.canvas.value,
                 imageurl: b.imageurl.value,
@@ -155,8 +153,6 @@ componentDidMount(){
         const imageTextWrappers = surface.annotations.map((h, i) => {
 
           if (i + 1 >= surface.firstLine && i < surface.lastLine){
-            console.log("first line", surface.firstLine)
-            console.log("index", i)
             const text = h.resource.chars;
             const canvas = h.on.split("#xywh=")[0];
             const canvasShort = canvas.split("/")[canvas.split("/").length - 1];
@@ -184,25 +180,20 @@ componentDidMount(){
       }
       // handle paragraph display
       else if (surface.annotations && this.state.annotationsDisplay === "paragraph"){
-        console.log(surface)
         const h = surface.annotations[surface.firstLine - 1]
         const fl = surface.annotations[surface.firstLine - 1]
         const flcanvas = fl.on.split("#xywh=")[0];
         const flcanvasShort = flcanvas.split("/")[flcanvas.split("/").length - 1];
         const flcoords = fl.on.split("#xywh=")[1];
         const y = flcoords.split(",")[1]
-        console.log("surface annotations", surface.annotations)
         const ll = surface.annotations[surface.lastLine - 1]
         const llcanvas = ll ? ll.on.split("#xywh=")[0] : ""
         const llcanvasShort = llcanvas.split("/")[llcanvas.split("/").length - 1];
         const llcoords = ll ? ll.on.split("#xywh=")[1] : ""
-        console.log("flcoords", flcoords)
-        console.log("llcoords", llcoords)
         const lly = llcoords.split(",")[1]
         const llh = llcoords.split(",")[3]
         const llbottom = (parseInt(lly) + parseInt(llh)) - parseInt(y)
         const coords = (parseInt(flcoords.split(",")[0] - 10)) + "," + (parseInt(y) - 50) + "," + (parseInt(flcoords.split(",")[2]) + 10) + "," + (parseInt(llbottom) + 50)
-        console.log("finalcoords", coords)
         const text = ""
         const imageUrl = h.imageUrl
 

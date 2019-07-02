@@ -279,7 +279,7 @@ export function basicInfoQuery(itemExpressionUri){
   //surface id query, gets canvas and manifestation
   export function getSurfaceInfo(surfaceid){
     const query = [
-      "SELECT DISTINCT ?surfaceTitle ?c_height ?c_width ?isurface ?isurfaceTitle ?icodexTitle ?canvas ?imageurl ?next_surface ?previous_surface ",
+      "SELECT DISTINCT ?surfaceTitle ?isurface ?isurfaceTitle ?icodexTitle ?canvas ?imageurl ?next_surface ?previous_surface ",
         "{",
   				"<" + surfaceid + "> <http://purl.org/dc/elements/1.1/title> ?surfaceTitle .",
   				"<" + surfaceid + "> <http://scta.info/property/hasISurface> ?isurface .",
@@ -299,10 +299,8 @@ export function basicInfoQuery(itemExpressionUri){
   					"?canvas <http://iiif.io/api/presentation/2#hasImageAnnotations> ?blank .",
   				"}",
   				"OPTIONAL{",
-  					"?canvas <http://www.shared-canvas.org/ns/hasImageAnnotations> ?blank .",
-  				"}",
-  				"?canvas <http://www.w3.org/2003/12/exif/ns#width> ?c_width .",
   				"?canvas <http://www.w3.org/2003/12/exif/ns#height> ?c_height .",
+          "}",
   		     "?blank <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?o .",
   		     "?o <http://www.w3.org/ns/oa#hasBody> ?o2 .",
   		    "OPTIONAL{",
@@ -312,6 +310,7 @@ export function basicInfoQuery(itemExpressionUri){
   					 "?o2 <http://www.shared-canvas.org/ns/hasRelatedService> ?imageurl .",
   				 "}",
         "}"].join('');
+
       return query
     }
 
@@ -398,6 +397,5 @@ export function getAuthorInformation(authorid){
          "?zone2 <http://scta.info/property/isPartOfSurface> ?surface .",
          "?zone <http://scta.info/property/isOnZoneOrder> ?order .",
        "}"].join('');
-       console.log(query)
        return query
      }
