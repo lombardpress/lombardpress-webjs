@@ -11,11 +11,19 @@ class Surface3Wrapper extends React.Component {
   constructor(props){
     super(props)
     this.handleChangeManifestation = this.handleChangeManifestation.bind(this)
+    this.handleToggleTextLinesView = this.handleToggleTextLinesView.bind(this)
     this.state = {
       manifestations: [],
       focusedManifestation: "",
       focusedManifestationSlug: null,
+      annotationsDisplay: "lines"
     }
+  }
+  handleToggleTextLinesView(view){
+    //this.retrieveSurfaceInfo(this.state.previous)
+    this.setState((prevState) => {
+      return {annotationsDisplay: view}
+    })
   }
   handleChangeManifestation(focusedManifestation){
     //TODO not best way to get manifestation slug; it should probably be retrieved from info query
@@ -26,7 +34,12 @@ class Surface3Wrapper extends React.Component {
     if (this.props.info){
       this.setState((prevState) => {
         return {
-          manifestations: this.props.info.manifestations
+          manifestations: this.props.info.manifestations,
+          focusedSurface: this.props.options ? this.props.options.surfaceid : null,
+          focusedManifestationSlug: this.props.options ? this.props.options.surfaceid.split("/")[0] : "",
+          focusedManifestationSlug: this.props.options ? this.props.info.resourceid + "/" + this.props.options.surfaceid.split("/")[0] : "",
+          annotationsDisplay: this.props.options ? "" : "lines"
+
         }
       })
     }
@@ -35,7 +48,11 @@ class Surface3Wrapper extends React.Component {
     if (nextProps.info != this.props.info){
       this.setState((prevState) => {
         return {
-          manifestations: nextProps.info.manifestations
+          manifestations: nextProps.info.manifestations,
+          focusedSurface: nextProps.options ? nextProps.options.surfaceid : null,
+          focusedManifestationSlug: nextProps.options ? nextProps.options.surfaceid.split("/")[0] : "",
+          focusedManifestationSlug: nextProps.options ? nextProps.info.resourceid + "/" + this.props.options.surfaceid.split("/")[0] : "",
+          annotationsDisplay: nextProps.options ? "" : "lines"
         }
       })
     }
@@ -50,7 +67,7 @@ class Surface3Wrapper extends React.Component {
     const displayManifestation = () => {
       const manifestation = this.state.manifestations.map((m) => {
         if (m.manifestation.includes(this.state.focusedManifestationSlug)){
-          return <Surface3 key={"surface-" + m.manifestation} manifestationid={m.manifestation}/>
+          return <Surface3 key={"surface-" + m.manifestation} manifestationid={m.manifestation} annotationsDisplay={this.state.annotationsDisplay}/>
         }
       })
       return manifestation
@@ -58,12 +75,19 @@ class Surface3Wrapper extends React.Component {
     }
 
     return (
-      <div className={this.props.hidden ? "hidden surfaceWrapper" : "showing surfaceWrapper"}>
-        <div className="manifestationsList">
-          {displayManifestationsList()}
+      <div className={this.props.hidden ? "hidden" : "showing"}>
+        <div>
+          <a onClick={() => {this.handleToggleTextLinesView("lines")}}>Text Lines View</a>
+          <a onClick={() => {this.handleToggleTextLinesView("paragraph")}}>Text Paragraph View</a>
+          <a onClick={() => {this.handleToggleTextLinesView("surface")}}>Surface View</a>
         </div>
-        <div className="imagesDisplay">
-          {displayManifestation()}
+        <div className="surfaceWrapper">
+          <div className="manifestationsList">
+            {displayManifestationsList()}
+          </div>
+          <div className="imagesDisplay">
+            {displayManifestation()}
+          </div>
         </div>
       </div>
     );

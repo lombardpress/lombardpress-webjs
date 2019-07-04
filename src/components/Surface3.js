@@ -15,9 +15,7 @@ class Surface3 extends React.Component {
     super(props)
     this.handleNext = this.handleNext.bind(this)
     this.handlePrevious = this.handlePrevious.bind(this)
-    this.handleToggleTextLinesView = this.handleToggleTextLinesView.bind(this)
     this.state = {
-      annotationsDisplay: "lines",
       width: "1000",
       region: "full",
       surfaces: [
@@ -33,12 +31,6 @@ class Surface3 extends React.Component {
     //this.retrieveSurfaceInfo(this.state.previous)
     this.props.handleSurfaceFocusChange(this.state.previous)
 
-  }
-  handleToggleTextLinesView(view){
-    //this.retrieveSurfaceInfo(this.state.previous)
-    this.setState((prevState) => {
-      return {annotationsDisplay: view}
-    })
   }
   retrieveSurfaceInfo(manifestationid){
     // manifest id should be retrieved from query
@@ -149,7 +141,7 @@ componentDidMount(){
     const displayImages = (surface) => {
 
       // handle line display
-      if (surface.annotations && this.state.annotationsDisplay === "lines"){
+      if (surface.annotations && this.props.annotationsDisplay === "lines"){
         const imageTextWrappers = surface.annotations.map((h, i) => {
 
           if (i + 1 >= surface.firstLine && i < surface.lastLine){
@@ -179,7 +171,7 @@ componentDidMount(){
         return imageTextWrappers
       }
       // handle paragraph display
-      else if (surface.annotations && this.state.annotationsDisplay === "paragraph"){
+      else if (surface.annotations && this.props.annotationsDisplay === "paragraph"){
         const h = surface.annotations[surface.firstLine - 1]
         const fl = surface.annotations[surface.firstLine - 1]
         const flcanvas = fl.on.split("#xywh=")[0];
@@ -217,9 +209,6 @@ componentDidMount(){
     }
     return (
       <Container className={this.props.hidden ? "hidden" : "showing"}>
-      <a onClick={() => {this.handleToggleTextLinesView("lines")}}>Text Lines View</a>
-      <a onClick={() => {this.handleToggleTextLinesView("paragraph")}}>Text Paragraph View</a>
-      <a onClick={() => {this.handleToggleTextLinesView("surface")}}>Surface View</a>
       {displayAllImages()}
       </Container>
 

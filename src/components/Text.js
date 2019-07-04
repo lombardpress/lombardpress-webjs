@@ -80,7 +80,9 @@ class Text extends React.Component {
   //   });
     $('.js-show-folio-image').click(function(e) {
       e.preventDefault();
-      const id = $(this).attr('data-surfaceid')
+      const surfaceid = $(this).attr('data-surfaceid');
+      const paragraphid = $(this).closest('.plaoulparagraph').attr("id");
+
       //_this.setState({surfaceFocus: "http://scta.info/resource/" + id})
       // _this.setState((prevState) => {
       //   const windows = prevState.windows
@@ -91,8 +93,18 @@ class Text extends React.Component {
       //     surfaceFocus: "http://scta.info/resource/" + id
       //   }
 
-        _this.props.handleSurfaceFocusChange("http://scta.info/resource/" + id)
-        _this.props.openWindow("window1", "surface3")
+      _this.props.setFocus(paragraphid)
+      //_this.props.openWindow("window1", "info")
+      //_this.props.handleSurfaceFocusChange("http://scta.info/resource/" + id)
+
+      //TODO: openWindow surfac3 should take some other options;
+      // which manifestation/surface to focus on and which view, textlines, paragraph, or surface
+      const options = {
+        surface3: {
+          surfaceid: surfaceid
+        }
+      }
+        _this.props.openWindow("window1", "surface3", options)
     });
     $('.appnote, .footnote').click(function(e) {
       e.preventDefault();

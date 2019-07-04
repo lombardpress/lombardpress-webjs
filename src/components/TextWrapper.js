@@ -51,11 +51,12 @@ class TextWrapper extends React.Component {
       }
     }
   }
-  openWindow(id, windowLoad){
+  openWindow(id, windowLoad, options){
     this.setState((prevState) => {
       const windows = prevState.windows
       windows[id].open = true
       windows[id].windowLoad = windowLoad
+      windows[id].options = options
       return {
         windows: windows,
       }
@@ -310,6 +311,7 @@ class TextWrapper extends React.Component {
               info={this.state.focus}
               topLevel={this.state.itemFocus.topLevel}
               altWindowState={this.state.windows[key].windowId === "window1" ? this.state.windows["window2"].open : this.state.windows["window1"].open}
+              options={this.state.windows[key].options}
               />
             )
           }

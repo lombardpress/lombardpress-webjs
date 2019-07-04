@@ -43,6 +43,9 @@
   <!-- clear teiHeader -->
   <xsl:template match="tei:teiHeader"></xsl:template>
 
+  <!-- clear starts-on -->
+  <xsl:template match="tei:div[@xml:id='starts-on']"></xsl:template>
+
   <!-- heading template -->
   <xsl:template match="tei:head">
     <xsl:variable name="number" select="count(ancestor::tei:div)" />
@@ -81,7 +84,7 @@
         <xsl:number level="any" from="tei:text"/>
       </span>
       <xsl:apply-templates/>
-      
+
       </p>
       <!-- <xsl:if test="./@xml:id">
         <nav class="navbar navbar-default paradiv" id="menu_{@xml:id}" style="display: none;">
