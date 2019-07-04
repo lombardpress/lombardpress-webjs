@@ -1,5 +1,5 @@
 import React from 'react';
-import Surface from "./Surface"
+import Surface2 from "./Surface2"
 import Surface3Wrapper from "./Surface3Wrapper"
 import XmlView from "./XmlView"
 import Info from "./Info"
@@ -16,7 +16,7 @@ class Window extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      windowLoad: "",
+      windowLoad: ""
     }
   }
 
@@ -47,9 +47,8 @@ class Window extends React.Component {
           <XmlView info={this.props.info} hidden={this.state.windowLoad != "xml"}/>
           <Info info={this.props.info} relatedExpressions={this.props.relatedExpressions} topLevel={this.props.topLevel} hidden={this.state.windowLoad != "info"}/>
           <Citation info={this.props.info} relatedExpressions={this.props.relatedExpressions} topLevel={this.props.topLevel} hidden={this.state.windowLoad != "citation"}/>
-          {//<Surface2 surfaceid={this.props.surfaceid} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad != "surface2"}/>
-          }
-          <Surface3Wrapper info={this.props.info} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad != "surface3"} options={this.props.options ? this.props.options.surface3 : null}/>
+          <Surface2 surfaceid={this.props.surfaceid} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad != "surface2"}/>
+          <Surface3Wrapper info={this.props.info} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad != "surface3"}/>
           <Comments info={this.props.info} hidden={this.state.windowLoad != "comments"}/>
           {
             //<Surface surfaceid={this.props.surfaceid} topLevel={this.props.topLevel}/>

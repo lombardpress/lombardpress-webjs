@@ -35,11 +35,6 @@ class Surface3Wrapper extends React.Component {
       this.setState((prevState) => {
         return {
           manifestations: this.props.info.manifestations,
-          focusedSurface: this.props.options ? this.props.options.surfaceid : null,
-          focusedManifestationSlug: this.props.options ? this.props.options.surfaceid.split("/")[0] : "",
-          focusedManifestationSlug: this.props.options ? this.props.info.resourceid + "/" + this.props.options.surfaceid.split("/")[0] : "",
-          annotationsDisplay: this.props.options ? "" : "lines"
-
         }
       })
     }
@@ -49,10 +44,6 @@ class Surface3Wrapper extends React.Component {
       this.setState((prevState) => {
         return {
           manifestations: nextProps.info.manifestations,
-          focusedSurface: nextProps.options ? nextProps.options.surfaceid : null,
-          focusedManifestationSlug: nextProps.options ? nextProps.options.surfaceid.split("/")[0] : "",
-          focusedManifestationSlug: nextProps.options ? nextProps.info.resourceid + "/" + this.props.options.surfaceid.split("/")[0] : "",
-          annotationsDisplay: nextProps.options ? "" : "lines"
         }
       })
     }

@@ -83,28 +83,9 @@ class Text extends React.Component {
       const surfaceid = $(this).attr('data-surfaceid');
       const paragraphid = $(this).closest('.plaoulparagraph').attr("id");
 
-      //_this.setState({surfaceFocus: "http://scta.info/resource/" + id})
-      // _this.setState((prevState) => {
-      //   const windows = prevState.windows
-      //   windows.window2.open = true
-      //   windows.window2.windowLoad = "surface2"
-      //   return {
-      //     windows: windows,
-      //     surfaceFocus: "http://scta.info/resource/" + id
-      //   }
-
       _this.props.setFocus(paragraphid)
-      //_this.props.openWindow("window1", "info")
-      //_this.props.handleSurfaceFocusChange("http://scta.info/resource/" + id)
-
-      //TODO: openWindow surfac3 should take some other options;
-      // which manifestation/surface to focus on and which view, textlines, paragraph, or surface
-      const options = {
-        surface3: {
-          surfaceid: surfaceid
-        }
-      }
-        _this.props.openWindow("window1", "surface3", options)
+      _this.props.handleSurfaceFocusChange("http://scta.info/resource/" + surfaceid)
+      _this.props.openWindow("window2", "surface2")
     });
     $('.appnote, .footnote').click(function(e) {
       e.preventDefault();
