@@ -39,9 +39,9 @@ class Text extends React.Component {
     // bind events to dom
     // only seems to be working when they are here; not yet sure why
 
-    $('.lbp-paragraphmenu').click(function(e) {
+    $('.paragraphnumber').click(function(e) {
          e.preventDefault();
-         const id = $(this).attr('data-id')
+         const id = $(this).parent("p").attr('id')
          _this.props.setFocus(id)
          _this.props.openWindow("window1", "info")
     });
@@ -92,7 +92,7 @@ class Text extends React.Component {
       //   }
 
         _this.props.handleSurfaceFocusChange("http://scta.info/resource/" + id)
-        _this.props.openWindow("window2", "surface3")
+        _this.props.openWindow("window1", "surface3")
     });
     $('.appnote, .footnote').click(function(e) {
       e.preventDefault();

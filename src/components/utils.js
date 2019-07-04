@@ -41,6 +41,11 @@ export function scrollToParagraph(hash, highlight){
 
     // TODO: highlighting is NOT working
     if (highlight){
+      element.addClass("highlightNone");
+      $(".paragraphnumber").removeClass("highlight2")
+      $(".plaoulparagraph").removeClass("highlightNone")
+      $(".plaoulparagraph").removeClass("highlight")
+      element.children(".paragraphnumber").addClass("highlight2")
       element.addClass( "highlight");
       setTimeout(function(){
         element.addClass("highlightNone");

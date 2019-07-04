@@ -81,11 +81,7 @@
         <xsl:number level="any" from="tei:text"/>
       </span>
       <xsl:apply-templates/>
-      <xsl:if test="./@xml:id">
-        <span class="lbp-paragraphmenu" data-id="{@xml:id}">
-          <span class="glyphicon glyphicon-tasks" aria-hidden="true">Menu</span>
-        </span>
-      </xsl:if>
+      
       </p>
       <!-- <xsl:if test="./@xml:id">
         <nav class="navbar navbar-default paradiv" id="menu_{@xml:id}" style="display: none;">

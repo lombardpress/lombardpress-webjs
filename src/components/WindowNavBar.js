@@ -3,7 +3,7 @@ import {NavLink} from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 
-import { FaTimes, FaSearch, FaGripVertical, FaCode, FaInfo, FaRegImage, FaAngleDoubleDown, FaAngleDoubleLeft, FaComments, FaRegWindowRestore, FaRegWindowMaximize, FaRegWindowMinimize, FaRegWindowClose, FaPencilAlt} from 'react-icons/fa';
+import { FaTimes, FaSearch, FaGripVertical, FaCode, FaInfo, FaRegImage, FaAngleDoubleDown, FaAngleDoubleLeft, FaComments, FaRegWindowRestore, FaRegWindowMaximize, FaRegWindowMinimize, FaRegWindowClose, FaPencilAlt, FaClone} from 'react-icons/fa';
 
 
 import {resourceEndpoint} from './config';
@@ -58,8 +58,15 @@ function WindowNavBar(props) {
   <Nav.Item>
     <Nav.Link title="Close Window" onClick={() => {props.handleClose(props.windowId)}}><FaRegWindowClose/></Nav.Link>
   </Nav.Item>
-  <Nav.Item>
+  {/* commented to prevent window moving; this insures window 1 is always side window and window 2 is bottom window
+    uncomment if this behavior is desired
+    <Nav.Item>
     <Nav.Link title="Move Window" onClick={() => {props.handleSwitchWindow(props.windowId, props.windowType)}}>{props.windowType === "sideWindow" ? <FaAngleDoubleDown/> : <FaAngleDoubleLeft/>}</Nav.Link>
+  </Nav.Item>
+  */
+  }
+  <Nav.Item>
+    {!props.altWindowState && <Nav.Link title="Clone Window" onClick={() => {props.handleDuplicateWindow(props.windowId, props.windowType)}}>{<FaClone/>}</Nav.Link>}
   </Nav.Item>
 
 

@@ -71,6 +71,8 @@ class Window extends React.Component {
       windowId={this.props.windowId}
       focus={this.props.resourceid}
       handleSwitchWindow={this.props.handleSwitchWindow}
+      handleDuplicateWindow={this.props.handleDuplicateWindow}
+      altWindowState={this.props.altWindowState}
       />
       <NextPrevBar info={this.props.info} handleBlockFocusChange={this.props.handleBlockFocusChange}/>
 

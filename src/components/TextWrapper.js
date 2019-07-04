@@ -25,6 +25,7 @@ class TextWrapper extends React.Component {
     this.handleMaximize = this.handleMaximize.bind(this)
     this.handleMiddlize = this.handleMiddlize.bind(this)
     this.handleSwitchWindow = this.handleSwitchWindow.bind(this)
+    this.handleDuplicateWindow = this.handleDuplicateWindow.bind(this)
     this.handleSurfaceFocusChange = this.handleSurfaceFocusChange.bind(this)
     this.state = {
       doc: "",
@@ -44,7 +45,7 @@ class TextWrapper extends React.Component {
           windowId: "window2",
           open: false,
           windowLoad: "info",
-          position: "bottomWindow",
+          position: "sideWindow",
           openWidthHeight: "middle"
         }
       }
@@ -125,6 +126,21 @@ class TextWrapper extends React.Component {
       }
       return {windows: windows}
 
+    })
+  }
+  handleDuplicateWindow(windowId, windowType){
+    this.setState((prevState) => {
+      const windows = prevState.windows
+      const altWindowId = windowId === "window1" ? "window2" : "window1"
+      if (windows[windowId].position === "sideWindow"){
+        windows[altWindowId].position = "bottomWindow"
+        windows[altWindowId].open = true
+      }
+      else if (windows[windowId].position === "bottomWindow"){
+        windows[altWindowId].position = "sideWindow"
+        windows[altWindowId].open = true
+      }
+      return {windows: windows}
     })
   }
   handleTabChange(windowLoad, windowId){
@@ -284,6 +300,7 @@ class TextWrapper extends React.Component {
               handleBlockFocusChange={this.setFocus}
               handleSurfaceFocusChange={this.handleSurfaceFocusChange}
               handleSwitchWindow={this.handleSwitchWindow}
+              handleDuplicateWindow={this.handleDuplicateWindow}
               resourceid={this.state.focus.resourceid}
               windowType={this.state.windows[key].position}
               windowId={this.state.windows[key].windowId}
@@ -292,6 +309,7 @@ class TextWrapper extends React.Component {
               surfaceid={this.state.surfaceid}
               info={this.state.focus}
               topLevel={this.state.itemFocus.topLevel}
+              altWindowState={this.state.windows[key].windowId === "window1" ? this.state.windows["window2"].open : this.state.windows["window1"].open}
               />
             )
           }
