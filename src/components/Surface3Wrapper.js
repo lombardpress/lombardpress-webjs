@@ -4,6 +4,8 @@ import Axios from 'axios'
 
 import Surface3 from './Surface3';
 
+import { FaList, FaFile, FaParagraph} from 'react-icons/fa';
+
 //TODO: surface 3 needs to run in a wrapper which allows the user to choose between manifestations.
 //TODO: rdf dbase needs to include first line numbers for paragraphs that start in the middle of al line.
 
@@ -67,11 +69,6 @@ class Surface3Wrapper extends React.Component {
 
     return (
       <div className={this.props.hidden ? "hidden" : "showing"}>
-        <div>
-          <a onClick={() => {this.handleToggleTextLinesView("lines")}}>Text Lines View</a>
-          <a onClick={() => {this.handleToggleTextLinesView("paragraph")}}>Text Paragraph View</a>
-          <a onClick={() => {this.handleToggleTextLinesView("surface")}}>Surface View</a>
-        </div>
         <div className="surfaceWrapper">
           <div className="manifestationsList">
             {displayManifestationsList()}
@@ -79,6 +76,14 @@ class Surface3Wrapper extends React.Component {
           <div className="imagesDisplay">
             {displayManifestation()}
           </div>
+          {this.state.focusedManifestationSlug &&
+            <div>
+            <p><a title="Text Line View" onClick={() => {this.handleToggleTextLinesView("lines")}}><FaList/></a></p>
+            <p><a title="Paragraph View" onClick={() => {this.handleToggleTextLinesView("paragraph")}}><FaParagraph/></a></p>
+            <p><a title="Full Surface View" onClick={() => {this.handleToggleTextLinesView("surface")}}><FaFile/></a></p>
+            </div>
+          }
+
         </div>
       </div>
     );
