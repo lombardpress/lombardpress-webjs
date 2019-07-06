@@ -41,17 +41,21 @@ class Window extends React.Component {
     const displayChild = () => {
       return(
         <div>
-          {// including search wrapper here as hidden instead of above in switch, so that results don't have to be reload
+
+          {// components that are only avialable if blockDiv focus and this.props.info is set
+            this.props.info &&
+          <div>
+            <TextCompareWrapper info={this.props.info} relatedExpressions={this.props.relatedExpressions} hidden={this.state.windowLoad != "textCompare"}/>
+            <XmlView info={this.props.info} hidden={this.state.windowLoad != "xml"}/>
+            <Info info={this.props.info} relatedExpressions={this.props.relatedExpressions} topLevel={this.props.topLevel} hidden={this.state.windowLoad != "info"}/>
+            <Citation info={this.props.info} relatedExpressions={this.props.relatedExpressions} topLevel={this.props.topLevel} hidden={this.state.windowLoad != "citation"}/>
+            <Surface2 surfaceid={this.props.surfaceid} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad != "surface2"}/>
+            <Surface3Wrapper info={this.props.info} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad != "surface3"}/>
+            <Comments info={this.props.info} hidden={this.state.windowLoad != "comments"}/>
+          </div>
           }
-          <SearchWrapper info={this.props.info} hidden={this.state.windowLoad != "search"} topLevel={this.props.info.topLevel}/>
-          <TextCompareWrapper info={this.props.info} relatedExpressions={this.props.relatedExpressions} hidden={this.state.windowLoad != "textCompare"}/>
-          <XmlView info={this.props.info} hidden={this.state.windowLoad != "xml"}/>
-          <Info info={this.props.info} relatedExpressions={this.props.relatedExpressions} topLevel={this.props.topLevel} hidden={this.state.windowLoad != "info"}/>
-          <Citation info={this.props.info} relatedExpressions={this.props.relatedExpressions} topLevel={this.props.topLevel} hidden={this.state.windowLoad != "citation"}/>
-          <Surface2 surfaceid={this.props.surfaceid} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad != "surface2"}/>
-          <Surface3Wrapper info={this.props.info} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad != "surface3"}/>
-          <Comments info={this.props.info} hidden={this.state.windowLoad != "comments"}/>
-          <TextOutline resourceid={this.props.info.topLevel} title={this.props.info.topLevel} showChildren={true} hidden={this.state.windowLoad != "textOutline"} handleBlockFocusChange={this.props.handleBlockFocusChange}/>
+          <TextOutline resourceid={this.props.topLevel} title={this.props.topLevel} showChildren={true} hidden={this.state.windowLoad != "textOutline"} handleBlockFocusChange={this.props.handleBlockFocusChange}/>
+          <SearchWrapper hidden={this.state.windowLoad != "search"} topLevel={this.props.topLevel}/>
           {
             //<Surface surfaceid={this.props.surfaceid} topLevel={this.props.topLevel}/>
           }
@@ -74,6 +78,7 @@ class Window extends React.Component {
       handleSwitchWindow={this.props.handleSwitchWindow}
       handleDuplicateWindow={this.props.handleDuplicateWindow}
       altWindowState={this.props.altWindowState}
+      focusSet={!!this.props.info}
       />
       <NextPrevBar info={this.props.info} handleBlockFocusChange={this.props.handleBlockFocusChange}/>
 

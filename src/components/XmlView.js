@@ -10,6 +10,7 @@ class XmlView extends React.Component {
 
   constructor(props){
     super(props)
+    this.mount = false
     this.retrieveXML = this.retrieveXML.bind(this)
     this.state = {
       xmlstring: ""
@@ -30,17 +31,22 @@ class XmlView extends React.Component {
     // const p = xmlDoc.evaluate("//tei:p[@xml:id='" + info.resourceid + "']", xmlDoc, nsResolver, XPathResult.ANY_TYPE, null);
     // console.log("paragraph", p)
     Axios.get(xmlurl).then((d) => {
-
-      this.setState({xmlstring: d.data})
+      if (this.mount){
+        this.setState({xmlstring: d.data})
+      }
     })
 
   }
   componentDidMount(){
+    this.mount = true
     this.retrieveXML(this.props.info)
 
   }
   componentWillReceiveProps(nextProps){
     this.retrieveXML(nextProps.info)
+  }
+  componentWillUnmount(){
+    this.mount = false
   }
 
   render(){

@@ -10,12 +10,16 @@ import {getItemTranscription, getItemTranscriptionFromBlockDiv, getStructureType
 class TextSwitch extends React.Component {
   constructor(props){
     super(props)
+    this.handleUpdateUrlResource = this.handleUpdateUrlResource.bind(this)
     this.state = {
       displayType: "",
       resourceid: "",
       itemTranscriptionId: "",
       blockDivFocus: ""
     }
+  }
+  handleUpdateUrlResource(fullid){
+    this.props.history.push({search: '?resourceid=' + fullid})
   }
   getInfo(resourceid){
     const structureTypePromise = runQuery(getStructureType(resourceid))
@@ -37,12 +41,12 @@ class TextSwitch extends React.Component {
       }
       else if (structureType === "http://scta.info/resource/structureItem" ){
         if (type === "http://scta.info/resource/transcription"){
-          this.setState({itemTranscriptionId: resourceid, displayType: "item"})
+          this.setState({itemTranscriptionId: resourceid, displayType: "item", blockDivFocus: ""})
         }
         else {
           const structureTypePromise = runQuery(getItemTranscription(resourceid))
           structureTypePromise.then((t) => {
-            this.setState({itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, displayType: "item"})
+            this.setState({itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, displayType: "item", blockDivFocus: ""})
           });
         }
       }
@@ -86,7 +90,7 @@ class TextSwitch extends React.Component {
 
       }
       else if (this.state.displayType === "item"){
-        return (<TextWrapper transcriptionid={this.state.itemTranscriptionId} blockDivFocus={this.state.blockDivFocus}/>)
+        return (<TextWrapper itemid={this.state.resourceid} transcriptionid={this.state.itemTranscriptionId} blockDivFocus={this.state.blockDivFocus} handleUpdateUrlResource={this.handleUpdateUrlResource}/>)
       }
       else{
         return null

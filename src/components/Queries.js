@@ -410,10 +410,9 @@ export function getAuthorInformation(authorid){
           "?part <http://scta.info/property/level> ?level .",
           "OPTIONAL",
           "{",
-          "?part <http://scta.info/resource/totalOrderNumber> ?order .",
+          "?part <http://scta.info/property/sectionOrderNumber> ?order .",
           "}",
         "}",
         "ORDER BY ?order"].join('');
-        console.log(query)
         return query
       }

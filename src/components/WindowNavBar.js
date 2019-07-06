@@ -20,30 +20,31 @@ function WindowNavBar(props) {
   {
     //<Navbar.Brand href="/">Focus: {props.focus}</Navbar.Brand>
   }
-  <Nav.Item>
+  {props.focusSet && <Nav.Item>
     <Nav.Link title="Basic Resource Information" onClick={() => {props.handleTabChange("info", props.windowId)}}><FaInfo/></Nav.Link>
-  </Nav.Item>
-  <Nav.Item>
+  </Nav.Item>}
+  {props.focusSet && <Nav.Item>
     <Nav.Link title="Images" onClick={() => {props.handleTabChange("surface3", props.windowId)}}><FaRegImage/></Nav.Link>
-  </Nav.Item>
-  <Nav.Item>
+  </Nav.Item>}
+  {props.focusSet && <Nav.Item>
     <Nav.Link title="Text XML Source" onClick={() => {props.handleTabChange("xml", props.windowId)}}><FaCode/></Nav.Link>
-  </Nav.Item>
-  <Nav.Item>
+  </Nav.Item>}
+  {props.focusSet && <Nav.Item>
     <Nav.Link title="Text Comparisons" onClick={() => {props.handleTabChange("textCompare", props.windowId)}}><FaGripVertical/></Nav.Link>
-  </Nav.Item>
+  </Nav.Item>}
+  {props.focusSet &&<Nav.Item>
+    <Nav.Link title="Comments" onClick={() => {props.handleTabChange("comments", props.windowId)}}><FaComments/></Nav.Link>
+  </Nav.Item>}
+  {props.focusSet &&<Nav.Item>
+    <Nav.Link title="Text Citation" onClick={() => {props.handleTabChange("citation", props.windowId)}}><FaPencilAlt/></Nav.Link>
+  </Nav.Item>}
   <Nav.Item>
     <Nav.Link title="Text Outline" onClick={() => {props.handleTabChange("textOutline", props.windowId)}}><FaAlignLeft/></Nav.Link>
   </Nav.Item>
   <Nav.Item>
     <Nav.Link title="Text Search" onClick={() => {props.handleTabChange("search", props.windowId)}}><FaSearch/></Nav.Link>
   </Nav.Item>
-  <Nav.Item>
-    <Nav.Link title="Comments" onClick={() => {props.handleTabChange("comments", props.windowId)}}><FaComments/></Nav.Link>
-  </Nav.Item>
-  <Nav.Item>
-    <Nav.Link title="Text Citation" onClick={() => {props.handleTabChange("citation", props.windowId)}}><FaPencilAlt/></Nav.Link>
-  </Nav.Item>
+
   {props.openWidthHeight != "minimum" &&
   <Nav.Item>
     <Nav.Link title="Minimize Window" onClick={() => {props.handleMinimize(props.windowId)}}><FaRegWindowMinimize/></Nav.Link>

@@ -47,7 +47,9 @@ class Text extends React.Component {
     });
 
     // scroll to paragraph after document has been appended
-    scrollToParagraph(scrollTo, true)
+    if (scrollTo){
+      scrollToParagraph(scrollTo, true)
+    }
 
   //   $('.lbp-paragraphmenu').click(function(e) {
   //     e.preventDefault();
@@ -122,7 +124,9 @@ class Text extends React.Component {
     }
     // if doc has already been appended, still scroll to target block
     else{
+      if (this.props.scrollTo){
       scrollToParagraph(this.props.scrollTo, true)
+      }
     }
 
 
@@ -130,7 +134,6 @@ class Text extends React.Component {
   }
 
   componentDidMount(){
-
     this.retrieveText(this.props.doc, this.props.topLevel, this.props.scrollTo)
   }
   componentWillReceiveProps(newProps){

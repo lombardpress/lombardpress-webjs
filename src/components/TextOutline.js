@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {FaExternalLinkAlt, FaChevronDown} from 'react-icons/fa';
+import {FaExternalLinkAlt, FaChevronDown, FaChevronUp} from 'react-icons/fa';
 import {Link} from 'react-router-dom';
 
 import {runQuery} from './utils'
@@ -47,15 +47,17 @@ class TextOutline extends React.Component {
   render(){
     const displayChildren = () => {
       const parts = this.state.parts.map((p) => {
-        return <TextOutline showChildren={false} resourceid={p.part} title={p.title}/>
+        return <TextOutline key={p.part} showChildren={false} resourceid={p.part} title={p.title} level={p.level}/>
       })
       return parts
     }
+    const indent = this.props.level * 5
     return (
-      <div id="outline" className={this.props.hidden ? "hidden" : "showing"}>
+      <div id="outline" className={this.props.hidden ? "hidden" : "showing"} style={{"padding-left": indent + "px"}}>
         <p>
         {this.props.title}
-        <a href="#" onClick={this.handleToggleChildren}><FaChevronDown/></a>
+        {(this.state.parts.length > 0 && !this.state.showChildren) && <a href="#" onClick={this.handleToggleChildren}><FaChevronDown/></a>}
+        {(this.state.parts.length > 0 && this.state.showChildren) && <a href="#" onClick={this.handleToggleChildren}><FaChevronUp/></a>}
         <Link to={"/text?resourceid=" + this.props.resourceid}><FaExternalLinkAlt/></Link>
         </p>
         {this.state.showChildren && displayChildren()}
