@@ -9,6 +9,7 @@ import TextCompareWrapper from "./TextCompareWrapper"
 import SearchWrapper from "./SearchWrapper"
 import Comments from "./Comments"
 import Citation from "./Citation"
+import TextOutline from "./TextOutline"
 
 
 
@@ -50,6 +51,7 @@ class Window extends React.Component {
           <Surface2 surfaceid={this.props.surfaceid} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad != "surface2"}/>
           <Surface3Wrapper info={this.props.info} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad != "surface3"}/>
           <Comments info={this.props.info} hidden={this.state.windowLoad != "comments"}/>
+          <TextOutline resourceid={this.props.info.topLevel} title={this.props.info.topLevel} showChildren={true} hidden={this.state.windowLoad != "textOutline"} handleBlockFocusChange={this.props.handleBlockFocusChange}/>
           {
             //<Surface surfaceid={this.props.surfaceid} topLevel={this.props.topLevel}/>
           }

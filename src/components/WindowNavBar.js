@@ -3,7 +3,7 @@ import {NavLink} from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 
-import { FaTimes, FaSearch, FaGripVertical, FaCode, FaInfo, FaRegImage, FaAngleDoubleDown, FaAngleDoubleLeft, FaComments, FaRegWindowRestore, FaRegWindowMaximize, FaRegWindowMinimize, FaRegWindowClose, FaPencilAlt, FaClone} from 'react-icons/fa';
+import { FaTimes, FaSearch, FaGripVertical, FaCode, FaInfo, FaRegImage, FaAngleDoubleDown, FaAngleDoubleLeft, FaComments, FaRegWindowRestore, FaRegWindowMaximize, FaRegWindowMinimize, FaRegWindowClose, FaPencilAlt, FaClone, FaAlignLeft} from 'react-icons/fa';
 
 
 import {resourceEndpoint} from './config';
@@ -31,6 +31,9 @@ function WindowNavBar(props) {
   </Nav.Item>
   <Nav.Item>
     <Nav.Link title="Text Comparisons" onClick={() => {props.handleTabChange("textCompare", props.windowId)}}><FaGripVertical/></Nav.Link>
+  </Nav.Item>
+  <Nav.Item>
+    <Nav.Link title="Text Outline" onClick={() => {props.handleTabChange("textOutline", props.windowId)}}><FaAlignLeft/></Nav.Link>
   </Nav.Item>
   <Nav.Item>
     <Nav.Link title="Text Search" onClick={() => {props.handleTabChange("search", props.windowId)}}><FaSearch/></Nav.Link>

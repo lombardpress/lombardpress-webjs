@@ -399,3 +399,21 @@ export function getAuthorInformation(authorid){
        "}"].join('');
        return query
      }
+
+   //gets lines and zone order for
+   export function getChildParts(resourceid){
+      const query = [
+        "SELECT ?part ?title ?level ?order ",
+        "{",
+          "<" + resourceid + "> <http://purl.org/dc/terms/hasPart> ?part . ",
+          "?part <http://purl.org/dc/elements/1.1/title> ?title .",
+          "?part <http://scta.info/property/level> ?level .",
+          "OPTIONAL",
+          "{",
+          "?part <http://scta.info/resource/totalOrderNumber> ?order .",
+          "}",
+        "}",
+        "ORDER BY ?order"].join('');
+        console.log(query)
+        return query
+      }
