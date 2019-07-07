@@ -52,14 +52,16 @@ class TextWrapper extends React.Component {
     }
   }
   openWindow(id, windowLoad){
-    this.setState((prevState) => {
-      const windows = prevState.windows
-      windows[id].open = true
-      windows[id].windowLoad = windowLoad
-      return {
-        windows: windows,
-      }
-    })
+    if (!this.state.windows[id].open){
+      this.setState((prevState) => {
+        const windows = prevState.windows
+        windows[id].open = true
+        windows[id].windowLoad = windowLoad
+        return {
+          windows: windows,
+        }
+      })
+    }
   }
   handleClose(windowId){
     this.setState((prevState) => {
@@ -318,6 +320,7 @@ class TextWrapper extends React.Component {
               openWidthHeight={this.state.windows[key].openWidthHeight}
               surfaceid={this.state.surfaceid}
               info={this.state.focus}
+              itemFocus={this.state.itemFocus}
               topLevel={this.state.itemFocus.topLevel}
               altWindowState={this.state.windows[key].windowId === "window1" ? this.state.windows["window2"].open : this.state.windows["window1"].open}
               />

@@ -39,7 +39,7 @@ function WindowNavBar(props) {
     <Nav.Link title="Text Citation" onClick={() => {props.handleTabChange("citation", props.windowId)}}><FaPencilAlt/></Nav.Link>
   </Nav.Item>}
   <Nav.Item>
-    <Nav.Link title="Text Outline" onClick={() => {props.handleTabChange("textOutline", props.windowId)}}><FaAlignLeft/></Nav.Link>
+    <Nav.Link title="Text Outline" onClick={() => {props.handleTabChange("textOutlineWrapper", props.windowId)}}><FaAlignLeft/></Nav.Link>
   </Nav.Item>
   <Nav.Item>
     <Nav.Link title="Text Search" onClick={() => {props.handleTabChange("search", props.windowId)}}><FaSearch/></Nav.Link>

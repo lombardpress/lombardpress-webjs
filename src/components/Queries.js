@@ -403,16 +403,30 @@ export function getAuthorInformation(authorid){
    //gets lines and zone order for
    export function getChildParts(resourceid){
       const query = [
-        "SELECT ?part ?title ?level ?order ",
+        "SELECT ?part ?title ?level ?order ?structureType ?questionTitle ",
         "{",
           "<" + resourceid + "> <http://purl.org/dc/terms/hasPart> ?part . ",
           "?part <http://purl.org/dc/elements/1.1/title> ?title .",
           "?part <http://scta.info/property/level> ?level .",
+          "?part <http://scta.info/property/structureType> ?structureType .",
           "OPTIONAL",
           "{",
           "?part <http://scta.info/property/sectionOrderNumber> ?order .",
+          "}",
+          "OPTIONAL",
+          "{",
+          "?part <http://scta.info/property/questionTitle> ?questionTitle .",
           "}",
         "}",
         "ORDER BY ?order"].join('');
         return query
       }
+      //gets lines and zone order for
+    export function getMembersOf(resourceid){
+       const query = [
+         "SELECT ?memberOf",
+         "{",
+           "<" + resourceid + "> <http://scta.info/property/isMemberOf> ?memberOf . ",
+         "}"].join('');
+         return query
+       }

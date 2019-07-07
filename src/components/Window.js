@@ -9,7 +9,7 @@ import TextCompareWrapper from "./TextCompareWrapper"
 import SearchWrapper from "./SearchWrapper"
 import Comments from "./Comments"
 import Citation from "./Citation"
-import TextOutline from "./TextOutline"
+import TextOutlineWrapper from "./TextOutlineWrapper"
 
 
 
@@ -54,7 +54,10 @@ class Window extends React.Component {
             <Comments info={this.props.info} hidden={this.state.windowLoad != "comments"}/>
           </div>
           }
-          <TextOutline resourceid={this.props.topLevel} title={this.props.topLevel} showChildren={true} hidden={this.state.windowLoad != "textOutline"} handleBlockFocusChange={this.props.handleBlockFocusChange}/>
+          {
+            //TODO: use of info, topLevel, itemFocus, focusResearceid, resourceid, needs to be better organized and clarified
+          }
+          <TextOutlineWrapper focusResourceid={this.props.info ? this.props.info.resourceid : this.props.itemFocus.expression} resourceid={this.props.topLevel} title={this.props.topLevel} hidden={this.state.windowLoad != "textOutlineWrapper"}/>
           <SearchWrapper hidden={this.state.windowLoad != "search"} topLevel={this.props.topLevel}/>
           {
             //<Surface surfaceid={this.props.surfaceid} topLevel={this.props.topLevel}/>
