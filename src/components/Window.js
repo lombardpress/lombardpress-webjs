@@ -34,10 +34,6 @@ class Window extends React.Component {
 
 
   render(){
-    const displayManifestations = () => {
-      const newManifestations = this.state.manifestations.map((m) => {return <p>{m.value}</p>})
-      return newManifestations
-    }
     const displayChild = () => {
       return(
         <div>
@@ -45,20 +41,20 @@ class Window extends React.Component {
           {// components that are only avialable if blockDiv focus and this.props.info is set
             this.props.info &&
           <div>
-            <TextCompareWrapper info={this.props.info} relatedExpressions={this.props.relatedExpressions} hidden={this.state.windowLoad != "textCompare"}/>
-            <XmlView info={this.props.info} hidden={this.state.windowLoad != "xml"}/>
-            <Info info={this.props.info} relatedExpressions={this.props.relatedExpressions} topLevel={this.props.topLevel} hidden={this.state.windowLoad != "info"}/>
-            <Citation info={this.props.info} relatedExpressions={this.props.relatedExpressions} topLevel={this.props.topLevel} hidden={this.state.windowLoad != "citation"}/>
-            <Surface2 surfaceid={this.props.surfaceid} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad != "surface2"}/>
-            <Surface3Wrapper info={this.props.info} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad != "surface3"}/>
-            <Comments info={this.props.info} hidden={this.state.windowLoad != "comments"}/>
+            <TextCompareWrapper info={this.props.info} relatedExpressions={this.props.relatedExpressions} hidden={this.state.windowLoad !== "textCompare"}/>
+            <XmlView info={this.props.info} hidden={this.state.windowLoad !== "xml"}/>
+            <Info info={this.props.info} relatedExpressions={this.props.relatedExpressions} topLevel={this.props.topLevel} hidden={this.state.windowLoad !== "info"}/>
+            <Citation info={this.props.info} relatedExpressions={this.props.relatedExpressions} topLevel={this.props.topLevel} hidden={this.state.windowLoad !== "citation"}/>
+            <Surface2 surfaceid={this.props.surfaceid} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad !== "surface2"}/>
+            <Surface3Wrapper info={this.props.info} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad !== "surface3"}/>
+            <Comments info={this.props.info} hidden={this.state.windowLoad !== "comments"}/>
           </div>
           }
           {
             //TODO: use of info, topLevel, itemFocus, focusResearceid, resourceid, needs to be better organized and clarified
           }
-          <TextOutlineWrapper focusResourceid={this.props.info ? this.props.info.resourceid : this.props.itemFocus.expression} resourceid={this.props.topLevel} title={this.props.topLevel} hidden={this.state.windowLoad != "textOutlineWrapper"}/>
-          <SearchWrapper hidden={this.state.windowLoad != "search"} topLevel={this.props.topLevel}/>
+          <TextOutlineWrapper focusResourceid={this.props.info ? this.props.info.resourceid : this.props.itemFocus.expression} resourceid={this.props.topLevel} title={this.props.topLevel} hidden={this.state.windowLoad !== "textOutlineWrapper"}/>
+          <SearchWrapper hidden={this.state.windowLoad !== "search"} topLevel={this.props.topLevel}/>
           {
             //<Surface surfaceid={this.props.surfaceid} topLevel={this.props.topLevel}/>
           }

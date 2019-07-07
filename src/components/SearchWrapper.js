@@ -1,6 +1,4 @@
 import React from 'react';
-import Axios from 'axios'
-import Qs from "query-string"
 import Search from "./Search"
 import SearchQuery from "./SearchQuery"
 

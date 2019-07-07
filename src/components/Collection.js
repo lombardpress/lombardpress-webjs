@@ -1,19 +1,12 @@
 import React from 'react';
-import Qs from "query-string"
 import Container from 'react-bootstrap/Container';
-import InputGroup from 'react-bootstrap/InputGroup';
+
 import FormControl from 'react-bootstrap/FormControl';
 import Table from 'react-bootstrap/Table';
 
-import {loadXMLDoc, convertXMLDoc, runQuery, scrollToParagraph} from './utils'
-import {getRelatedExpressions, basicInfoQuery, basicStructureItemInfoQuery, basicStructureAllItemsInfoQuery, getStructureType, partsInfoQuery,workGroupExpressionQuery} from './Queries'
-import {Link} from 'react-router-dom';
+import {runQuery} from './utils'
+import {basicStructureAllItemsInfoQuery, partsInfoQuery,workGroupExpressionQuery} from './Queries'
 
-import $ from 'jquery';
-
-import Window from "./Window"
-
-import TextNavBar from "./TextNavBar"
 import Item from "./Item"
 
 //import Lbp from "lbp.js/lib"
@@ -93,21 +86,19 @@ class Collection extends React.Component {
           }
         )
       }
-    }).
-    catch((err) => {
+    })
+    .catch((err) => {
       console.log(err)
     })
   }
 
   retrieveWorkGroupInfo(resourceid){
-    const _this = this;
     const expressionsInfo = runQuery(workGroupExpressionQuery(resourceid))
     const partsInfo = runQuery(partsInfoQuery(resourceid))
     this.arrangeParts(partsInfo)
     this.arrangeItems(expressionsInfo)
   }
   retrieveCollectionInfo(resourceid, structureType, topLevel){
-    const _this = this;
     const collectionInfo = runQuery(basicStructureAllItemsInfoQuery(topLevel))
     const partsInfo = runQuery(partsInfoQuery(resourceid))
 
@@ -136,7 +127,6 @@ class Collection extends React.Component {
   }
   componentDidMount(){
     this.mount = true
-    const _this = this;
     this.setState({resourceid: this.props.resourceid})
     this.makeRequests(this.props.resourceid, this.props.structureType, this.props.topLevel, this.props.type)
 
@@ -145,7 +135,7 @@ class Collection extends React.Component {
   componentWillReceiveProps(nextProps) {
 
     // conditional prevents new information requestion if resource id has not changed
-    if (nextProps.resourceid != this.props.resourceid){
+    if (nextProps.resourceid !== this.props.resourceid){
       this.setState({resourceid: nextProps.resourceid, filter: ""})
       // this conditional resets form value if ref is present
       if (this.filter){

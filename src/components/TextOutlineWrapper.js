@@ -24,7 +24,7 @@ class TextOutlineWrapper extends React.Component {
     this.retrieveMembersOf(this.props.focusResourceid)
   }
   componentWillReceiveProps(newProps){
-    if (newProps.focusResourceid != this.props.focusResourceid){
+    if (newProps.focusResourceid !== this.props.focusResourceid){
       this.retrieveMembersOf(newProps.focusResourceid)
     }
   }

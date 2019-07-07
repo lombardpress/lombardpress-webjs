@@ -2,7 +2,7 @@ import React from 'react';
 
 function LineText(props) {
   return (
-    <div className="text" style={{"white-space": "nowrap"}}>
+    <div className="text" style={{"whiteSpace": "nowrap"}}>
      <span dangerouslySetInnerHTML={{__html: props.text}} />
     </div>
   );

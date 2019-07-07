@@ -49,7 +49,7 @@ class Surface3 extends React.Component {
         //second nested async call for annotation list
         const alUrl = "https://exist.scta.info/exist/apps/scta-app/folio-annotaiton-list-from-simpleXmlCoordinates.xq?surfaceid=" + surfaceid.split("/resource/")[1]
         Axios.get(alUrl).then((d2) => {
-          const resources = d2.data.resources
+          //const resources = d2.data.resources
             this.setState((prevState) => {
               const newSurface = {
                 currentSurfaceId: surfaceid,
@@ -116,7 +116,7 @@ componentDidMount(){
     }
   }
   componentWillReceiveProps(nextProps){
-    if (nextProps.manifestationid != this.props.manifestationid){
+    if (nextProps.manifestationid !== this.props.manifestationid){
       this.setState((prevState) => {
         return {
           surfaces: []
@@ -151,7 +151,6 @@ componentDidMount(){
             const coords = h.on.split("#xywh=")[1];
             const imageUrl = h.imageUrl
             const label = h.label
-            const match = label === this.props.targetLabel ? true : false
             return (
               <ImageTextWrapper key={i}
                 imageUrl={imageUrl}
@@ -166,6 +165,9 @@ componentDidMount(){
                 />
               )
             }
+            else{
+              return null
+            }
 
         })
         return imageTextWrappers
@@ -179,8 +181,8 @@ componentDidMount(){
         const flcoords = fl.on.split("#xywh=")[1];
         const y = flcoords.split(",")[1]
         const ll = surface.annotations[surface.lastLine - 1]
-        const llcanvas = ll ? ll.on.split("#xywh=")[0] : ""
-        const llcanvasShort = llcanvas.split("/")[llcanvas.split("/").length - 1];
+        //const llcanvas = ll ? ll.on.split("#xywh=")[0] : ""
+        //const llcanvasShort = llcanvas.split("/")[llcanvas.split("/").length - 1];
         const llcoords = ll ? ll.on.split("#xywh=")[1] : ""
         const lly = llcoords.split(",")[1]
         const llh = llcoords.split(",")[3]
@@ -204,7 +206,7 @@ componentDidMount(){
           )
         }
       else{
-        return <img src={surface.imageurl + "/full/" + this.state.width + ",/0/default.jpg"}/>
+        return <img alt="manuscript" src={surface.imageurl + "/full/" + this.state.width + ",/0/default.jpg"}/>
       }
     }
     return (

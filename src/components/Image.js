@@ -14,7 +14,7 @@ function Image(props) {
 
   const imageLink = props.imageUrl + "/" + newCoords + "/" + props.displayWidth + ",/0/default.jpg"
   return (
-    <img src={imageLink}/>
+    <img alt="manuscript" src={imageLink}/>
   );
 }
 

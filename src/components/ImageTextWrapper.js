@@ -13,13 +13,16 @@ class ImageTextWrapper extends Component {
     }
   }
   render() {
-    const getClass = () => {
-      if (this.props.targetLabel === this.props.label){
-        return "target"
-      }
-    }
+    // const getClass = () => {
+    //   if (this.props.targetLabel === this.props.label){
+    //     return "ImageTextWrapper target"
+    //   }
+    //   else {
+    //     return "ImageTextWrapper"
+    //   }
+    // }
     return (
-      <div className="ImageTextWrapper" className={getClass()}>
+      <div className={this.props.targetLabel === this.props.label ? "ImageTextWrapper target" : "ImageTextWrapper"}>
         <div className="labelImageWrapper">
 
         <Image

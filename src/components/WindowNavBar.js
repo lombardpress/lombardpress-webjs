@@ -1,17 +1,8 @@
 import React from 'react';
-import {NavLink} from 'react-router-dom';
-import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 
-import { FaTimes, FaSearch, FaGripVertical, FaCode, FaInfo, FaRegImage, FaAngleDoubleDown, FaAngleDoubleLeft, FaComments, FaRegWindowRestore, FaRegWindowMaximize, FaRegWindowMinimize, FaRegWindowClose, FaPencilAlt, FaClone, FaAlignLeft} from 'react-icons/fa';
-
-
-import {resourceEndpoint} from './config';
-
-import Form from 'react-bootstrap/Form';
-import FormControl from 'react-bootstrap/FormControl';
-import Button from 'react-bootstrap/Button';
-
+import {FaSearch, FaGripVertical, FaCode, FaInfo, FaRegImage, FaComments, FaRegWindowRestore, FaRegWindowMaximize, FaRegWindowMinimize, FaRegWindowClose, FaPencilAlt, FaClone, FaAlignLeft} from 'react-icons/fa';
+// reimport these if you want to use the chnage window location functions: FaAngleDoubleDown, FaAngleDoubleLeft,
 
 function WindowNavBar(props) {
 
@@ -45,16 +36,16 @@ function WindowNavBar(props) {
     <Nav.Link title="Text Search" onClick={() => {props.handleTabChange("search", props.windowId)}}><FaSearch/></Nav.Link>
   </Nav.Item>
 
-  {props.openWidthHeight != "minimum" &&
+  {props.openWidthHeight !== "minimum" &&
   <Nav.Item>
     <Nav.Link title="Minimize Window" onClick={() => {props.handleMinimize(props.windowId)}}><FaRegWindowMinimize/></Nav.Link>
   </Nav.Item>}
-  {props.openWidthHeight != "middle" &&
+  {props.openWidthHeight !== "middle" &&
   <Nav.Item>
     <Nav.Link title="Half Size Window" onClick={() => {props.handleMiddlize(props.windowId)}}><FaRegWindowRestore/></Nav.Link>
   </Nav.Item>
   }
-  {props.openWidthHeight != "maximum" &&
+  {props.openWidthHeight !== "maximum" &&
   <Nav.Item>
     <Nav.Link title="Maximize Window" onClick={() => {props.handleMaximize(props.windowId)}}><FaRegWindowMaximize/></Nav.Link>
   </Nav.Item>

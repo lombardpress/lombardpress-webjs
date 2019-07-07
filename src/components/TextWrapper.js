@@ -1,6 +1,4 @@
 import React from 'react';
-import Qs from "query-string"
-
 import Container from 'react-bootstrap/Container';
 
 
@@ -161,15 +159,12 @@ class TextWrapper extends React.Component {
   }
   setFocus(id){
     const fullid = id.includes("http") ? id : "http://scta.info/resource/" + id
-    const shortid = id.includes("http") ? id.split("/resource/")[1] : id
     this.props.handleUpdateUrlResource(fullid)
   }
 
 
   retrieveFocusInfo(id){
     const fullid = id.includes("http") ? id : "http://scta.info/resource/" + id
-    const shortid = id.includes("http") ? id.split("/resource/")[1] : id
-
     // get info
     const info = runQuery(basicInfoQuery(fullid))
     //arrange info and set it to state
@@ -252,7 +247,6 @@ class TextWrapper extends React.Component {
     //   }
     setItemFocus(id){
       const fullid = id.includes("http") ? id : "http://scta.info/resource/" + id
-      const shortid = id.includes("http") ? id.split("/resource/")[1] : id
       // get info
       const info = runQuery(itemTranscriptionInfoQuery(fullid))
       this.arrangeItemFocusInfo(info)
@@ -291,7 +285,7 @@ class TextWrapper extends React.Component {
     if (!newProps.blockDivFocus){
       this.setState({focus: ""});
     }
-    else if (newProps.blockDivFocus != this.props.blockDivFocus){
+    else if (newProps.blockDivFocus !== this.props.blockDivFocus){
       this.retrieveFocusInfo(newProps.blockDivFocus)
     }
   }
@@ -302,7 +296,7 @@ class TextWrapper extends React.Component {
     const displayWindows = () => {
       const windows = Object.keys(this.state.windows).map((key) => {
         if (this.state.windows[key].open){
-          return (<Window windowLoad={this.state.windows[key].windowLoad}
+          return (<Window
               key={key}
               handleClose={this.handleClose}
               handleMinimize={this.handleMinimize}
@@ -325,6 +319,9 @@ class TextWrapper extends React.Component {
               altWindowState={this.state.windows[key].windowId === "window1" ? this.state.windows["window2"].open : this.state.windows["window1"].open}
               />
             )
+          }
+          else{
+            return null
           }
         })
         return windows

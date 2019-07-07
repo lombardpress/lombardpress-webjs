@@ -1,21 +1,14 @@
 import React from 'react';
-import {NavLink, Link} from 'react-router-dom';
+import {NavLink} from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-
 import {resourceEndpoint} from './config';
-
-import Form from 'react-bootstrap/Form';
-import FormControl from 'react-bootstrap/FormControl';
-import Button from 'react-bootstrap/Button';
-
 
 function NavBar() {
   return (
     <Navbar bg="dark" variant="light" expand="lg" fixed="top">
       <Nav>
-        <NavLink className="nav-link" to="/">SCTA Reading Room</NavLink> 
+        <NavLink className="nav-link" to="/">SCTA Reading Room</NavLink>
       </Nav>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">

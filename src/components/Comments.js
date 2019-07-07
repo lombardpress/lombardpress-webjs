@@ -80,7 +80,7 @@ handleSumbitComment(comment){
   }
   componentWillReceiveProps(newProps){
     // conditional prevents against needlessly rerequesting information when "info" is the same
-    if (newProps.info != this.props.info){
+    if (newProps.info !== this.props.info){
       this.setState({inbox: newProps.info.inbox, resourceid: newProps.info.resourceid})
       this.retrieveComments(newProps.info.inbox)
     }

@@ -4,8 +4,6 @@ import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 //import xml from 'react-syntax-highlighter/dist/esm/languages/hljs/xml';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
-import {loadXMLDoc, nsResolver} from './utils'
-//SyntaxHighlighter.registerLanguage('xml', xml);
 class XmlView extends React.Component {
 
   constructor(props){
@@ -43,14 +41,15 @@ class XmlView extends React.Component {
 
   }
   componentWillReceiveProps(nextProps){
-    this.retrieveXML(nextProps.info)
+    if (nextProps.info !== this.props.info){
+      this.retrieveXML(nextProps.info)
+    }
   }
   componentWillUnmount(){
     this.mount = false
   }
 
   render(){
-    const codeString = '<xml><div>Test</div></xml>';
     return (
       <div className={this.props.hidden ? "hidden" : "showing"}>
       <SyntaxHighlighter language="xml" style={docco} showLineNumbers>

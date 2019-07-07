@@ -1,7 +1,4 @@
 import React from 'react';
-import Container from 'react-bootstrap/Container';
-import Axios from 'axios'
-
 import Surface3 from './Surface3';
 
 import { FaList, FaFile, FaParagraph} from 'react-icons/fa';
@@ -42,7 +39,7 @@ class Surface3Wrapper extends React.Component {
     }
   }
   componentWillReceiveProps(nextProps){
-    if (nextProps.info != this.props.info){
+    if (nextProps.info !== this.props.info){
       this.setState((prevState) => {
         return {
           manifestations: nextProps.info.manifestations,
@@ -53,7 +50,7 @@ class Surface3Wrapper extends React.Component {
   render() {
     const displayManifestationsList = () => {
       const list = this.state.manifestations.map((m) => {
-        return <p key={"title-" + m.manifestation}><a onClick={() => {this.handleChangeManifestation(m.manifestation)}}>{m.manifestationTitle}</a></p>
+        return <p key={"title-" + m.manifestation}><span onClick={() => {this.handleChangeManifestation(m.manifestation)}}>{m.manifestationTitle}</span></p>
       })
       return list
     }
@@ -61,6 +58,9 @@ class Surface3Wrapper extends React.Component {
       const manifestation = this.state.manifestations.map((m) => {
         if (m.manifestation.includes(this.state.focusedManifestationSlug)){
           return <Surface3 key={"surface-" + m.manifestation} manifestationid={m.manifestation} annotationsDisplay={this.state.annotationsDisplay}/>
+        }
+        else{
+          return null
         }
       })
       return manifestation
@@ -78,9 +78,9 @@ class Surface3Wrapper extends React.Component {
           </div>
           {this.state.focusedManifestationSlug &&
             <div>
-            <p><a title="Text Line View" onClick={() => {this.handleToggleTextLinesView("lines")}}><FaList/></a></p>
-            <p><a title="Paragraph View" onClick={() => {this.handleToggleTextLinesView("paragraph")}}><FaParagraph/></a></p>
-            <p><a title="Full Surface View" onClick={() => {this.handleToggleTextLinesView("surface")}}><FaFile/></a></p>
+            <p><span title="Text Line View" onClick={() => {this.handleToggleTextLinesView("lines")}}><FaList/></span></p>
+            <p><span title="Paragraph View" onClick={() => {this.handleToggleTextLinesView("paragraph")}}><FaParagraph/></span></p>
+            <p><span title="Full Surface View" onClick={() => {this.handleToggleTextLinesView("surface")}}><FaFile/></span></p>
             </div>
           }
 

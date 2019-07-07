@@ -1,6 +1,5 @@
 import React from 'react';
 import Axios from 'axios'
-import Qs from "query-string"
 import {Link} from 'react-router-dom';
 
 class Search extends React.Component {
@@ -14,8 +13,8 @@ class Search extends React.Component {
   }
   retrieveResults(query, expressionid){
     const _this = this
-    Axios.get("http://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-expressionid.xq?query=" + query + "&expressionid=" + expressionid).
-          then((d) => {
+    Axios.get("http://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-expressionid.xq?query=" + query + "&expressionid=" + expressionid)
+      .then((d) => {
             _this.setState({searchResults: d.data.results, count: d.data.count})
           })
   }

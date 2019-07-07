@@ -26,10 +26,10 @@ class TextSwitch extends React.Component {
     structureTypePromise.then((t) => {
       const type = t.data.results.bindings[0].type.value
       const structureType = t.data.results.bindings[0].structureType ? t.data.results.bindings[0].structureType.value : null
-      const level = t.data.results.bindings[0].level ? t.data.results.bindings[0].level.value : null
+      //const level = t.data.results.bindings[0].level ? t.data.results.bindings[0].level.value : null
       const topLevel = t.data.results.bindings[0].topLevel ? t.data.results.bindings[0].topLevel.value : resourceid
       const itemParent = t.data.results.bindings[0].itemParent ? t.data.results.bindings[0].itemParent.value : null
-      const itemTranscriptionId = t.data.results.bindings[0].ctranscription ? t.data.results.bindings[0].ctranscription.value : null
+      //const itemTranscriptionId = t.data.results.bindings[0].ctranscription ? t.data.results.bindings[0].ctranscription.value : null
       if (type === "http://scta.info/resource/person"){
           this.setState({displayType: "person", resourceid: resourceid, structureType: "", topLevel: "", type: type})
       }
@@ -68,7 +68,6 @@ class TextSwitch extends React.Component {
   }
 
   componentDidMount(){
-    const _this = this;
     const newResourceId = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).resourceid
     this.getInfo(newResourceId)
   }

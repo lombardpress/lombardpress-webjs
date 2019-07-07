@@ -2,7 +2,7 @@ import React from 'react';
 
 import $ from 'jquery';
 
-import {loadXMLDoc, convertXMLDoc, scrollToParagraph} from './utils'
+import {convertXMLDoc, scrollToParagraph} from './utils'
 
 class Text extends React.Component {
   constructor(props){
@@ -97,8 +97,8 @@ class Text extends React.Component {
          const link = $(this).children('.appnote, .footnote')
          const target = $(link).attr('href')
          const text = $(target).html()
-         const top = $(target).position().top;
-         const left = $(target).position().left;
+        // const top = $(target).position().top;
+         //const left = $(target).position().left;
          const noteDisplay = $(link).next(".note-display")
          $(noteDisplay).removeClass("hidden")
          $(noteDisplay).html(text)
@@ -119,7 +119,7 @@ class Text extends React.Component {
   componentDidUpdate(prevProps, prevState){
 
     //check to see if doc has changed
-    if (prevProps.doc != this.props.doc){
+    if (prevProps.doc !== this.props.doc){
       this.retrieveText(this.props.doc, this.props.topLevel, this.props.scrollTo)
     }
     // if doc has already been appended, still scroll to target block

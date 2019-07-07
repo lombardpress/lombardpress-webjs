@@ -27,7 +27,6 @@ class VersionChain extends React.Component {
       const versionChainInfo = runQuery(versionHistoryInfo(itemInfo.transcriptionid))
       versionChainInfo.then((d) => {
         const b = d.data.results.bindings
-        const versions = []
         b.forEach((b, i) => {
           var reviewUrl = "https://dll-review-registry.scta.info/api/v1/reviews/?url=" + b.doc.value + "?society=MAA"
           Axios(reviewUrl).then((d2) => {
@@ -82,7 +81,7 @@ class VersionChain extends React.Component {
         const currentlyViewing = v.versionTranscription === this.state.currentVersion.transcriptionid ? "currentlyViewing" : ""
         return (<p key={v.versionTranscription} className={currentlyViewing}>
           {currentlyViewing ? <span>{v.versionLabel} (Currently Viewing)</span> : <Link to={"/text?resourceid=" + v.versionTranscription}>{v.versionLabel}</Link>}
-          {v.versionReviewInfo.html_link && <span> Peer Reviewed: <a href={v.versionReviewInfo.html_link}><img src={v.versionReviewInfo.img_url}/></a> </span>}
+          {v.versionReviewInfo.html_link && <span> Peer Reviewed: <a href={v.versionReviewInfo.html_link}><img alt="review" src={v.versionReviewInfo.img_url}/></a> </span>}
           <span class="small"> Data Source: <a href={v.versionDoc}>{v.versionDoc}</a> </span>
           </p>)
       })

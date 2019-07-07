@@ -1,8 +1,7 @@
 import React from 'react';
-import {BrowserRouter, HashRouter, Route, Switch, Link, NavLink} from 'react-router-dom';
+import {HashRouter, Route, Switch} from 'react-router-dom';
 import Home from "./Home"
 import SearchWrapper from "./SearchWrapper"
-import Text from "./Text"
 import TextSwitch from "./TextSwitch"
 import About from "./About"
 import NavBar from './NavBar';

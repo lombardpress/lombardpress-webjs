@@ -1,13 +1,8 @@
 import React from 'react';
-import Qs from "query-string"
 import Container from 'react-bootstrap/Container';
-import InputGroup from 'react-bootstrap/InputGroup';
-import FormControl from 'react-bootstrap/FormControl';
 import Table from 'react-bootstrap/Table';
-
 import {runQuery} from './utils'
 import {getAuthorInformation} from './Queries'
-import {Link} from 'react-router-dom';
 import Item from "./Item"
 
 //import Lbp from "lbp.js/lib"
@@ -37,7 +32,6 @@ class AuthorCollection extends React.Component {
 
   }
   arrangeItems(itemsPromise, resourceid){
-    const _this = this
     itemsPromise.then((d) => {
       console.log("data", d)
       const author = d.data["@graph"].filter((i) => i["@id"] === resourceid)[0]
@@ -81,13 +75,9 @@ class AuthorCollection extends React.Component {
       else{
         expressions = [{id: author.hasTopLevelExpression, title: d.data["@graph"].filter((i) => i["@id"] === author.hasTopLevelExpression)[0]["http://purl.org/dc/elements/1.1/title"]}]
       }
-      console.log("articles", authorArticles)
-      console.log("textArticles", textArticles)
-      console.log("expressions", expressions)
-
       this.setState({authorArticles: authorArticles, textArticles: textArticles, expressions: expressions, authorTitle: authorTitle })
-    }).
-    catch((err) => {
+    })
+    .catch((err) => {
       console.log(err)
     })
   }

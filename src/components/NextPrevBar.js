@@ -1,9 +1,6 @@
 import React from 'react';
 
 import { FaAngleLeft, FaAngleRight} from 'react-icons/fa';
-
-import {NavLink} from 'react-router-dom';
-import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 
 function NextPrevBar(props) {

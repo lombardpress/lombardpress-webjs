@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {FaExternalLinkAlt, FaChevronDown, FaChevronUp} from 'react-icons/fa';
 import {Link} from 'react-router-dom';
 
@@ -54,10 +53,10 @@ class TextOutline extends React.Component {
 
   }
   componentWillReceiveProps(newProps){
-    if (newProps.resourceid != this.props.resourceid){
+    if (newProps.resourceid !== this.props.resourceid){
       this.retrieveParts(this.props.resourceid)
     }
-    if (newProps.resourceid != this.props.resourceid || newProps.membersOf != this.props.membersOf){
+    if (newProps.resourceid !== this.props.resourceid || newProps.membersOf !== this.props.membersOf){
       if (newProps.membersOf){
         if (newProps.membersOf.includes(newProps.resourceid)) {
           this.setState({showChildren: true})
@@ -89,9 +88,9 @@ class TextOutline extends React.Component {
         <p className={this.props.bold}>
         {this.props.title}
         {this.props.questionTitle && <span>: {this.props.questionTitle}</span>}
-        {(this.state.parts.length > 0 && !this.state.showChildren) && <a href="#" onClick={this.handleToggleChildren}><FaChevronDown/></a>}
-        {(this.state.parts.length > 0 && this.state.showChildren) && <a href="#" onClick={this.handleToggleChildren}><FaChevronUp/></a>}
-        {this.props.structureType != "http://scta.info/resource/structureCollection" && <Link to={"/text?resourceid=" + this.props.resourceid}><FaExternalLinkAlt/></Link>}
+        {(this.state.parts.length > 0 && !this.state.showChildren) && <span className="outlineArrow" onClick={this.handleToggleChildren}><FaChevronDown/></span>}
+        {(this.state.parts.length > 0 && this.state.showChildren) && <span className="outlineArrow" onClick={this.handleToggleChildren}><FaChevronUp/></span>}
+        {this.props.structureType !== "http://scta.info/resource/structureCollection" && <Link to={"/text?resourceid=" + this.props.resourceid}><FaExternalLinkAlt/></Link>}
         </p>
         {this.state.showChildren && displayChildren()}
       </div>

@@ -48,14 +48,13 @@ class Surface2 extends React.Component {
     // manifest id should be retrieved from query
     // this is a temporary measure until db is corrected and query is posible
 
-    const manifest = "http://scta.info/iiif/" + this.props.topLevel.split("/resource/")[1] + "/" + surfaceid.split("/resource/")[1].split("/")[0] + "/" + "manifest";
+    const manifest = "http://scta.info/iiif/" + this.props.topLevel.split("/resource/")[1] + "/" + surfaceid.split("/resource/")[1].split("/")[0] + "/manifest";
     const surfaceInfo = runQuery(getSurfaceInfo(surfaceid))
     surfaceInfo.then((d) => {
       const b = d.data.results.bindings[0]
       //second nested async call for annotation list
       const alUrl = "https://exist.scta.info/exist/apps/scta-app/folio-annotaiton-list-from-simpleXmlCoordinates.xq?surfaceid=" + surfaceid.split("/resource/")[1]
       Axios.get(alUrl).then((d2) => {
-        const resources = d2.data.resources
           this.setState({
           currentSurfaceId: surfaceid,
           surfaceTitle: b.surfaceTitle.value,
@@ -102,7 +101,6 @@ componentDidMount(){
           const coords = h.on.split("#xywh=")[1];
           const imageUrl = h.imageUrl
           const label = h.label
-          const match = label === this.props.targetLabel ? true : false
           return (
             <ImageTextWrapper key={i}
               imageUrl={imageUrl}
@@ -121,7 +119,7 @@ componentDidMount(){
         return imageTextWrappers
       }
       else{
-        return <img src={this.state.imageurl + "/" + this.state.region + "/" + this.state.width + ",/0/default.jpg"}/>
+        return <img alt="manuscript" src={this.state.imageurl + "/" + this.state.region + "/" + this.state.width + ",/0/default.jpg"}/>
       }
     }
     return (
@@ -130,9 +128,9 @@ componentDidMount(){
         <div>
           <div className="surface-navigation">
             <p>{this.state.surfaceTitle}</p>
-            {this.state.previous && <p><a onClick={this.handlePrevious}>Previous</a></p>}
-            {this.state.next && <p><a onClick={this.handleNext}>Next</a></p>}
-            {this.state.annotations && <p><a onClick={this.handleToggleTextLines}>Toggle Text Lines</a></p>}
+            {this.state.previous && <p><button onClick={this.handlePrevious}>Previous</button></p>}
+            {this.state.next && <p><button onClick={this.handleNext}>Next</button></p>}
+            {this.state.annotations && <p><button onClick={this.handleToggleTextLines}>Toggle Text Lines</button></p>}
           </div>
           {displayImages()}
         </div> : <p>No surface selected</p>}

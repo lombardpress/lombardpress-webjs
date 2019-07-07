@@ -1,14 +1,8 @@
 import React from 'react';
-import Diff from 'diff-match-patch'
-import Axios from 'axios'
 import {Link} from 'react-router-dom';
 import { FaEyeSlash, FaEye } from 'react-icons/fa';
-
-
-
 import {runQuery} from './utils'
 import {basicInfoQuery} from './Queries'
-
 
 import TextCompareItem from './TextCompareItem'
 
@@ -88,7 +82,7 @@ class TextCompare extends React.Component {
 
   componentWillReceiveProps(nextProps){
     // conditional try to restrict new async calls to only when props.info changes
-    if (this.props.info.resourceid != nextProps.info.resourceid){
+    if (this.props.info.resourceid !== nextProps.info.resourceid){
       this.setState({baseText: nextProps.baseText})
 
       if (nextProps.isMainText){
