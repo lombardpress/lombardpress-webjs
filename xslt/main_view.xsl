@@ -43,6 +43,9 @@
   <!-- clear teiHeader -->
   <xsl:template match="tei:teiHeader"></xsl:template>
 
+  <!-- clear starts-on -->
+  <xsl:template match="tei:div[@xml:id='starts-on']"></xsl:template>
+
   <!-- heading template -->
   <xsl:template match="tei:head">
     <xsl:variable name="number" select="count(ancestor::tei:div)" />
@@ -81,11 +84,7 @@
         <xsl:number level="any" from="tei:text"/>
       </span>
       <xsl:apply-templates/>
-      <xsl:if test="./@xml:id">
-        <span class="lbp-paragraphmenu" data-id="{@xml:id}">
-          <span class="glyphicon glyphicon-tasks" aria-hidden="true">Menu</span>
-        </span>
-      </xsl:if>
+
       </p>
       <!-- <xsl:if test="./@xml:id">
         <nav class="navbar navbar-default paradiv" id="menu_{@xml:id}" style="display: none;">
@@ -343,7 +342,9 @@
         <a href="#lbp-footnote{$id}" id="lbp-footnotereference{$id}" name="lbp-footnotereference{$id}" class="footnote">
         [<xsl:value-of select="$id"/>]
         </a>
+        <span class="note-display hidden"/>
       </sup>
+
     <xsl:text> </xsl:text>
   </xsl:template>
 
@@ -352,7 +353,13 @@
     <xsl:variable name="id"><xsl:number count="//tei:app" level="any" format="1"/></xsl:variable>
     <span id="lbp-app-lem-{$id}" class="lemma"><xsl:apply-templates select="tei:lem"/>
     <xsl:text> </xsl:text>
-    <sup><a href="#lbp-variant{$id}" id="lbp-variantreference{$id}" name="lbp-variantreference{$id}" class="appnote">[<xsl:value-of select="$id"/>]</a></sup>
+    <sup>
+      <a href="#lbp-variant{$id}" id="lbp-variantreference{$id}" name="lbp-variantreference{$id}" class="appnote">[<xsl:value-of select="$id"/>]
+    </a>
+    <span class="note-display hidden"/>
+
+    </sup>
+
     </span>
     <xsl:text> </xsl:text>
   </xsl:template>
