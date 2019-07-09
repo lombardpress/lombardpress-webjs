@@ -29,6 +29,7 @@ class TextWrapper extends React.Component {
       doc: "",
       focus: "",
       //focusRelatedExpressions: "",
+      mtFocus: "",
       itemFocus: "",
       surfaceid: "",
       windows: {
@@ -158,7 +159,7 @@ class TextWrapper extends React.Component {
     this.setState({surfaceid: surfaceid})
   }
   setFocus(id){
-    const fullid = id.includes("http") ? id : "http://scta.info/resource/" + id
+    const fullid = id.includes("http") ? id + this.state.mtFocus : "http://scta.info/resource/" + id + this.state.mtFocus
     this.props.handleUpdateUrlResource(fullid)
   }
 
@@ -275,13 +276,29 @@ class TextWrapper extends React.Component {
 
   componentDidMount(){
     this.mount = true
+
     this.setItemFocus(this.props.transcriptionid)
+
+    const mFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[1]
+    const tFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[2]
+    this.setState({mtFocus: "/" + mFocus + "/" + tFocus})
+
     if (this.props.blockDivFocus){
       this.retrieveFocusInfo(this.props.blockDivFocus)
     }
   }
   componentWillReceiveProps(newProps){
-    this.setItemFocus(newProps.transcriptionid)
+    //Keep test, but it seems like this look up only needs to fire, when the transcription id prop changes
+    // not when other props changes.
+    if (newProps.transcriptionid !== this.props.transcriptionid){
+      this.setItemFocus(newProps.transcriptionid)
+      const mFocus = newProps.transcriptionid.split("/resource/")[1].split("/")[1]
+      const tFocus = newProps.transcriptionid.split("/resource/")[1].split("/")[2]
+      this.setState({mtFocus: "/" + mFocus + "/" + tFocus})
+    }
+
+
+
     if (!newProps.blockDivFocus){
       this.setState({focus: ""});
     }
@@ -317,6 +334,7 @@ class TextWrapper extends React.Component {
               itemFocus={this.state.itemFocus}
               topLevel={this.state.itemFocus.topLevel}
               altWindowState={this.state.windows[key].windowId === "window1" ? this.state.windows["window2"].open : this.state.windows["window1"].open}
+              mtFocus={this.state.mtFocus}
               />
             )
           }

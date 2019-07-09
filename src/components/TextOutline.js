@@ -78,7 +78,18 @@ class TextOutline extends React.Component {
             //showChildren = true;
           }
         }
-        return <TextOutline bold={bold} key={p.part} focusResourceid={this.props.focusResourceid} showChildren={this.state.showChildren} resourceid={p.part} title={p.title} level={p.level} structureType={p.structureType} membersOf={this.props.membersOf} questionTitle={p.questionTitle}/>
+        return <TextOutline
+        bold={bold}
+        key={p.part}
+        focusResourceid={this.props.focusResourceid}
+        showChildren={this.state.showChildren}
+        resourceid={p.part}
+        title={p.title}
+        level={p.level}
+        structureType={p.structureType}
+        membersOf={this.props.membersOf}
+        questionTitle={p.questionTitle}
+        mtFocus={this.props.mtFocus}/>
       })
       return parts
     }
@@ -90,7 +101,7 @@ class TextOutline extends React.Component {
         {this.props.questionTitle && <span>: {this.props.questionTitle}</span>}
         {(this.state.parts.length > 0 && !this.state.showChildren) && <span className="outlineArrow" onClick={this.handleToggleChildren}><FaChevronDown/></span>}
         {(this.state.parts.length > 0 && this.state.showChildren) && <span className="outlineArrow" onClick={this.handleToggleChildren}><FaChevronUp/></span>}
-        {this.props.structureType !== "http://scta.info/resource/structureCollection" && <Link to={"/text?resourceid=" + this.props.resourceid}><FaExternalLinkAlt/></Link>}
+        {this.props.structureType !== "http://scta.info/resource/structureCollection" && <Link to={"/text?resourceid=" + this.props.resourceid + this.props.mtFocus} ><FaExternalLinkAlt/></Link>}
         </p>
         {this.state.showChildren && displayChildren()}
       </div>
