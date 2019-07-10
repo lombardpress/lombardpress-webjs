@@ -210,6 +210,9 @@ class TextWrapper extends React.Component {
               focus: {
                 resourceid: resourceid,
                 title: bindings.title.value,
+                longTitle: bindings.longTitle ? bindings.longTitle.value : "",
+                author: bindings.author ? bindings.author.value : "",
+                authorTitle: bindings.authorTitle ? bindings.authorTitle.value : "",
                 structureType: bindings.structureType.value,
                 inbox: bindings.inbox.value,
                 next: bindings.next ? bindings.next.value : "",

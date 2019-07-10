@@ -26,7 +26,14 @@ export function nsResolver(prefix) {
     }
 }
 
-
+export function copyToClipboard(string){
+  var dummy = document.createElement("textarea");
+  document.body.appendChild(dummy);
+  dummy.value = string;
+  dummy.select();
+  document.execCommand("copy");
+  document.body.removeChild(dummy);
+}
 
 export function runQuery(query){
   //const sparqlEndpoint = "https://sparql-docker.scta.info/ds/query"

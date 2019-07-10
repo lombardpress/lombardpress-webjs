@@ -81,7 +81,7 @@
 // query info block, division, or item (possible also collection)
 export function basicInfoQuery(itemExpressionUri){
   const query = [
-    "SELECT DISTINCT ?title ?structureType ?cmanifestation ?cmanifestationTitle ?manifestation ?manifestationTitle ?ctranscription ?manifestationCTranscription ?cdoc ?cxml ?expressionShortId ?longTitle ?topLevelExpression ?next ?previous ?inbox ",
+    "SELECT DISTINCT ?title ?structureType ?cmanifestation ?cmanifestationTitle ?manifestation ?manifestationTitle ?ctranscription ?manifestationCTranscription ?cdoc ?cxml ?expressionShortId ?longTitle ?topLevelExpression ?next ?previous ?inbox ?author ?authorTitle ",
     "WHERE { ",
     "<" + itemExpressionUri + "> <http://purl.org/dc/elements/1.1/title> ?title .",
     "<" + itemExpressionUri + "> <http://scta.info/property/structureType> ?structureType .",
@@ -94,8 +94,15 @@ export function basicInfoQuery(itemExpressionUri){
     "?ctranscription <http://scta.info/property/hasDocument> ?cdoc . ",
     "?ctranscription <http://scta.info/property/hasXML> ?cxml . ",
     "<" + itemExpressionUri + "> <http://scta.info/property/shortId> ?expressionShortId .",
-    "<" + itemExpressionUri + "> <http://scta.info/property/longTitle> ?longTitle .",
     "<" + itemExpressionUri + "> <http://scta.info/property/isPartOfTopLevelExpression> ?topLevelExpression .",
+    "OPTIONAL {",
+    "<" + itemExpressionUri + "> <http://scta.info/property/longTitle> ?longTitle .",
+    "}",
+    "OPTIONAL {",
+    "?topLevelExpression <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
+    "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
+    "}",
+
     "OPTIONAL {",
     "<" + itemExpressionUri + "> <http://scta.info/property/next> ?next .",
     "}",
@@ -430,3 +437,23 @@ export function getAuthorInformation(authorid){
          "}"].join('');
          return query
        }
+
+    export function getManifestationCitationInfo(transcriptionid){
+       var query = [
+       "SELECT DISTINCT ?manifestation ?manifestationTitle ?manifestationSurface ?surfaceTitle ?codexTitle ?datasource ",
+       "{",
+       "<" + transcriptionid + "> <http://scta.info/property/isTranscriptionOf> ?manifestation .",
+       "<" + transcriptionid + "> <http://scta.info/property/hasDocument> ?datasource . ",
+       "?manifestation <http://purl.org/dc/elements/1.1/title> ?manifestationTitle .",
+       "OPTIONAL",
+         "{",
+         "?manifestation <http://scta.info/property/isOnSurface> ?manifestationSurface .",
+         "?manifestationSurface <http://purl.org/dc/elements/1.1/title> ?surfaceTitle .",
+         "?surface <http://scta.info/property/order> ?surface_order .",
+         "?codex <http://scta.info/property/hasSurface> ?manifestationSurface .",
+         "?codex <http://purl.org/dc/elements/1.1/title> ?codexTitle .",
+         "}",
+       "}",
+       "ORDER BY ?surface_order"].join('');
+       return query
+     }
