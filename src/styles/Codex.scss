@@ -1,0 +1,16 @@
+.codexWrapper{
+  display: flex;
+  justify-content: space-around;
+}
+.codexImage{
+  width: 500px;
+}
+.codexContentsWrapper{
+  width: 500px;
+  height: 100vh;
+  overflow: scroll
+}
+.codexLink{
+  color: $link-color;
+  cursor: pointer;
+}

@@ -44,11 +44,11 @@ class Surface2 extends React.Component {
     })
   }
   retrieveSurfaceInfo(surfaceid){
-    console.log('surfaceid', surfaceid)
     // manifest id should be retrieved from query
     // this is a temporary measure until db is corrected and query is posible
 
-    const manifest = "http://scta.info/iiif/" + this.props.topLevel.split("/resource/")[1] + "/" + surfaceid.split("/resource/")[1].split("/")[0] + "/manifest";
+    //const manifest = "http://scta.info/iiif/" + this.props.topLevel.split("/resource/")[1] + "/" + surfaceid.split("/resource/")[1].split("/")[0] + "/manifest";
+    const manifest = "";
     const surfaceInfo = runQuery(getSurfaceInfo(surfaceid))
     surfaceInfo.then((d) => {
       const b = d.data.results.bindings[0]
@@ -82,7 +82,6 @@ class Surface2 extends React.Component {
 }
 componentDidMount(){
     if (this.props.surfaceid){
-      console.log('surfaceid', this.props.surfaceid)
       this.retrieveSurfaceInfo(this.props.surfaceid)
     }
   }
@@ -111,7 +110,7 @@ componentDidMount(){
               label={label}
               targetLabel={this.props.targetLabel}
               surfaceButton={false}
-              displayWidth="1000"
+              displayWidth={this.props.width ? this.props.width : this.state.width}
               />
             )
 
@@ -119,7 +118,8 @@ componentDidMount(){
         return imageTextWrappers
       }
       else{
-        return <img alt="manuscript" src={this.state.imageurl + "/" + this.state.region + "/" + this.state.width + ",/0/default.jpg"}/>
+        const width = this.props.width ? this.props.width : this.state.width
+        return <img alt="manuscript" src={this.state.imageurl + "/" + this.state.region + "/" + width + ",/0/default.jpg"}/>
       }
     }
     return (
@@ -128,8 +128,12 @@ componentDidMount(){
         <div>
           <div className="surface-navigation">
             <p>{this.state.surfaceTitle}</p>
-            {this.state.previous && <p><button onClick={this.handlePrevious}>Previous</button></p>}
-            {this.state.next && <p><button onClick={this.handleNext}>Next</button></p>}
+            {this.props.handleSurfaceFocusChange &&
+              <div>
+              {this.state.previous && <button onClick={this.handlePrevious}>Previous</button>}
+              {this.state.next && <button onClick={this.handleNext}>Next</button>}
+              </div>
+            }
             {this.state.annotations && <p><button onClick={this.handleToggleTextLines}>Toggle Text Lines</button></p>}
           </div>
           {displayImages()}

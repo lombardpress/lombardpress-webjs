@@ -9,7 +9,6 @@ function Image(props) {
     const w = parseInt(coordsSplitArray[2]) + 40
     const h = coordsSplitArray[3]
     newCoords = x + "," + y + "," + w + "," + h
-    console.log(newCoords)
   }
 
   const imageLink = props.imageUrl + "/" + newCoords + "/" + props.displayWidth + ",/0/default.jpg"

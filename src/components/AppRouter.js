@@ -4,6 +4,7 @@ import Home from "./Home"
 import SearchWrapper from "./SearchWrapper"
 import TextSwitch from "./TextSwitch"
 import About from "./About"
+import Codices from "./Codices"
 import NavBar from './NavBar';
 
 
@@ -22,6 +23,7 @@ const AppRouter = () => (
         <Route path="/" exact={true} component={Home}/>
         <Route path="/text"  exact={true} component={TextSwitch}/>
         <Route path="/about" exact={true} component={About}/>
+        <Route path="/codices" exact={true} component={Codices}/>
         <Route path="/search" exact={true} render={(props) => <SearchWrapper {...props} hidden={false}/>}/>
         {
           //<Route path="/edit/:id" exact={true} component={EditExpensePage}/>

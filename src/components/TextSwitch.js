@@ -3,6 +3,7 @@ import Qs from "query-string"
 import TextWrapper from "./TextWrapper"
 import Collection from "./Collection"
 import AuthorCollection from "./AuthorCollection"
+import Codex from "./Codex"
 
 import {runQuery} from './utils'
 import {getItemTranscription, getItemTranscriptionFromBlockDiv, getStructureType} from './Queries'
@@ -32,6 +33,9 @@ class TextSwitch extends React.Component {
       //const itemTranscriptionId = t.data.results.bindings[0].ctranscription ? t.data.results.bindings[0].ctranscription.value : null
       if (type === "http://scta.info/resource/person"){
           this.setState({displayType: "person", resourceid: resourceid, structureType: "", topLevel: "", type: type})
+      }
+      else if (type === "http://scta.info/resource/codex"){
+          this.setState({displayType: "codex", resourceid: resourceid, structureType: "", topLevel: "", type: type})
       }
       else if (type === "http://scta.info/resource/workGroup"){
           this.setState({displayType: "collection", resourceid: resourceid, structureType: structureType, topLevel: topLevel, type: type})
@@ -90,6 +94,9 @@ class TextSwitch extends React.Component {
       }
       else if (this.state.displayType === "item"){
         return (<TextWrapper itemid={this.state.resourceid} transcriptionid={this.state.itemTranscriptionId} blockDivFocus={this.state.blockDivFocus} handleUpdateUrlResource={this.handleUpdateUrlResource}/>)
+      }
+      else if (this.state.displayType === "codex"){
+        return (<Codex codexid={this.state.resourceid}/>)
       }
       else{
         return null

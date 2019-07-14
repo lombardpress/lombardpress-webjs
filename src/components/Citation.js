@@ -77,7 +77,7 @@ class Citation extends React.Component{
         return manifestations
       }
     }
-    const fullCitationString = this.state.authorTitle + ", " + this.state.etitle + "(" + this.state.mtitle + ") " + "Data source: " + this.state.datasource + "."
+    const fullCitationString = this.state.authorTitle + ", " + this.state.etitle + "(" + this.state.mtitle + ") Data source: " + this.state.datasource + "."
     return (
       <Container className={this.props.hidden ? "hidden" : "showing"}>
       <h4>Citation</h4>

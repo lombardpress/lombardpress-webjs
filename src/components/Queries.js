@@ -457,3 +457,39 @@ export function getAuthorInformation(authorid){
        "ORDER BY ?surface_order"].join('');
        return query
      }
+
+    export function getCodices(){
+     const query = [
+       "SELECT ?codex ?codex_title",
+ 	     "{",
+				 "?codex a <http://scta.info/resource/codex> .",
+				 "?codex <http://purl.org/dc/elements/1.1/title> ?codex_title",
+				"}",
+			 "ORDER BY ?codex_title"].join('')
+       return query
+     }
+     export function getCodexInfo(codexid){
+      const query = [
+        "SELECT DISTINCT ?expression ?codex_title ?item_expression_title ?item_expression_question_title ?surface ?surface_title ?surface_order ?manifestation ?manifestation_short_id ?status ",
+        "{",
+          "<" + codexid  + "> <http://purl.org/dc/elements/1.1/title> ?codex_title .",
+          "OPTIONAL {",
+          "?icodex <http://scta.info/property/isCodexItemOf> <" + codexid  + "> .",
+          "?isurface <http://purl.org/dc/elements/1.1/isPartOf> ?icodex .",
+          "?surface <http://scta.info/property/hasISurface> ?isurface .",
+          "?surface <http://scta.info/property/order> ?surface_order .",
+          "?surface <http://purl.org/dc/elements/1.1/title> ?surface_title .",
+          "?manifestation <http://scta.info/property/isOnSurface> ?surface .",
+          "?manifestation <http://scta.info/property/structureType> <http://scta.info/resource/structureItem> .",
+          "?manifestation <http://scta.info/property/shortId> ?manifestation_short_id .",
+          "?manifestation <http://scta.info/property/isManifestationOf> ?expression .",
+          "?expression <http://purl.org/dc/elements/1.1/title> ?item_expression_title .",
+          "?expression <http://scta.info/property/status> ?status .",
+          "OPTIONAL {",
+             "?expression <http://scta.info/property/questionTitle> ?item_expression_question_title .",
+           "}",
+         "}",
+        "}",
+        "ORDER BY ?surface_order"].join('')
+     return query
+   }
