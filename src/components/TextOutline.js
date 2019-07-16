@@ -1,9 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {FaExternalLinkAlt, FaChevronDown, FaChevronUp} from 'react-icons/fa';
 import {Link} from 'react-router-dom';
 
 import {runQuery} from './utils'
 import {getChildParts} from './Queries'
+
+/**
+* creates a text outline section
+*/
 class TextOutline extends React.Component {
   constructor(props){
     super(props)
@@ -14,6 +19,10 @@ class TextOutline extends React.Component {
     }
 
   }
+  /**
+    @public
+    * toggles state.showChildren indicating whether or not section children should be mounted
+  */
   handleToggleChildren(e){
     e.preventDefault();
     this.setState((prevState) => {
@@ -89,7 +98,8 @@ class TextOutline extends React.Component {
         structureType={p.structureType}
         membersOf={this.props.membersOf}
         questionTitle={p.questionTitle}
-        mtFocus={this.props.mtFocus}/>
+        mtFocus={this.props.mtFocus}
+        collectionLink={this.props.structureType === "http://scta.info/resource/structureCollection" ? this.props.collectionLink : true}/>
       })
       return parts
     }
@@ -101,12 +111,74 @@ class TextOutline extends React.Component {
         {this.props.questionTitle && <span>: {this.props.questionTitle}</span>}
         {(this.state.parts.length > 0 && !this.state.showChildren) && <span className="outlineArrow" onClick={this.handleToggleChildren}><FaChevronDown/></span>}
         {(this.state.parts.length > 0 && this.state.showChildren) && <span className="outlineArrow" onClick={this.handleToggleChildren}><FaChevronUp/></span>}
-        {this.props.structureType !== "http://scta.info/resource/structureCollection" && <Link to={"/text?resourceid=" + this.props.resourceid + this.props.mtFocus} ><FaExternalLinkAlt/></Link>}
+        {this.props.collectionLink && <Link to={"/text?resourceid=" + this.props.resourceid + this.props.mtFocus} ><FaExternalLinkAlt/></Link>}
         </p>
         {this.state.showChildren && displayChildren()}
       </div>
     );
   }
+}
+
+TextOutline.propTypes = {
+  /**
+  * resource id of focused passage, e.g. paragraph or div structure
+  */
+  focusedResourceid: PropTypes.string,
+  /**
+  * resource id of current section
+  */
+  resourceid: PropTypes.string,
+  /**
+  * title of current section
+  */
+  title: PropTypes.string,
+  /**
+  * hide entire outline
+  */
+  hidden: PropTypes.bool,
+  /**
+  * manifestation and transcription slug
+  * used to create links in outline to specific manifestation
+  * or transcription
+
+  */
+  mtFocus: PropTypes.string,
+  /**
+  * indicates if section heading should be bold with string "bold", indicating that focusedResourceId falls within this section
+
+  * TODO: "bold" value would be better as boolean, true false
+  */
+  bold: PropTypes.string,
+  /**
+  * key should be section resource id
+  */
+  key: PropTypes.string,
+  /**
+  * indicates whether children should be shown
+  */
+  showChildren: PropTypes.bool,
+  /**
+  * indicates whether level of section with number as string
+
+  * TODO: level would be better as integer value instead of string value
+  */
+  level: PropTypes.string,
+  /**
+  * indicates structureType of current section (e.g. collection, item, division, block)
+  */
+  structureType: PropTypes.string,
+  /**
+  * an array of ids, that focused section is a member of
+  */
+  membersOf: PropTypes.array,
+  /**
+  * question title associated with section
+  */
+  questionTitle: PropTypes.string,
+  /**
+  * indications whether a link at the collection level should be set or not
+  */
+  collectionLink: PropTypes.bool
 }
 
 export default TextOutline;

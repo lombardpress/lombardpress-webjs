@@ -1,9 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import TextOutline from './TextOutline'
 
 import {runQuery} from './utils'
 import {getMembersOf} from './Queries'
 
+/**
+* creates a text outline starting from top level expression
+
+*/
 class TextOutlineWrapper extends React.Component {
   constructor(props){
     super(props)
@@ -39,10 +44,39 @@ class TextOutlineWrapper extends React.Component {
       level={1}
       structureType={"http://scta.info/resource/structureCollection"}
       membersOf={this.state.membersOf}
-      mtFocus={this.props.mtFocus}/>
+      mtFocus={this.props.mtFocus}
+      collectionLink={this.props.collectionLink}/>
       </div>
     );
   }
 }
 
+TextOutlineWrapper.propTypes = {
+  /**
+  * resource id of focused passage, e.g. paragraph or div structure
+  */
+  focusedResourceid: PropTypes.string,
+  /**
+  * resource id of current section
+  */
+  resourceid: PropTypes.string,
+  /**
+  * title of current section
+  */
+  title: PropTypes.string,
+  /**
+  * hide entire outline
+  */
+  hidden: PropTypes.bool,
+  /**
+  * manifestation and transcription slug
+  * used to create links in outline to specific manifestation
+  * or transcription
+  */
+  mtFoucs: PropTypes.string,
+  /**
+  * indications whether a link at the collection level should be set or not
+  */
+  collectionLink: PropTypes.bool
+}
 export default TextOutlineWrapper;
