@@ -119,3 +119,17 @@ sub, sup{
 .paragraphnumber:hover{
 	color: $dark
 }
+
+.lbp-line-number{
+	font-size: 10px;
+	padding-right: 15px;
+	margin-left: 0px;
+	margin-top: 5px;
+	//font-weight: bold;
+	position: absolute;
+	left: -20px;
+	text-align: right;
+	cursor: pointer;
+	color: $link-color
+
+}

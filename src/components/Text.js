@@ -46,6 +46,7 @@ class Text extends React.Component {
          _this.props.openWindow("window1", "info")
     });
 
+
     // scroll to paragraph after document has been appended
     if (scrollTo){
       scrollToParagraph(scrollTo, true)
@@ -89,6 +90,22 @@ class Text extends React.Component {
       _this.props.handleSurfaceFocusChange("http://scta.info/resource/" + surfaceid)
       _this.props.openWindow("window2", "surface2")
     });
+
+    $('.lbp-line-number').click(function(e) {
+      e.preventDefault();
+      const surfaceid = $(this).attr('data-surfaceid');
+      const ln = $(this).attr('data-ln');
+      console.log("surfaceid", surfaceid)
+      const paragraphid = $(this).closest('.plaoulparagraph').attr("id");
+
+      _this.props.setFocus(paragraphid)
+      _this.props.handleSurfaceFocusChange("http://scta.info/resource/" + surfaceid)
+      _this.props.handleLineFocusChange("http://scta.info/resource/" + surfaceid + "/" + ln)
+      _this.props.openWindow("window2", "surface2")
+    });
+
+
+
     $('.appnote, .footnote').click(function(e) {
       e.preventDefault();
     });

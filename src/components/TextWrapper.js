@@ -25,6 +25,7 @@ class TextWrapper extends React.Component {
     this.handleSwitchWindow = this.handleSwitchWindow.bind(this)
     this.handleDuplicateWindow = this.handleDuplicateWindow.bind(this)
     this.handleSurfaceFocusChange = this.handleSurfaceFocusChange.bind(this)
+    this.handleLineFocusChange = this.handleLineFocusChange.bind(this)
     this.state = {
       doc: "",
       focus: "",
@@ -32,6 +33,7 @@ class TextWrapper extends React.Component {
       mtFocus: "",
       itemFocus: "",
       surfaceid: "",
+      lineFocusId: "",
       windows: {
         window1: {
           windowId: "window1",
@@ -51,7 +53,7 @@ class TextWrapper extends React.Component {
     }
   }
   openWindow(id, windowLoad){
-    if (!this.state.windows[id].open){
+    if (!this.state.windows[id].open || this.state.windows[id].windowLoad != windowLoad){
       this.setState((prevState) => {
         const windows = prevState.windows
         windows[id].open = true
@@ -157,6 +159,9 @@ class TextWrapper extends React.Component {
 
   handleSurfaceFocusChange(surfaceid){
     this.setState({surfaceid: surfaceid})
+  }
+  handleLineFocusChange(lineFocusId){
+    this.setState({lineFocusId: lineFocusId})
   }
   setFocus(id){
     const fullid = id.includes("http") ? id + this.state.mtFocus : "http://scta.info/resource/" + id + this.state.mtFocus
@@ -333,6 +338,7 @@ class TextWrapper extends React.Component {
               windowLoad={this.state.windows[key].windowLoad}
               openWidthHeight={this.state.windows[key].openWidthHeight}
               surfaceid={this.state.surfaceid}
+              lineFocusId={this.state.lineFocusId}
               info={this.state.focus}
               itemFocus={this.state.itemFocus}
               topLevel={this.state.itemFocus.topLevel}
@@ -370,6 +376,7 @@ class TextWrapper extends React.Component {
             topLevel={this.state.itemFocus.topLevel}
             setFocus={this.setFocus}
             handleSurfaceFocusChange={this.handleSurfaceFocusChange}
+            handleLineFocusChange={this.handleLineFocusChange}
             openWindow={this.openWindow}
             scrollTo={this.state.focus ? this.state.focus.resourceid.split("/resource/")[1] : this.state.itemFocus.expression.split("/resource/")[1]}
             />

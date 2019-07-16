@@ -1,6 +1,7 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Axios from 'axios'
+import Button from 'react-bootstrap/Button';
 
 import ImageTextWrapper from './ImageTextWrapper';
 
@@ -12,9 +13,11 @@ import {getSurfaceInfo} from './Queries'
 class Surface2 extends React.Component {
   constructor(props){
     super(props)
+    this.mount = false
     this.handleNext = this.handleNext.bind(this)
     this.handlePrevious = this.handlePrevious.bind(this)
     this.handleToggleTextLines = this.handleToggleTextLines.bind(this)
+    this.handleToggleAllLines = this.handleToggleAllLines.bind(this)
     this.state = {
       currentSurfaceId: "",
       manifest: "",
@@ -24,7 +27,8 @@ class Surface2 extends React.Component {
       next: "",
       previous: "",
       imageurl: "",
-      annotationsDisplay: true
+      annotationsDisplay: true,
+      showAllLines: false
     }
 
   }
@@ -43,6 +47,11 @@ class Surface2 extends React.Component {
       return {annotationsDisplay: !prevState.annotationsDisplay}
     })
   }
+  handleToggleAllLines(){
+    this.setState((prevState) => {
+      return {showAllLines: !prevState.showAllLines}
+    })
+  }
   retrieveSurfaceInfo(surfaceid){
     // manifest id should be retrieved from query
     // this is a temporary measure until db is corrected and query is posible
@@ -55,6 +64,21 @@ class Surface2 extends React.Component {
       //second nested async call for annotation list
       const alUrl = "https://exist.scta.info/exist/apps/scta-app/folio-annotaiton-list-from-simpleXmlCoordinates.xq?surfaceid=" + surfaceid.split("/resource/")[1]
       Axios.get(alUrl).then((d2) => {
+        if (this.mount){
+            this.setState({
+              currentSurfaceId: surfaceid,
+              surfaceTitle: b.surfaceTitle.value,
+              manifest: manifest,
+              canvas: b.canvas.value,
+              imageurl: b.imageurl.value,
+              next: b.next_surface ? b.next_surface.value : "",
+              previous: b.previous_surface ? b.previous_surface.value : "",
+              annotations: d2.data ? d2.data.resources : ""
+          })
+        }
+      }).catch((error) => {
+        console.log("failed retrieving annotationlist: ", error)
+        if (this.mount){
           this.setState({
           currentSurfaceId: surfaceid,
           surfaceTitle: b.surfaceTitle.value,
@@ -63,24 +87,14 @@ class Surface2 extends React.Component {
           imageurl: b.imageurl.value,
           next: b.next_surface ? b.next_surface.value : "",
           previous: b.previous_surface ? b.previous_surface.value : "",
-          annotations: d2.data ? d2.data.resources : ""
+          annotations: ""
         })
-      }).catch((error) => {
-        console.log("failed retrieving annotationlist: ", error)
-        this.setState({
-        currentSurfaceId: surfaceid,
-        surfaceTitle: b.surfaceTitle.value,
-        manifest: manifest,
-        canvas: b.canvas.value,
-        imageurl: b.imageurl.value,
-        next: b.next_surface ? b.next_surface.value : "",
-        previous: b.previous_surface ? b.previous_surface.value : "",
-        annotations: ""
-      })
+      }
     })
   })
 }
 componentDidMount(){
+  this.mount = true
     if (this.props.surfaceid){
       this.retrieveSurfaceInfo(this.props.surfaceid)
     }
@@ -89,6 +103,9 @@ componentDidMount(){
     if (nextProps.surfaceid){
     this.retrieveSurfaceInfo(nextProps.surfaceid)
     }
+  }
+  componentWillUnmount(){
+    this.mount = false
   }
   render() {
     const displayImages = () => {
@@ -100,6 +117,7 @@ componentDidMount(){
           const coords = h.on.split("#xywh=")[1];
           const imageUrl = h.imageUrl
           const label = h.label
+          if (this.state.showAllLines || (parseInt(this.props.lineFocusId.split("/")[this.props.lineFocusId.split("/").length - 1]) === (i + 1) ) || !this.props.lineFocusId){
           return (
             <ImageTextWrapper key={i}
               imageUrl={imageUrl}
@@ -113,6 +131,7 @@ componentDidMount(){
               displayWidth={this.props.width ? this.props.width : this.state.width}
               />
             )
+          }
 
         })
         return imageTextWrappers
@@ -130,11 +149,14 @@ componentDidMount(){
             <p>{this.state.surfaceTitle}</p>
             {this.props.handleSurfaceFocusChange &&
               <div>
-              {this.state.previous && <button onClick={this.handlePrevious}>Previous</button>}
-              {this.state.next && <button onClick={this.handleNext}>Next</button>}
+              {this.state.previous && <Button size="sm" onClick={this.handlePrevious}>Previous</Button>}
+              {this.state.next && <Button size="sm" onClick={this.handleNext}>Next</Button>}
               </div>
             }
-            {this.state.annotations && <p><button onClick={this.handleToggleTextLines}>Toggle Text Lines</button></p>}
+            <div>
+            {this.props.lineFocusId && <Button size="sm" onClick={this.handleToggleAllLines}>Show All Lines</Button>}
+            {this.state.annotations && <Button size="sm" onClick={this.handleToggleTextLines}>Toggle Text Lines</Button>}
+            </div>
           </div>
           {displayImages()}
         </div> : <p>No surface selected</p>}
