@@ -41,7 +41,7 @@ class TextOutlineWrapper extends React.Component {
       focusResourceid={this.props.focusResourceid}
       resourceid={this.props.resourceid}
       title={this.props.title}
-      level={1}
+      level={"1"}
       structureType={"http://scta.info/resource/structureCollection"}
       membersOf={this.state.membersOf}
       mtFocus={this.props.mtFocus}

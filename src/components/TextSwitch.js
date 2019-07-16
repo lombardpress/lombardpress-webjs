@@ -5,6 +5,7 @@ import Collection from "./Collection"
 import AuthorCollection from "./AuthorCollection"
 import Codex from "./Codex"
 import TextOutlineWrapper from "./TextOutlineWrapper"
+import Container from 'react-bootstrap/Container';
 
 import {runQuery} from './utils'
 import {getItemTranscription, getItemTranscriptionFromBlockDiv, getStructureType} from './Queries'
@@ -18,7 +19,8 @@ class TextSwitch extends React.Component {
       resourceid: "",
       itemTranscriptionId: "",
       blockDivFocus: "",
-      resourceTitle: ""
+      resourceTitle: "",
+      author: ""
     }
   }
   handleUpdateUrlResource(fullid){
@@ -27,12 +29,15 @@ class TextSwitch extends React.Component {
   getInfo(resourceid){
     const structureTypePromise = runQuery(getStructureType(resourceid))
     structureTypePromise.then((t) => {
+      console.log('data', t.data.results.bindings)
       const type = t.data.results.bindings[0].type.value
       const structureType = t.data.results.bindings[0].structureType ? t.data.results.bindings[0].structureType.value : null
       //const level = t.data.results.bindings[0].level ? t.data.results.bindings[0].level.value : null
       const topLevel = t.data.results.bindings[0].topLevel ? t.data.results.bindings[0].topLevel.value : resourceid
       const itemParent = t.data.results.bindings[0].itemParent ? t.data.results.bindings[0].itemParent.value : null
       const resourceTitle = t.data.results.bindings[0].resourceTitle ? t.data.results.bindings[0].resourceTitle.value : ""
+      const author = t.data.results.bindings[0].author ? t.data.results.bindings[0].author.value : ""
+
       //const itemTranscriptionId = t.data.results.bindings[0].ctranscription ? t.data.results.bindings[0].ctranscription.value : null
       if (type === "http://scta.info/resource/person"){
           this.setState({displayType: "person", resourceid: resourceid, structureType: "", topLevel: "", type: type, resourceTitle: resourceTitle})
@@ -44,7 +49,7 @@ class TextSwitch extends React.Component {
           this.setState({displayType: "workGroup", resourceid: resourceid, structureType: structureType, topLevel: topLevel, type: type, resourceTitle: resourceTitle})
       }
       else if (structureType === "http://scta.info/resource/structureCollection"){
-          this.setState({displayType: "collection", resourceid: resourceid, structureType: structureType, topLevel: topLevel, type: type, resourceTitle: resourceTitle})
+          this.setState({displayType: "collection", resourceid: resourceid, structureType: structureType, topLevel: topLevel, type: type, resourceTitle: resourceTitle, author: author})
       }
       else if (structureType === "http://scta.info/resource/structureItem" ){
         if (type === "http://scta.info/resource/transcription"){
@@ -97,14 +102,17 @@ class TextSwitch extends React.Component {
         )
       }
       else if (this.state.displayType === "collection"){
+        console.log("this.state.author", this.state.author)
         return (
-          <TextOutlineWrapper
-          focusResourceid={this.state.resourceid}
-          resourceid={this.state.resourceid}
-          title={this.state.resourceTitle}
-          hidden={false}
-          mtFocus={""}
-          collectionLink={true}/>
+          <Container className="textOutlineContainer">
+            <TextOutlineWrapper
+              focusResourceid={this.state.resourceid}
+              resourceid={this.state.resourceid}
+              title={this.state.resourceTitle}
+              hidden={false}
+              mtFocus={""}
+              collectionLink={true}/>
+          </Container>
         )
 
 

@@ -259,9 +259,12 @@ export function basicInfoQuery(itemExpressionUri){
   //TODO rename to getType
   export function getStructureType(resourceurl){
     const query = [
-      "SELECT DISTINCT ?type ?structureType ?level ?topLevel ?itemParent ?resourceTitle ",
+      "SELECT DISTINCT ?type ?structureType ?level ?topLevel ?itemParent ?resourceTitle ?author ",
       "WHERE { ",
       "<" + resourceurl + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type . ",
+      "OPTIONAL {",
+        "<" + resourceurl + "> <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
+      "}",
       "OPTIONAL {",
         "<" + resourceurl + "> <http://purl.org/dc/elements/1.1/title> ?resourceTitle .",
       "}",

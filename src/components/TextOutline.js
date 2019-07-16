@@ -150,17 +150,13 @@ TextOutline.propTypes = {
   */
   bold: PropTypes.string,
   /**
-  * key should be section resource id
-  */
-  key: PropTypes.string,
-  /**
   * indicates whether children should be shown
   */
   showChildren: PropTypes.bool,
   /**
   * indicates whether level of section with number as string
 
-  * TODO: level would be better as integer value instead of string value
+  * TODO: would be better if level propType was number. 
   */
   level: PropTypes.string,
   /**
