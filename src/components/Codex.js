@@ -99,7 +99,7 @@ class Codex extends React.Component {
         </div>
         <div className="codexImage">
           {this.state.focusedSurface &&
-            <Surface2 surfaceid={this.state.focusedSurface} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.handleSurfaceFocusChange} width={500} hidden={false}/>
+            <Surface2 surfaceid={this.state.focusedSurface} lineFocusId="" topLevel={this.props.topLevel} handleSurfaceFocusChange={this.handleSurfaceFocusChange} width={500} hidden={false}/>
           }
          </div>
       </div>
