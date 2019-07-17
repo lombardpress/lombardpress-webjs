@@ -446,11 +446,20 @@ export function getAuthorInformation(authorid){
 
     export function getManifestationCitationInfo(transcriptionid){
        var query = [
-       "SELECT DISTINCT ?manifestation ?manifestationTitle ?manifestationSurface ?surfaceTitle ?codexTitle ?datasource ",
+       "SELECT DISTINCT ?manifestation ?manifestationTitle ?manifestationSurface ?surfaceTitle ?codexTitle ?datasource ?eLongTitle ?author ?authorTitle ?expression ",
        "{",
        "<" + transcriptionid + "> <http://scta.info/property/isTranscriptionOf> ?manifestation .",
        "<" + transcriptionid + "> <http://scta.info/property/hasDocument> ?datasource . ",
        "?manifestation <http://purl.org/dc/elements/1.1/title> ?manifestationTitle .",
+       "?manifestation <http://scta.info/property/isManifestationOf> ?expression .",
+       "?expression <http://scta.info/property/isPartOfTopLevelExpression> ?topLevelExpression .",
+       "OPTIONAL {",
+        "?expression <http://scta.info/property/longTitle> ?eLongTitle",
+      "}",
+       "OPTIONAL {",
+         "?topLevelExpression <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
+         "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
+       "}",
        "OPTIONAL",
          "{",
          "?manifestation <http://scta.info/property/isOnSurface> ?manifestationSurface .",

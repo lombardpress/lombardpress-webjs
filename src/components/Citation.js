@@ -1,10 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Container from 'react-bootstrap/Container';
 import {Link} from 'react-router-dom';
 import { FaClipboard} from 'react-icons/fa';
 import {runQuery, copyToClipboard} from './utils'
 import {getManifestationCitationInfo} from './Queries'
 
+/**
+* citation component
+*/
 class Citation extends React.Component{
   constructor(props){
     super(props)
@@ -31,47 +35,52 @@ class Citation extends React.Component{
     })
   }
 
-  retrieveCitation(info, mtFocus){
-    if (mtFocus){
-      const transcriptionid = info.resourceid + mtFocus
-      const manifestationCitationInfo = runQuery(getManifestationCitationInfo(transcriptionid))
+  retrieveCitation(tresourceid){
+    if (tresourceid){
+      const manifestationCitationInfo = runQuery(getManifestationCitationInfo(tresourceid))
       manifestationCitationInfo.then((data) => {
         const allBindings = data.data.results.bindings
-        const bindings = allBindings[0]
-        const manifestationid = bindings.manifestation ? bindings.manifestation.value : ""
-        const datasource = bindings.datasource ? bindings.datasource.value : ""
-        const title = bindings.codexTitle ? bindings.codexTitle.value : ""
-        const start = bindings.surfaceTitle ? bindings.surfaceTitle.value : ""
-        const end = allBindings[allBindings.length - 1].surfaceTitle ? allBindings[allBindings.length - 1].surfaceTitle.value : ""
+        if (allBindings.length > 0){
+          const bindings = allBindings[0]
+          const expressionid = bindings.expression ? bindings.expression.value : ""
+          const manifestationid = bindings.manifestation ? bindings.manifestation.value : ""
+          const eLongTitle = bindings.eLongTitle ? bindings.eLongTitle.value : ""
+          const authorTitle = bindings.authorTitle ? bindings.authorTitle.value : ""
+          const author = bindings.authorTitle ? bindings.author.value : ""
+          const datasource = bindings.datasource ? bindings.datasource.value : ""
+          const title = bindings.codexTitle ? bindings.codexTitle.value : ""
+          const start = bindings.surfaceTitle ? bindings.surfaceTitle.value : ""
+          const end = allBindings[allBindings.length - 1].surfaceTitle ? allBindings[allBindings.length - 1].surfaceTitle.value : ""
 
-        this.setState(
-          {
-            author: info.author,
-            authorTitle: info.authorTitle,
-            eurl: info.resourceid,
-            etitle: info.longTitle,
-            murl: manifestationid,
-            mtitle: start !== end ? title + ", " + start + "-" + end : title + ", " + start,
-            turl: transcriptionid,
-            datasource: datasource,
-          }
-        )
+          this.setState(
+            {
+              author: author,
+              authorTitle: authorTitle,
+              eurl: expressionid,
+              etitle: eLongTitle,
+              murl: manifestationid,
+              mtitle: start !== end ? title + ", " + start + "-" + end : title + ", " + start,
+              turl: tresourceid,
+              datasource: datasource,
+            }
+          )
+        }
       })
     }
   }
   componentDidMount(){
-    this.retrieveCitation(this.props.info, this.props.mtFocus)
+    this.retrieveCitation(this.props.tresourceid)
 
   }
   componentWillReceiveProps(newProps){
-    if (newProps.info !== this.props.info || newProps.mtFocus !== this.props.mtFocus){
-      this.retrieveCitation(newProps.info, newProps.mtFocus)
+    if (newProps.tresourceid !== this.props.tresourceid){
+      this.retrieveCitation(newProps.tresourceid)
     }
   }
   render(){
     const displayManifestations = () => {
-      if (this.props.info){
-        const manifestations = this.props.info.manifestations.map((i) => {
+      if (this.props.manifestations){
+        const manifestations = this.props.manifestations.map((i) => {
           return <p key={i.manifestation}>{i.manifestationTitle} : <Link to={"/text?resourceid=" + i.manifestation}>{i.manifestation}</Link></p>
         })
         return manifestations
@@ -127,6 +136,39 @@ class Citation extends React.Component{
   </Container>
     );
   }
+}
+
+Citation.propTypes = {
+  /**
+  * transcription resource id of focused passage,
+  * transcription id is required, because a specific text passage is being complicated
+  *
+  * TODO: perhaps it would be good to allow the expression or manifestation id to be given
+  * but the citation component would need to know what kind of resource this and would
+  * need to produce a different query in each case
+  */
+  tresourceid: PropTypes.string.isRequired,
+  /**
+  * manifestations provides list of other mnaifestations for focused expression
+
+  * TODO: it seems desireable not to require a manifestations property so that
+  * one can simply provide the transcription resource id, but if the propery is not
+  * the component could look it up itself. But information could also be supplied a prop
+  * in the case the parent component already has the information. In this case,
+  * a second look up by the component would be needless
+
+  * TODO: else if this were really going to be separate; the use of link in displayManifestations
+  * would need to be changed to prop that expects a function that would know what do with
+  * the manifestations change. At present the use of Link makes the component platoform dependent.
+  * But this only applies when a "manifestations" prop is supplied. Not supplying manifestations
+  * will disable this.
+
+  */
+  manifestations: PropTypes.array,
+  /**
+  * hidden designates whether the component should be hidden after mounting
+  */
+  hidden: PropTypes.bool
 }
 
 export default Citation;

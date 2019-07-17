@@ -132,6 +132,9 @@ componentDidMount(){
               />
             )
           }
+          else{
+            return null
+          }
 
         })
         return imageTextWrappers

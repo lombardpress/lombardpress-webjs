@@ -53,11 +53,13 @@ class TextWrapper extends React.Component {
     }
   }
   openWindow(id, windowLoad){
-    if (!this.state.windows[id].open || this.state.windows[id].windowLoad != windowLoad){
+    if (!this.state.windows[id].open || this.state.windows[id].windowLoad !== windowLoad){
       this.setState((prevState) => {
         const windows = prevState.windows
         windows[id].open = true
-        windows[id].windowLoad = windowLoad
+        if (windowLoad){
+          windows[id].windowLoad = windowLoad
+        }
         return {
           windows: windows,
         }

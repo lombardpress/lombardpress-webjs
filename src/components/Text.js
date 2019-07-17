@@ -43,7 +43,7 @@ class Text extends React.Component {
          e.preventDefault();
          const id = $(this).parent("p").attr('id')
          _this.props.setFocus(id)
-         _this.props.openWindow("window1", "info")
+         _this.props.openWindow("window1")
     });
 
 
