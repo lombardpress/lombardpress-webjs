@@ -179,6 +179,22 @@
     <xsl:variable name="text"><xsl:value-of select="./text()"/></xsl:variable>
     <span class="lbp-unclear" data-text="{$text}"><xsl:apply-templates/></span>
   </xsl:template>
+  <!-- add template -->
+  <xsl:template match="tei:add">
+    <span class="lbp-add"><xsl:apply-templates/></span>
+  </xsl:template>
+  <!-- del template -->
+  <xsl:template match="tei:del">
+    <span class="lbp-del"><xsl:apply-templates/></span>
+  </xsl:template>
+  <!-- choice/corr template -->
+  <xsl:template match="tei:choice/tei:corr">
+    <span class="lbp-corr">(<xsl:apply-templates/>)</span>
+  </xsl:template>
+  <!-- choice/reg template -->
+  <xsl:template match="tei:choice/tei:reg">
+    <span class="lbp-reg">(<xsl:apply-templates/>)</span>
+  </xsl:template>
 
   <!-- app template -->
   <xsl:template match="tei:app">
@@ -292,25 +308,13 @@
         <xsl:value-of select="concat($break-ms-slug, '/', $folio, $side)"/>
       </xsl:variable>
 
-      <xsl:variable name="canvasid">
-	      <xsl:choose>
-	        <xsl:when test="/tei:TEI/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:listWit/tei:witness[@xml:id=$ms]/@xml:base">
-	          <xsl:variable name="canvasbase" select="/tei:TEI/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:listWit/tei:witness[@xml:id=$ms]/@xml:base"/>
-	          <xsl:variable name="canvasend" select="./@facs"/>
-	          <xsl:value-of select="concat($canvasbase, $canvasend)"/>
-	        </xsl:when>
-	        <xsl:otherwise>
-	          <!-- the 'xxx-' is used to be replaced in the rails app with the commentary slug -->
-	          <xsl:value-of select="concat('http://scta.info/iiif/', 'xxx-', $break-ms-slug, '/canvas/', $ms, $folio, $side)"/>
-	        </xsl:otherwise>
-	      </xsl:choose>
-	    </xsl:variable>
+
 
 	    <span class="lbp-folionumber">
 	      <!-- data-msslug needs to get info directly from final; default will not work -->
 	      <xsl:choose>
 	        <xsl:when test="$show-images = 'true'">
-            <a href="#" class="js-show-folio-image" data-canvasid="{$canvasid}" data-surfaceid="{$surfaceid}" data-msslug="{$break-ms-slug}" data-expressionid="{$expressionid}">
+            <a href="#" class="js-show-folio-image" data-surfaceid="{$surfaceid}" data-msslug="{$break-ms-slug}" data-expressionid="{$expressionid}">
 	          <xsl:value-of select="$ms"/>
 	          <xsl:value-of select="$folio"/>
 	          <xsl:value-of select="$side"/>
@@ -351,7 +355,7 @@
     <xsl:variable name="folio">
       <xsl:choose>
         <xsl:when test="not(contains($pbNumber, '-'))">
-          <xsl:value-of select="$folio-and-side"/>
+          <xsl:value-of select="$pbNumber"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="substring-before($pbNumber, '-')"/>

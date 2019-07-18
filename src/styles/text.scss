@@ -133,3 +133,14 @@ sub, sup{
 	color: $link-color
 
 }
+
+.lbp-unclear{
+	color: #6f7ab3
+}
+.lbp-add{
+	color: blue
+}
+.lbp-del{
+	color: red;
+	text-decoration: line-through;
+}
