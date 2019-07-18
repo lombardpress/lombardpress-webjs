@@ -1,6 +1,7 @@
 import React from 'react';
-import Axios from 'axios'
-import uuidv4 from 'uuid/v4'
+import PropTypes from 'prop-types';
+import Axios from 'axios';
+import uuidv4 from 'uuid/v4';
 
 import CommentItem from "./CommentItem"
 import CommentCreate from "./CommentCreate"
@@ -73,16 +74,16 @@ handleSumbitComment(comment){
   }
   componentDidMount(){
     // conditional prevents against needless attempt to retreive comments with info is not present
-    if (this.props.info){
-      this.setState({inbox: this.props.info.inbox, resourceid: this.props.info.resourceid})
-      this.retrieveComments(this.props.info.inbox)
+    if (this.props.resourceid){
+      this.setState({inbox: this.props.inbox, resourceid: this.props.resourceid})
+      this.retrieveComments(this.props.inbox)
     }
   }
   componentWillReceiveProps(newProps){
     // conditional prevents against needlessly rerequesting information when "info" is the same
-    if (newProps.info !== this.props.info){
-      this.setState({inbox: newProps.info.inbox, resourceid: newProps.info.resourceid})
-      this.retrieveComments(newProps.info.inbox)
+    if (newProps.resourceid !== this.props.resourceid){
+      this.setState({inbox: newProps.inbox, resourceid: newProps.resourceid})
+      this.retrieveComments(newProps.inbox)
     }
   }
   render(){
@@ -103,10 +104,24 @@ handleSumbitComment(comment){
     );
 
   }
+}
 
-
-
-
+Comments.propTypes = {
+  /**
+  * resource id; comments will be assigned to this resourceid
+  */
+  resourceid: PropTypes.string.isRequired,
+  /**
+  * inbox;
+  * IDEA: inbox url is currently required; but it is retrievable
+  * just from the resource. Thus it would be good to be able to supply it if already known
+  * but if it is not supplied the component should be able to look it up. 
+  */
+  inbox: PropTypes.string.isRequired,
+  /**
+  * hidden designates whether the component should be hidden after mounting
+  */
+  hidden: PropTypes.bool
 }
 
 export default Comments;
