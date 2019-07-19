@@ -2,22 +2,37 @@ import Axios from 'axios'
 import {sparqlEndpoint} from './config';
 import $ from 'jquery';
 
-export function loadXMLDoc(filename)
-  {
-    const xhttp = new XMLHttpRequest();
-    xhttp.open("GET", filename, false);
-    try {xhttp.responseType = "msxml-document"} catch(err) {} // Helping IE11
-    xhttp.send("");
-    return xhttp.responseXML;
-  }
+export function loadXMLDoc(url){
+  //See https://github.com/martin-honnen/martin-honnen.github.io/blob/master/xslt/arcor-archive/2016/test2016081501.html
+  return new Promise(function(resolve) {
+    var req = new XMLHttpRequest();
+    req.open("GET", url);
+    if (typeof XSLTProcessor === 'undefined') {
+     try {
+       req.responseType = 'msxml-document';
+     }
+     catch (e) {
+       console.log('error', e)
+     }
+    }
+    req.onload = function() {
+     resolve(this.responseXML)
+    }
+    req.send();
+  });
+}
 
 export function convertXMLDoc(xmlurl, xslurl){
-  const xml = loadXMLDoc(xmlurl)
-  const xsl = loadXMLDoc(xslurl)
-  const xsltProcessor = new XSLTProcessor();
-  xsltProcessor.importStylesheet(xsl);
-  const resultDocument = xsltProcessor.transformToFragment(xml, document);
-  return resultDocument;
+  //See https://github.com/martin-honnen/martin-honnen.github.io/blob/master/xslt/arcor-archive/2016/test2016081501.html
+  return new Promise(function(resolve){
+    Promise.all([loadXMLDoc(xmlurl), loadXMLDoc(xslurl)]).then(function(data) {
+      const xsltProcessor = new XSLTProcessor();
+      console.log("test data", data)
+      xsltProcessor.importStylesheet(data[1]);
+      const resultDocument = xsltProcessor.transformToFragment(data[0], document);
+      resolve(resultDocument)
+    })
+  })
 }
 
 export function nsResolver(prefix) {

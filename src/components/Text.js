@@ -28,109 +28,75 @@ class Text extends React.Component {
         xmlurl = "http://exist.scta.info/exist/apps/scta-app/text/" + topLevelFragment + "/" + docFragment;
       }
       const xslurl = "/xslt/main_view.xsl"
+
+      //conversion done in promise in utils.js file
       const resultDocument = convertXMLDoc(xmlurl, xslurl)
-      // append resultDoc to div in DOM
-      document.getElementById("text").innerHTML = "";
-      document.getElementById("text").appendChild(resultDocument);
-      // if (this.state.blockFocus){
-      //   scrollToParagraph(this.state.blockFocus, true)
-      // }
-    }
-    // bind events to dom
-    // only seems to be working when they are here; not yet sure why
+      resultDocument.then((data) => {
+        //appendage to file
+        //and event binding
+        //happens inside promise call back
+        document.getElementById("text").innerHTML = "";
+        document.getElementById("text").appendChild(data);
 
-    $('.paragraphnumber').click(function(e) {
-         e.preventDefault();
-         const id = $(this).parent("p").attr('id')
-         _this.props.setFocus(id)
-         _this.props.openWindow("window1")
-    });
+        $('.paragraphnumber').click(function(e) {
+           e.preventDefault();
+           const id = $(this).parent("p").attr('id')
+           _this.props.setFocus(id)
+           _this.props.openWindow("window1")
+         });
+         if (scrollTo){
+          scrollToParagraph(scrollTo, true)
+        }
 
-
-    // scroll to paragraph after document has been appended
-    if (scrollTo){
-      scrollToParagraph(scrollTo, true)
-    }
-
-  //   $('.lbp-paragraphmenu').click(function(e) {
-  //     e.preventDefault();
-  //     const id = $(this).attr('data-id')
-  //
-  //     //_this.setState({blockFocus: id})
-  //     _this.setState((prevState) => {
-  //       const windows = prevState.windows
-  //       windows.window1.open = true
-  //       return {
-  //         windows: windows,
-  //         blockFocus: id
-  //       }
-  //
-  //     })
-  //     // set block info to state.info
-  //     const fullid = "http://scta.info/resource/" + id
-  //     const info = runQuery(basicInfoQuery(fullid))
-  //     _this.arrangeTextInfo(info, fullid)
-  //
-  //     // retrieve relatedExpressions info
-  //     // get related expressions info
-  //     // TODO/Note this is getting called in handleBlockFocusChange as well;
-  //     // Strong candidate for  refactor
-  //     const relatedExpressions = runQuery(getRelatedExpressions(fullid))
-  //     _this.arrangeRelatedInfo(relatedExpressions)
-  //     // scroll to paragraph
-  //     scrollToParagraph(id, true)
-  //
-  //   });
-    $('.js-show-folio-image').click(function(e) {
-      e.preventDefault();
-      const surfaceid = $(this).attr('data-surfaceid');
-      const paragraphid = $(this).closest('.plaoulparagraph').attr("id");
-
-      _this.props.setFocus(paragraphid)
-      _this.props.handleSurfaceFocusChange("http://scta.info/resource/" + surfaceid)
-      _this.props.openWindow("window2", "surface2")
-    });
-
-    $('.lbp-line-number').click(function(e) {
-      e.preventDefault();
-      const surfaceid = $(this).attr('data-surfaceid');
-      const ln = $(this).attr('data-ln');
-      console.log("surfaceid", surfaceid)
-      const paragraphid = $(this).closest('.plaoulparagraph').attr("id");
-
-      _this.props.setFocus(paragraphid)
-      _this.props.handleSurfaceFocusChange("http://scta.info/resource/" + surfaceid)
-      _this.props.handleLineFocusChange("http://scta.info/resource/" + surfaceid + "/" + ln)
-      _this.props.openWindow("window2", "surface2")
-    });
-
-
-
-    $('.appnote, .footnote').click(function(e) {
-      e.preventDefault();
-    });
-    $('.appnote, .footnote').parent().mouseover(function(e) {
-         e.preventDefault();
-         const link = $(this).children('.appnote, .footnote')
-         const target = $(link).attr('href')
-         const text = $(target).html()
-        // const top = $(target).position().top;
-         //const left = $(target).position().left;
-         const noteDisplay = $(link).next(".note-display")
-         $(noteDisplay).removeClass("hidden")
-         $(noteDisplay).html(text)
-    });
-     $('.appnote, .footnote').parent().mouseout(function(e) {
+        $('.js-show-folio-image').click(function(e) {
           e.preventDefault();
-          $(".note-display").addClass("hidden")
-      });
+          const surfaceid = $(this).attr('data-surfaceid');
+          const paragraphid = $(this).closest('.plaoulparagraph').attr("id");
 
-      //TODO: this bind is working in the bottom list, but not inthe popup footnotes
-      $(document).on("click", '.js-show-reference-paragraph', function(e){
-        const target = $(this).attr('data-url')
-        window.location = "#/text?resourceid=" + target
-      })
+          _this.props.setFocus(paragraphid)
+          _this.props.handleSurfaceFocusChange("http://scta.info/resource/" + surfaceid)
+          _this.props.openWindow("window2", "surface2")
+        });
 
+        $('.lbp-line-number').click(function(e) {
+          e.preventDefault();
+          const surfaceid = $(this).attr('data-surfaceid');
+          const ln = $(this).attr('data-ln');
+          console.log("surfaceid", surfaceid)
+          const paragraphid = $(this).closest('.plaoulparagraph').attr("id");
+
+          _this.props.setFocus(paragraphid)
+          _this.props.handleSurfaceFocusChange("http://scta.info/resource/" + surfaceid)
+          _this.props.handleLineFocusChange("http://scta.info/resource/" + surfaceid + "/" + ln)
+          _this.props.openWindow("window2", "surface2")
+        });
+
+        $('.appnote, .footnote').click(function(e) {
+          e.preventDefault();
+        });
+        $('.appnote, .footnote').parent().mouseover(function(e) {
+             e.preventDefault();
+             const link = $(this).children('.appnote, .footnote')
+             const target = $(link).attr('href')
+             const text = $(target).html()
+            // const top = $(target).position().top;
+             //const left = $(target).position().left;
+             const noteDisplay = $(link).next(".note-display")
+             $(noteDisplay).removeClass("hidden")
+             $(noteDisplay).html(text)
+        });
+         $('.appnote, .footnote').parent().mouseout(function(e) {
+              e.preventDefault();
+              $(".note-display").addClass("hidden")
+          });
+
+          //TODO: this bind is working in the bottom list, but not inthe popup footnotes
+          $(document).on("click", '.js-show-reference-paragraph', function(e){
+            const target = $(this).attr('data-url')
+            window.location = "#/text?resourceid=" + target
+          })
+        })
+    }
   }
 
   componentDidUpdate(prevProps, prevState){
