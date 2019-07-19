@@ -13,6 +13,7 @@ import TextOutlineWrapper from "./TextOutlineWrapper"
 
 
 
+
 class Window extends React.Component {
   constructor(props){
     super(props)

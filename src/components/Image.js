@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 function Image(props) {
   let newCoords = ""
@@ -17,4 +18,22 @@ function Image(props) {
   );
 }
 
+Image.propTypes = {
+  /**
+  * the Url for the image resource
+  **/
+  imageUrl: PropTypes.string.isRequired,
+  /**
+  * width of the image to be displayed
+  *
+  * TODO: might be better to make this a number/integer and not required;
+  * when not preset perhaps it should just default to the widths listed in the coords
+  **/
+  displayWidth: PropTypes.string.isRequired,
+  /**
+  * string in the form of "x,y,w,h"
+  *
+  **/
+  coords: PropTypes.string.isRequired
+}
 export default Image;
