@@ -62,7 +62,6 @@ class Text extends React.Component {
           e.preventDefault();
           const surfaceid = $(this).attr('data-surfaceid');
           const ln = $(this).attr('data-ln');
-          console.log("surfaceid", surfaceid)
           const paragraphid = $(this).closest('.plaoulparagraph').attr("id");
 
           _this.props.setFocus(paragraphid)

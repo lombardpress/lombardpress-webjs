@@ -41,8 +41,6 @@ handleSumbitComment(comment){
       _this.setState((prevState) => {
         return {notifications: [annotat, ...prevState.notifications, ]}
       });
-        //handle success
-        console.log(response);
     })
     .catch(function (response) {
         //handle error
@@ -61,7 +59,6 @@ handleSumbitComment(comment){
           //TODO annoying that each comment has to be requestd.
           // if inbox main list included full comment, only one request would be needed
           Axios.get(n["@id"]).then((d2) => {
-            console.log("d2", d2)
             this.setState((prevState) => {
               return {notifications: [...prevState.notifications, d2.data]}
             });
@@ -115,7 +112,7 @@ Comments.propTypes = {
   * inbox;
   * IDEA: inbox url is currently required; but it is retrievable
   * just from the resource. Thus it would be good to be able to supply it if already known
-  * but if it is not supplied the component should be able to look it up. 
+  * but if it is not supplied the component should be able to look it up.
   */
   inbox: PropTypes.string.isRequired,
   /**

@@ -27,7 +27,6 @@ export function convertXMLDoc(xmlurl, xslurl){
   return new Promise(function(resolve){
     Promise.all([loadXMLDoc(xmlurl), loadXMLDoc(xslurl)]).then(function(data) {
       const xsltProcessor = new XSLTProcessor();
-      console.log("test data", data)
       xsltProcessor.importStylesheet(data[1]);
       const resultDocument = xsltProcessor.transformToFragment(data[0], document);
       resolve(resultDocument)

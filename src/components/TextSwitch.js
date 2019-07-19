@@ -29,7 +29,6 @@ class TextSwitch extends React.Component {
   getInfo(resourceid){
     const structureTypePromise = runQuery(getStructureType(resourceid))
     structureTypePromise.then((t) => {
-      console.log('data', t.data.results.bindings)
       const type = t.data.results.bindings[0].type.value
       const structureType = t.data.results.bindings[0].structureType ? t.data.results.bindings[0].structureType.value : null
       //const level = t.data.results.bindings[0].level ? t.data.results.bindings[0].level.value : null
