@@ -1,13 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Container from 'react-bootstrap/Container';
-import {Link} from 'react-router-dom';
 import { FaClipboard} from 'react-icons/fa';
 import {runQuery, copyToClipboard} from './utils'
 import {getManifestationCitationInfo} from './Queries'
 
 /**
 * citation component
+*
+* TODO: it would be better to separate the citation display, manifestation picker, citation explation
+* into three differen compoments wrapped in a citation Wrapper.
+* This way the citation display could be truly independent
 */
 class Citation extends React.Component{
   constructor(props){
@@ -81,7 +84,7 @@ class Citation extends React.Component{
     const displayManifestations = () => {
       if (this.props.manifestations){
         const manifestations = this.props.manifestations.map((i) => {
-          return <p key={i.manifestation}>{i.manifestationTitle} : <Link to={"/text?resourceid=" + i.manifestation}>{i.manifestation}</Link></p>
+          return <p key={i.manifestation}>{i.manifestationTitle} : <span onClick={() => {this.props.handleFocusChange(i.manifestation)}}>{i.manifestation}</span></p>
         })
         return manifestations
       }
@@ -168,7 +171,14 @@ Citation.propTypes = {
   /**
   * hidden designates whether the component should be hidden after mounting
   */
-  hidden: PropTypes.bool
+  hidden: PropTypes.bool,
+  /**
+  * function to handle response when new manifestaiton is picked.
+  *
+  * TODO: if manifetation list and selection were separated out into its component,
+  * this function would go with the manifestation list component.
+  */
+  handleFocusChange: PropTypes.func
 }
 
 export default Citation;

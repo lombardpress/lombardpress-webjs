@@ -43,7 +43,6 @@ class Window extends React.Component {
             this.props.info &&
           <div>
             <TextCompareWrapper info={this.props.info} relatedExpressions={this.props.relatedExpressions} hidden={this.state.windowLoad !== "textCompare"}/>
-            <XmlView info={this.props.info} hidden={this.state.windowLoad !== "xml"}/>
             <Info info={this.props.info} relatedExpressions={this.props.relatedExpressions} topLevel={this.props.topLevel} hidden={this.state.windowLoad !== "info"}/>
             <Citation tresourceid={this.props.info.resourceid + this.props.mtFocus} manifestations={this.props.info.manifestations} hidden={this.state.windowLoad !== "citation"}/>
             <Surface2 surfaceid={this.props.surfaceid} lineFocusId={this.props.lineFocusId} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad !== "surface2"}/>
@@ -54,6 +53,7 @@ class Window extends React.Component {
           {
             //TODO: use of info, topLevel, itemFocus, focusResearceid, resourceid, needs to be better organized and clarified
           }
+          <XmlView tresourceid={this.props.info ? this.props.info.resourceid + this.props.mtFocus : this.props.itemFocus.expression + this.props.mtFocus} hidden={this.state.windowLoad !== "xml"}/>
           <TextOutlineWrapper focusResourceid={this.props.info ? this.props.info.resourceid : this.props.itemFocus.expression} resourceid={this.props.topLevel} title={this.props.topLevel} hidden={this.state.windowLoad !== "textOutlineWrapper"} mtFocus={this.props.mtFocus}/>
           <SearchWrapper hidden={this.state.windowLoad !== "search"} topLevel={this.props.topLevel}/>
           {

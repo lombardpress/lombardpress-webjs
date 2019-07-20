@@ -1,9 +1,13 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Axios from 'axios'
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 //import xml from 'react-syntax-highlighter/dist/esm/languages/hljs/xml';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
+/**
+* XML view show component
+**/
 class XmlView extends React.Component {
 
   constructor(props){
@@ -14,20 +18,8 @@ class XmlView extends React.Component {
       xmlstring: ""
     }
   }
-  retrieveXML(info){
-
-    //construct file url request ot exist db to get a cors enabled copy of the text (github does not serve files with cors enabled)
-    // const doc = info.cdoc
-    // const topLevel = info.topLevel
-    // const docFragment = doc.split("/master/")[1]
-    // const topLevelFragment = info.topLevel.split("/resource/")[1]
-
-    //const xmlurl = "http://exist.scta.info/exist/apps/scta-app/text/" + topLevelFragment + "/" + docFragment;
-    const xmlurl = info.cxml
-    // const xmlDoc = loadXMLDoc(xmlurl)
-    // console.log("xmlDoc", xmlDoc, info.resourceid)
-    // const p = xmlDoc.evaluate("//tei:p[@xml:id='" + info.resourceid + "']", xmlDoc, nsResolver, XPathResult.ANY_TYPE, null);
-    // console.log("paragraph", p)
+  retrieveXML(tresourceid){
+    const xmlurl = "http://exist.scta.info/exist/apps/scta-app/document/" + tresourceid.split("/resource/")[1]
     Axios.get(xmlurl).then((d) => {
       if (this.mount){
         this.setState({xmlstring: d.data})
@@ -37,12 +29,12 @@ class XmlView extends React.Component {
   }
   componentDidMount(){
     this.mount = true
-    this.retrieveXML(this.props.info)
+    this.retrieveXML(this.props.tresourceid)
 
   }
   componentWillReceiveProps(nextProps){
-    if (nextProps.info !== this.props.info){
-      this.retrieveXML(nextProps.info)
+    if (nextProps.tresourceid !== this.props.tresourceid){
+      this.retrieveXML(nextProps.tresourceid)
     }
   }
   componentWillUnmount(){
@@ -60,4 +52,19 @@ class XmlView extends React.Component {
   }
 }
 
+XmlView.propTypes = {
+  /**
+  * transcription resource id of transcription for desired xml view
+  *
+  * TODO: Component is currently splitting the id and constructing the xml based
+  * on a prior knowledge of where xml is; this really should be retrieved from the resource id
+  * but the xml look up should happen outside of the XmlView Component in order to keep this component simple
+  * and making only request directly to the xml file
+  */
+  tresourceid: PropTypes.string.isRequired,
+  /**
+  * hidden designates whether the component should be hidden after mounting
+  */
+  hidden: PropTypes.bool,
+}
 export default XmlView;

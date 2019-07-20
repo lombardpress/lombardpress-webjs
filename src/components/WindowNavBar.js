@@ -17,9 +17,9 @@ function WindowNavBar(props) {
   {props.focusSet && <Nav.Item>
     <Nav.Link title="Images" onClick={() => {props.handleTabChange("surface3", props.windowId)}}><FaRegImage/></Nav.Link>
   </Nav.Item>}
-  {props.focusSet && <Nav.Item>
+  <Nav.Item>
     <Nav.Link title="Text XML Source" onClick={() => {props.handleTabChange("xml", props.windowId)}}><FaCode/></Nav.Link>
-  </Nav.Item>}
+  </Nav.Item>
   {props.focusSet && <Nav.Item>
     <Nav.Link title="Text Comparisons" onClick={() => {props.handleTabChange("textCompare", props.windowId)}}><FaGripVertical/></Nav.Link>
   </Nav.Item>}
