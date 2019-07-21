@@ -68,7 +68,7 @@ class Window extends React.Component {
           {
             //always load search to keep search results present even when navigating two diffferent tabs
           }
-          <SearchWrapper hidden={this.state.windowLoad !== "search"} topLevel={this.props.topLevel}/>
+          <SearchWrapper hidden={this.state.windowLoad !== "search"} topLevel={this.props.topLevel} authorId={this.props.info.author}/>
           {
             //<Surface surfaceid={this.props.surfaceid} topLevel={this.props.topLevel}/>
           }

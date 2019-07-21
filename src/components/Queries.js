@@ -517,3 +517,36 @@ export function getAuthorInformation(authorid){
         "ORDER BY ?surface_order"].join('')
      return query
    }
+   export function getSearchExpressionList(filters){
+     //filters should be an ojbect
+     let authorFilter = ""
+     if (filters.authorId){
+       authorFilter = "BIND(<" + filters.authorId + "> as ?author) . "
+     }
+     const query = [
+       "SELECT DISTINCT ?expressionid ?expressionTitle ?author ?authorTitle ",
+       "{",
+         authorFilter,
+         "?author a <http://scta.info/resource/person> .",
+         "?expressionid <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
+         "?expressionid a <http://scta.info/resource/expression> .",
+         "?expressionid <http://scta.info/property/level> '1' .",
+         "?expressionid <http://purl.org/dc/elements/1.1/title> ?expressionTitle .",
+         "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
+       "}",
+       "ORDER BY ?authorTitle"].join('')
+    return query
+   }
+   export function getSearchAuthorList(filters){
+     //filters should be an ojbect
+     const query = [
+       "SELECT DISTINCT ?author ?authorTitle ",
+       "{",
+          "?author a <http://scta.info/resource/person> .",
+          "?expressionid <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
+          "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
+
+       "}",
+       "ORDER BY ?authorTitle"].join('')
+    return query
+   }

@@ -5,15 +5,24 @@ import {Link} from 'react-router-dom';
 class Search extends React.Component {
   constructor(props){
     super(props)
-    this.retrieveResults = this.retrieveResults.bind(this)
+    this.retrieveExpressionResults = this.retrieveExpressionResults.bind(this)
+    this.retrieveAuthorResults = this.retrieveAuthorResults.bind(this)
     this.state = {
       searchResults: [],
       count: ""
     }
   }
-  retrieveResults(query, expressionid){
+  retrieveExpressionResults(query, expressionid){
     const _this = this
     Axios.get("http://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-expressionid.xq?query=" + query + "&expressionid=" + expressionid)
+      .then((d) => {
+            _this.setState({searchResults: d.data.results, count: d.data.count})
+          })
+  }
+  retrieveAuthorResults(query, authorid){
+    const _this = this
+    const authorShortId = authorid.split("/resource/")[1]
+    Axios.get("http://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-authorid.xq?query=" + query + "&authorid=" + authorShortId)
       .then((d) => {
             _this.setState({searchResults: d.data.results, count: d.data.count})
           })
@@ -23,13 +32,24 @@ class Search extends React.Component {
     // const eid = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).eid
     const query = this.props.query
     const eid =  this.props.eid
-
-    this.retrieveResults(query, eid)
+    const authorFocusId =  this.props.authorFocusId
+    if (eid){
+      this.retrieveExpressionResults(query, eid)
+    }
+    else if (authorFocusId){
+      this.retrieveAuthorResults(query, authorFocusId)
+    }
   }
   componentWillReceiveProps(nextProps){
     const query = nextProps.query
     const eid =  nextProps.eid
-    this.retrieveResults(query, eid)
+    const authorFocusId =  nextProps.authorFocusId
+    if (eid){
+      this.retrieveExpressionResults(query, eid)
+    }
+    else if (authorFocusId){
+      this.retrieveAuthorResults(query, authorFocusId)
+    }
   }
   render(){
     const displayResults = () => {
