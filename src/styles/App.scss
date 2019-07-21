@@ -43,3 +43,13 @@ table.table.table-striped tr > td:first-child {
 .currentlyViewing{
   font-weight: bold;
 }
+//TODO: it would be better if this just inherited the bootstrap link style
+.lbp-span-link{
+  color: $link-color;
+  cursor: pointer;
+}
+.lbp-span-link:hover{
+  color: darken($link-color,20%);
+  cursor: pointer;
+  text-decoration: underline;
+}

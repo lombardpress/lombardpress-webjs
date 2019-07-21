@@ -377,7 +377,7 @@ class TextWrapper extends React.Component {
     return (
       <div>
         {this.state.itemFocus &&
-          <VersionChain itemInfo={this.state.itemFocus}/>
+          <VersionChain transcriptionid={this.state.itemFocus.transcriptionid} handleFocusChange={this.setFocus2}/>
         }
         <Container className={textClass() ? "lbp-text skinnyText" : "lbp-text fullText"}>
           {this.state.itemFocus &&

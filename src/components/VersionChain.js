@@ -1,6 +1,5 @@
 import React from 'react';
-
-import {Link} from 'react-router-dom';
+import PropTypes from 'prop-types';
 import Axios from 'axios'
 import Alert from 'react-bootstrap/Alert';
 
@@ -14,7 +13,7 @@ class VersionChain extends React.Component {
     this.handleToggleShowVersions = this.handleToggleShowVersions.bind(this)
     this.state = {
       versions: [],
-      currentVersion: {},
+      currentVersion: "",
       showVersions: false
     }
   }
@@ -23,8 +22,8 @@ class VersionChain extends React.Component {
       return {showVersions: !prevState.showVersions}
     })
   }
-  getVersionHistory(itemInfo){
-      const versionChainInfo = runQuery(versionHistoryInfo(itemInfo.transcriptionid))
+  getVersionHistory(transcriptionid){
+      const versionChainInfo = runQuery(versionHistoryInfo(transcriptionid))
       versionChainInfo.then((d) => {
         const b = d.data.results.bindings
         b.forEach((b, i) => {
@@ -53,7 +52,7 @@ class VersionChain extends React.Component {
               }
               return {
                 versions: [...prevState.versions, newVersion],
-                currentVersion: itemInfo
+                currentVersion: transcriptionid
               }
             })
           })
@@ -62,14 +61,14 @@ class VersionChain extends React.Component {
     }
   componentDidMount(){
     //prevents call when itemInfo prop is not present
-    if (this.props.itemInfo){
-      this.getVersionHistory(this.props.itemInfo)
+    if (this.props.transcriptionid){
+      this.getVersionHistory(this.props.transcriptionid)
     }
   }
   componentWillReceiveProps(newProps){
-      if (newProps.itemInfo.transcriptionid !== this.props.itemInfo.transcriptionid){
+      if (newProps.transcriptionid !== this.props.transcriptionid){
         this.setState({versions: []}, () => {
-          this.getVersionHistory(newProps.itemInfo)
+          this.getVersionHistory(newProps.transcriptionid)
         })
       }
 
@@ -78,11 +77,11 @@ class VersionChain extends React.Component {
   render(){
     const displayVersions = () => {
       const versions = this.state.versions.map((v) => {
-        const currentlyViewing = v.versionTranscription === this.state.currentVersion.transcriptionid ? "currentlyViewing" : ""
+        const currentlyViewing = v.versionTranscription === this.state.currentVersion ? "currentlyViewing" : ""
         return (<p key={v.versionTranscription} className={currentlyViewing}>
-          {currentlyViewing ? <span>{v.versionLabel} (Currently Viewing)</span> : <Link to={"/text?resourceid=" + v.versionTranscription}>{v.versionLabel}</Link>}
+          {currentlyViewing ? <span>{v.versionLabel} (Currently Viewing)</span> : <span className="lbp-span-link" onClick={()=>{this.props.handleFocusChange(v.versionTranscription)}}>{v.versionLabel}</span>}
           {v.versionReviewInfo.html_link && <span> Peer Reviewed: <a href={v.versionReviewInfo.html_link}><img alt="review" src={v.versionReviewInfo.img_url}/></a> </span>}
-          <span class="small"> Data Source: <a href={v.versionDoc}>{v.versionDoc}</a> </span>
+          <span className="small"> Data Source: <a href={v.versionDoc}>{v.versionDoc}</a> </span>
           </p>)
       })
       return versions
@@ -116,6 +115,18 @@ class VersionChain extends React.Component {
       displayAlert()
     );
   }
+}
+VersionChain.propTypes = {
+  /**
+  * transcription resource id of focused passage,
+  * transcription id is required, because a specific text passage is being complicated
+  */
+  transcriptionid: PropTypes.string.isRequired,
+  /**
+  * handleFocusChange; a function carrying desired behavior
+  * when you user selects non-current version
+  */
+  handleFocusChange: PropTypes.func.isRequired
 }
 
 export default VersionChain;
