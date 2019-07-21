@@ -33,9 +33,7 @@ class AuthorCollection extends React.Component {
   }
   arrangeItems(itemsPromise, resourceid){
     itemsPromise.then((d) => {
-      console.log("data", d)
       const author = d.data["@graph"].filter((i) => i["@id"] === resourceid)[0]
-      console.log("author", author)
       //const authorExpressions = d.data["@graph"].filter((i) => {i["@id"] === author.hasTopLevelExpression})
       const authorTitle = author["http://purl.org/dc/elements/1.1/title"]
       let authorArticles = null
@@ -47,8 +45,8 @@ class AuthorCollection extends React.Component {
           }
         })
       }
-      else{
-        authorArticles = [{id: author.autherArticle, title: d.data["@graph"].filter((i) => i["@id"] === author.autherArticle)[0]["http://purl.org/dc/elements/1.1/title"]}]
+      else if (author.authorArticle){
+        authorArticles = [{id: author.authorArticle, title: d.data["@graph"].filter((i) => i["@id"] === author.authorArticle)[0]["http://purl.org/dc/elements/1.1/title"]}]
       }
       let textArticles = null
       if(Array.isArray(author.textArticle)){
@@ -59,7 +57,7 @@ class AuthorCollection extends React.Component {
           }
         })
       }
-      else{
+      else if (author.textArticle){
         textArticles = [{id: author.textArticle, title: d.data["@graph"].filter((i) => i["@id"] === author.textArticle)[0]["http://purl.org/dc/elements/1.1/title"]}]
       }
 
@@ -72,7 +70,7 @@ class AuthorCollection extends React.Component {
           }
         })
       }
-      else{
+      else if (author.hasTopLevelExpression){
         expressions = [{id: author.hasTopLevelExpression, title: d.data["@graph"].filter((i) => i["@id"] === author.hasTopLevelExpression)[0]["http://purl.org/dc/elements/1.1/title"]}]
       }
       this.setState({authorArticles: authorArticles, textArticles: textArticles, expressions: expressions, authorTitle: authorTitle })
@@ -109,7 +107,7 @@ class AuthorCollection extends React.Component {
       const items = list.map((i) => {
         return (
 
-          <Item item={i}/>
+          <Item key={i.id} item={i}/>
 
         )
       });
