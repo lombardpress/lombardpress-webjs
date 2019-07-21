@@ -42,19 +42,32 @@ class Window extends React.Component {
           {// components that are only avialable if blockDiv focus and this.props.info is set
             this.props.info &&
           <div>
-            <TextCompareWrapper info={this.props.info} relatedExpressions={this.props.relatedExpressions} hidden={this.state.windowLoad !== "textCompare"}/>
-            <Info info={this.props.info} relatedExpressions={this.props.relatedExpressions} topLevel={this.props.topLevel} hidden={this.state.windowLoad !== "info"}/>
-            <Citation tresourceid={this.props.info.resourceid + this.props.mtFocus} manifestations={this.props.info.manifestations} hidden={this.state.windowLoad !== "citation"}/>
-            <Surface2 surfaceid={this.props.surfaceid} lineFocusId={this.props.lineFocusId} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad !== "surface2"}/>
-            <Surface3Wrapper info={this.props.info} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad !== "surface3"}/>
-            <Comments resourceid={this.props.info.resourceid} inbox={this.props.info.inbox} hidden={this.state.windowLoad !== "comments"}/>
+          {
+            // NOTE: performance seems a lot better when these mount only when clicked on
+            // some downside as it was nice to have them pre-loaded
+            // and the state doesn't remain when leaving tab and returning back to tab.
+            // for this reason search is always loaded, so that search results remain when moving between tabs.
+            // a compromise approach could be made for similar resources, where some components are dismounted and some are hiddden
+          }
+            {this.state.windowLoad === "textCompare" && <TextCompareWrapper info={this.props.info} relatedExpressions={this.props.relatedExpressions} hidden={this.state.windowLoad !== "textCompare"}/>}
+            {this.state.windowLoad === "info" &&  <Info info={this.props.info} relatedExpressions={this.props.relatedExpressions} topLevel={this.props.topLevel} hidden={this.state.windowLoad !== "info"}/>}
+            {this.state.windowLoad === "citation" &&  <Citation tresourceid={this.props.info.resourceid + this.props.mtFocus} manifestations={this.props.info.manifestations} handleFocusChange={this.props.handleFocusChange} hidden={this.state.windowLoad !== "citation"}/>}
+            {this.state.windowLoad === "surface2" &&  <Surface2 surfaceid={this.props.surfaceid} lineFocusId={this.props.lineFocusId} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad !== "surface2"}/>}
+            {this.state.windowLoad === "surface3" &&  <Surface3Wrapper info={this.props.info} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad !== "surface3"}/>}
+            {this.state.windowLoad === "comments" &&  <Comments resourceid={this.props.info.resourceid} inbox={this.props.info.inbox} hidden={this.state.windowLoad !== "comments"}/>}
           </div>
           }
           {
             //TODO: use of info, topLevel, itemFocus, focusResearceid, resourceid, needs to be better organized and clarified
           }
-          <XmlView tresourceid={this.props.info ? this.props.info.resourceid + this.props.mtFocus : this.props.itemFocus.expression + this.props.mtFocus} hidden={this.state.windowLoad !== "xml"}/>
+          {this.state.windowLoad === "xml" &&  <XmlView tresourceid={this.props.info ? this.props.info.resourceid + this.props.mtFocus : this.props.itemFocus.expression + this.props.mtFocus} hidden={this.state.windowLoad !== "xml"}/>}
+          {
+            //always load outline since it reduces number of calls, as most info is the same for all paragraphs
+          }
           <TextOutlineWrapper focusResourceid={this.props.info ? this.props.info.resourceid : this.props.itemFocus.expression} resourceid={this.props.topLevel} title={this.props.topLevel} hidden={this.state.windowLoad !== "textOutlineWrapper"} mtFocus={this.props.mtFocus}/>
+          {
+            //always load search to keep search results present even when navigating two diffferent tabs
+          }
           <SearchWrapper hidden={this.state.windowLoad !== "search"} topLevel={this.props.topLevel}/>
           {
             //<Surface surfaceid={this.props.surfaceid} topLevel={this.props.topLevel}/>

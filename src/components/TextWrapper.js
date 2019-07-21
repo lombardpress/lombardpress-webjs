@@ -17,6 +17,7 @@ class TextWrapper extends React.Component {
     this.mount = false
     this.openWindow = this.openWindow.bind(this)
     this.setFocus = this.setFocus.bind(this)
+    this.setFocus2 = this.setFocus2.bind(this)
     this.handleTabChange = this.handleTabChange.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.handleMinimize = this.handleMinimize.bind(this)
@@ -165,10 +166,16 @@ class TextWrapper extends React.Component {
   handleLineFocusChange(lineFocusId){
     this.setState({lineFocusId: lineFocusId})
   }
+  //TODO
+  //These two function should be refactored into one
   setFocus(id){
     const fullid = id.includes("http") ? id + this.state.mtFocus : "http://scta.info/resource/" + id + this.state.mtFocus
     this.props.handleUpdateUrlResource(fullid)
   }
+  setFocus2(newid){
+    this.props.handleUpdateUrlResource(newid)
+  }
+  //END TODO
 
 
   retrieveFocusInfo(id){
@@ -331,6 +338,7 @@ class TextWrapper extends React.Component {
               handleMiddlize={this.handleMiddlize}
               handleTabChange={this.handleTabChange}
               handleBlockFocusChange={this.setFocus}
+              handleFocusChange={this.setFocus2}
               handleSurfaceFocusChange={this.handleSurfaceFocusChange}
               handleSwitchWindow={this.handleSwitchWindow}
               handleDuplicateWindow={this.handleDuplicateWindow}
