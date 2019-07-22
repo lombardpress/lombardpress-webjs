@@ -99,17 +99,37 @@ class SurfaceInfo extends React.Component {
     const displayExpressions = () => {
       if (this.state.expressions.length > 0){
         const expressions = this.state.expressions.map((e) => {
-          const manifestations = e.hasManifestation.map((m) => {
-            return (
-              <div key={m}>
-              <span>{m} <Link to={"/text?resourceid=" + m}><FaExternalLinkAlt/></Link></span>
-              <br/>
-              <span style={{"textIndent": "10px"}}>...Appearing on Surface {this.state.surfaceMap[m]} <Link to={"/text?resourceid=" + this.state.surfaceMap[m]}><FaExternalLinkAlt/></Link></span>
-              <br/>
-              <br/>
-              </div>
-            )
-          })
+          console.log("typeof", typeof(e.hasManifestation))
+          let manifestations = ""
+          // sometimes there are several manifestations
+          if (typeof(e.hasManifestation) === "object"){
+            manifestations = e.hasManifestation.map((m) => {
+              return (
+                  <div key={m}>
+                  <span>{m} <Link to={"/text?resourceid=" + m}><FaExternalLinkAlt/></Link></span>
+                  <br/>
+                  <span style={{"textIndent": "10px"}}>...Appearing on Surface {this.state.surfaceMap[m]} <Link to={"/text?resourceid=" + this.state.surfaceMap[m]}><FaExternalLinkAlt/></Link></span>
+                  <br/>
+                  <br/>
+                  </div>
+                )
+              })
+            }
+            // sometimes there is only manifestation
+            else if (e.hasManifestation){
+              manifestations = (
+                  <div key={e.hasManifestation}>
+                  <span>{e.hasManifestation} <Link to={"/text?resourceid=" + e.hasManifestation}><FaExternalLinkAlt/></Link></span>
+                  <br/>
+                  <span style={{"textIndent": "10px"}}>...Appearing on Surface {this.state.surfaceMap[e.hasManifestation]} <Link to={"/text?resourceid=" + this.state.surfaceMap[e.hasManifestation]}><FaExternalLinkAlt/></Link></span>
+                  <br/>
+                  <br/>
+                  </div>
+                )
+              }
+              else{
+                manifestations = []
+              }
           return (
             <div key={e["@id"]}>
             <p>{e["@id"]} <Link to={"/text?resourceid=" + e["@id"]}><FaExternalLinkAlt/></Link></p>
