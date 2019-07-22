@@ -1,10 +1,12 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Surface2 from './Surface2'
+import Surface3Wrapper from './Surface3Wrapper'
+import SurfaceInfo from './SurfaceInfo'
 import {Link} from 'react-router-dom';
 
 import {runQuery} from './utils'
-import {getCodexInfo} from './Queries'
+import {getCodexInfo, getCodexInfoFromSurface} from './Queries'
 
 class Codex extends React.Component {
   constructor(props){
@@ -12,12 +14,14 @@ class Codex extends React.Component {
     this.retrieveCodexInfo = this.retrieveCodexInfo.bind(this)
     this.handleSurfaceFocusChange = this.handleSurfaceFocusChange.bind(this)
     this.handleToggleShowContents = this.handleToggleShowContents.bind(this)
+    this.handleSurface3Manifestations = this.handleSurface3Manifestations.bind(this)
     this.state = {
       items: {},
       title: "",
       focusedSurface: "",
       relatedCodices: [],
-      showContents: false
+      showContents: true,
+      surface3Manifestations: []
     }
   }
   handleToggleShowContents(){
@@ -27,15 +31,23 @@ class Codex extends React.Component {
       }
     })
   }
+  handleSurface3Manifestations(manifestations){
+    this.setState({surface3Manifestations: manifestations})
+  }
   handleSurfaceFocusChange(surfaceid){
     this.setState({focusedSurface: surfaceid})
   }
-  retrieveCodexInfo(codexid){
-    const codexInfo = runQuery(getCodexInfo(codexid))
+  retrieveCodexInfo(id, type){
+    let codexInfo = undefined
+    if (type === "surface"){
+      codexInfo = runQuery(getCodexInfoFromSurface(id))
+    }
+    else{
+      codexInfo = runQuery(getCodexInfo(id))
+    }
     codexInfo.then((d) => {
       const data = d.data.results.bindings
       if (data.length > 0 && data[0].surface){
-        this.setState({focusedSurface: data[0].surface.value})
         const expressionIdMap = data.map((d) => {
           return d.expression ? d.expression.value : ""
         })
@@ -55,13 +67,27 @@ class Codex extends React.Component {
             }
           expressionList[d.expression.value].push(info)
         })
-        this.setState({items: expressionList})
+        const focusedSurface = (type === "surface") ? id : data[0].surface.value
+        this.setState({items: expressionList, focusedSurface: focusedSurface})
 
       }
     })
   }
   componentDidMount(){
-    this.retrieveCodexInfo(this.props.codexid)
+    if (this.props.surfaceid){
+      this.retrieveCodexInfo(this.props.surfaceid, "surface")
+    }
+    else{
+      this.retrieveCodexInfo(this.props.codexid, "codex")
+    }
+  }
+  componentWillReceiveProps(newProps){
+    if (newProps.surfaceid && newProps.surfaceid !== this.props.surfaceid){
+      this.retrieveCodexInfo(newProps.surfaceid, "surface")
+    }
+    else if (newProps.codexid !== this.props.codexid){
+      this.retrieveCodexInfo(newProps.codexid, "codex")
+    }
   }
 
   render(){
@@ -84,8 +110,21 @@ class Codex extends React.Component {
       })
       return items
     }
+    const displayImages = () => {
+      if (this.state.surface3Manifestations.length > 0){
+        console.log("test")
+        return <Surface3Wrapper manifestations={this.state.surface3Manifestations} hidden={false}/>
+      }
+      else if (this.state.focusedSurface){
+        return <Surface2 surfaceid={this.state.focusedSurface} lineFocusId="" topLevel={this.props.topLevel} handleSurfaceFocusChange={this.handleSurfaceFocusChange} width={"500"} hidden={false}/>
+      }
+      else{
+        return null
+      }
+
+    }
     return (
-      <Container className="Codex">
+      <Container fluid={true} className="Codex">
       <h1>{this.props.codexid}</h1>
       <div className="codexWrapper">
         <div className="codexContentsWrapper">
@@ -93,15 +132,15 @@ class Codex extends React.Component {
           <h2 onClick={this.handleToggleShowContents}>{this.state.showContents ? "Hide Contents" : "View Contents"}</h2>
           {this.state.showContents && this.state.items && displayItems()}
           </div>
-          <div className="codexRelations">
-            <h2>Show relations</h2>
-          </div>
         </div>
         <div className="codexImage">
-          {this.state.focusedSurface &&
-            <Surface2 surfaceid={this.state.focusedSurface} lineFocusId="" topLevel={this.props.topLevel} handleSurfaceFocusChange={this.handleSurfaceFocusChange} width={500} hidden={false}/>
-          }
+          {displayImages()}
          </div>
+         <div className="surfaceInfo">
+         {this.state.focusedSurface &&
+          <SurfaceInfo surfaceid={this.state.focusedSurface} handleSurface3Manifestations={this.handleSurface3Manifestations}/>
+         }
+        </div>
       </div>
 
       </Container>

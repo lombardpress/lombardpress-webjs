@@ -105,7 +105,7 @@ class SearchQuery extends React.Component {
     const displayAvailableExpressions = () => {
       if (this.state.availableExpressions.length > 0){
         const availableExpressions = this.state.availableExpressions.map((e, i) => {
-          return <option key={e.expression + "-", i} value={e.expression}>{e.authorTitle}: {e.expressionTitle}</option>
+          return <option key={e.expression + "-" + i} value={e.expression}>{e.authorTitle}: {e.expressionTitle}</option>
         })
         return availableExpressions
       }
@@ -116,7 +116,7 @@ class SearchQuery extends React.Component {
     const displayAvailableAuthors = () => {
       if (this.state.availableAuthors.length > 0){
         const availableAuthors = this.state.availableAuthors.map((e, i) => {
-          return <option key={e.author + "-", i} value={e.author}>{e.authorTitle}</option>
+          return <option key={e.author + "-" + i} value={e.author}>{e.authorTitle}</option>
         })
         return availableAuthors
       }

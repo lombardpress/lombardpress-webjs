@@ -30,19 +30,19 @@ class Surface3Wrapper extends React.Component {
     this.setState({focusedManifestation: focusedManifestation, focusedManifestationSlug: slug})
   }
   componentDidMount(){
-    if (this.props.info){
+    if (this.props.manifestations){
       this.setState((prevState) => {
         return {
-          manifestations: this.props.info.manifestations,
+          manifestations: this.props.manifestations,
         }
       })
     }
   }
   componentWillReceiveProps(nextProps){
-    if (nextProps.info !== this.props.info){
+    if (nextProps.manifestations !== this.props.manifestations){
       this.setState((prevState) => {
         return {
-          manifestations: nextProps.info.manifestations,
+          manifestations: nextProps.manifestations,
         }
       })
     }
