@@ -21,16 +21,3 @@
    ].join('');
    return query
  }
- export function getSurfaceInfoFromCanvasId(canvasid){
-   const query = [
-     "SELECT DISTINCT ?manifestation",
-     "WHERE { ",
-     "{",
-     "?isurface <http://scta.info/property/hasCanvas> <" + canvasid + "> .",
-     "?surface <http://scta.info/property/hasISurface> ?surface .",
-     "?manifestation <http://scta.info/property/isOnSurface ?surface .",
-     "?manifestation <http://scta.info/property/structureType> <http:///scta.info/resource/structureBlock> .",
-     "}"
-   ].join('');
-   return query
- }

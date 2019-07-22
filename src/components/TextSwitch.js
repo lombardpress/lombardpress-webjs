@@ -47,6 +47,12 @@ class TextSwitch extends React.Component {
       else if (type === "http://scta.info/resource/surface"){
           this.setState({displayType: "surface", resourceid: resourceid, structureType: "", topLevel: "", type: type, resourceTitle: resourceTitle})
       }
+      else if (type === "http://iiif.io/api/presentation/2#Manifest"){
+          this.setState({displayType: "manifest", resourceid: resourceid, structureType: "", topLevel: "", type: type, resourceTitle: resourceTitle})
+      }
+      else if (type === "http://iiif.io/api/presentation/2#Canvas"){
+          this.setState({displayType: "canvas", resourceid: resourceid, structureType: "", topLevel: "", type: type, resourceTitle: resourceTitle})
+      }
       else if (type === "http://scta.info/resource/workGroup"){
           this.setState({displayType: "workGroup", resourceid: resourceid, structureType: structureType, topLevel: topLevel, type: type, resourceTitle: resourceTitle})
       }
@@ -127,6 +133,12 @@ class TextSwitch extends React.Component {
       }
       else if (this.state.displayType === "surface"){
         return (<Codex surfaceid={this.state.resourceid}/>)
+      }
+      else if (this.state.displayType === "canvas"){
+        return (<Codex canvasid={this.state.resourceid}/>)
+      }
+      else if (this.state.displayType === "manifest"){
+        return (<Codex manifestid={this.state.resourceid}/>)
       }
       else{
         return null

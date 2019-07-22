@@ -6,7 +6,7 @@ import SurfaceInfo from './SurfaceInfo'
 import {Link} from 'react-router-dom';
 
 import {runQuery} from './utils'
-import {getCodexInfo, getCodexInfoFromSurface} from './Queries'
+import {getCodexInfo, getCodexInfoFromSurface, getCodexInfoFromCanvas, getCodexInfoFromManifest} from './Queries'
 
 class Codex extends React.Component {
   constructor(props){
@@ -42,6 +42,12 @@ class Codex extends React.Component {
     if (type === "surface"){
       codexInfo = runQuery(getCodexInfoFromSurface(id))
     }
+    else if (type === "canvas"){
+      codexInfo = runQuery(getCodexInfoFromCanvas(id))
+    }
+    else if (type === "manifest"){
+      codexInfo = runQuery(getCodexInfoFromManifest(id))
+    }
     else{
       codexInfo = runQuery(getCodexInfo(id))
     }
@@ -67,7 +73,16 @@ class Codex extends React.Component {
             }
           expressionList[d.expression.value].push(info)
         })
-        const focusedSurface = (type === "surface") ? id : data[0].surface.value
+        let focusedSurface = ""
+        if (type === "surface"){
+           focusedSurface = id
+         }
+         else if (type === "canvas"){
+           focusedSurface = data[0].surfaceFocus.value
+         }
+         else{
+           focusedSurface = data[0].surface.value
+         }
         this.setState({items: expressionList, focusedSurface: focusedSurface})
 
       }
@@ -77,6 +92,12 @@ class Codex extends React.Component {
     if (this.props.surfaceid){
       this.retrieveCodexInfo(this.props.surfaceid, "surface")
     }
+    else if (this.props.canvasid){
+      this.retrieveCodexInfo(this.props.canvasid, "canvas")
+    }
+    else if (this.props.manifestid){
+      this.retrieveCodexInfo(this.props.manifestid, "manifest")
+    }
     else{
       this.retrieveCodexInfo(this.props.codexid, "codex")
     }
@@ -84,6 +105,12 @@ class Codex extends React.Component {
   componentWillReceiveProps(newProps){
     if (newProps.surfaceid && newProps.surfaceid !== this.props.surfaceid){
       this.retrieveCodexInfo(newProps.surfaceid, "surface")
+    }
+    else if (newProps.canvasid && newProps.canvasid !== this.props.canvasid){
+      this.retrieveCodexInfo(newProps.canvasid, "canvas")
+    }
+    else if (newProps.manifestid && newProps.manifestid !== this.props.manifestid){
+      this.retrieveCodexInfo(newProps.manifest, "manifest")
     }
     else if (newProps.codexid !== this.props.codexid){
       this.retrieveCodexInfo(newProps.codexid, "codex")
