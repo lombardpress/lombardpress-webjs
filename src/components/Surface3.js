@@ -14,6 +14,7 @@ import {getSurfaceInfo, getBlockLines} from './Queries'
 class Surface3 extends React.Component {
   constructor(props){
     super(props)
+    this.mounted = ""
     this.handleNext = this.handleNext.bind(this)
     this.handlePrevious = this.handlePrevious.bind(this)
     this.state = {
@@ -50,6 +51,7 @@ class Surface3 extends React.Component {
         const alUrl = "https://exist.scta.info/exist/apps/scta-app/folio-annotaiton-list-from-simpleXmlCoordinates.xq?surfaceid=" + surfaceid.split("/resource/")[1]
         Axios.get(alUrl).then((d2) => {
           //const resources = d2.data.resources
+          if (this.mounted){
             this.setState((prevState) => {
               const newSurface = {
                 currentSurfaceId: surfaceid,
@@ -70,41 +72,44 @@ class Surface3 extends React.Component {
               surfaces: [
                 ...prevState.surfaces,
                 newSurface
-
-              ]
-            }
-          })
+                ]
+              }
+            })
+          }
         }).catch((error) => {
             console.log("failed retrieving annotationlist: ", error)
-            this.setState((prevState) => {
-              const newSurface = {
-                currentSurfaceId: surfaceid,
-                surfaceTitle: b.surfaceTitle.value,
-                //manifest: manifest,
-                canvas: b.canvas.value,
-                imageurl: b.imageurl.value,
-                next: b.next_surface ? b.next_surface.value : "",
-                previous: b.previous_surface ? b.previous_surface.value : "",
-                annotations: "",
-                surfaceid: surfaceid,
-                firstLine: firstLine,
-                lastLine: lastLine,
-                order: order
+            if (this.mounted){
+              this.setState((prevState) => {
+                const newSurface = {
+                  currentSurfaceId: surfaceid,
+                  surfaceTitle: b.surfaceTitle.value,
+                  //manifest: manifest,
+                  canvas: b.canvas.value,
+                  imageurl: b.imageurl.value,
+                  next: b.next_surface ? b.next_surface.value : "",
+                  previous: b.previous_surface ? b.previous_surface.value : "",
+                  annotations: "",
+                  surfaceid: surfaceid,
+                  firstLine: firstLine,
+                  lastLine: lastLine,
+                  order: order
 
+                }
+              return {
+                surfaces: [
+                  ...prevState.surfaces,
+                  newSurface
+                ]
               }
-            return {
-              surfaces: [
-                ...prevState.surfaces,
-                newSurface
-              ]
-            }
-          })
+            })
+          }
         })
       })
     })
   })
 }
 componentDidMount(){
+  this.mounted = true
     if (this.props.manifestationid){
       this.setState((prevState) => {
         return {
@@ -125,6 +130,9 @@ componentDidMount(){
       },
     this.retrieveSurfaceInfo(nextProps.manifestationid))
     }
+  }
+  componentWillUnmount(){
+    this.mounted = false
   }
   render() {
     const displayAllImages = () => {

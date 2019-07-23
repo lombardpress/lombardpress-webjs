@@ -29,8 +29,10 @@ class Window extends React.Component {
   }
   // used to control default manifestation prop for surface3 component
   handleChangeManifestation(manifestation){
+    // to do getting manifestation slug, to apply as default view
+    // TODO: it is precarious to get info like this by deconstructing identifier
+    // it would better if this information were being passed from original db look up
     const manifestationSlug = manifestation.split("/resource/")[1].split("/")[1]
-    console.log("test", manifestation, manifestationSlug)
     this.props.handleChangeManifestation(this.props.windowId, manifestationSlug)
   }
   componentDidMount(){

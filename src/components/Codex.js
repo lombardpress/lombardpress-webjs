@@ -151,7 +151,6 @@ class Codex extends React.Component {
     }
     const displayImages = () => {
       if (this.state.surface3Manifestations.length > 0){
-        console.log("test")
         return <Surface3Wrapper manifestations={this.state.surface3Manifestations} focusedManifestation={this.state.surface3FocusedManifestation} annotationsDisplay="paragraph" width="500" hidden={false}/>
       }
       else if (this.state.focusedSurface){
