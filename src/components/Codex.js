@@ -21,7 +21,8 @@ class Codex extends React.Component {
       focusedSurface: "",
       relatedCodices: [],
       showContents: true,
-      surface3Manifestations: []
+      surface3Manifestations: [],
+      surface3FocusedManifestation: ""
     }
   }
   handleToggleShowContents(){
@@ -32,7 +33,18 @@ class Codex extends React.Component {
     })
   }
   handleSurface3Manifestations(manifestations){
-    this.setState({surface3Manifestations: manifestations})
+    // construct target manifestation from codex slug in focused surface
+    // then use slug to find matching manifestation in manifestation list
+    // TODO: not ideal to be constructing the manifestation id
+    // TODO: it would better to begetting this directly from a lookup request
+    const split1 = this.state.focusedSurface.split("/resource/")[1]
+    const codexSlug = split1.split("/")[0]
+    const surface3FocusedManifestation = manifestations ? manifestations.filter((m) => m.manifestation.includes(codexSlug))[0].manifestation : ""
+
+    this.setState({
+        surface3Manifestations: manifestations,
+        surface3FocusedManifestation: surface3FocusedManifestation
+      })
   }
   handleSurfaceFocusChange(surfaceid){
     this.setState({focusedSurface: surfaceid})
@@ -140,10 +152,10 @@ class Codex extends React.Component {
     const displayImages = () => {
       if (this.state.surface3Manifestations.length > 0){
         console.log("test")
-        return <Surface3Wrapper manifestations={this.state.surface3Manifestations} hidden={false}/>
+        return <Surface3Wrapper manifestations={this.state.surface3Manifestations} focusedManifestation={this.state.surface3FocusedManifestation} annotationsDisplay="paragraph" width="500" hidden={false}/>
       }
       else if (this.state.focusedSurface){
-        return <Surface2 surfaceid={this.state.focusedSurface} lineFocusId="" topLevel={this.props.topLevel} handleSurfaceFocusChange={this.handleSurfaceFocusChange} width={"500"} hidden={false}/>
+        return <Surface2 surfaceid={this.state.focusedSurface} lineFocusId="" topLevel={this.props.topLevel} handleSurfaceFocusChange={this.handleSurfaceFocusChange} width={"500"} annotationsDisplay={false} hidden={false}/>
       }
       else{
         return null

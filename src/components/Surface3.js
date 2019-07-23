@@ -1,5 +1,6 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
+import PropTypes from 'prop-types';
 import Axios from 'axios'
 
 import ImageTextWrapper from './ImageTextWrapper';
@@ -16,7 +17,6 @@ class Surface3 extends React.Component {
     this.handleNext = this.handleNext.bind(this)
     this.handlePrevious = this.handlePrevious.bind(this)
     this.state = {
-      width: "1000",
       region: "full",
       surfaces: [
       ]
@@ -139,7 +139,6 @@ componentDidMount(){
       return surfacesDisplay
     }
     const displayImages = (surface) => {
-
       // handle line display
       if (surface.annotations && this.props.annotationsDisplay === "lines"){
         const imageTextWrappers = surface.annotations.map((h, i) => {
@@ -161,7 +160,7 @@ componentDidMount(){
                 label={label}
                 targetLabel={this.props.targetLabel}
                 surfaceButton={false}
-                displayWidth="1000"
+                displayWidth={this.props.width}
                 />
               )
             }
@@ -187,12 +186,13 @@ componentDidMount(){
         const lly = llcoords.split(",")[1]
         const llh = llcoords.split(",")[3]
         const llbottom = (parseInt(lly) + parseInt(llh)) - parseInt(y)
-        const coords = (parseInt(flcoords.split(",")[0] - 10)) + "," + (parseInt(y) - 50) + "," + (parseInt(flcoords.split(",")[2]) + 10) + "," + (parseInt(llbottom) + 50)
+        const coords = (parseInt(flcoords.split(",")[0] - 10)) + "," + (parseInt(y)) + "," + (parseInt(flcoords.split(",")[2]) + 10) + "," + (parseInt(llbottom) + 50)
         const text = ""
         const imageUrl = h.imageUrl
 
         return (
           <ImageTextWrapper
+            key={surface.currentSurfaceId + "-" + surface.order}
             imageUrl={imageUrl}
             canvas={flcanvas}
             coords={coords}
@@ -201,12 +201,12 @@ componentDidMount(){
             label={""}
             targetLabel={""}
             surfaceButton={false}
-            displayWidth="1000"
+            displayWidth={this.props.width}
             />
           )
         }
       else{
-        return <img alt="manuscript" src={surface.imageurl + "/full/" + this.state.width + ",/0/default.jpg"}/>
+        return <img key={surface.currentSurfaceId + "-" + surface.order} alt="manuscript" src={surface.imageurl + "/full/" + this.props.width + ",/0/default.jpg"}/>
       }
     }
     return (
@@ -217,6 +217,26 @@ componentDidMount(){
     );
   }
 
+}
+Surface3.defaultProps = {
+  width: "500"
+};
+
+Surface3.propTypes = {
+  /**
+  * a string indicating desired width in pixels for image display
+  *
+  * TODO: it might be desireable to change propType to an integer. I'm not sure.
+  */
+  width: PropTypes.string,
+  /**
+  * manifestation id
+  */
+  manifestationid: PropTypes.string,
+  /**
+  * indicates what kind of display is desired, "lines, paragraph, surface/null"
+  */
+  annotationsDisplay: PropTypes.string
 }
 
 export default Surface3;

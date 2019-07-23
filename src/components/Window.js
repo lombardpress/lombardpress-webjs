@@ -17,11 +17,22 @@ import TextOutlineWrapper from "./TextOutlineWrapper"
 class Window extends React.Component {
   constructor(props){
     super(props)
+    this.handleToggleTextLinesView = this.handleToggleTextLinesView.bind(this)
+    this.handleChangeManifestation = this.handleChangeManifestation.bind(this)
     this.state = {
       windowLoad: ""
     }
   }
-
+  // used to control default iamge view prop for surface3 component
+  handleToggleTextLinesView(view){
+    this.props.handleToggleTextLinesView(this.props.windowId, view)
+  }
+  // used to control default manifestation prop for surface3 component
+  handleChangeManifestation(manifestation){
+    const manifestationSlug = manifestation.split("/resource/")[1].split("/")[1]
+    console.log("test", manifestation, manifestationSlug)
+    this.props.handleChangeManifestation(this.props.windowId, manifestationSlug)
+  }
   componentDidMount(){
     this.setState({windowLoad: this.props.windowLoad})
 
@@ -53,7 +64,14 @@ class Window extends React.Component {
             {this.state.windowLoad === "info" &&  <Info info={this.props.info} relatedExpressions={this.props.relatedExpressions} topLevel={this.props.topLevel} hidden={this.state.windowLoad !== "info"}/>}
             {this.state.windowLoad === "citation" &&  <Citation tresourceid={this.props.info.resourceid + this.props.mtFocus} manifestations={this.props.info.manifestations} handleFocusChange={this.props.handleFocusChange} hidden={this.state.windowLoad !== "citation"}/>}
             {this.state.windowLoad === "surface2" &&  <Surface2 surfaceid={this.props.surfaceid} lineFocusId={this.props.lineFocusId} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad !== "surface2"}/>}
-            {this.state.windowLoad === "surface3" &&  <Surface3Wrapper manifestations={this.props.info.manifestations} hidden={this.state.windowLoad !== "surface3"}/>}
+            {this.state.windowLoad === "surface3" &&  <Surface3Wrapper
+            manifestations={this.props.info.manifestations}
+            focusedManifestation={this.props.defaultManifestationSlug ? this.props.resourceid + "/" + this.props.defaultManifestationSlug : this.props.resourceid + "/" + this.props.mtFocus.split("/")[1]}
+            annotationsDisplay={this.props.annotationsDisplay}
+            handleToggleTextLinesView={this.handleToggleTextLinesView}
+            handleChangeManifestation={this.handleChangeManifestation}
+            width={this.props.windowType === 'bottomWindow' ? "1000" : "500"}
+            hidden={this.state.windowLoad !== "surface3"}/>}
             {this.state.windowLoad === "comments" &&  <Comments resourceid={this.props.info.resourceid} inbox={this.props.info.inbox} hidden={this.state.windowLoad !== "comments"}/>}
           </div>
           }

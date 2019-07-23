@@ -4,7 +4,15 @@
   justify-content: center;
 }
 
-.manifestationsList, .imagesDisplay {
+.imagesDisplay {
   //height: 100vh;
   overflow: scroll;
+}
+.image-display-choice{
+
+}
+.manifestationsList{
+  width: 400px;
+  margin: 10px auto;
+
 }

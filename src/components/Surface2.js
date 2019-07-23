@@ -98,6 +98,7 @@ componentDidMount(){
     if (this.props.surfaceid){
       this.retrieveSurfaceInfo(this.props.surfaceid)
     }
+    this.setState({annotationsDisplay: this.props.annotationsDisplay})
   }
   componentWillReceiveProps(nextProps){
     if (nextProps.surfaceid){
@@ -169,5 +170,7 @@ componentDidMount(){
   }
 
 }
-
+Surface2.defaultProps = {
+  annotationsDisplay: true
+};
 export default Surface2;

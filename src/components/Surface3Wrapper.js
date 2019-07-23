@@ -1,5 +1,7 @@
 import React from 'react';
 import Surface3 from './Surface3';
+import PropTypes from 'prop-types';
+import Form from 'react-bootstrap/Form';
 
 import { FaList, FaFile, FaParagraph} from 'react-icons/fa';
 
@@ -12,52 +14,68 @@ class Surface3Wrapper extends React.Component {
     this.handleChangeManifestation = this.handleChangeManifestation.bind(this)
     this.handleToggleTextLinesView = this.handleToggleTextLinesView.bind(this)
     this.state = {
-      manifestations: [],
       focusedManifestation: "",
-      focusedManifestationSlug: null,
       annotationsDisplay: "lines"
     }
   }
   handleToggleTextLinesView(view){
-    //this.retrieveSurfaceInfo(this.state.previous)
-    this.setState((prevState) => {
-      return {annotationsDisplay: view}
-    })
+    //optional prop to allow parent container to reset default view prop
+    if (this.props.handleToggleTextLinesView){
+      this.props.handleToggleTextLinesView(view)
+    }
+    else{
+      this.setState((prevState) => {
+        return {annotationsDisplay: view}
+      })
+    }
   }
-  handleChangeManifestation(focusedManifestation){
-    //TODO not best way to get manifestation slug; it should probably be retrieved from info query
-    const slug = focusedManifestation.split("/resource/")[1].split("/")[1]
-    this.setState({focusedManifestation: focusedManifestation, focusedManifestationSlug: slug})
+  handleChangeManifestation(e){
+    e.preventDefault()
+    //optional prop to allow parent container to reset default view prop
+    if (this.props.handleChangeManifestation){
+      this.props.handleChangeManifestation(e.target.value)
+    }
+    else{
+      this.setState({focusedManifestation: e.target.value})
+    }
   }
   componentDidMount(){
     if (this.props.manifestations){
       this.setState((prevState) => {
         return {
-          manifestations: this.props.manifestations,
+          focusedManifestation: this.props.focusedManifestation,
+          annotationsDisplay: this.props.annotationsDisplay,
         }
       })
     }
   }
   componentWillReceiveProps(nextProps){
-    if (nextProps.manifestations !== this.props.manifestations){
+    if (nextProps.focusedManifestation !== this.props.focusedManifestation){
       this.setState((prevState) => {
         return {
-          manifestations: nextProps.manifestations,
+          focusedManifestation: nextProps.focusedManifestation,
+        }
+      })
+    }
+    if (nextProps.annotationsDisplay !== this.props.annotationsDisplay){
+      this.setState((prevState) => {
+        return {
+          annotationsDisplay: nextProps.annotationsDisplay,
         }
       })
     }
   }
   render() {
     const displayManifestationsList = () => {
-      const list = this.state.manifestations.map((m) => {
-        return <p key={"title-" + m.manifestation}><span onClick={() => {this.handleChangeManifestation(m.manifestation)}}>{m.manifestationTitle}</span></p>
+      const list = this.props.manifestations.map((m) => {
+        return <option key={"title-" + m.manifestation} value={m.manifestation}>{m.manifestationTitle}</option>
       })
       return list
     }
     const displayManifestation = () => {
-      const manifestation = this.state.manifestations.map((m) => {
-        if (m.manifestation.includes(this.state.focusedManifestationSlug)){
-          return <Surface3 key={"surface-" + m.manifestation} manifestationid={m.manifestation} annotationsDisplay={this.state.annotationsDisplay}/>
+      const manifestation = this.props.manifestations.map((m) => {
+        if (m.manifestation === this.state.focusedManifestation){
+          return <Surface3 key={"surface-" + m.manifestation} manifestationid={m.manifestation} annotationsDisplay={this.state.annotationsDisplay} width={this.props.width}/>
         }
         else{
           return null
@@ -69,25 +87,63 @@ class Surface3Wrapper extends React.Component {
 
     return (
       <div className={this.props.hidden ? "hidden" : "showing"}>
-        <div className="surfaceWrapper">
-          <div className="manifestationsList">
+        <div className="manifestationsList">
+          <Form.Control as="select" onChange={this.handleChangeManifestation} value={this.state.focusedManifestation}>
             {displayManifestationsList()}
-          </div>
+          </Form.Control>
+        </div>
+        <div className="surfaceWrapper">
+          {this.state.focusedManifestation &&
+            <div className="image-display-choice">
+              <p><span title="Text Line View" onClick={() => {this.handleToggleTextLinesView("lines")}}><FaList/></span></p>
+              <p><span title="Paragraph View" onClick={() => {this.handleToggleTextLinesView("paragraph")}}><FaParagraph/></span></p>
+              <p><span title="Full Surface View" onClick={() => {this.handleToggleTextLinesView("surface")}}><FaFile/></span></p>
+            </div>
+          }
           <div className="imagesDisplay">
             {displayManifestation()}
           </div>
-          {this.state.focusedManifestationSlug &&
-            <div>
-            <p><span title="Text Line View" onClick={() => {this.handleToggleTextLinesView("lines")}}><FaList/></span></p>
-            <p><span title="Paragraph View" onClick={() => {this.handleToggleTextLinesView("paragraph")}}><FaParagraph/></span></p>
-            <p><span title="Full Surface View" onClick={() => {this.handleToggleTextLinesView("surface")}}><FaFile/></span></p>
-            </div>
-          }
-
         </div>
       </div>
     );
   }
+}
+
+Surface3Wrapper.defaultProps = {
+  manifestations: [],
+  hidden: false,
+  focusedManifestation: "",
+  annotationsDisplay: "paragraph",
+  width: "500"
+};
+
+Surface3Wrapper.propTypes = {
+  /**
+  * an array of manifestation ids
+  */
+  manifestations: PropTypes.array,
+  /**
+  * boolean indicating whether or not compoment should be mounted by still hidden
+  */
+  hidden: PropTypes.bool,
+  /**
+  * indicates on which manifestation component to default focus.
+  * manifestation value MUST be included in manifestations array
+  */
+  focusedManifestation: PropTypes.string,
+  /**
+  * indicates what kind of display is desired, "lines, paragraph, surface/null"
+  */
+
+  annotationsDisplay: PropTypes.string,
+  /**
+  * optional prop to allow parent container to reset default view prop
+  */
+  handleToggleTextLinesView: PropTypes.func,
+  /**
+  * desired image width
+  */
+  width: PropTypes.string
 }
 
 export default Surface3Wrapper;

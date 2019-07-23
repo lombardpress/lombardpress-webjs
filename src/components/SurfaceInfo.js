@@ -18,17 +18,28 @@ class SurfaceInfo extends React.Component {
       showTextRegion: false
     }
   }
-  handleSurface3Manifestations(manifestations){
-    const newManifestations = manifestations.map((m) =>{
-      return {
-        manifestation: m,
-        manifestationTitle: m.split("/resource/")[1],
+  handleSurface3Manifestations(manifestations, eid){
+    let newManifestations = ""
+    if (typeof manifestations === "object"){
+      newManifestations = manifestations.map((m) =>{
+        return {
+          manifestation: m,
+          manifestationTitle: m.split("/resource/")[1],
+          transcription: ""
+        }
+      })
+    }
+    // sometimes there is only manifestation not in an array
+    else if (manifestations){
+      newManifestations = [{
+        manifestation: manifestations,
+        manifestationTitle: manifestations.split("/resource/")[1],
         transcription: ""
-      }
-    })
+      }]
+    }
     this.setState((prevState) => {
       return {
-        showTextRegion: !prevState.showTextRegion
+        showTextRegion: eid
       }
     })
     this.props.handleSurface3Manifestations(newManifestations)
@@ -99,7 +110,6 @@ class SurfaceInfo extends React.Component {
     const displayExpressions = () => {
       if (this.state.expressions.length > 0){
         const expressions = this.state.expressions.map((e) => {
-          console.log("typeof", typeof(e.hasManifestation))
           let manifestations = ""
           // sometimes there are several manifestations
           if (typeof(e.hasManifestation) === "object"){
@@ -132,16 +142,17 @@ class SurfaceInfo extends React.Component {
               }
           return (
             <div key={e["@id"]}>
+            <hr/>
             <p>{e["@id"]} <Link to={"/text?resourceid=" + e["@id"]}><FaExternalLinkAlt/></Link></p>
             {e.showRelatedSurfaces ?
               <div>
 
               <Button variant="outline-primary" size="sm" block onClick={() => {this.handleToggleRelatedSurfaces(e["@id"])}}>Hide Related Codices</Button>
               <br/>
-              {!this.state.showTextRegion ?
-                <Button variant="outline-primary" size="sm" block onClick={() => this.handleSurface3Manifestations(e.hasManifestation)}>View Focused Text Region</Button>
+              {this.state.showTextRegion !== e["@id"] ?
+                <Button variant="outline-primary" size="sm" block onClick={() => this.handleSurface3Manifestations(e.hasManifestation, e["@id"])}>View Focused Text Region</Button>
                 :
-                <Button variant="outline-primary" size="sm" block onClick={() => this.handleSurface3Manifestations([])}>Hide Focused Text Region</Button>
+                <Button variant="outline-primary" size="sm" block onClick={() => this.handleSurface3Manifestations("", "")}>Hide Focused Text Region</Button>
               }
               <br/>
               {manifestations}
@@ -175,7 +186,7 @@ class SurfaceInfo extends React.Component {
     return (
       <div className="SurfaceInfo">
       <h1>Surface Info</h1>
-        <div style={{"fontSize": "12px"}}>
+        <div style={{"fontSize": "16px"}}>
         <h4>Text objects appearing on this page</h4>
         {displayExpressions()}
         </div>

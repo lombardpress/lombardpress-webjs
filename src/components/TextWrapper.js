@@ -27,6 +27,8 @@ class TextWrapper extends React.Component {
     this.handleDuplicateWindow = this.handleDuplicateWindow.bind(this)
     this.handleSurfaceFocusChange = this.handleSurfaceFocusChange.bind(this)
     this.handleLineFocusChange = this.handleLineFocusChange.bind(this)
+    this.handleToggleTextLinesView = this.handleToggleTextLinesView.bind(this)
+    this.handleChangeManifestation = this.handleChangeManifestation.bind(this)
     this.state = {
       doc: "",
       focus: "",
@@ -41,18 +43,37 @@ class TextWrapper extends React.Component {
           open: false,
           windowLoad: "info",
           position: "sideWindow",
-          openWidthHeight: "middle"
+          openWidthHeight: "middle",
+          annotationsDisplay: "paragraph",
+          defaultManifestationSlug: ""
         },
         window2: {
           windowId: "window2",
           open: false,
           windowLoad: "info",
           position: "bottomWindow",
-          openWidthHeight: "middle"
+          openWidthHeight: "middle",
+          annotationsDisplay: "paragraph",
+          defaultManifestationSlug: ""
         }
       }
     }
   }
+  handleToggleTextLinesView(windowId, value){
+    this.setState((prevState) => {
+      const windows = prevState.windows
+      windows[windowId].annotationsDisplay = value
+      return {windows: windows}
+    })
+  }
+  handleChangeManifestation(windowId, manifestationSlug){
+    this.setState((prevState) => {
+      const windows = prevState.windows
+      windows[windowId].defaultManifestationSlug = manifestationSlug
+      return {windows: windows}
+    })
+  }
+
   openWindow(id, windowLoad){
     if (!this.state.windows[id].open || this.state.windows[id].windowLoad !== windowLoad){
       this.setState((prevState) => {
@@ -354,6 +375,10 @@ class TextWrapper extends React.Component {
               topLevel={this.state.itemFocus.topLevel}
               altWindowState={this.state.windows[key].windowId === "window1" ? this.state.windows["window2"].open : this.state.windows["window1"].open}
               mtFocus={this.state.mtFocus}
+              handleToggleTextLinesView={this.handleToggleTextLinesView}
+              annotationsDisplay={this.state.windows[key].annotationsDisplay}
+              handleChangeManifestation={this.handleChangeManifestation}
+              defaultManifestationSlug={this.state.windows[key].defaultManifestationSlug}
               />
             )
           }
