@@ -16,6 +16,7 @@ class SearchWrapper extends React.Component {
   handleRunSearch(query, eid, authorFocusId){
     this.setState({query: query, eid: eid, authorFocusId: authorFocusId})
   }
+
   componentDidMount(){
 
   }

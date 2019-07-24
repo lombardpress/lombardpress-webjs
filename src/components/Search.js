@@ -9,22 +9,25 @@ class Search extends React.Component {
     this.retrieveAuthorResults = this.retrieveAuthorResults.bind(this)
     this.state = {
       searchResults: [],
-      count: ""
+      count: "",
+      fetching: false
     }
   }
   retrieveExpressionResults(query, expressionid){
     const _this = this
+    this.setState({fetching: true})
     Axios.get("http://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-expressionid.xq?query=" + query + "&expressionid=" + expressionid)
       .then((d) => {
-            _this.setState({searchResults: d.data.results, count: d.data.count})
+            _this.setState({searchResults: d.data.results, count: d.data.count, fetching: false})
           })
   }
   retrieveAuthorResults(query, authorid){
     const _this = this
+    this.setState({fetching: true})
     const authorShortId = authorid.split("/resource/")[1]
     Axios.get("http://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-authorid.xq?query=" + query + "&authorid=" + authorShortId)
       .then((d) => {
-            _this.setState({searchResults: d.data.results, count: d.data.count})
+            _this.setState({searchResults: d.data.results, count: d.data.count, fetching: false})
           })
   }
   componentDidMount(){
@@ -39,16 +42,22 @@ class Search extends React.Component {
     else if (authorFocusId){
       this.retrieveAuthorResults(query, authorFocusId)
     }
+    else{
+      this.retrieveExpressionResults(query, "all")
+
+    }
   }
   componentWillReceiveProps(nextProps){
-    const query = nextProps.query
-    const eid =  nextProps.eid
-    const authorFocusId =  nextProps.authorFocusId
-    if (eid){
-      this.retrieveExpressionResults(query, eid)
-    }
-    else if (authorFocusId){
-      this.retrieveAuthorResults(query, authorFocusId)
+    if ((nextProps.query !== this.props.query) || (nextProps.eid !== this.props.eid) || (nextProps.authorFocusId !== this.props.authorFocusId)){
+      const query = nextProps.query
+      const eid =  nextProps.eid
+      const authorFocusId =  nextProps.authorFocusId
+      if (eid){
+        this.retrieveExpressionResults(query, eid)
+      }
+      else if (authorFocusId){
+        this.retrieveAuthorResults(query, authorFocusId)
+      }
     }
   }
   render(){
@@ -86,7 +95,11 @@ class Search extends React.Component {
   }
   return (
     <div>
-    {displayResults()}
+    {
+      this.state.fetching ?
+      <p>Fetching results</p> :
+      displayResults()
+    }
     </div>
 
 
