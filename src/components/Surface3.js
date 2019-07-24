@@ -8,9 +8,6 @@ import ImageTextWrapper from './ImageTextWrapper';
 import {runQuery} from './utils'
 import {getSurfaceInfo, getBlockLines} from './Queries'
 
-//TODO: surface 3 needs to run in a wrapper which allows the user to choose between manifestations.
-//TODO: rdf dbase needs to include first line numbers for paragraphs that start in the middle of al line.
-
 class Surface3 extends React.Component {
   constructor(props){
     super(props)
@@ -39,71 +36,75 @@ class Surface3 extends React.Component {
     const blockLineInfo = runQuery(getBlockLines(manifestationid))
     blockLineInfo.then((d1) => {
       d1.data.results.bindings.forEach((z) => {
-      const surfaceid = z.surface.value
-      const firstLine = z.first.value
-      const lastLine = z.last.value
-      const order = z.order.value
-      //const manifest = "http://scta.info/iiif/" + this.props.topLevel.split("/resource/")[1] + "/" + surfaceid.split("/resource/")[1].split("/")[0] + "/" + "manifest";
-      const surfaceInfo = runQuery(getSurfaceInfo(surfaceid))
-      surfaceInfo.then((d) => {
-        const b = d.data.results.bindings[0]
-        //second nested async call for annotation list
-        const alUrl = "https://exist.scta.info/exist/apps/scta-app/folio-annotaiton-list-from-simpleXmlCoordinates.xq?surfaceid=" + surfaceid.split("/resource/")[1]
-        Axios.get(alUrl).then((d2) => {
-          //const resources = d2.data.resources
-          if (this.mounted){
-            this.setState((prevState) => {
-              const newSurface = {
-                currentSurfaceId: surfaceid,
-                surfaceTitle: b.surfaceTitle ? b.surfaceTitle.value : "",
-                //manifest: manifest,
-                canvas: b.canvas.value,
-                imageurl: b.imageurl.value,
-                next: b.next_surface ? b.next_surface.value : "",
-                previous: b.previous_surface ? b.previous_surface.value : "",
-                annotations: d2.data ? d2.data.resources : "",
-                surfaceid: surfaceid,
-                firstLine: firstLine,
-                lastLine: lastLine,
-                order: order
+        const surfaceid = z.surface.value
+        const firstLine = z.first.value
+        const lastLine = z.last.value
+        const order = z.order.value
+        //const manifest = "http://scta.info/iiif/" + this.props.topLevel.split("/resource/")[1] + "/" + surfaceid.split("/resource/")[1].split("/")[0] + "/" + "manifest";
+        const surfaceInfo = runQuery(getSurfaceInfo(surfaceid))
+        surfaceInfo.then((d) => {
+          const b = d.data.results.bindings[0]
+          console.log("data", d)
+          // only preceed if sparql query returns results
+          if (b){
+            //second nested async call for annotation list
+            const alUrl = "https://exist.scta.info/exist/apps/scta-app/folio-annotaiton-list-from-simpleXmlCoordinates.xq?surfaceid=" + surfaceid.split("/resource/")[1]
+            Axios.get(alUrl).then((d2) => {
+              //const resources = d2.data.resources
+              if (this.mounted){
+                this.setState((prevState) => {
+                  const newSurface = {
+                    currentSurfaceId: surfaceid,
+                    surfaceTitle: b.surfaceTitle ? b.surfaceTitle.value : "",
+                    //manifest: manifest,
+                    canvas: b.canvas.value,
+                    imageurl: b.imageurl.value,
+                    next: b.next_surface ? b.next_surface.value : "",
+                    previous: b.previous_surface ? b.previous_surface.value : "",
+                    annotations: d2.data ? d2.data.resources : "",
+                    surfaceid: surfaceid,
+                    firstLine: firstLine,
+                    lastLine: lastLine,
+                    order: order
 
+                  }
+                return {
+                  surfaces: [
+                    ...prevState.surfaces,
+                    newSurface
+                    ]
+                  }
+                })
               }
-            return {
-              surfaces: [
-                ...prevState.surfaces,
-                newSurface
-                ]
-              }
-            })
-          }
-        }).catch((error) => {
-            console.log("failed retrieving annotationlist: ", error)
-            if (this.mounted){
-              this.setState((prevState) => {
-                const newSurface = {
-                  currentSurfaceId: surfaceid,
-                  surfaceTitle: b.surfaceTitle.value,
-                  //manifest: manifest,
-                  canvas: b.canvas.value,
-                  imageurl: b.imageurl.value,
-                  next: b.next_surface ? b.next_surface.value : "",
-                  previous: b.previous_surface ? b.previous_surface.value : "",
-                  annotations: "",
-                  surfaceid: surfaceid,
-                  firstLine: firstLine,
-                  lastLine: lastLine,
-                  order: order
+            }).catch((error) => {
+              console.log("failed retrieving annotationlist: ", error)
+              if (this.mounted){
+                this.setState((prevState) => {
+                  const newSurface = {
+                    currentSurfaceId: surfaceid,
+                    surfaceTitle: b.surfaceTitle.value,
+                    //manifest: manifest,
+                    canvas: b.canvas.value,
+                    imageurl: b.imageurl.value,
+                    next: b.next_surface ? b.next_surface.value : "",
+                    previous: b.previous_surface ? b.previous_surface.value : "",
+                    annotations: "",
+                    surfaceid: surfaceid,
+                    firstLine: firstLine,
+                    lastLine: lastLine,
+                    order: order
 
+                  }
+                return {
+                  surfaces: [
+                    ...prevState.surfaces,
+                    newSurface
+                  ]
                 }
-              return {
-                surfaces: [
-                  ...prevState.surfaces,
-                  newSurface
-                ]
-              }
-            })
-          }
-        })
+              })
+            }
+          })
+        }
       })
     })
   })
@@ -183,9 +184,9 @@ componentDidMount(){
       else if (surface.annotations && this.props.annotationsDisplay === "paragraph"){
         const h = surface.annotations[surface.firstLine - 1]
         const fl = surface.annotations[surface.firstLine - 1]
-        const flcanvas = fl.on.split("#xywh=")[0];
+        const flcanvas = fl ? fl.on.split("#xywh=")[0] : ""
         const flcanvasShort = flcanvas.split("/")[flcanvas.split("/").length - 1];
-        const flcoords = fl.on.split("#xywh=")[1];
+        const flcoords = fl ? fl.on.split("#xywh=")[1] : ""
         const y = flcoords.split(",")[1]
         const ll = surface.annotations[surface.lastLine - 1]
         //const llcanvas = ll ? ll.on.split("#xywh=")[0] : ""
@@ -196,22 +197,29 @@ componentDidMount(){
         const llbottom = (parseInt(lly) + parseInt(llh)) - parseInt(y)
         const coords = (parseInt(flcoords.split(",")[0] - 10)) + "," + (parseInt(y)) + "," + (parseInt(flcoords.split(",")[2]) + 10) + "," + (parseInt(llbottom) + 50)
         const text = ""
-        const imageUrl = h.imageUrl
+        const imageUrl = h ? h.imageUrl : ""
+        // check to see if an Image Url has been found.
+        // if not show "error message"
+        if (imageUrl){
 
-        return (
-          <ImageTextWrapper
-            key={surface.currentSurfaceId + "-" + surface.order}
-            imageUrl={imageUrl}
-            canvas={flcanvas}
-            coords={coords}
-            canvasShort={flcanvasShort}
-            text={text}
-            label={""}
-            targetLabel={""}
-            surfaceButton={false}
-            displayWidth={this.props.width}
-            />
-          )
+          return (
+            <ImageTextWrapper
+              key={surface.currentSurfaceId + "-" + surface.order}
+              imageUrl={imageUrl}
+              canvas={flcanvas}
+              coords={coords}
+              canvasShort={flcanvasShort}
+              text={text}
+              label={""}
+              targetLabel={""}
+              surfaceButton={false}
+              displayWidth={this.props.width}
+              />
+            )
+          }
+          else {
+            return (<p key={surface.currentSurfaceId + "-" + surface.order}>Sorry, this image is not yet ready</p>)
+          }
         }
       else{
         return <img key={surface.currentSurfaceId + "-" + surface.order} alt="manuscript" src={surface.imageurl + "/full/" + this.props.width + ",/0/default.jpg"}/>

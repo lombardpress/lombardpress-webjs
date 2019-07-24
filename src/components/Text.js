@@ -94,8 +94,13 @@ class Text extends React.Component {
             const target = $(this).attr('data-url')
             window.location = "#/text?resourceid=" + target
           })
+        }).
+        catch((e) => {
+          console.log("something went wrong", e)
+          document.getElementById("text").innerHTML = "";
+          document.getElementById("text").innerHTML = "<p>Apologies, the document is not able to be loaded at this time</p>";
         })
-    }
+      }
   }
 
   componentDidUpdate(prevProps, prevState){

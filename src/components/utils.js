@@ -24,12 +24,18 @@ export function loadXMLDoc(url){
 
 export function convertXMLDoc(xmlurl, xslurl){
   //See https://github.com/martin-honnen/martin-honnen.github.io/blob/master/xslt/arcor-archive/2016/test2016081501.html
-  return new Promise(function(resolve){
+  return new Promise(function(resolve, reject){
     Promise.all([loadXMLDoc(xmlurl), loadXMLDoc(xslurl)]).then(function(data) {
       const xsltProcessor = new XSLTProcessor();
       xsltProcessor.importStylesheet(data[1]);
-      const resultDocument = xsltProcessor.transformToFragment(data[0], document);
-      resolve(resultDocument)
+      if (data[0]){
+        const resultDocument = xsltProcessor.transformToFragment(data[0], document);
+        resolve(resultDocument)
+      }
+      else{
+        const reason = new Error('xml document could not be retrieved');
+        reject(reason); // reject
+      }
     })
   })
 }

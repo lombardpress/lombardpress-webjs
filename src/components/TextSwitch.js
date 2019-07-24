@@ -29,13 +29,16 @@ class TextSwitch extends React.Component {
   getInfo(resourceid){
     const structureTypePromise = runQuery(getStructureType(resourceid))
     structureTypePromise.then((t) => {
-      const type = t.data.results.bindings[0].type.value
-      const structureType = t.data.results.bindings[0].structureType ? t.data.results.bindings[0].structureType.value : null
-      //const level = t.data.results.bindings[0].level ? t.data.results.bindings[0].level.value : null
-      const topLevel = t.data.results.bindings[0].topLevel ? t.data.results.bindings[0].topLevel.value : resourceid
-      const itemParent = t.data.results.bindings[0].itemParent ? t.data.results.bindings[0].itemParent.value : null
-      const resourceTitle = t.data.results.bindings[0].resourceTitle ? t.data.results.bindings[0].resourceTitle.value : ""
-      const author = t.data.results.bindings[0].author ? t.data.results.bindings[0].author.value : ""
+      // reduce results to bindings variable
+      const bindings = t.data.results.bindings.length > 0 ? t.data.results.bindings[0] : ""
+      // get specific results from bindings data
+      const type = bindings.type ? bindings.type.value : null
+      const structureType = bindings.structureType ? bindings.structureType.value : null
+      //const level = bindings.level ? bindings.level.value : null
+      const topLevel = bindings.topLevel ? bindings.topLevel.value : resourceid
+      const itemParent = bindings.itemParent ? bindings.itemParent.value : null
+      const resourceTitle = bindings.resourceTitle ? bindings.resourceTitle.value : ""
+      const author = bindings.author ? bindings.author.value : ""
 
       //const itemTranscriptionId = t.data.results.bindings[0].ctranscription ? t.data.results.bindings[0].ctranscription.value : null
       if (type === "http://scta.info/resource/person"){
@@ -83,6 +86,9 @@ class TextSwitch extends React.Component {
             this.setState({itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, blockDivFocus: t.data.results.bindings[0].blockDivExpression.value, displayType: "item", resourceTitle: resourceTitle})
           }
         });
+      }
+      else{
+        this.setState({displayType: "notFound"})
       }
     });
   }
@@ -139,6 +145,9 @@ class TextSwitch extends React.Component {
       }
       else if (this.state.displayType === "manifest"){
         return (<Codex manifestid={this.state.resourceid}/>)
+      }
+      else if (this.state.displayType === "notFound"){
+        return (<p>Apologies, this resource could not be found</p>)
       }
       else{
         return null
