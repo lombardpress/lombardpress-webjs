@@ -61,36 +61,39 @@ class Surface2 extends React.Component {
     const surfaceInfo = runQuery(getSurfaceInfo(surfaceid))
     surfaceInfo.then((d) => {
       const b = d.data.results.bindings[0]
-      //second nested async call for annotation list
-      const alUrl = "https://exist.scta.info/exist/apps/scta-app/folio-annotaiton-list-from-simpleXmlCoordinates.xq?surfaceid=" + surfaceid.split("/resource/")[1]
-      Axios.get(alUrl).then((d2) => {
-        if (this.mount){
+      // only preceed if sparql query returns results
+      if (b){
+        //second nested async call for annotation list
+        const alUrl = "https://exist.scta.info/exist/apps/scta-app/folio-annotaiton-list-from-simpleXmlCoordinates.xq?surfaceid=" + surfaceid.split("/resource/")[1]
+        Axios.get(alUrl).then((d2) => {
+          if (this.mount){
+              this.setState({
+                currentSurfaceId: surfaceid,
+                surfaceTitle: b.surfaceTitle.value,
+                manifest: manifest,
+                canvas: b.canvas.value,
+                imageurl: b.imageurl.value,
+                next: b.next_surface ? b.next_surface.value : "",
+                previous: b.previous_surface ? b.previous_surface.value : "",
+                annotations: d2.data ? d2.data.resources : ""
+            })
+          }
+        }).catch((error) => {
+          console.log("failed retrieving annotationlist: ", error)
+          if (this.mount){
             this.setState({
-              currentSurfaceId: surfaceid,
-              surfaceTitle: b.surfaceTitle.value,
-              manifest: manifest,
-              canvas: b.canvas.value,
-              imageurl: b.imageurl.value,
-              next: b.next_surface ? b.next_surface.value : "",
-              previous: b.previous_surface ? b.previous_surface.value : "",
-              annotations: d2.data ? d2.data.resources : ""
+            currentSurfaceId: surfaceid,
+            surfaceTitle: b.surfaceTitle.value,
+            manifest: manifest,
+            canvas: b.canvas.value,
+            imageurl: b.imageurl.value,
+            next: b.next_surface ? b.next_surface.value : "",
+            previous: b.previous_surface ? b.previous_surface.value : "",
+            annotations: ""
           })
         }
-      }).catch((error) => {
-        console.log("failed retrieving annotationlist: ", error)
-        if (this.mount){
-          this.setState({
-          currentSurfaceId: surfaceid,
-          surfaceTitle: b.surfaceTitle.value,
-          manifest: manifest,
-          canvas: b.canvas.value,
-          imageurl: b.imageurl.value,
-          next: b.next_surface ? b.next_surface.value : "",
-          previous: b.previous_surface ? b.previous_surface.value : "",
-          annotations: ""
-        })
-      }
-    })
+      })
+    }
   })
 }
 componentDidMount(){
