@@ -326,13 +326,19 @@ class TextWrapper extends React.Component {
     }
   }
   componentWillReceiveProps(newProps){
-    //Keep test, but it seems like this look up only needs to fire, when the transcription id prop changes
+    //Keep testing, but it seems like this look up only needs to fire, when the transcription id prop changes
     // not when other props changes.
     if (newProps.transcriptionid !== this.props.transcriptionid){
       this.setItemFocus(newProps.transcriptionid)
       const mFocus = newProps.transcriptionid.split("/resource/")[1].split("/")[1]
       const tFocus = newProps.transcriptionid.split("/resource/")[1].split("/")[2]
       this.setState({mtFocus: "/" + mFocus + "/" + tFocus})
+      //clear parts of state when new transcription file is loaded
+        //default manifestation when transcription file changes
+        // TODO: dbcheck that this additional calls are not slowing performance. The are two addition async setState calls
+        // is it more efficient to reduce these to a single setState call
+        this.handleChangeManifestation('window1', "")
+        this.handleChangeManifestation('window2', "")
     }
 
 
