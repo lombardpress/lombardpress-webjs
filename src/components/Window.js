@@ -2,7 +2,7 @@ import React from 'react';
 import Surface2 from "./Surface2"
 import Surface3Wrapper from "./Surface3Wrapper"
 import XmlView from "./XmlView"
-import Info from "./Info"
+//import Info from "./Info"
 import WindowNavBar from "./WindowNavBar"
 import NextPrevBar from "./NextPrevBar"
 import TextCompareWrapper from "./TextCompareWrapper"
@@ -63,8 +63,14 @@ class Window extends React.Component {
             // a compromise approach could be made for similar resources, where some components are dismounted and some are hiddden
           }
             {this.state.windowLoad === "textCompare" && <TextCompareWrapper info={this.props.info} relatedExpressions={this.props.relatedExpressions} hidden={this.state.windowLoad !== "textCompare"}/>}
-            {this.state.windowLoad === "info" &&  <Info info={this.props.info} relatedExpressions={this.props.relatedExpressions} topLevel={this.props.topLevel} hidden={this.state.windowLoad !== "info"}/>}
-            {this.state.windowLoad === "citation" &&  <Citation tresourceid={this.props.info.resourceid + this.props.mtFocus} manifestations={this.props.info.manifestations} handleFocusChange={this.props.handleFocusChange} hidden={this.state.windowLoad !== "citation"}/>}
+            {
+              //this.state.windowLoad === "info" &&  <Info info={this.props.info} relatedExpressions={this.props.relatedExpressions} topLevel={this.props.topLevel} hidden={this.state.windowLoad !== "info"}/>
+            }
+            {
+              //always load search to keep search results present even when navigating two diffferent tabs
+              // uncomment to prevent auto mounting this.state.windowLoad === "citation" &&
+            }
+            <Citation tresourceid={this.props.info.resourceid + this.props.mtFocus} manifestations={this.props.info.manifestations} handleFocusChange={this.props.handleFocusChange} hidden={this.state.windowLoad !== "citation"}/>
             {this.state.windowLoad === "surface2" &&  <Surface2 surfaceid={this.props.surfaceid} lineFocusId={this.props.lineFocusId} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad !== "surface2"}/>}
             {this.state.windowLoad === "surface3" &&  <Surface3Wrapper
             manifestations={this.props.info.manifestations}
@@ -107,6 +113,7 @@ class Window extends React.Component {
       windowType={this.props.windowType}
       openWidthHeight={this.props.openWidthHeight}
       windowId={this.props.windowId}
+      windowLoad={this.props.windowLoad}
       focus={this.props.resourceid}
       handleSwitchWindow={this.props.handleSwitchWindow}
       handleDuplicateWindow={this.props.handleDuplicateWindow}

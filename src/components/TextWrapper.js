@@ -41,7 +41,7 @@ class TextWrapper extends React.Component {
         window1: {
           windowId: "window1",
           open: false,
-          windowLoad: "info",
+          windowLoad: "citation",
           position: "sideWindow",
           openWidthHeight: "middle",
           annotationsDisplay: "paragraph",
@@ -50,7 +50,7 @@ class TextWrapper extends React.Component {
         window2: {
           windowId: "window2",
           open: false,
-          windowLoad: "info",
+          windowLoad: "citation",
           position: "bottomWindow",
           openWidthHeight: "middle",
           annotationsDisplay: "paragraph",

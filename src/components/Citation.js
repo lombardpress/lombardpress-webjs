@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Container from 'react-bootstrap/Container';
+import Spinner from 'react-bootstrap/Spinner';
 import { FaClipboard} from 'react-icons/fa';
 import {runQuery, copyToClipboard} from './utils'
 import {getManifestationCitationInfo} from './Queries'
@@ -24,7 +25,8 @@ class Citation extends React.Component{
       mtitle: "",
       turl: "",
       showAlternativeManifestations: false,
-      showCitationExplanation: false
+      showCitationExplanation: false,
+      fetching: false
     }
   }
   toggleAlternativeManifestations(){
@@ -40,6 +42,7 @@ class Citation extends React.Component{
 
   retrieveCitation(tresourceid){
     if (tresourceid){
+      this.setState({fetching: true})
       const manifestationCitationInfo = runQuery(getManifestationCitationInfo(tresourceid))
       manifestationCitationInfo.then((data) => {
         const allBindings = data.data.results.bindings
@@ -65,6 +68,7 @@ class Citation extends React.Component{
               mtitle: start !== end ? title + ", " + start + "-" + end : title + ", " + start,
               turl: tresourceid,
               datasource: datasource,
+              fetching: false
             }
           )
         }
@@ -84,7 +88,7 @@ class Citation extends React.Component{
     const displayManifestations = () => {
       if (this.props.manifestations){
         const manifestations = this.props.manifestations.map((i) => {
-          return <p key={i.manifestation}>{i.manifestationTitle} : <span onClick={() => {this.props.handleFocusChange(i.manifestation)}}>{i.manifestation}</span></p>
+          return <p key={i.manifestation}>{i.manifestationTitle} : <span className="lbp-span-link" onClick={() => {this.props.handleFocusChange(i.manifestation)}}>{i.manifestation}</span></p>
         })
         return manifestations
       }
@@ -93,6 +97,10 @@ class Citation extends React.Component{
     return (
       <Container className={this.props.hidden ? "hidden" : "showing"}>
       <h4>Citation</h4>
+      {this.state.fetching ?
+        <Spinner animation="grow" role="status">
+          <span className="sr-only">Loading...</span>
+        </Spinner> :
       <p>
         <span className="etitle">{this.state.authorTitle}, {this.state.etitle} (<a href={this.state.eurl} target="_blank" rel="noopener noreferrer">{this.state.eurl}</a>)</span>
         <br/>
@@ -102,6 +110,7 @@ class Citation extends React.Component{
         (Data source:<a href={this.state.datasource} target="_blank" rel="noopener noreferrer"> {this.state.datasource}</a>)</span>
         <span title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(fullCitationString)}}><FaClipboard /></span>
       </p>
+      }
       <div className="citation-manifestation-options">
         <h4 onClick={this.toggleAlternativeManifestations}>{this.state.showAlternativeManifestations ? "Hide " : "View "} the same text in an alternative manifestation</h4>
         {this.state.showAlternativeManifestations && displayManifestations()}

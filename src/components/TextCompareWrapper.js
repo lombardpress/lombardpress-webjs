@@ -1,6 +1,6 @@
 import React from 'react';
 import Axios from 'axios'
-
+import Container from 'react-bootstrap/Container';
 import TextCompare from './TextCompare'
 
 
@@ -97,9 +97,17 @@ class TextCompareWrapper extends React.Component {
     }
 
   return (
-    <div className={this.props.hidden ? "hidden" : "showing"}>
+    <Container className={this.props.hidden ? "hidden" : "showing"}>
+    <h4>Text Comparisons</h4>
     {displayExpressions()}
+    <hr/>
+    <div>
+      <p>Other Comparison/Connection Visualizations</p>
+      <p><a target="_blank" rel="noopener noreferrer" href={"http://lombardpress.org/collation-vizualizer/index.html?id=" + this.props.info.resourceid}>Collation Overlay</a></p>
+      <p><a target="_blank" rel="noopener noreferrer" href={"https://scta.github.io/networks-explorer/?resourceid=" + this.props.info.resourceid}>View Reference Connections</a></p>
+      <p><a target="_blank" rel="noopener noreferrer" href={"https://scta.github.io/networks-explorer/topicconnections.html?resourceid=" + this.props.info.resourceid}>View Topic Connections</a></p>
     </div>
+    </Container>
 
   );
   }
