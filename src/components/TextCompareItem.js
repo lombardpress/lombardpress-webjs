@@ -1,6 +1,7 @@
 import React from 'react';
 import Diff from 'diff-match-patch'
 import Axios from 'axios'
+import Spinner from './Spinner';
 import {Link} from 'react-router-dom';
 
 import { FaEyeSlash, FaEye, FaStar } from 'react-icons/fa';
@@ -73,7 +74,7 @@ class TextCompareItem extends React.Component {
         )
       }
       else{
-        return <p>Loading</p>
+        return <Spinner/>
       }
     }
 

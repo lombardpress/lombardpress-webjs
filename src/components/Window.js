@@ -19,7 +19,6 @@ class Window extends React.Component {
     super(props)
     this.handleToggleTextLinesView = this.handleToggleTextLinesView.bind(this)
     this.handleChangeManifestation = this.handleChangeManifestation.bind(this)
-    thos.handleUpdateMountStatus = this.handleUpdateMountStatus.bind(this)
     this.state = {
       windowLoad: "",
       mountStatus: {
@@ -34,15 +33,6 @@ class Window extends React.Component {
 
     }
   }
-  handleUpdateMountStatus(id){
-    this.setState((prevState) => {
-      const mountStatus = prevState.mountStatus
-      const mountStatus[id] = !prevState.mountStatus[id]
-      return {
-        mountStatus: mountStatus
-      }
-    })
-  }
   // used to control default iamge view prop for surface3 component
   handleToggleTextLinesView(view){
     this.props.handleToggleTextLinesView(this.props.windowId, view)
@@ -56,14 +46,44 @@ class Window extends React.Component {
     this.props.handleChangeManifestation(this.props.windowId, manifestationSlug)
   }
   componentDidMount(){
-    this.setState({windowLoad: this.props.windowLoad})
+    this.setState(
+      {windowLoad: this.props.windowLoad}
+    )
 
 
   }
   componentWillReceiveProps(newProps){
-    this.setState({windowLoad: newProps.windowLoad})
+    //when receiving props we check first to see if a new resource id is present,
+    // if so, mounting status for all window child components is set back to false
+    let newMountStatus = {}
+    if (newProps.info.resourceid !== this.props.info.resourceid){
+      newMountStatus = {
+        textCompare: false,
+        surface3: false,
+        comments: false,
+        xml: false,
+        search:  false,
+        textOutline: false,
+        citation: false
+      }
+      // then, the mount status of the opening window load is changed to true
+      newMountStatus[newProps.windowLoad] = true
+    }
+    // if the resource id has not chnaged, but only the windowLoad
+    // we change the window mount status to true, to prevent mounting as long as the resource id has not changed
+    else if (newProps.windowLoad !== this.props.windowLoad){
+      const tempNewMount = this.state.mountStatus
+      tempNewMount[newProps.windowLoad] = true
+      newMountStatus = tempNewMount
+    }
+    else{
+      newMountStatus = this.state.mountStatus
+    }
 
-
+    this.setState(
+      {windowLoad: newProps.windowLoad,
+      mountStatus: newMountStatus}
+    )
   }
 
 
@@ -82,7 +102,7 @@ class Window extends React.Component {
             // for this reason search is always loaded, so that search results remain when moving between tabs.
             // a compromise approach could be made for similar resources, where some components are dismounted and some are hiddden
           }
-            {this.state.windowLoad === "textCompare" && <TextCompareWrapper info={this.props.info} relatedExpressions={this.props.relatedExpressions} hidden={this.state.windowLoad !== "textCompare"}/>}
+            {(this.state.windowLoad === "textCompare" || this.state.mountStatus.textCompare) && <TextCompareWrapper info={this.props.info} relatedExpressions={this.props.relatedExpressions} hidden={this.state.windowLoad !== "textCompare"}/>}
             {
               //this.state.windowLoad === "info" &&  <Info info={this.props.info} relatedExpressions={this.props.relatedExpressions} topLevel={this.props.topLevel} hidden={this.state.windowLoad !== "info"}/>
             }
@@ -90,9 +110,9 @@ class Window extends React.Component {
               //always load search to keep search results present even when navigating two diffferent tabs
               // uncomment to prevent auto mounting this.state.windowLoad === "citation" &&
             }
-            <Citation tresourceid={this.props.info.resourceid + this.props.mtFocus} manifestations={this.props.info.manifestations} handleFocusChange={this.props.handleFocusChange} hidden={this.state.windowLoad !== "citation"}/>
+            {(this.state.windowLoad === "citation" || this.state.mountStatus.citation) && <Citation tresourceid={this.props.info.resourceid + this.props.mtFocus} manifestations={this.props.info.manifestations} handleFocusChange={this.props.handleFocusChange} hidden={this.state.windowLoad !== "citation"}/>}
             {this.state.windowLoad === "surface2" &&  <Surface2 surfaceid={this.props.surfaceid} lineFocusId={this.props.lineFocusId} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} hidden={this.state.windowLoad !== "surface2"}/>}
-            {this.state.windowLoad === "surface3" &&  <Surface3Wrapper
+            {(this.state.windowLoad === "surface3" || this.state.mountStatus.surface3) &&  <Surface3Wrapper
             manifestations={this.props.info.manifestations}
             focusedManifestation={this.props.defaultManifestationSlug ? this.props.resourceid + "/" + this.props.defaultManifestationSlug : this.props.resourceid + "/" + this.props.mtFocus.split("/")[1]}
             annotationsDisplay={this.props.annotationsDisplay}
@@ -100,13 +120,13 @@ class Window extends React.Component {
             handleChangeManifestation={this.handleChangeManifestation}
             width={this.props.windowType === 'bottomWindow' ? "1000" : "500"}
             hidden={this.state.windowLoad !== "surface3"}/>}
-            {this.state.windowLoad === "comments" &&  <Comments resourceid={this.props.info.resourceid} inbox={this.props.info.inbox} hidden={this.state.windowLoad !== "comments"}/>}
+            {(this.state.windowLoad === "comments" || this.state.mountStatus.comments) &&  <Comments resourceid={this.props.info.resourceid} inbox={this.props.info.inbox} hidden={this.state.windowLoad !== "comments"}/>}
           </div>
           }
           {
             //TODO: use of info, topLevel, itemFocus, focusResearceid, resourceid, needs to be better organized and clarified
           }
-          {this.state.windowLoad === "xml" &&  <XmlView tresourceid={this.props.info ? this.props.info.resourceid + this.props.mtFocus : this.props.itemFocus.expression + this.props.mtFocus} hidden={this.state.windowLoad !== "xml"}/>}
+          {(this.state.windowLoad === "xml" || this.state.mountStatus.xmls) &&  <XmlView tresourceid={this.props.info ? this.props.info.resourceid + this.props.mtFocus : this.props.itemFocus.expression + this.props.mtFocus} hidden={this.state.windowLoad !== "xml"}/>}
           {
             //always load outline since it reduces number of calls, as most info is the same for all paragraphs
           }
@@ -139,7 +159,6 @@ class Window extends React.Component {
       handleDuplicateWindow={this.props.handleDuplicateWindow}
       altWindowState={this.props.altWindowState}
       focusSet={!!this.props.info}
-      handleUpdateMountStatus={this.handleUpdateMountStatus}
       />
       <NextPrevBar info={this.props.info} handleBlockFocusChange={this.props.handleBlockFocusChange}/>
 

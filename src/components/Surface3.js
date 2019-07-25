@@ -44,7 +44,6 @@ class Surface3 extends React.Component {
         const surfaceInfo = runQuery(getSurfaceInfo(surfaceid))
         surfaceInfo.then((d) => {
           const b = d.data.results.bindings[0]
-          console.log("data", d)
           // only preceed if sparql query returns results
           if (b){
             //second nested async call for annotation list
