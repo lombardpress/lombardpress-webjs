@@ -12,11 +12,21 @@ class SurfaceInfo extends React.Component {
     super(props)
     this.handleToggleRelatedDiscussion = this.handleToggleRelatedDiscussion.bind(this)
     this.handleSurface3Manifestations = this.handleSurface3Manifestations.bind(this)
+    this.handleToggleShowQuery = this.handleToggleShowQuery.bind(this)
     this.state = {
       expressions: [],
       surfaceMap: {},
-      showTextRegion: false
+      showTextRegion: false,
+      showQuery: false,
+      query: ""
     }
+  }
+  handleToggleShowQuery(){
+    this.setState((prevState) => {
+      return {
+        showQuery: !prevState.showQuery
+      }
+    })
   }
   handleSurface3Manifestations(manifestations, eid){
     let newManifestations = ""
@@ -67,7 +77,8 @@ class SurfaceInfo extends React.Component {
 
   }
   retrieveSurfaceInfo(surfaceid){
-    const surfaceInfo = runQuery(getSurfaceInfo(surfaceid))
+    const query = getSurfaceInfo(surfaceid)
+    const surfaceInfo = runQuery(query)
     surfaceInfo.then((d) => {
       if (d.data["@graph"]){
         const data = d.data["@graph"]
@@ -92,7 +103,8 @@ class SurfaceInfo extends React.Component {
         })
         this.setState({
           expressions: expressions,
-          surfaceMap: surfaceMap
+          surfaceMap: surfaceMap,
+          query: query
         })
       }
     })
@@ -185,9 +197,10 @@ class SurfaceInfo extends React.Component {
 
     return (
       <div className="SurfaceInfo">
-      <h1>Surface Info</h1>
+      <h1>Page Info</h1>
         <div style={{"fontSize": "16px"}}>
-        <h4>Text objects appearing on this page</h4>
+        <h1>Text objects on this page <Button size="sm" clasName="lbp-span-link" onClick={this.handleToggleShowQuery}>{this.state.showQuery ? "Hide Proof" : "Prove It!"}</Button></h1>
+        {this.state.showQuery && <p>{this.state.query}</p>}
         {displayExpressions()}
         </div>
 

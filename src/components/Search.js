@@ -1,5 +1,6 @@
 import React from 'react';
-import Axios from 'axios'
+import Axios from 'axios';
+import Spinner from './Spinner';
 import {Link} from 'react-router-dom';
 
 class Search extends React.Component {
@@ -97,7 +98,7 @@ class Search extends React.Component {
     <div>
     {
       this.state.fetching ?
-      <p>Fetching results</p> :
+      <Spinner/> :
       displayResults()
     }
     </div>

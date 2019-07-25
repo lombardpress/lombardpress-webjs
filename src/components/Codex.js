@@ -167,11 +167,16 @@ class Codex extends React.Component {
       <div className="codexWrapper">
         <div className="codexContentsWrapper">
           <div className="codexContents">
-          <h2 onClick={this.handleToggleShowContents}>{this.state.showContents ? "Hide Contents" : "View Contents"}</h2>
+          {
+            // uncomment if show hide contents toggle is desired
+            //<h2 onClick={this.handleToggleShowContents}>{this.state.showContents ? "Hide Contents" : "View Contents"}</h2>
+          }
+          <h2>Codex Contents</h2>
           {this.state.showContents && this.state.items && displayItems()}
           </div>
         </div>
         <div className="codexImage">
+          <h1>Codex Pages</h1>
           {displayImages()}
          </div>
          <div className="surfaceInfo">
