@@ -99,7 +99,7 @@ class TextOutline extends React.Component {
         membersOf={this.props.membersOf}
         questionTitle={p.questionTitle}
         mtFocus={this.props.mtFocus}
-        collectionLink={this.props.structureType === "http://scta.info/resource/structureCollection" ? this.props.collectionLink : true}/>
+        collectionLink={p.structureType === "http://scta.info/resource/structureCollection" ? this.props.collectionLink : true}/>
       })
       return parts
     }
@@ -156,7 +156,7 @@ TextOutline.propTypes = {
   /**
   * indicates whether level of section with number as string
 
-  * TODO: would be better if level propType was number. 
+  * TODO: would be better if level propType was number.
   */
   level: PropTypes.string,
   /**
