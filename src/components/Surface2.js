@@ -104,7 +104,7 @@ componentDidMount(){
     this.setState({annotationsDisplay: this.props.annotationsDisplay})
   }
   componentWillReceiveProps(nextProps){
-    if (nextProps.surfaceid){
+    if (nextProps.surfaceid !== this.props.surfaceid){
     this.retrieveSurfaceInfo(nextProps.surfaceid)
     }
   }
