@@ -422,7 +422,9 @@ class TextWrapper extends React.Component {
             handleSurfaceFocusChange={this.handleSurfaceFocusChange}
             handleLineFocusChange={this.handleLineFocusChange}
             openWindow={this.openWindow}
-            scrollTo={this.state.focus ? this.state.focus.resourceid.split("/resource/")[1] : this.state.itemFocus.expression.split("/resource/")[1]}
+            // NOTE: using props instead of state; seems better, but needs full documentation
+            // NOTE: itemid is shortid of item: TODO: needs documentation; or better, refactoring!
+            scrollTo={this.props.blockDivFocus ? this.props.blockDivFocus.split("/resource/")[1] : this.props.itemid}
             />
           }
         </Container>

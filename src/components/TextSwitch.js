@@ -121,7 +121,6 @@ class TextSwitch extends React.Component {
         )
       }
       else if (this.state.displayType === "collection"){
-        console.log("this.state.author", this.state.author)
         return (
           <Container className="textOutlineContainer">
             <TextOutlineWrapper
@@ -137,7 +136,9 @@ class TextSwitch extends React.Component {
 
       }
       else if (this.state.displayType === "item"){
-        return (<TextWrapper itemid={this.state.resourceid} transcriptionid={this.state.itemTranscriptionId} blockDivFocus={this.state.blockDivFocus} handleUpdateUrlResource={this.handleUpdateUrlResource}/>)
+        //TODO: item id is shortItemId pull from transcription id.
+        // it would be better to be getting this from query rather than string deconstruction
+        return (<TextWrapper itemid={this.state.itemTranscriptionId.split("/resource/")[1].split("/")[0]} transcriptionid={this.state.itemTranscriptionId} blockDivFocus={this.state.blockDivFocus} handleUpdateUrlResource={this.handleUpdateUrlResource}/>)
       }
       else if (this.state.displayType === "codex"){
         return (<Codex codexid={this.state.resourceid}/>)

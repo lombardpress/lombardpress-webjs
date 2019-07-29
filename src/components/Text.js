@@ -111,8 +111,8 @@ class Text extends React.Component {
     }
     // if doc has already been appended, still scroll to target block
     else{
-      if (this.props.scrollTo){
-      scrollToParagraph(this.props.scrollTo, true)
+      if (this.props.scrollTo !== prevProps.scrollTo){
+        scrollToParagraph(this.props.scrollTo, true)
       }
     }
 
