@@ -23,7 +23,7 @@ class TextNavBar extends React.Component {
         <Nav>
           {this.props.previous && <NavLink className="nav-link" to={"/text?resourceid=" + this.props.previous}>Previous</NavLink>}
           {this.props.next && <NavLink className="nav-link" to={"/text?resourceid=" + this.props.next}>Next</NavLink>}
-          {this.props.next && <NavLink className="nav-link" to={"/text?resourceid=" + this.props.topLevel}>Text Home</NavLink>}
+          {this.props.topLevel && <NavLink className="nav-link" to={"/text?resourceid=" + this.props.topLevel}>Text Home</NavLink>}
         </Nav>
         </Navbar.Collapse>
       </Navbar>
