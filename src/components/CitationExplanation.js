@@ -17,8 +17,8 @@ class CitationExplanation extends React.Component {
   }
   render(){
     return (
-      <Container className="ManifestationList">
-      <h4 onClick={this.toggleCitationExplanation}>{this.state.showCitationExplanation ? <span><FaChevronDown/>Hide Explanation of Citation Practices</span> : <span><FaChevronUp/>View Explanation of Citation Practices</span>} </h4>
+      <Container className="CitationExplanation">
+      <p onClick={this.toggleCitationExplanation}>{this.state.showCitationExplanation ? <span><FaChevronDown/>Hide Explanation of Citation Practices</span> : <span><FaChevronUp/>View Explanation of Citation Practices</span>} </p>
       {this.state.showCitationExplanation &&
         <div>
           <p>The citation of a text that has survived through a historical succession of manifestations is a complicated endeavor.
