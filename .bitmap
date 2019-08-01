@@ -13,7 +13,7 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "jeffreycwitt.lbp/citation-wrappper@0.0.1": {
+    "jeffreycwitt.lbp/citation-wrappper@0.0.2": {
         "files": [
             {
                 "relativePath": "src/components/CitationWrapper.js",
@@ -25,7 +25,7 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "jeffreycwitt.lbp/citation@0.0.2": {
+    "jeffreycwitt.lbp/citation@0.0.3": {
         "files": [
             {
                 "relativePath": "src/components/Citation.js",
@@ -57,7 +57,7 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "jeffreycwitt.lbp/comments@0.0.2": {
+    "jeffreycwitt.lbp/comments@0.0.3": {
         "files": [
             {
                 "relativePath": "src/components/CommentCreate.js",
@@ -79,7 +79,7 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "jeffreycwitt.lbp/manifestation-list@0.0.1": {
+    "jeffreycwitt.lbp/manifestation-list@0.0.2": {
         "files": [
             {
                 "relativePath": "src/components/ManifestationList.js",
