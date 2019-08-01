@@ -26,7 +26,8 @@ class CommentCreate extends React.Component {
       <div className="comment">
         <Form onSubmit={this.handleSubmitComment}>
          <FormControl type="text" id="comment" placeholder="comment" className="mr-sm-2" onChange={this.handleCommentUpdate} />
-         <Button type="submit" variant="outline-success">Search</Button>
+         <hr/>
+         <Button type="submit" block>Submit</Button>
        </Form>
       </div>
     );

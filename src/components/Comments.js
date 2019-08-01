@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import Axios from 'axios';
 import uuidv4 from 'uuid/v4';
 
+import Container from 'react-bootstrap/Container';
+
 import CommentItem from "./CommentItem"
 import CommentCreate from "./CommentCreate"
 
@@ -86,18 +88,45 @@ handleSumbitComment(comment){
   render(){
     const displayComments = () => {
       const comments = this.state.notifications.map((n, i) => {
-        return (
-          <CommentItem key={i} n={n}/>
-        )
+        if (n.motivation === "commenting"){
+          return (
+            <CommentItem key={"commenting-" + i} n={n}/>
+          )
+        }
+        else{
+          return null
+        }
+      })
+      return comments
+    }
+    const displayDiscussions = () => {
+      const comments = this.state.notifications.map((n, i) => {
+        if (n.motivation === "discussing"){
+          return (
+            <CommentItem key={"discussion-" + i} n={n}/>
+          )
+        }
+        else{
+          return null
+        }
       })
       return comments
     }
     return (
-      <div className={this.props.hidden ? "hidden" : "showing"}>
+      <Container className={this.props.hidden ? "hidden" : "showing"}>
         <h1>Comments</h1>
         <CommentCreate handleSumbitComment={this.handleSumbitComment}/>
-        {displayComments()}
-      </div>
+        <hr/>
+        <div>
+          <h4>Previous Comments</h4>
+          {displayComments()}
+        </div>
+        <hr/>
+        <div>
+          <h4>Web Discussions/Quotations</h4>
+          {displayDiscussions()}
+        </div>
+      </Container>
     );
 
   }
