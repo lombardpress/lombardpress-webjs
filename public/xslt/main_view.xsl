@@ -389,12 +389,12 @@
       <xsl:text> </xsl:text>
       <sup>
         <a href="#lbp-footnote{$id}" id="lbp-footnotereference{$id}" name="lbp-footnotereference{$id}" class="footnote">
-        [<xsl:value-of select="$id"/>]
-        </a>
-        <span class="note-display hidden"/>
+        [<xsl:value-of select="$id"/>]</a>
+        <span class="note-display hidden" data-target-id='{./preceding-sibling::*/@xml:id}'/>
       </sup>
 
-    <xsl:text> </xsl:text>
+
+      <xsl:text> </xsl:text>
   </xsl:template>
 
   <!-- app template -->
@@ -403,12 +403,9 @@
     <span id="lbp-app-lem-{$id}" class="lemma"><xsl:apply-templates select="tei:lem"/>
     <xsl:text> </xsl:text>
     <sup>
-      <a href="#lbp-variant{$id}" id="lbp-variantreference{$id}" name="lbp-variantreference{$id}" class="appnote">[<xsl:value-of select="$id"/>]
-    </a>
-    <span class="note-display hidden"/>
-
+      <a href="#lbp-variant{$id}" id="lbp-variantreference{$id}" name="lbp-variantreference{$id}" class="appnote">[<xsl:value-of select="$id"/>]</a>
+      <span class="note-display hidden" data-target-id='lbp-app-lem-{$id}'/>
     </sup>
-
     </span>
     <xsl:text> </xsl:text>
   </xsl:template>

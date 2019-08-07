@@ -72,25 +72,27 @@ class Text extends React.Component {
 
         $('.appnote, .footnote').click(function(e) {
           e.preventDefault();
+
         });
-        $('.appnote, .footnote').parent().mouseover(function(e) {
+        $('.appnote, .footnote').parent().click(function(e) {
              e.preventDefault();
              const link = $(this).children('.appnote, .footnote')
              const target = $(link).attr('href')
              const text = $(target).html()
-            // const top = $(target).position().top;
-             //const left = $(target).position().left;
-             const noteDisplay = $(link).next(".note-display")
-             $(noteDisplay).removeClass("hidden")
-             $(noteDisplay).html(text)
-        });
-         $('.appnote, .footnote').parent().mouseout(function(e) {
-              e.preventDefault();
-              $(".note-display").addClass("hidden")
-          });
+             const targetText = $(this).children(".note-display").attr('data-target-id')
+             /// toggles highlight for select text segemnts
+             if (targetText){
+               $("#" + targetText).toggleClass("highlight")
+               $("span[data-corresp=" + targetText + "]").toggleClass("highlight")
+             }
 
-          //TODO: this bind is working in the bottom list, but not inthe popup footnotes
-          $(document).on("click", '.js-show-reference-paragraph', function(e){
+             //adds footnote text to noteDisplay Div and toggles hidden class
+             const noteDisplay = $(this).children(".note-display")
+             noteDisplay.toggleClass("hidden")
+             noteDisplay.html(text)
+           });
+           $(document).on("click", '.js-show-reference-paragraph', function(e){
+            e.preventDefault();
             const target = $(this).attr('data-url')
             window.location = "#/text?resourceid=" + target
           })
