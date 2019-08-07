@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Axios from 'axios';
 import Spinner from './Spinner';
 import {Link} from 'react-router-dom';
@@ -106,6 +107,25 @@ class Search extends React.Component {
 
   );
   }
+}
+
+Search.propTypes = {
+  /**
+  * query string
+  *
+  */
+  query: PropTypes.string,
+  /**
+  * eid, shortId of expression id; search restricted to text within this expression
+  *
+  * TODO: consider changing eid from shortId to full Url id to match authorFocusId
+  */
+  eid: PropTypes.string,
+  /**
+  * authorFocusId, full url id of expression author; search restricted to texts by this author
+  *
+  */
+  authorFocusId: PropTypes.string
 }
 
 export default Search;

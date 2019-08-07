@@ -1,5 +1,5 @@
 import React from 'react';
-
+import PropTypes from 'prop-types';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
@@ -166,4 +166,26 @@ class SearchQuery extends React.Component {
   }
 }
 
+SearchQuery.propTypes = {
+  /**
+  * handleRunSearch function; function to be passed down from parent
+  * which should determine what should be done when SearchQuery parameters have been set
+  * function should take three parameters
+  * this.state.query, this.state.eid, this.state.authorFocusId
+  *
+  */
+  handleRunSearch: PropTypes.func,
+  /**
+  * eid, shortId of expression id; search restricted to text within this expression
+  *
+  * TODO: consider changing eid from shortId to full Url id to match authorFocusId
+  */
+  eid: PropTypes.string,
+  /**
+  * authorId, full url id of expression author; search restricted to texts by this author
+  *
+  * TODO: consider making "authorId" consistent with "authorFocusId" used in <Search> component
+  */
+  authorId: PropTypes.string
+}
 export default SearchQuery;
