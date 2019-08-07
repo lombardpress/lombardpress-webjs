@@ -38,6 +38,9 @@ class TextCompareItem extends React.Component {
             if (this.mounted === true && base){
               this.setState({compareText: ds, rawText: text.data})
             }
+            else if(this.mounted){
+              this.setState({rawText: text.data})
+            }
 
           })
         }
@@ -69,6 +72,18 @@ class TextCompareItem extends React.Component {
             <span onClick={() => this.props.handleChangeBase(this.state.rawText)}><FaStar/></span>
             <div className={this.state.show ? "unhidden" : "hidden"}>
               <div ref="text" dangerouslySetInnerHTML={{ __html: this.state.compareText}}></div>
+            </div>
+          </div>
+        )
+      }
+      if (this.state.rawText){
+        return (
+          <div>
+            <span><Link to={"/text?resourceid=" + this.props.compareTranscription}>{this.props.compareTranscription}</Link></span>
+            <span onClick={() => this.handleToggleShow()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>
+            <span onClick={() => this.props.handleChangeBase(this.state.rawText)}><FaStar/></span>
+            <div className={this.state.show ? "unhidden" : "hidden"}>
+              <div ref="text" dangerouslySetInnerHTML={{ __html: this.state.rawText}}></div>
             </div>
           </div>
         )
