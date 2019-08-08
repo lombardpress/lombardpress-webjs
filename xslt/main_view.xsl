@@ -13,7 +13,7 @@
 
   <!-- these params provide different language locales inherited from rails app -->
   <xsl:param name="by_phrase">By</xsl:param>
-  <xsl:param name="edited_by_phrase">By</xsl:param>
+  <xsl:param name="edited_by_phrase">Edited By</xsl:param>
 
 
 
@@ -423,7 +423,7 @@
     <div id="lbp-pub-info">
       <h2><span id="sectionTitle" class="sectionTitle"><xsl:value-of select="//tei:titleStmt/tei:title"/></span></h2>
       <h4><xsl:value-of select="$by_phrase"/><xsl:text> </xsl:text><xsl:value-of select="//tei:titleStmt/tei:author"/></h4>
-      <div style="font-size: 12px; max-height: 300px; overflow: scroll">
+      <div>
       <xsl:if test="//tei:titleStmt/tei:editor/text() or //tei:titleStmt/tei:editor/@ref">
         <p><xsl:value-of select="$edited_by_phrase"/><xsl:text> </xsl:text>
           <xsl:for-each select="//tei:titleStmt/tei:editor">
@@ -476,12 +476,12 @@
       <p style="display: none;"><span id="filestem"><xsl:value-of select="//tei:body/tei:div/@xml:id"/></span></p>
       <xsl:if test="//tei:sourceDesc/tei:listBibl or //tei:sourceDesc/tei:listWit">
         <div id="sources">
-          <p>Sources:</p>
+          Sources:
           <xsl:for-each select="//tei:sourceDesc/tei:listWit/tei:witness[@n|text()]">
-            <p style="padding-left: 10px"><xsl:value-of select="./@xml:id"/>: <xsl:value-of select="."/></p>
+            <a style="padding-left: 10px" href="/#/text?resourceid=http://scta.info/resource/{./@n}"><xsl:value-of select="./@xml:id"/>: <xsl:value-of select="."/></a>
           </xsl:for-each>
           <xsl:for-each select="//tei:sourceDesc/tei:listBibl/tei:bibl">
-            <p style="padding-left: 10px"><xsl:value-of select="./@xml:id"/>: <xsl:value-of select="."/></p>
+            <a style="padding-left: 10px" href="/#/text?resourceid=http://scta.info/resource/{./@n}"><xsl:value-of select="./@xml:id"/>: <xsl:value-of select="."/></a>
           </xsl:for-each>
         </div>
       </xsl:if>
