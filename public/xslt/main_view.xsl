@@ -476,12 +476,12 @@
       <p style="display: none;"><span id="filestem"><xsl:value-of select="//tei:body/tei:div/@xml:id"/></span></p>
       <xsl:if test="//tei:sourceDesc/tei:listBibl or //tei:sourceDesc/tei:listWit">
         <div id="sources">
-          <p>Sources:</p>
+          Sources:
           <xsl:for-each select="//tei:sourceDesc/tei:listWit/tei:witness[@n|text()]">
-            <p style="padding-left: 10px"><xsl:value-of select="./@xml:id"/>: <xsl:value-of select="."/></p>
+            <a style="padding-left: 10px" href="/#/text?resourceid=http://scta.info/resource/{./@n}"><xsl:value-of select="./@xml:id"/>: <xsl:value-of select="."/></a>
           </xsl:for-each>
           <xsl:for-each select="//tei:sourceDesc/tei:listBibl/tei:bibl">
-            <p style="padding-left: 10px"><xsl:value-of select="./@xml:id"/>: <xsl:value-of select="."/></p>
+            <a style="padding-left: 10px" href="/#/text?resourceid=http://scta.info/resource/{./@n}"><xsl:value-of select="./@xml:id"/>: <xsl:value-of select="."/></a>
           </xsl:for-each>
         </div>
       </xsl:if>
