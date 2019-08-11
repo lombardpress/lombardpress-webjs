@@ -10,6 +10,7 @@ import SearchWrapper from "./SearchWrapper"
 import Comments from "./Comments"
 import CitationWrapper from "./CitationWrapper"
 import TextOutlineWrapper from "./TextOutlineWrapper"
+import TextPreviewWrapper from "./TextPreviewWrapper"
 
 
 
@@ -137,6 +138,10 @@ class Window extends React.Component {
           <SearchWrapper hidden={this.state.windowLoad !== "search"} topLevel={this.props.topLevel} authorId={this.props.info.author}/>
           {
             //<Surface surfaceid={this.props.surfaceid} topLevel={this.props.topLevel}/>
+          }
+          {
+            // text preview wrapper -- loads a text preview from expression resource id
+            this.state.windowLoad === "textPreview" &&  <TextPreviewWrapper textPreviewResourceId={this.props.textPreviewResourceId} handleFocusChange={this.props.handleFocusChange} hidden={this.state.windowLoad !== "textPreview"}/>
           }
         </div>
       )

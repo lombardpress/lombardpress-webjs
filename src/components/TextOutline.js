@@ -36,7 +36,7 @@ class TextOutline extends React.Component {
       // if a section has many parts, it will be fired several times.
       // if it has a 100 parts, it will fire 100 times.
       // But 100 doesn't seem to causing serious performance issues.
-      console.log("async test; fired")
+      //console.log("async test; fired")
       const newData = data.data.results.bindings.map((d) => {
         return {
           part: d.part.value,

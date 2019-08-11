@@ -29,6 +29,7 @@ class TextWrapper extends React.Component {
     this.handleLineFocusChange = this.handleLineFocusChange.bind(this)
     this.handleToggleTextLinesView = this.handleToggleTextLinesView.bind(this)
     this.handleChangeManifestation = this.handleChangeManifestation.bind(this)
+    this.handleTextPreviewFocusChange = this.handleTextPreviewFocusChange.bind(this)
     this.state = {
       doc: "",
       focus: "",
@@ -37,6 +38,7 @@ class TextWrapper extends React.Component {
       itemFocus: "",
       surfaceid: "",
       lineFocusId: "",
+      textPreviewResourceId: "",
       windows: {
         window1: {
           windowId: "window1",
@@ -186,6 +188,9 @@ class TextWrapper extends React.Component {
   }
   handleLineFocusChange(lineFocusId){
     this.setState({lineFocusId: lineFocusId})
+  }
+  handleTextPreviewFocusChange(textPreviewResourceId){
+    this.setState({textPreviewResourceId: textPreviewResourceId})
   }
   //TODO
   //These two function should be refactored into one
@@ -388,6 +393,7 @@ class TextWrapper extends React.Component {
               annotationsDisplay={this.state.windows[key].annotationsDisplay}
               handleChangeManifestation={this.handleChangeManifestation}
               defaultManifestationSlug={this.state.windows[key].defaultManifestationSlug}
+              textPreviewResourceId={this.state.textPreviewResourceId}
               />
             )
           }
@@ -425,6 +431,7 @@ class TextWrapper extends React.Component {
             // NOTE: using props instead of state; seems better, but needs full documentation
             // NOTE: itemid is shortid of item: TODO: needs documentation; or better, refactoring!
             scrollTo={this.props.blockDivFocus ? this.props.blockDivFocus.split("/resource/")[1] : this.props.itemid}
+            handleTextPreviewFocusChange={this.handleTextPreviewFocusChange}
             />
           }
         </Container>

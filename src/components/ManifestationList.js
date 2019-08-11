@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Container from 'react-bootstrap/Container';
-import Citation from './Citation'
 import {FaChevronDown, FaChevronUp} from 'react-icons/fa';
 
 class ManifestationList extends React.Component {

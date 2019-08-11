@@ -163,7 +163,7 @@
     </span>
   </xsl:template>
 
-  
+
 
   <!-- unclear template -->
   <xsl:template match="tei:unclear">
@@ -492,7 +492,7 @@
       <li id="lbp-footnote{$id}">
         <a href="#lbp-footnotereference{$id}">
           <xsl:copy-of select="$id"/>
-        </a> -- 
+        </a> --
         <xsl:choose>
           <xsl:when test="./preceding-sibling::tei:quote">
             <xsl:call-template name="quote-bibl"></xsl:call-template>
@@ -509,7 +509,8 @@
     <xsl:variable name="source" select="./preceding-sibling::tei:quote[1]/@source"/>
     <xsl:choose>
       <xsl:when test="contains($source, 'http://scta.info/resource/')">
-        <a href="{$source}" data-url="{$source}" class='js-show-reference-paragraph'><xsl:apply-templates/></a>
+        <!-- added data-target-paragraph attribut here because it is hard for jquery to get id in html dom -->
+        <a href="{$source}" data-url="{$source}" class='js-show-reference-paragraph' data-target-paragraph='{./ancestor::tei:p[1]/@xml:id}'><xsl:apply-templates/></a>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates/>
@@ -520,15 +521,16 @@
     <xsl:variable name="target" select="./preceding-sibling::tei:ref[1]/@target"/>
     <xsl:choose>
       <xsl:when test="contains($target, 'http://scta.info/resource/')">
-        <a href="{$target}" data-url="{$target}" class='js-show-reference-paragraph'><xsl:apply-templates/></a>
+        <!-- added data-target-paragraph attribute here because it is hard for jquery to get id in html dom -->
+        <a href="{$target}" data-url="{$target}" class='js-show-reference-paragraph' data-target-paragraph='{./ancestor::tei:p[1]/@xml:id}'><xsl:apply-templates/></a>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  
-  
+
+
 
   <xsl:template name="variants">
     <ul class="variantlist">

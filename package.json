@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "http://sctalab.lombardpress.org",
   "dependencies": {
+    "@bit/jeffreycwitt.lbp.text-preview": "^0.0.3",
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
     "diff-match-patch": "^1.0.4",

@@ -69,10 +69,15 @@ class TextSwitch extends React.Component {
         else {
           const structureTypePromise = runQuery(getItemTranscription(resourceid))
           structureTypePromise.then((t) => {
-            this.setState({itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, displayType: "item", blockDivFocus: "", resourceTitle: resourceTitle})
-          });
-        }
-      }
+            this.setState(
+              {
+                itemTranscriptionId: t.data.results.bindings[0] ? t.data.results.bindings[0].ctranscription.value : "", // conditional checks in case the query comes up empty; if empty it sets transcription id to ""
+                displayType: "item",
+                blockDivFocus: "",
+                resourceTitle: resourceTitle})
+              });
+            }
+          }
       else if (structureType === "http://scta.info/resource/structureBlock" || structureType === "http://scta.info/resource/structureDivision" ){
         const structureTypePromise = runQuery(getItemTranscriptionFromBlockDiv(resourceid))
         structureTypePromise.then((t) => {
@@ -136,9 +141,23 @@ class TextSwitch extends React.Component {
 
       }
       else if (this.state.displayType === "item"){
-        //TODO: item id is shortItemId pull from transcription id.
-        // it would be better to be getting this from query rather than string deconstruction
-        return (<TextWrapper itemid={this.state.itemTranscriptionId.split("/resource/")[1].split("/")[0]} transcriptionid={this.state.itemTranscriptionId} blockDivFocus={this.state.blockDivFocus} handleUpdateUrlResource={this.handleUpdateUrlResource}/>)
+        // check to see if a transcription for this text has been found
+        if (this.state.itemTranscriptionId){
+          //TODO: item id is shortItemId pull from transcription id.
+          // it would be better to be getting this from query rather than string deconstruction
+          return (
+            <TextWrapper itemid={this.state.itemTranscriptionId.split("/resource/")[1].split("/")[0]}
+            transcriptionid={this.state.itemTranscriptionId}
+            blockDivFocus={this.state.blockDivFocus}
+            handleUpdateUrlResource={this.handleUpdateUrlResource}/>
+          )
+        }
+        // if no transcription resource id, exists return message
+        else{
+          return (<p>Apologies, no transcriptions of this text are currently available.</p>)
+
+
+        }
       }
       else if (this.state.displayType === "codex"){
         return (<Codex codexid={this.state.resourceid}/>)
