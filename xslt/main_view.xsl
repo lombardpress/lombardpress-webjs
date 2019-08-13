@@ -374,18 +374,23 @@
   </xsl:template>
 
   <!-- notes template -->
+  <xsl:template match="tei:cit">
+    <xsl:apply-templates select="tei:quote|tei:ref"/>
+    <xsl:if test="./tei:quote/@source| ./tei:ref/@target|./tei:bibl">
+      <xsl:variable name="id">
+        <xsl:number count="//tei:cit" level="any" format="a"/></xsl:variable>
+        <xsl:text> </xsl:text>
+        <sup>
+          <a href="#lbp-footnote{$id}" id="lbp-footnotereference{$id}" name="lbp-footnotereference{$id}" class="footnote">
+          [<xsl:value-of select="$id"/>]</a>
+          <span class="note-display hidden" data-target-id='{./child::*[1]/@xml:id}'/>
+        </sup>
+      <xsl:text> </xsl:text>
+    </xsl:if>
+      
+  </xsl:template>
   <xsl:template match="tei:bibl">
-    <xsl:variable name="id">
-      <xsl:number count="//tei:bibl" level="any" format="a"/></xsl:variable>
-      <xsl:text> </xsl:text>
-      <sup>
-        <a href="#lbp-footnote{$id}" id="lbp-footnotereference{$id}" name="lbp-footnotereference{$id}" class="footnote">
-        [<xsl:value-of select="$id"/>]</a>
-        <span class="note-display hidden" data-target-id='{./preceding-sibling::*/@xml:id}'/>
-      </sup>
-
-
-      <xsl:text> </xsl:text>
+    <xsl:apply-templates/>
   </xsl:template>
 
   <!-- app template -->
@@ -487,45 +492,69 @@
 
   <xsl:template name="footnotes">
     <ul>
-      <xsl:for-each select="//tei:bibl">
-      <xsl:variable name="id"><xsl:number count="//tei:bibl" level="any" format="a"/></xsl:variable>
-      <li id="lbp-footnote{$id}">
-        <a href="#lbp-footnotereference{$id}">
-          <xsl:copy-of select="$id"/>
-        </a> --
-        <xsl:choose>
-          <xsl:when test="./preceding-sibling::tei:quote">
-            <xsl:call-template name="quote-bibl"></xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./preceding-sibling::tei:ref">
-            <xsl:call-template name="ref-bibl"></xsl:call-template>
-          </xsl:when>
-        </xsl:choose>
-      </li>
+      <!-- checks for cit to create footnote -->
+      <xsl:for-each select="//tei:cit">
+        <!-- checks checks to see if either quote has source, ref has target or bibl child is present; if not, no display entry is created-->
+        <xsl:if test="./tei:quote/@source| ./tei:ref/@target|./tei:bibl">
+        <xsl:variable name="id"><xsl:number count="//tei:cit" level="any" format="a"/></xsl:variable>
+        <li id="lbp-footnote{$id}">
+          <a href="#lbp-footnotereference{$id}">
+            <xsl:copy-of select="$id"/>
+          </a> --
+          <xsl:choose>
+            <xsl:when test="./tei:quote">
+              <xsl:call-template name="quote-bibl"></xsl:call-template>
+            </xsl:when>
+            <xsl:when test="./tei:ref">
+              <xsl:call-template name="ref-bibl"></xsl:call-template>
+            </xsl:when>
+          </xsl:choose>
+        </li>
+        </xsl:if>
       </xsl:for-each>
     </ul>
   </xsl:template>
   <xsl:template name="quote-bibl">
-    <xsl:variable name="source" select="./preceding-sibling::tei:quote[1]/@source"/>
+    <xsl:variable name="source" select="./tei:quote[1]/@source"/>
     <xsl:choose>
       <xsl:when test="contains($source, 'http://scta.info/resource/')">
         <!-- added data-target-paragraph attribut here because it is hard for jquery to get id in html dom -->
-        <a href="{$source}" data-url="{$source}" class='js-show-reference-paragraph' data-target-paragraph='{./ancestor::tei:p[1]/@xml:id}'><xsl:apply-templates/></a>
+        <a href="{$source}" data-url="{$source}" class='js-show-reference-paragraph' data-target-paragraph='{./ancestor::tei:p[1]/@xml:id}'>
+          <xsl:choose>
+            <xsl:when test="./tei:bibl">
+              <xsl:apply-templates select="./tei:bibl"/>    
+            </xsl:when>
+            <xsl:otherwise>
+              <!--<xsl:value-of select="$source"/>-->
+              Vide
+            </xsl:otherwise>
+          </xsl:choose>
+        </a>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:apply-templates/>
+        <xsl:apply-templates select="./tei:bibl"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   <xsl:template name="ref-bibl">
-    <xsl:variable name="target" select="./preceding-sibling::tei:ref[1]/@target"/>
+    <xsl:variable name="target" select="./tei:ref[1]/@target"/>
     <xsl:choose>
       <xsl:when test="contains($target, 'http://scta.info/resource/')">
         <!-- added data-target-paragraph attribute here because it is hard for jquery to get id in html dom -->
-        <a href="{$target}" data-url="{$target}" class='js-show-reference-paragraph' data-target-paragraph='{./ancestor::tei:p[1]/@xml:id}'><xsl:apply-templates/></a>
+        <a href="{$target}" data-url="{$target}" class='js-show-reference-paragraph' data-target-paragraph='{./ancestor::tei:p[1]/@xml:id}'>
+          <xsl:choose>
+            <xsl:when test="./tei:bibl">
+              <xsl:apply-templates select="./tei:bibl"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <!--<xsl:value-of select="$target"/>-->
+              Vide
+            </xsl:otherwise>
+          </xsl:choose>
+        </a>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:apply-templates/>
+        <xsl:apply-templates select="./tei:bibl"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
