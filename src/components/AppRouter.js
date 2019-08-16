@@ -21,6 +21,7 @@ const AppRouter = () => (
       <NavBar/>
       <Switch>
         <Route path="/" exact={true} component={Home}/>
+        <Route path="/res" exact={true} component={TextSwitch}/>
         <Route path="/text"  exact={true} component={TextSwitch}/>
         <Route path="/about" exact={true} component={About}/>
         <Route path="/codices" exact={true} component={Codices}/>
