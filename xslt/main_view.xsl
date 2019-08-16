@@ -4,8 +4,14 @@
   <!-- params -->
   <!-- check global site setting for images -->
   <xsl:param name="show-images">true</xsl:param>
-
   <xsl:param name="default-ms-image">reims</xsl:param>
+  <xsl:variable name="schema-type" select="/tei:TEI/tei:teiHeader[1]/tei:encodingDesc[1]/tei:schemaRef[1]/@n"/>
+  <xsl:param name="show-line-breaks">
+    <xsl:choose>
+      <xsl:when test="contains($schema-type, 'critical')">false</xsl:when>
+      <xsl:otherwise>true</xsl:otherwise>
+    </xsl:choose>
+  </xsl:param>
 
   <!-- this param needs to change if, for example, you want the show xml function to display XML for something other than "critical"; Alternatively, this slug could be found somewhere in the TEI document being processed -->
   <xsl:param name="default-msslug" select="/tei:TEI/tei:teiHeader[1]/tei:fileDesc[1]/tei:sourceDesc[1]/tei:listWit[1]/tei:witness[1]/@n"></xsl:param>
@@ -323,42 +329,45 @@
 
   <!-- line numbers -->
   <xsl:template match="tei:body//tei:lb[not(parent::tei:reg)]">
-    <xsl:variable name="followingPageBreak" select="count(./preceding::tei:pb[1]//following::tei:lb[not(parent::tei:reg)])"/>
-    <!--<xsl:message><xsl:value-of select="$followingPageBreak"/></xsl:message>-->
+    <!-- first check global setting to see if line breaks should be shown -->
+    <xsl:if test="$show-line-breaks = 'true'">
+      <xsl:variable name="followingPageBreak" select="count(./preceding::tei:pb[1]//following::tei:lb[not(parent::tei:reg)])"/>
+      <!--<xsl:message><xsl:value-of select="$followingPageBreak"/></xsl:message>-->
 
-    <xsl:variable name="followingLineBreak" select="count(.//following::tei:lb[not(parent::tei:reg)])"/>
-    <!--<xsl:message><xsl:value-of select="$followingLineBreak"/></xsl:message>-->
-    <!--<xsl:variable name="lineNumber" select="$followingPageBreak - $followingLineBreak"/>-->
-    <!--<xsl:message><xsl:value-of select="$lineNumber"/></xsl:message>-->
-    <xsl:variable name="pbNumber" select="./preceding::tei:pb[1]/@n"/>
-    <xsl:variable name="lineNumber">
-      <xsl:choose>
-        <xsl:when test="not(./preceding::tei:pb[1][ancestor::tei:body])">
-          <xsl:variable name="lineCount" select="$followingPageBreak - $followingLineBreak"/>
-          <xsl:variable name="startline"><xsl:value-of select="//tei:body//following::tei:lb[1]/@n"/></xsl:variable>
-          <xsl:value-of select="$lineCount + $startline - 1"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="$followingPageBreak - $followingLineBreak"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:variable name="folio">
-      <xsl:choose>
-        <xsl:when test="not(contains($pbNumber, '-'))">
-          <xsl:value-of select="$pbNumber"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="substring-before($pbNumber, '-')"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <!-- this desgination gets side by skipping lenghth of msAbbrev and folio number and then getting the first character that occurs -->
-    <xsl:variable name="side"><xsl:value-of select="substring-after($pbNumber, '-')"/></xsl:variable>
-    <xsl:variable name="surfaceid">
-      <xsl:value-of select="concat($default-msslug, '/', $folio, $side)"/>
-    </xsl:variable>
-    <br/> <span class="lbp-line-number" data-ln="{$lineNumber}" data-pb="{$pbNumber}" data-codex="{$default-msslug}" data-surfaceid="{$surfaceid}"><xsl:value-of select="$lineNumber"/> </span>
+      <xsl:variable name="followingLineBreak" select="count(.//following::tei:lb[not(parent::tei:reg)])"/>
+      <!--<xsl:message><xsl:value-of select="$followingLineBreak"/></xsl:message>-->
+      <!--<xsl:variable name="lineNumber" select="$followingPageBreak - $followingLineBreak"/>-->
+      <!--<xsl:message><xsl:value-of select="$lineNumber"/></xsl:message>-->
+      <xsl:variable name="pbNumber" select="./preceding::tei:pb[1]/@n"/>
+      <xsl:variable name="lineNumber">
+        <xsl:choose>
+          <xsl:when test="not(./preceding::tei:pb[1][ancestor::tei:body])">
+            <xsl:variable name="lineCount" select="$followingPageBreak - $followingLineBreak"/>
+            <xsl:variable name="startline"><xsl:value-of select="//tei:body//following::tei:lb[1]/@n"/></xsl:variable>
+            <xsl:value-of select="$lineCount + $startline - 1"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$followingPageBreak - $followingLineBreak"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <xsl:variable name="folio">
+        <xsl:choose>
+          <xsl:when test="not(contains($pbNumber, '-'))">
+            <xsl:value-of select="$pbNumber"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="substring-before($pbNumber, '-')"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <!-- this desgination gets side by skipping lenghth of msAbbrev and folio number and then getting the first character that occurs -->
+      <xsl:variable name="side"><xsl:value-of select="substring-after($pbNumber, '-')"/></xsl:variable>
+      <xsl:variable name="surfaceid">
+        <xsl:value-of select="concat($default-msslug, '/', $folio, $side)"/>
+      </xsl:variable>
+      <br/> <span class="lbp-line-number" data-ln="{$lineNumber}" data-pb="{$pbNumber}" data-codex="{$default-msslug}" data-surfaceid="{$surfaceid}"><xsl:value-of select="$lineNumber"/> </span>
+    </xsl:if>
   </xsl:template>
   <!-- END line number creation -->
 
@@ -387,7 +396,7 @@
         </sup>
       <xsl:text> </xsl:text>
     </xsl:if>
-      
+
   </xsl:template>
   <xsl:template match="tei:bibl">
     <xsl:apply-templates/>
@@ -399,7 +408,7 @@
     <span id="lbp-app-lem-{$id}" class="lemma"><xsl:apply-templates select="tei:lem"/>
     <xsl:text> </xsl:text>
     <sup>
-      <a href="#lbp-variant{$id}" id="lbp-variantreference{$id}" name="lbp-variantreference{$id}" class="appnote">[<xsl:value-of select="$id"/>]</a>
+      <a href="#lbp-variant{$id}" id="lbp-variantreference{$id}" name="lbp-variantreference{$id}" class="appnote">*<!--[<xsl:value-of select="$id"/>]--></a>
       <span class="note-display hidden" data-target-id='lbp-app-lem-{$id}'/>
     </sup>
     </span>
@@ -522,7 +531,7 @@
         <a href="{$source}" data-url="{$source}" class='js-show-reference-paragraph' data-target-paragraph='{./ancestor::tei:p[1]/@xml:id}'>
           <xsl:choose>
             <xsl:when test="./tei:bibl">
-              <xsl:apply-templates select="./tei:bibl"/>    
+              <xsl:apply-templates select="./tei:bibl"/>
             </xsl:when>
             <xsl:otherwise>
               <!--<xsl:value-of select="$source"/>-->
