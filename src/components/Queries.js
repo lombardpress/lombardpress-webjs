@@ -222,6 +222,16 @@ export function basicInfoQuery(itemExpressionUri){
       "}"].join('');
       return query
   }
+  export function getArticleTranscriptionDoc(resourceurl){
+    const query = [
+      "SELECT DISTINCT ?doc ?articleType ",
+      "WHERE { ",
+        "<" + resourceurl + "> <http://scta.info/property/hasCanonicalTranscription> ?ctranscription . ",
+        "<" + resourceurl + "> <http://scta.info/property/articleType> ?articleType .",
+        "?ctranscription <http://scta.info/property/hasXML> ?doc . ",
+      "}"].join('');
+      return query
+  }
   export function getItemTranscriptionFromBlockDiv(resourceurl){
     const query = [
       "SELECT DISTINCT ?ctranscription ?blockDivExpression ",

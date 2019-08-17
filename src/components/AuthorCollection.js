@@ -73,7 +73,9 @@ class AuthorCollection extends React.Component {
       else if (author.hasTopLevelExpression){
         expressions = [{id: author.hasTopLevelExpression, title: d.data["@graph"].filter((i) => i["@id"] === author.hasTopLevelExpression)[0]["http://purl.org/dc/elements/1.1/title"]}]
       }
-      this.setState({authorArticles: authorArticles, textArticles: textArticles, expressions: expressions, authorTitle: authorTitle })
+      if (this.mount){
+        this.setState({authorArticles: authorArticles, textArticles: textArticles, expressions: expressions, authorTitle: authorTitle })
+      }
     })
     .catch((err) => {
       console.log(err)

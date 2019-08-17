@@ -1,6 +1,7 @@
 import React from 'react';
 import Qs from "query-string"
 import TextWrapper from "./TextWrapper"
+import TextArticle from "./TextArticle"
 import Collection from "./Collection"
 import AuthorCollection from "./AuthorCollection"
 import Codex from "./Codex"
@@ -8,7 +9,7 @@ import TextOutlineWrapper from "./TextOutlineWrapper"
 import Container from 'react-bootstrap/Container';
 
 import {runQuery} from './utils'
-import {getItemTranscription, getItemTranscriptionFromBlockDiv, getStructureType} from './Queries'
+import {getArticleTranscriptionDoc, getItemTranscription, getItemTranscriptionFromBlockDiv, getStructureType} from './Queries'
 
 class TextSwitch extends React.Component {
   constructor(props){
@@ -43,6 +44,21 @@ class TextSwitch extends React.Component {
       //const itemTranscriptionId = t.data.results.bindings[0].ctranscription ? t.data.results.bindings[0].ctranscription.value : null
       if (type === "http://scta.info/resource/person"){
           this.setState({displayType: "person", resourceid: resourceid, structureType: "", topLevel: "", type: type, resourceTitle: resourceTitle})
+      }
+      else if (type === "http://scta.info/resource/article"){
+        const structureTypePromise = runQuery(getArticleTranscriptionDoc(resourceid))
+        structureTypePromise.then((t) => {
+          this.setState(
+            {displayType: "article",
+            articleDoc: t.data.results.bindings[0] ? t.data.results.bindings[0].doc.value : "", // conditional checks in case the query comes up empty; if empty it sets transcription id to ""
+            articleType: t.data.results.bindings[0] ? t.data.results.bindings[0].articleType.value : "", // conditional checks in case the query comes up empty; if empty it sets transcription id to ""
+            resourceid: resourceid,
+            structureType: "", topLevel: "",
+            type: type,
+            resourceTitle: resourceTitle}
+          )
+        })
+
       }
       else if (type === "http://scta.info/resource/codex"){
           this.setState({displayType: "codex", resourceid: resourceid, structureType: "", topLevel: "", type: type, resourceTitle: resourceTitle})
@@ -118,6 +134,10 @@ class TextSwitch extends React.Component {
     const display = () => {
       if (this.state.displayType === "person"){
         return (<AuthorCollection resourceid={this.state.resourceid}/>)
+
+      }
+      if (this.state.displayType === "article"){
+        return (<TextArticle doc={this.state.articleDoc} articleType={this.state.articleType}/>)
 
       }
       else if (this.state.displayType === "workGroup"){
