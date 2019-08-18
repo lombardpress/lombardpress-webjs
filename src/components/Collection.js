@@ -162,7 +162,7 @@ class Collection extends React.Component {
       return (
         <Container>
 
-        <h1>Items</h1>
+        <h1>Available Texts</h1>
         <br/>
         <Table striped bordered hover size="sm">
         <tbody>
@@ -189,7 +189,7 @@ class Collection extends React.Component {
           if (!(testPart.type === "http://scta.info/resource/expression" && testPart.level === "1")){
             return (
               <Container>
-              <h1>Parts</h1>
+              <h1>Available Text Collections</h1>
               <br/>
               <Table striped bordered hover size="sm">
               <tbody>
@@ -206,7 +206,7 @@ class Collection extends React.Component {
       <Container className="collectionBody">
       {}
       <Container className="collectionFilter">
-        <FormControl ref={this.filter} id="filter" placeholder="type to filter" onChange={this.handleFilter}/>
+        <FormControl ref={this.filter} id="filter" placeholder="type to filter by title" onChange={this.handleFilter}/>
       </Container>
       {displayParts()}
       {displayQuestions()}

@@ -1,8 +1,7 @@
 import React from 'react';
 
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
 
 
 
@@ -10,19 +9,20 @@ import Col from 'react-bootstrap/Col';
 
 function Footer() {
   return (
-    <Container className="lbp-footer" fluid>
-    <Row>
-    <Col>
-    <p>Designed by <a href="http://jeffreycwitt.com">Jeffrey C. Witt</a></p>
-    </Col>
-    <Col>
-    <p>A <a href="http://lombardpress.org">LombardPress</a> Publication</p>
-    </Col>
-    <Col>
-    <p>Powered by <a href="http://scta.info">SCTA</a> Data</p>
-    </Col>
-    </Row>
-    </Container>
+
+    <Navbar bg="light" variant="light" expand="lg" fixed="bottom" style={{"zIndex": "0"}}>
+    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+    <Navbar.Collapse id="basic-navbar-nav">
+
+    <Nav style={{"display": "flex", "justifyContent": "space-around", "width": "100%"}}>
+      <Nav.Link href="http://github.com/lombardpress/lombardpress-webjs">Lbp-Web.js</Nav.Link>
+      <Nav.Link href="http://lombardpress.org">A LombardPress Publication</Nav.Link>
+      <Nav.Link href="http://scta.info">Powered by SCTA Data</Nav.Link>
+      <Nav.Link href="http://jeffreycwitt.com">Designed by Jeffrey C. Witt</Nav.Link>
+    </Nav>
+    </Navbar.Collapse>
+
+    </Navbar>
 
   );
 }
