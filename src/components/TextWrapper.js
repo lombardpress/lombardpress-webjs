@@ -1,5 +1,6 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
+import Print from "./Print"
 
 
 import Window from "./Window"
@@ -30,6 +31,7 @@ class TextWrapper extends React.Component {
     this.handleToggleTextLinesView = this.handleToggleTextLinesView.bind(this)
     this.handleChangeManifestation = this.handleChangeManifestation.bind(this)
     this.handleTextPreviewFocusChange = this.handleTextPreviewFocusChange.bind(this)
+    this.handleTogglePdfView = this.handleTogglePdfView.bind(this)
     this.state = {
       doc: "",
       focus: "",
@@ -39,6 +41,7 @@ class TextWrapper extends React.Component {
       surfaceid: "",
       lineFocusId: "",
       textPreviewResourceId: "",
+      pdfView: false,
       windows: {
         window1: {
           windowId: "window1",
@@ -60,6 +63,13 @@ class TextWrapper extends React.Component {
         }
       }
     }
+  }
+  handleTogglePdfView(){
+    this.setState((prevState) => {
+        return {
+          pdfView: !prevState.pdfView
+        }
+    })
   }
   handleToggleTextLinesView(windowId, value){
     this.setState((prevState) => {
@@ -419,27 +429,35 @@ class TextWrapper extends React.Component {
         {this.state.itemFocus &&
           <VersionChain transcriptionid={this.state.itemFocus.transcriptionid} handleFocusChange={this.setFocus2}/>
         }
-        <Container className={textClass() ? "lbp-text skinnyText" : "lbp-text fullText"}>
+        {
+          this.state.pdfView
+          ?
+          <Print url={this.state.itemFocus.doc}/>
+          :
+          <Container className={textClass() ? "lbp-text skinnyText" : "lbp-text fullText"}>
           {this.state.itemFocus &&
-          <Text
-            doc={this.state.itemFocus.doc}
-            topLevel={this.state.itemFocus.topLevel}
-            setFocus={this.setFocus}
-            handleSurfaceFocusChange={this.handleSurfaceFocusChange}
-            handleLineFocusChange={this.handleLineFocusChange}
-            openWindow={this.openWindow}
-            // NOTE: using props instead of state; seems better, but needs full documentation
-            // NOTE: itemid is shortid of item: TODO: needs documentation; or better, refactoring!
-            scrollTo={this.props.blockDivFocus ? this.props.blockDivFocus.split("/resource/")[1] : this.props.itemid}
-            handleTextPreviewFocusChange={this.handleTextPreviewFocusChange}
-            />
-          }
-        </Container>
+            <Text
+              doc={this.state.itemFocus.doc}
+              topLevel={this.state.itemFocus.topLevel}
+              setFocus={this.setFocus}
+              handleSurfaceFocusChange={this.handleSurfaceFocusChange}
+              handleLineFocusChange={this.handleLineFocusChange}
+              openWindow={this.openWindow}
+              // NOTE: using props instead of state; seems better, but needs full documentation
+              // NOTE: itemid is shortid of item: TODO: needs documentation; or better, refactoring!
+              scrollTo={this.props.blockDivFocus ? this.props.blockDivFocus.split("/resource/")[1] : this.props.itemid}
+              handleTextPreviewFocusChange={this.handleTextPreviewFocusChange}
+              />
+            }
+          </Container>
+        }
         <TextNavBar
           next={this.state.itemFocus && this.state.itemFocus.next}
           previous={this.state.itemFocus && this.state.itemFocus.previous}
           topLevel={this.state.itemFocus && this.state.itemFocus.topLevel}
           handleClose={this.handleClose}
+          pdfView={this.state.pdfView}
+          handleTogglePdfView={this.handleTogglePdfView}
         />
         <div>
         {
@@ -450,7 +468,7 @@ class TextWrapper extends React.Component {
         // handleClose={this.handleClose}
         // />
         }
-        {displayWindows()}
+        {!this.state.pdfView && displayWindows()}
         </div>
       </div>
     );

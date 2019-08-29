@@ -24,6 +24,7 @@ class TextNavBar extends React.Component {
           {this.props.previous && <NavLink className="nav-link" to={"/text?resourceid=" + this.props.previous}>Previous</NavLink>}
           {this.props.next && <NavLink className="nav-link" to={"/text?resourceid=" + this.props.next}>Next</NavLink>}
           {this.props.topLevel && <NavLink className="nav-link" to={"/text?resourceid=" + this.props.topLevel}>Text Home</NavLink>}
+          {this.props.pdfView ? <span className="nav-link" onClick={()=>this.props.handleTogglePdfView()}>Web View</span> : <span className="nav-link" onClick={()=>this.props.handleTogglePdfView()}>Print View</span>}
         </Nav>
         </Navbar.Collapse>
       </Navbar>
