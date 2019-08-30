@@ -4,7 +4,6 @@ import Home from "./Home"
 import SearchWrapper from "./SearchWrapper"
 import TextSwitch from "./TextSwitch"
 import About from "./About"
-import Print from "./Print"
 import Codices from "./Codices"
 import NavBar from './NavBar';
 
@@ -24,7 +23,6 @@ const AppRouter = () => (
         <Route path="/" exact={true} component={Home}/>
         <Route path="/res" exact={true} component={TextSwitch}/>
         <Route path="/text"  exact={true} component={TextSwitch}/>
-        <Route path="/print"  exact={true} component={Print}/>
         <Route path="/about" exact={true} component={About}/>
         <Route path="/codices" exact={true} component={Codices}/>
         <Route path="/search" exact={true} render={(props) => <SearchWrapper {...props} hidden={false}/>}/>

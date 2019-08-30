@@ -1,5 +1,4 @@
 import React from 'react';
-import Qs from "query-string"
 import Axios from 'axios'
 
 class Print extends React.Component {
@@ -28,32 +27,18 @@ class Print extends React.Component {
 
   }
   componentDidMount(){
-    let url = ""
-    if (this.props.url){
-      url = this.props.url
-    }
-    else{
-     url = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).url
-    }
+    const url = this.props.url
     this.getPdf(url)
   }
   componentWillReceiveProps(newProps){
-    let newUrl = ""
-    let oldUrl = ""
-    if (newProps.url && this.props.url){
-      newUrl = newProps.url
-      oldUrl = this.props.url
-    }
-    else{
-      newUrl = Qs.parse(newProps.location.search, { ignoreQueryPrefix: true }).url
-      oldUrl = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).url
-    }
-
-    if (newUrl != oldUrl){
+    const newUrl = newProps.url
+    const oldUrl = this.props.url
+    if (newUrl !== oldUrl){
       this.getPdf(newUrl)
     }
   }
   render(){
+
     return (
       <div style={{"width": "100vh", "height": "100vh", "margin": "auto"}}>
       {this.state.pdf ?

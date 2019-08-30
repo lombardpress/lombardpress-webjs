@@ -424,33 +424,36 @@ class TextWrapper extends React.Component {
       return aSideWindowOpen
     }
 
+    const textHide = this.state.pdfView ? "hidden" : "showing"
+
     return (
       <div>
         {this.state.itemFocus &&
           <VersionChain transcriptionid={this.state.itemFocus.transcriptionid} handleFocusChange={this.setFocus2}/>
         }
+        { this.state.pdfView && <Print url={this.state.itemFocus.doc}/>}
         {
-          this.state.pdfView
-          ?
-          <Print url={this.state.itemFocus.doc}/>
-          :
-          <Container className={textClass() ? "lbp-text skinnyText" : "lbp-text fullText"}>
-          {this.state.itemFocus &&
-            <Text
-              doc={this.state.itemFocus.doc}
-              topLevel={this.state.itemFocus.topLevel}
-              setFocus={this.setFocus}
-              handleSurfaceFocusChange={this.handleSurfaceFocusChange}
-              handleLineFocusChange={this.handleLineFocusChange}
-              openWindow={this.openWindow}
-              // NOTE: using props instead of state; seems better, but needs full documentation
-              // NOTE: itemid is shortid of item: TODO: needs documentation; or better, refactoring!
-              scrollTo={this.props.blockDivFocus ? this.props.blockDivFocus.split("/resource/")[1] : this.props.itemid}
-              handleTextPreviewFocusChange={this.handleTextPreviewFocusChange}
-              />
-            }
-          </Container>
+          // Text Container and Text are always loaded to avoid unnecessary re-mounting
+          // textHide variable is used to hide or show textContainer depending on whether this.statePdfView is true or false
         }
+        <Container className={textClass() ? "lbp-text skinnyText " + textHide : "lbp-text fullText " + textHide}>
+
+        {this.state.itemFocus &&
+          <Text
+            doc={this.state.itemFocus.doc}
+            topLevel={this.state.itemFocus.topLevel}
+            setFocus={this.setFocus}
+            handleSurfaceFocusChange={this.handleSurfaceFocusChange}
+            handleLineFocusChange={this.handleLineFocusChange}
+            openWindow={this.openWindow}
+            // NOTE: using props instead of state; seems better, but needs full documentation
+            // NOTE: itemid is shortid of item: TODO: needs documentation; or better, refactoring!
+            scrollTo={this.props.blockDivFocus ? this.props.blockDivFocus.split("/resource/")[1] : this.props.itemid}
+            handleTextPreviewFocusChange={this.handleTextPreviewFocusChange}
+            />
+          }
+        </Container>
+
         <TextNavBar
           next={this.state.itemFocus && this.state.itemFocus.next}
           previous={this.state.itemFocus && this.state.itemFocus.previous}
