@@ -198,11 +198,21 @@
     <xsl:apply-templates/>
   </xsl:template>
 
+  <!-- if graphic element is present display description -->
+  <xsl:template match="tei:graphic">
+    <xsl:apply-templates/>
+  </xsl:template>
+  <xsl:template match="tei:graphic/tei:desc">
+    [<xsl:apply-templates/>]
+  </xsl:template>
+  <!-- end graphic element handle -->
+
   <!-- clear rdg template -->
   <xsl:template match="tei:rdg"></xsl:template>
 
   <!-- clear note desc bib template -->
   <xsl:template match=" tei:note | tei:desc | tei:bibl"></xsl:template>
+
 
   <xsl:template match="tei:cb">
     <xsl:variable name="hashms"><xsl:value-of select="@ed"/></xsl:variable>
