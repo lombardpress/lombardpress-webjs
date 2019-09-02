@@ -95,12 +95,13 @@ class Text extends React.Component {
             e.preventDefault();
             const target = $(this).attr('data-url')
             const targetParagraph = $(this).attr('data-target-paragraph')
-            //setting paragraph focus for paragraph containing target footnote
-            //_this.props.setFocus(targetParagraph)
+
             // set the desired text preview focus to the target of the reference
             _this.props.handleTextPreviewFocusChange(target)
             //opening bottomw window 2 to textPreview
             _this.props.openWindow("window2", "textPreview")
+            //setting paragraph focus for paragraph containing target footnote
+            _this.props.setFocus(targetParagraph)
           })
         })
         .catch((e) => {
