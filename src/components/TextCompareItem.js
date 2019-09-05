@@ -4,14 +4,16 @@ import Axios from 'axios'
 import Spinner from './Spinner';
 import {Link} from 'react-router-dom';
 
-import { FaEyeSlash, FaEye, FaStar } from 'react-icons/fa';
+import { FaEyeSlash, FaEye, FaStar, FaToggleOn, FaToggleOff} from 'react-icons/fa';
 
 class TextCompareItem extends React.Component {
   constructor(props){
     super(props)
     this.handleToggleShow = this.handleToggleShow.bind(this)
+    this.handleToggleCompare = this.handleToggleCompare.bind(this)
     this.mounted = ""
     this.state = {
+      showCompare: true,
       compareText: "",
       rawText: "",
       show: true
@@ -24,14 +26,30 @@ class TextCompareItem extends React.Component {
       }
     })
   }
+  handleToggleCompare(){
+    this.setState((prevState) => {
+      return{
+        showCompare: !prevState.showCompare
+      }
+    })
+  }
+  textClean(text){
+    const punctuationless = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+    const finalString = punctuationless.replace(/\s{2,}/g," ");
+    const finalFinalString = finalString.toLowerCase()
+    return finalFinalString
+
+  }
   createCompare(base, transcription){
 
     Axios.get("http://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + transcription)
           .then((text) => {
 
             const dmp = new Diff.diff_match_patch();
+            console.log("text.data", typeof text.data)
 
-            const diff = dmp.diff_main(base, text.data);
+            const lowerCaseCompareText = text.data.toLowerCase()
+            const diff = dmp.diff_main(this.textClean(base), this.textClean(text.data));
             // Result: [(-1, "Hell"), (1, "G"), (0, "o"), (1, "odbye"), (0, " World.")]
             dmp.diff_cleanupSemantic(diff);
             const ds = dmp.diff_prettyHtml(diff);
@@ -64,24 +82,28 @@ class TextCompareItem extends React.Component {
 
   render(){
     const displayComparison = () => {
-      if (this.props.base && this.state.compareText){
+      const isBase = this.props.base === this.state.rawText
+      if (this.state.showCompare && this.props.base && this.state.compareText){
         return (
           <div>
-            <span><Link to={"/text?resourceid=" + this.props.compareTranscription}>{this.props.compareTranscription}</Link></span>
-            <span onClick={() => this.handleToggleShow()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>
-            <span onClick={() => this.props.handleChangeBase(this.state.rawText)}><FaStar/></span>
+            <span><Link to={"/text?resourceid=" + this.props.compareTranscription}>{this.props.compareTranscription}</Link> </span>
+            | <span className="lbp-span-link" title="show/hide" onClick={() => this.handleToggleShow()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>
+            <span className="lbp-span-link" title="toggle comparison off" onClick={() => this.handleToggleCompare()}><FaToggleOn/></span>
+            {!isBase && <span className="lbp-span-link" title="set as base" onClick={() => this.props.handleChangeBase(this.state.rawText)}><FaStar/></span>}
             <div className={this.state.show ? "unhidden" : "hidden"}>
               <div ref="text" dangerouslySetInnerHTML={{ __html: this.state.compareText}}></div>
             </div>
           </div>
         )
       }
-      if (this.state.rawText){
+      else if (this.state.rawText){
         return (
           <div>
-            <span><Link to={"/text?resourceid=" + this.props.compareTranscription}>{this.props.compareTranscription}</Link></span>
-            <span onClick={() => this.handleToggleShow()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>
-            <span onClick={() => this.props.handleChangeBase(this.state.rawText)}><FaStar/></span>
+            <span><Link to={"/text?resourceid=" + this.props.compareTranscription}>{this.props.compareTranscription}</Link></span> |
+            <span className="lbp-span-link" title="show/hide" onClick={() => this.handleToggleShow()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>
+            <span className="lbp-span-link" title="toggle comparison on" onClick={() => this.handleToggleCompare()}><FaToggleOff/></span>
+            {!isBase && <span className="lbp-span-link" title="set as base" onClick={() => this.props.handleChangeBase(this.state.rawText)}><FaStar/></span>}
+
             <div className={this.state.show ? "unhidden" : "hidden"}>
               <div ref="text" dangerouslySetInnerHTML={{ __html: this.state.rawText}}></div>
             </div>

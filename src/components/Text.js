@@ -100,6 +100,14 @@ class Text extends React.Component {
             _this.props.handleTextPreviewFocusChange(target)
             //opening bottomw window 2 to textPreview
             _this.props.openWindow("window2", "textPreview")
+
+        // NOTE: Order seems to make a difference here (at least in the production version)
+        // calling this.props.setFocus before handleTextPreviewFocusChange and openWindow
+        // was causing a reload that prevented desired functionality (but not on local version, only on production/deployed version)
+        // TODO: investigate further, because even thought the re-arranged order seems to be working
+        // the problem is likely to do with async timing (i.e. on job finish before another)
+        //which could vary in different enviornments
+
             //setting paragraph focus for paragraph containing target footnote
             _this.props.setFocus(targetParagraph)
           })

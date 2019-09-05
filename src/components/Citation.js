@@ -35,7 +35,6 @@ class Citation extends React.Component{
       const manifestationCitationInfo = runQuery(getManifestationCitationInfo(tresourceid))
       manifestationCitationInfo.then((data) => {
         const allBindings = data.data.results.bindings
-        console.log(allBindings)
         if (allBindings.length > 0){
           const bindings = allBindings[0]
           const expressionid = bindings.expression ? bindings.expression.value : ""
