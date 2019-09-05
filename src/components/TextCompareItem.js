@@ -34,7 +34,7 @@ class TextCompareItem extends React.Component {
     })
   }
   textClean(text){
-    const punctuationless = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+    const punctuationless = text.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"");
     const finalString = punctuationless.replace(/\s{2,}/g," ");
     const finalFinalString = finalString.toLowerCase()
     return finalFinalString
@@ -46,9 +46,6 @@ class TextCompareItem extends React.Component {
           .then((text) => {
 
             const dmp = new Diff.diff_match_patch();
-            console.log("text.data", typeof text.data)
-
-            const lowerCaseCompareText = text.data.toLowerCase()
             const diff = dmp.diff_main(this.textClean(base), this.textClean(text.data));
             // Result: [(-1, "Hell"), (1, "G"), (0, "o"), (1, "odbye"), (0, " World.")]
             dmp.diff_cleanupSemantic(diff);
