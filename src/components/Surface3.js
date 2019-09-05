@@ -194,7 +194,9 @@ componentDidMount(){
         const lly = llcoords.split(",")[1]
         const llh = llcoords.split(",")[3]
         const llbottom = (parseInt(lly) + parseInt(llh)) - parseInt(y)
-        const coords = (parseInt(flcoords.split(",")[0] - 10)) + "," + (parseInt(y)) + "," + (parseInt(flcoords.split(",")[2]) + 10) + "," + (parseInt(llbottom) + 50)
+        //x widens the column by 10, but only if the x is greater than 10
+        const x = parseInt(flcoords.split(",")[0]) > 10 ? parseInt(flcoords.split(",")[0]) - 10 : parseInt(flcoords.split(",")[0])
+        const coords = x + "," + (parseInt(y)) + "," + (parseInt(flcoords.split(",")[2]) + 10) + "," + (parseInt(llbottom) + 50)
         const text = ""
         const imageUrl = h ? h.imageUrl : ""
         // check to see if an Image Url has been found.
