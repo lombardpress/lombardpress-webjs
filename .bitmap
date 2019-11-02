@@ -25,38 +25,6 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "jeffreycwitt.lbp/citation@0.0.3": {
-        "files": [
-            {
-                "relativePath": "src/components/Citation.js",
-                "test": false,
-                "name": "Citation.js"
-            },
-            {
-                "relativePath": "src/components/Queries.js",
-                "test": false,
-                "name": "Queries.js"
-            },
-            {
-                "relativePath": "src/components/Spinner.js",
-                "test": false,
-                "name": "Spinner.js"
-            },
-            {
-                "relativePath": "src/components/config.js",
-                "test": false,
-                "name": "config.js"
-            },
-            {
-                "relativePath": "src/components/utils.js",
-                "test": false,
-                "name": "utils.js"
-            }
-        ],
-        "mainFile": "src/components/Citation.js",
-        "origin": "AUTHORED",
-        "exported": true
-    },
     "jeffreycwitt.lbp/comments@0.0.3": {
         "files": [
             {
@@ -91,5 +59,52 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "version": "14.2.0"
+    "jeffreycwitt.lbp/surface3wrapper@1.2.0": {
+        "files": [
+            {
+                "relativePath": "src/components/Image.js",
+                "test": false,
+                "name": "Image.js"
+            },
+            {
+                "relativePath": "src/components/ImageTextWrapper.js",
+                "test": false,
+                "name": "ImageTextWrapper.js"
+            },
+            {
+                "relativePath": "src/components/LineText.js",
+                "test": false,
+                "name": "LineText.js"
+            },
+            {
+                "relativePath": "src/components/Queries.js",
+                "test": false,
+                "name": "Queries.js"
+            },
+            {
+                "relativePath": "src/components/Surface3.js",
+                "test": false,
+                "name": "Surface3.js"
+            },
+            {
+                "relativePath": "src/components/Surface3Wrapper.js",
+                "test": false,
+                "name": "Surface3Wrapper.js"
+            },
+            {
+                "relativePath": "src/components/config.js",
+                "test": false,
+                "name": "config.js"
+            },
+            {
+                "relativePath": "src/components/utils.js",
+                "test": false,
+                "name": "utils.js"
+            }
+        ],
+        "mainFile": "src/components/Surface3Wrapper.js",
+        "origin": "AUTHORED",
+        "exported": true
+    },
+    "version": "14.4.3"
 }
