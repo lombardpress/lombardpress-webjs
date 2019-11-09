@@ -143,7 +143,10 @@ sub, sup{
 	color: $link-color
 
 }
-
+.show-line-witness{
+  cursor: pointer;
+	color: $link-color
+}
 .lbp-unclear{
 	color: #6f7ab3
 }

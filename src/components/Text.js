@@ -71,15 +71,11 @@ class Text extends React.Component {
         });
 
         $('.appnote, .footnote').click(function(e) {
-          e.preventDefault();
-
-        });
-        $('.appnote, .footnote').parent().click(function(e) {
              e.preventDefault();
-             const link = $(this).children('.appnote, .footnote')
+             const link = $(this).parent().children('.appnote, .footnote')
              const target = $(link).attr('href')
              const text = $(target).html()
-             const targetText = $(this).children(".note-display").attr('data-target-id')
+             const targetText = $(this).parent().children(".note-display").attr('data-target-id')
              /// toggles highlight for select text segemnts
              if (targetText){
                $("#" + targetText).toggleClass("highlight")
@@ -87,10 +83,27 @@ class Text extends React.Component {
              }
 
              //adds footnote text to noteDisplay Div and toggles hidden class
-             const noteDisplay = $(this).children(".note-display")
+             const noteDisplay = $(this).parent().children(".note-display")
              noteDisplay.toggleClass("hidden")
              noteDisplay.html(text)
            });
+
+           $(document).on("click", '.show-line-witness', function(e) {
+
+             e.preventDefault();
+             const surfaceid = $(this).attr('data-surfaceid');
+             const ln = $(this).attr('data-ln');
+             console.log("sid", surfaceid)
+
+
+             const paragraphid = $(this).closest('.plaoulparagraph').attr("id");
+             _this.props.setFocus(paragraphid)
+
+             _this.props.handleSurfaceFocusChange("http://scta.info/resource/" + surfaceid)
+             _this.props.handleLineFocusChange("http://scta.info/resource/" + surfaceid + "/" + ln)
+             _this.props.openWindow("window2", "surface2")
+           });
+
            $(document).on("click", '.js-show-reference-paragraph', function(e){
             e.preventDefault();
             const target = $(this).attr('data-url')
