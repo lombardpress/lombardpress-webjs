@@ -517,7 +517,7 @@
         <xsl:if test="./tei:quote/@source| ./tei:ref/@target|./tei:bibl">
         <xsl:variable name="id"><xsl:number count="//tei:cit" level="any" format="a"/></xsl:variable>
         <li id="lbp-footnote{$id}">
-          <a href="#lbp-footnotereference{$id}">
+          <a>
             <xsl:copy-of select="$id"/>
           </a> --
           <xsl:choose>
@@ -588,7 +588,7 @@
         </xsl:variable>
 
         <li id="lbp-variant{$id}">
-          <a href="#lbp-variantreference{$id}">
+          <a>
             <xsl:copy-of select="$id"/>
           </a>
           <text> -- </text>
@@ -638,7 +638,20 @@
 
             	<xsl:otherwise>
                 <xsl:value-of select="."/><xsl:text> </xsl:text>
-                <xsl:value-of select="translate(@wit, '#', '')"/><xsl:text>   </xsl:text>
+            	  <xsl:choose>
+            	    <xsl:when test="./@facs">
+               	  <xsl:variable name="ms" select="translate(./@wit, '#', '')"/>
+               	  <xsl:variable name="msSlug" select="/tei:TEI/tei:teiHeader[1]/tei:fileDesc[1]/tei:sourceDesc[1]/tei:listWit[1]/tei:witness[@xml:id=$ms]/@n"/>
+               	  <xsl:variable name="line" select="substring-after(./@facs, '/')"/>
+               	  <xsl:variable name="surface" select="substring-before(./@facs, '/')"/>
+                   <span class="show-line-witness" data-ln="{$line}" data-pb="{$surface}" data-codex="{$msSlug}" data-surfaceid="{concat($msSlug, '/', $surface)}">
+                     <xsl:value-of select="translate(@wit, '#', '')"/><xsl:text>   </xsl:text>
+                   </span>
+              	  </xsl:when>
+            	    <xsl:otherwise>
+            	      <xsl:value-of select="translate(@wit, '#', '')"/><xsl:text>   </xsl:text>
+            	    </xsl:otherwise>
+            	  </xsl:choose>
               </xsl:otherwise>
             </xsl:choose>
           </xsl:for-each>
