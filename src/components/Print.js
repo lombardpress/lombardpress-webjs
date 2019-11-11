@@ -16,7 +16,7 @@ class Print extends React.Component {
         console.log(data)
         if (data.data.url){
           console.log("first condition passed", data.data.url)
-          const hashWithExtension = data.data.url.split("/cache/")[1]
+          const hashWithExtension = data.data.url
           //window.location = "http://print.lombardpress.org/api/v1/cache/" + hashWithExtension
           this.setState({pdf: "http://print.lombardpress.org/api/v1/cache/" + hashWithExtension})
         }
