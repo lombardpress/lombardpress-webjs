@@ -461,6 +461,7 @@ class TextWrapper extends React.Component {
           handleClose={this.handleClose}
           pdfView={this.state.pdfView}
           handleTogglePdfView={this.handleTogglePdfView}
+          mtFocus={this.state.mtFocus}
         />
         <div>
         {
