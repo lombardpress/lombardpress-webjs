@@ -119,7 +119,7 @@ class Window extends React.Component {
             annotationsDisplay={this.props.annotationsDisplay}
             handleToggleTextLinesView={this.handleToggleTextLinesView}
             handleChangeManifestation={this.handleChangeManifestation}
-            width={this.props.windowType === 'bottomWindow' ? "1000" : "500"}
+            width={this.props.windowType === 'bottomWindow' ? "1000" : "501"}
             hidden={this.state.windowLoad !== "surface3"}/>}
             {(this.state.windowLoad === "comments" || this.state.mountStatus.comments) &&  <Comments resourceid={this.props.info.resourceid} inbox={this.props.info.inbox} hidden={this.state.windowLoad !== "comments"}/>}
           </div>

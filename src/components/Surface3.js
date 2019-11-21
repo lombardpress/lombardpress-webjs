@@ -236,7 +236,7 @@ componentDidMount(){
 
 }
 Surface3.defaultProps = {
-  width: "500"
+  width: "501"
 };
 
 Surface3.propTypes = {
