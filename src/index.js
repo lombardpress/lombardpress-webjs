@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 //import './styles/index.scss';
 import AppRouter from './components/AppRouter';
 import * as serviceWorker from './serviceWorker';
+import './i18n';
 
 ReactDOM.render(<AppRouter/>, document.getElementById('root'));
 

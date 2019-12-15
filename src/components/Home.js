@@ -4,10 +4,12 @@ import Jumbotron from 'react-bootstrap/Jumbotron';
 import Button from 'react-bootstrap/Button';
 import {Link} from 'react-router-dom';
 import {resourceEndpoint} from './config';
+import {useTranslation} from 'react-i18next'
 
 
 
 function Home(props) {
+  const {t, i18n} = useTranslation();
   //const resourceid = props.location ? Qs.parse(props.location.search, { ignoreQueryPrefix: true }).resourceid : null;
   const displayBody = () => {
     // if (resourceid){
@@ -19,9 +21,9 @@ function Home(props) {
         <Container id="lbp-home" fluid>
             <Container>
               <Jumbotron id="lbp-jumbo">
-              	<h1>The SCTA Reading Room</h1>
-              	<p>A site for reading, viewing, and studying the scholastic tradition</p>
-                <Button><Link className="nav-link" to={"/text?resourceid=" + resourceEndpoint} style={{color: "black"}}>Enter</Link></Button>
+              	<h1>{t("Title")}</h1>
+                <p>{t("Subtitle")}</p>
+                <Button><Link className="nav-link" to={"/text?resourceid=" + resourceEndpoint} style={{color: "black"}}>{t("Enter")}</Link></Button>
               </Jumbotron>
             </Container>
           </Container>
