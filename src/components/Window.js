@@ -8,6 +8,7 @@ import NextPrevBar from "./NextPrevBar"
 import TextCompareWrapper from "./TextCompareWrapper"
 import SearchWrapper from "./SearchWrapper"
 import Comments from "./Comments"
+import Comments2 from "./Comments2"
 import CitationWrapper from "./CitationWrapper"
 import TextOutlineWrapper from "./TextOutlineWrapper"
 import TextPreviewWrapper from "./TextPreviewWrapper"
@@ -121,7 +122,13 @@ class Window extends React.Component {
             handleChangeManifestation={this.handleChangeManifestation}
             width={this.props.windowType === 'bottomWindow' ? "1000" : "501"}
             hidden={this.state.windowLoad !== "surface3"}/>}
-            {(this.state.windowLoad === "comments" || this.state.mountStatus.comments) &&  <Comments resourceid={this.props.info.resourceid} inbox={this.props.info.inbox} hidden={this.state.windowLoad !== "comments"}/>}
+
+            {
+              //(this.state.windowLoad === "comments" || this.state.mountStatus.comments) &&  <Comments resourceid={this.props.info.resourceid} inbox={this.props.info.inbox} hidden={this.state.windowLoad !== "comments"}/>
+            }
+            {
+              (this.state.windowLoad === "comments" || this.state.mountStatus.comments) &&  <Comments2 resourceid={this.props.info.resourceid} hidden={this.state.windowLoad !== "comments"}/>
+            }
           </div>
           }
           {
