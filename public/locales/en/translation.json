@@ -16,7 +16,13 @@
   "Next": "Next",
   "Text Home": "Text Home",
   "Print View": "Print View",
-  "Web View": "Web View"
+  "Web View": "Web View",
+  "Version": "Version",
+  "Data Source": "Data Source",
+  "This Text Has Multiple Indexed Versions": "This Text Has Multiple Indexed Versions",
+  "(Currently Viewing)": "(Currently Viewing)",
+  "Peer Reviewed": "Peer Reviewed"
+
 
 
 }

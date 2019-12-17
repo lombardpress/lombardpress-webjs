@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Axios from 'axios'
 import Alert from 'react-bootstrap/Alert';
+import { withTranslation } from 'react-i18next';
 
 import {runQuery} from './utils'
 import {versionHistoryInfo} from './Queries'
@@ -75,13 +76,14 @@ class VersionChain extends React.Component {
 
   }
   render(){
+    const { t } = this.props;
     const displayVersions = () => {
       const versions = this.state.versions.map((v) => {
         const currentlyViewing = v.versionTranscription === this.state.currentVersion ? "currentlyViewing" : ""
         return (<p key={v.versionTranscription} className={currentlyViewing}>
-          {currentlyViewing ? <span>{v.versionLabel} (Currently Viewing)</span> : <span className="lbp-span-link" onClick={()=>{this.props.handleFocusChange(v.versionTranscription)}}>{v.versionLabel}</span>}
-          {v.versionReviewInfo.html_link && <span> Peer Reviewed: <a href={v.versionReviewInfo.html_link}><img alt="review" src={v.versionReviewInfo.img_url}/></a> </span>}
-          <span className="small"> Data Source: <a href={v.versionDoc}>{v.versionDoc}</a> </span>
+          {currentlyViewing ? <span>{v.versionLabel} {t("(Currently Viewing)")}</span> : <span className="lbp-span-link" onClick={()=>{this.props.handleFocusChange(v.versionTranscription)}}>{v.versionLabel}</span>}
+          {v.versionReviewInfo.html_link && <span> {t("Peer Reviewed")}: <a href={v.versionReviewInfo.html_link}><img alt="review" src={v.versionReviewInfo.img_url}/></a> </span>}
+          <span className="small"> {t("Data Source")}: <a href={v.versionDoc}>{v.versionDoc}</a> </span>
           </p>)
       })
       return versions
@@ -91,7 +93,7 @@ class VersionChain extends React.Component {
         if (this.state.versions.length > 1){
           return (
             <Alert variant="info">
-              <p onClick={this.handleToggleShowVersions}>This Text Has Multiple Indexed Versions</p>
+              <p onClick={this.handleToggleShowVersions}>{t("This Text Has Multiple Indexed Versions")}</p>
               {this.state.showVersions && displayVersions()}
             </Alert>
           )
@@ -99,7 +101,7 @@ class VersionChain extends React.Component {
         else if (this.state.versions.length === 1){
           const version = this.state.versions[0]
           return (<Alert variant="info">
-            <span>Version: {version.versionLabel} | Data Source: <a href={version.versionDoc}>{version.versionDoc}</a> </span>
+            <span>{t("Version")}: {version.versionLabel} | {t("Data Source")}: <a href={version.versionDoc}>{version.versionDoc}</a> </span>
           </Alert>
           )
         }
@@ -129,4 +131,4 @@ VersionChain.propTypes = {
   handleFocusChange: PropTypes.func.isRequired
 }
 
-export default VersionChain;
+export default withTranslation()(VersionChain);
