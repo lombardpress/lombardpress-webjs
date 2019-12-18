@@ -21,6 +21,12 @@
   "Data Source": "Daten Quellen",
   "This Text Has Multiple Indexed Versions": "Dieser Text hat vielfältigen indexierten Ausgaben",
   "(Currently Viewing)": "(aktuell Gesehen)",
-  "Peer Reviewed": "durch Fachleute geprüft"
+  "Peer Reviewed": "durch Fachleute geprüft",
+  "filter comments by text": "Kommentare vom Text filtern",
+  "Show All Comments": "Alle Kommentare zeigen",
+  "Show Comments For Focused Passage": "Kommentare für fokussierte Passage",
+  "Submit": "Vorlegen",
+  "comment": "Kommentar",
+  "For": "Für"
 
 }

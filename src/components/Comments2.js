@@ -5,8 +5,10 @@ import Comment2Create from './Comment2Create.js'
 import Comment2Item from './Comment2Item.js'
 import uuidv4 from 'uuid/v4';
 import Button from 'react-bootstrap/Button';
+import {useTranslation} from 'react-i18next'
 
 function Comments2(props) {
+  const {t, i18n} = useTranslation();
   const [comments, setComments] = useState(JSON.parse(localStorage.getItem("sctaCommentsState")) || []);
   const [showFocusComments, setShowFocusComments] = useState(true)
   const [commentFilter, setCommentFilter] = useState("")
@@ -47,8 +49,8 @@ function Comments2(props) {
   return (
     <Container className={props.hidden ? "hidden" : "showing"}>
       <Comment2Create submitComment={submitComment}/>
-      <FormControl style={{margin: "10px 0"}} type="text" value={commentFilter} placeholder="filter comments by text" className="mr-sm-2" onChange={(e) => {setCommentFilter(e.target.value)}}/>
-      <Button style={{margin: "10px 0"}} block onClick={() => setShowFocusComments(!showFocusComments)}>{showFocusComments ? "Show All Comments" : "Show Comments For Focused Passage" }</Button>
+      <FormControl style={{margin: "10px 0"}} type="text" value={commentFilter} placeholder={t("filter comments by text")} className="mr-sm-2" onChange={(e) => {setCommentFilter(e.target.value)}}/>
+      <Button style={{margin: "10px 0"}} block onClick={() => setShowFocusComments(!showFocusComments)}>{showFocusComments ? t("Show All Comments") : t("Show Comments For Focused Passage") }</Button>
 
       <div>
         {comments.slice(0).reverse().map((c,i) => {

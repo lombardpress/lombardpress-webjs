@@ -3,8 +3,10 @@ import {Link} from 'react-router-dom';
 import {FaTrash, FaEdit} from 'react-icons/fa';
 import FormControl from 'react-bootstrap/FormControl';
 import Comment2Create from './Comment2Create.js'
+import {useTranslation} from 'react-i18next'
 
 function Comment2Item(props) {
+  const {t, i18n} = useTranslation();
   const [editable, setEditable] = useState(false);
 
   const submitUpdate = (update) => {
@@ -15,7 +17,7 @@ function Comment2Item(props) {
 
   return (
       <div>
-        {!props.focused && <p>For: <Link to={"/text?resourceid=" + props.comment.target}>{props.comment.target}</Link></p>}
+        {!props.focused && <p>{t("For")}: <Link to={"/text?resourceid=" + props.comment.target}>{props.comment.target}</Link></p>}
 
         {
           editable ?
