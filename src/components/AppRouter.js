@@ -3,6 +3,7 @@ import {HashRouter, Route, Switch} from 'react-router-dom';
 import Home from "./Home"
 import SearchWrapper from "./SearchWrapper"
 import Search2 from "./Search2"
+import Search3 from "./Search3"
 import TextSwitch from "./TextSwitch"
 import About from "./About"
 import Codices from "./Codices"
@@ -30,6 +31,7 @@ const AppRouter = () => {
           <Route path="/codices" exact={true} component={Codices}/>
           <Route path="/search" exact={true} render={(props) => <SearchWrapper {...props} hidden={false}/>}/>
           <Route path="/search2" exact={true} component={Search2}/>
+          <Route path="/search3" exact={true} component={Search3}/>
           {
             //<Route path="/edit/:id" exact={true} component={EditExpensePage}/>
           //<Route path="/help" exact={true} component={HelpPage}/>

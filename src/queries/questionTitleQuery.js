@@ -13,7 +13,6 @@ export function questionTitleQuery(searchParameters){
      "WHERE",
      "{",
        "?resource <http://scta.info/property/questionTitle> ?qtitle  .",
-       "FILTER (REGEX(STR(?qtitle), '" + searchTerm + "', 'i')) .",
        "?resource <http://purl.org/dc/elements/1.1/title> ?resourceTitle .",
        "?resource <http://scta.info/property/structureType> ?structureType .",
        "?resource <http://scta.info/property/longTitle> ?longTitle .",
@@ -21,8 +20,8 @@ export function questionTitleQuery(searchParameters){
        "?resource <http://scta.info/property/isPartOfTopLevelExpression> ?topLevel .",
        authorQuery,
        "?topLevel <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
-
        "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
+       "FILTER (REGEX(STR(?qtitle), '" + searchTerm + "', 'i')) .",
      "}"
    ].join(' ');
    return query

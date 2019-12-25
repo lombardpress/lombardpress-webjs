@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom';
 import {runQuery} from './utils'
 import {questionTitleQuery} from '../queries/questionTitleQuery'
 
-function Search2(props) {
+const Search2 = (props) => {
   const [searchParameters, setSearchParameters] = useState({})
   // this should move to separate component, with context and reducer.
   // search should get all update parameters from context and run search
@@ -22,6 +22,7 @@ function Search2(props) {
       searchEid: searchEid ? "http://scta.info/resource/" + searchEid : ""
     })
   }
+
   useEffect(() => {
     console.log("searchTerm", searchTerm)
     console.log("searchParameters", searchParameters)
