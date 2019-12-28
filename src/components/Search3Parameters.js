@@ -41,7 +41,13 @@ const Search3Parameters = (props) => {
   }, [])
   useEffect(() => {
     searchExpressionsListDispatch(searchExpressionsListActions.fetchExpressionsList(searchParameters, searchExpressionsListDispatch))
+    searchWorkGroupsListDispatch(searchWorkGroupsListActions.fetchWorkGroupsList(searchParameters, searchWorkGroupsListDispatch))
   }, [searchAuthor])
+  useEffect(() => {
+    searchExpressionsListDispatch(searchExpressionsListActions.fetchExpressionsList(searchParameters, searchExpressionsListDispatch))
+    searchAuthorsListDispatch(searchAuthorsListActions.fetchAuthorsList(searchParameters, searchAuthorsListDispatch))
+
+  }, [searchWorkGroup])
 
 
   return(
@@ -77,7 +83,7 @@ const Search3Parameters = (props) => {
               <Form.Control as="select" onChange={(e) => {setSearchEid(e.target.value)}} value={searchParameters.searchEid}>
                 <option value="">All</option>
                 {searchExpressionsList && searchExpressionsList.map((e, i) => {
-                    return (<option key={e.expression + "-" + i} value={e.expression}>{e.expressionTitle}</option>)
+                    return (<option key={e.expression + "-" + i} value={e.expression}>{e.authorTitle}: {e.expressionTitle}</option>)
                   })
                 }
               </Form.Control>

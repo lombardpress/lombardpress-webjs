@@ -13,11 +13,11 @@ export var completeExpressionsFetch = (expressions) => {
   };
 };
 export var fetchExpressionsList = (searchParameters, dispatch) =>{
-    var workGroupSparql = ""
-    if (searchParameters.workGroup){
+    let workGroupSparql = ""
+    if (searchParameters.searchWorkGroup){
       workGroupSparql = [
-      "<http://scta.info/resource/" + searchParameters.workGroup + "> <http://scta.info/property/hasExpression> ?expression ."
-      ].join('');
+      "<" + searchParameters.searchWorkGroup + "> <http://scta.info/property/hasExpression> ?expression ."
+      ].join(' ');
     }
     let expressionAuthorTypeSparql = ""
     if (searchParameters.expressionAuthorType){
@@ -27,7 +27,7 @@ export var fetchExpressionsList = (searchParameters, dispatch) =>{
       ].join('');
     }
 
-    var authorSparql = ""
+    let authorSparql = ""
     if (searchParameters.searchAuthor){
       authorSparql = [
       "?expression <http://www.loc.gov/loc.terms/relators/AUT> <" + searchParameters.searchAuthor + "> ."

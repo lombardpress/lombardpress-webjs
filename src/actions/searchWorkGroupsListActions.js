@@ -13,12 +13,13 @@ export var completeWorkGroupsListFetch = (workGroups) => {
   };
 };
 export var fetchWorkGroupsList = (searchParameters, dispatch) =>{
-  // let quotationAuthorTypeSparql = "";
-  //   if (searchParameters.quotationAuthorType){
-  //     quotationAuthorTypeSparql = [
-  //     "?author <http://scta.info/property/personType> <http://scta.info/resource/" + searchParameters.quotationAuthorType + "> ."
-  //     ].join('');
-  //   }
+  let authorQuery = "";
+    if (searchParameters.searchAuthor){
+      authorQuery = [
+      "?workGroup <http://scta.info/property/hasExpression> ?expression .",
+      "?expression <http://www.loc.gov/loc.terms/relators/AUT> <" + searchParameters.searchAuthor + "> ."
+      ].join('');
+    }
   //   // Begin Author date sparql filters
   //   let quotationAuthorDateSparql = "";
   //   if (searchParameters.quotationAuthorDateAfter || searchParameters.quotationAuthorDateBefore){
@@ -38,6 +39,7 @@ export var fetchWorkGroupsList = (searchParameters, dispatch) =>{
         "WHERE { ",
         "?workGroup a <http://scta.info/resource/workGroup> .",
         "?workGroup <http://purl.org/dc/elements/1.1/title> ?workGroupTitle .",
+        authorQuery,
         "}",
         "ORDER BY ?workGroupTitle"].join(' ');
   dispatch(startWorkGroupsListFetch());
