@@ -6,6 +6,8 @@ import searchExpressionsListReducer from '../reducers/searchExpressionsListReduc
 import * as searchExpressionsListActions from '../actions/searchExpressionsListActions'
 import searchAuthorsListReducer from '../reducers/searchAuthorsListReducer'
 import * as searchAuthorsListActions from '../actions/searchAuthorsListActions'
+import searchWorkGroupsListReducer from '../reducers/searchWorkGroupsListReducer'
+import * as searchWorkGroupsListActions from '../actions/searchWorkGroupsListActions'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import {runQuery} from './utils'
@@ -17,9 +19,11 @@ const Search3Parameters = (props) => {
   const [searchTerm, setSearchTerm] = useState("")
   const [searchAuthor, setSearchAuthor] = useState(props.searchAuthor)
   const [searchEid, setSearchEid] = useState(props.searchEid)
+  const [searchWorkGroup, setSearchWorkGroup] = useState(props.searchWorkGroup)
   const [searchExpressionsList, searchExpressionsListDispatch] = useReducer(searchExpressionsListReducer, [])
   const [searchAuthorsList, searchAuthorsListDispatch] = useReducer(searchAuthorsListReducer, [])
-  const searchParameters = {searchTerm, searchAuthor, searchEid}
+  const [searchWorkGroupsList, searchWorkGroupsListDispatch] = useReducer(searchWorkGroupsListReducer, [])
+  const searchParameters = {searchTerm, searchAuthor, searchEid, searchWorkGroup}
 
   const [displayAllParameters, setDisplayAllParameters] = useState(false)
 
@@ -33,6 +37,7 @@ const Search3Parameters = (props) => {
   useEffect(() => {
     searchExpressionsListDispatch(searchExpressionsListActions.fetchExpressionsList(searchParameters, searchExpressionsListDispatch))
     searchAuthorsListDispatch(searchAuthorsListActions.fetchAuthorsList(searchParameters, searchAuthorsListDispatch))
+    searchWorkGroupsListDispatch(searchWorkGroupsListActions.fetchWorkGroupsList(searchParameters, searchWorkGroupsListDispatch))
   }, [])
   useEffect(() => {
     searchExpressionsListDispatch(searchExpressionsListActions.fetchExpressionsList(searchParameters, searchExpressionsListDispatch))
@@ -48,11 +53,21 @@ const Search3Parameters = (props) => {
       {displayAllParameters &&
         <div>
           <Form.Group>
+            <Form.Label>Work Group</Form.Label>
+              <Form.Control as="select" onChange={(e) => {setSearchWorkGroup(e.target.value)}} value={searchParameters.searchWorkGroup}>
+                <option value="">All</option>
+                {searchWorkGroupsList && searchWorkGroupsList.map((e, i) => {
+                    return (<option key={e.workGroup + "-" + i} value={e.workGroup}>{e.workGroupTitle}</option>)
+                  })
+                }
+              </Form.Control>
+          </Form.Group>
+          <Form.Group>
             <Form.Label>Author</Form.Label>
               <Form.Control as="select" onChange={(e) => {setSearchAuthor(e.target.value)}} value={searchParameters.searchAuthor}>
                 <option value="">All</option>
-                {searchAuthorsList && searchAuthorsList.map((e) => {
-                    return (<option key={e.author} value={e.author}>{e.authorTitle}</option>)
+                {searchAuthorsList && searchAuthorsList.map((e, i) => {
+                    return (<option key={e.author + "-" + i} value={e.author}>{e.authorTitle}</option>)
                   })
                 }
               </Form.Control>
@@ -61,8 +76,8 @@ const Search3Parameters = (props) => {
             <Form.Label>Text</Form.Label>
               <Form.Control as="select" onChange={(e) => {setSearchEid(e.target.value)}} value={searchParameters.searchEid}>
                 <option value="">All</option>
-                {searchExpressionsList && searchExpressionsList.map((e) => {
-                    return (<option key={e.expression} value={e.expression}>{e.expressionTitle}</option>)
+                {searchExpressionsList && searchExpressionsList.map((e, i) => {
+                    return (<option key={e.expression + "-" + i} value={e.expression}>{e.expressionTitle}</option>)
                   })
                 }
               </Form.Control>

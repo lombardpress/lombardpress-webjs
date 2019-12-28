@@ -8,6 +8,7 @@ import {runQuery} from './utils'
 import {basicStructureAllItemsInfoQuery, partsInfoQuery,workGroupExpressionQuery} from './Queries'
 
 import Item from "./Item"
+import Search3 from "./Search3"
 
 //import Lbp from "lbp.js/lib"
 
@@ -204,7 +205,10 @@ class Collection extends React.Component {
 
     return (
       <Container className="collectionBody">
-      {}
+        <Search3 searchWorkGroup={this.props.resourceid}
+        showSubmit={false}
+        showAdvancedParameters={false}
+        showLabels={false}/>
       <Container className="collectionFilter">
         <FormControl ref={this.filter} id="filter" placeholder="type to filter by title" onChange={this.handleFilter}/>
       </Container>

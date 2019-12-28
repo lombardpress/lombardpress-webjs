@@ -1,5 +1,12 @@
 export function questionTitleQuery(searchParameters){
   const searchTerm = searchParameters.searchTerm
+  let workGroupQuery = "";
+    if (searchParameters.searchWorkGroup){
+      workGroupQuery = [
+        "BIND(<" + searchParameters.searchWorkGroup + "> AS ?workGroup) .",
+        "?workGroup <http://scta.info/property/hasExpression> ?topLevel ."
+      ].join(' ')
+    }
   let authorQuery = "";
     if (searchParameters.searchAuthor){
       authorQuery = "BIND(<" + searchParameters.searchAuthor + "> AS ?author)."
@@ -21,6 +28,7 @@ export function questionTitleQuery(searchParameters){
        authorQuery,
        "?topLevel <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
        "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
+       workGroupQuery,
        "FILTER (REGEX(STR(?qtitle), '" + searchTerm + "', 'i')) .",
      "}"
    ].join(' ');

@@ -18,11 +18,16 @@ const Search3 = (props) => {
   }
   const handleRunSearch = (e) => {
     e.preventDefault()
-    const questionResults = runQuery(questionTitleQuery(searchParameters))
-    setResults("fetching")
-    questionResults.then((d) => {
-      setResults(d.data.results.bindings)
-    })
+    if (!searchParameters.searchTerm){
+      setResults([])
+    }
+    else{
+      const questionResults = runQuery(questionTitleQuery(searchParameters))
+      setResults("fetching")
+      questionResults.then((d) => {
+        setResults(d.data.results.bindings)
+      })
+    }
   }
   return(
     <Container>
@@ -31,6 +36,7 @@ const Search3 = (props) => {
           handleSetSearchParameters={handleSetSearchParameters}
           searchAuthor={props.searchAuthor}
           searchEid={props.searchEid}
+          searchWorkGroup={props.searchWorkGroup}
           showAdvancedParameters={props.showAdvancedParameters}
           showLabels={props.showLabels}
           />
@@ -39,9 +45,9 @@ const Search3 = (props) => {
     </Form>
     {results === "fetching"
     ? <Spinner/>
-    : results.map((r) => (
-      <div key={r.resource.value}>
-        <p><Link to={"/text?resourceid=" + r.author.value}>{r.authorTitle.value}</Link>: <Link to={"/text?resourceid=" + r.resource.value}>{r.resourceTitle.value}</Link></p>
+    : results.map((r, i) => (
+      <div key={r.resource.value + "-" + i}>
+        <p><Link to={"/text?resourceid=" + r.author.value}>{r.authorTitle.value}</Link>: <Link to={"/text?resourceid=" + r.resource.value}>{r.longTitle.value}</Link></p>
         <p>{r.qtitle.value.toLowerCase().replace(searchParameters.searchTerm.toLowerCase(), searchParameters.searchTerm.toUpperCase())}</p>
       </div>
     ))
