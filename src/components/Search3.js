@@ -67,7 +67,7 @@ const Search3 = (props) => {
     }
   }
   return(
-    <Container>
+    <Container className={props.hidden ? "hidden" : "showing"}>
       <Form onSubmit={handleRunSearch}>
         <Search3Parameters
           handleSetSearchParameters={handleSetSearchParameters}
