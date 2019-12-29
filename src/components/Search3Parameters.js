@@ -16,6 +16,7 @@ import Spinner from './Spinner';
 import {Link} from 'react-router-dom';
 
 const Search3Parameters = (props) => {
+  const [searchType, setSearchType] = useState(props.searchType ? props.searchType : "questionTitles")
   const [searchTerm, setSearchTerm] = useState("")
   const [searchAuthor, setSearchAuthor] = useState(props.searchAuthor)
   const [searchEid, setSearchEid] = useState(props.searchEid)
@@ -23,7 +24,7 @@ const Search3Parameters = (props) => {
   const [searchExpressionsList, searchExpressionsListDispatch] = useReducer(searchExpressionsListReducer, [])
   const [searchAuthorsList, searchAuthorsListDispatch] = useReducer(searchAuthorsListReducer, [])
   const [searchWorkGroupsList, searchWorkGroupsListDispatch] = useReducer(searchWorkGroupsListReducer, [])
-  const searchParameters = {searchTerm, searchAuthor, searchEid, searchWorkGroup}
+  const searchParameters = {searchTerm, searchAuthor, searchEid, searchWorkGroup, searchType}
 
   const [displayAllParameters, setDisplayAllParameters] = useState(false)
 
@@ -53,11 +54,18 @@ const Search3Parameters = (props) => {
   return(
     <div>
       <Form.Group>
-        {props.showLabels && <Form.Label>Search Term in Question Titles</Form.Label>}
-        <Form.Control as="input" type="text" placeholder="search term in question titles" onChange={(e) => setSearchTerm(e.target.value)} value={searchParameters.searchTerm}/>
+        {props.showLabels && <Form.Label>Search Term</Form.Label>}
+        <Form.Control as="input" type="text" placeholder="search term " onChange={(e) => setSearchTerm(e.target.value)} value={searchParameters.searchTerm}/>
       </Form.Group>
       {displayAllParameters &&
         <div>
+        <Form.Group>
+          <Form.Label>Search Type</Form.Label>
+            <Form.Control as="select" onChange={(e) => {setSearchType(e.target.value)}} value={searchParameters.searchType}>
+              <option value="questionTitles">Questions Titles</option>
+              <option value="text">Text</option>
+            </Form.Control>
+        </Form.Group>
           <Form.Group>
             <Form.Label>Work Group</Form.Label>
               <Form.Control as="select" onChange={(e) => {setSearchWorkGroup(e.target.value)}} value={searchParameters.searchWorkGroup}>

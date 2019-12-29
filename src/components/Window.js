@@ -7,6 +7,7 @@ import WindowNavBar from "./WindowNavBar"
 import NextPrevBar from "./NextPrevBar"
 import TextCompareWrapper from "./TextCompareWrapper"
 import SearchWrapper from "./SearchWrapper"
+import Search3 from "./Search3"
 import Comments from "./Comments"
 import Comments2 from "./Comments2"
 import CitationWrapper from "./CitationWrapper"
@@ -142,7 +143,17 @@ class Window extends React.Component {
           {
             //always load search to keep search results present even when navigating two diffferent tabs
           }
-          <SearchWrapper hidden={this.state.windowLoad !== "search"} topLevel={this.props.topLevel} authorId={this.props.info.author}/>
+          {
+            //<SearchWrapper hidden={this.state.windowLoad !== "search"} topLevel={this.props.topLevel} authorId={this.props.info.author}/>
+          }
+          <Search3
+            hidden={this.state.windowLoad !== "search"}
+            searchEid={this.props.topLevel}
+            searchAuthor={this.props.info.author}
+            searchType="text"
+            showSubmit={true}
+            showAdvancedParameters={true}
+            showLabels={false}/>
           {
             //<Surface surfaceid={this.props.surfaceid} topLevel={this.props.topLevel}/>
           }

@@ -6,7 +6,8 @@ import {questionTitleQuery} from '../queries/questionTitleQuery'
 import Spinner from './Spinner';
 import {Link} from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
-import Search3Parameters from './Search3Parameters'
+import Search3Parameters from './Search3Parameters';
+import {retrieveAuthorResults, retrieveExpressionResults, displayTextResults, displayQuestionResults} from './searchUtils'
 
 const Search3 = (props) => {
   const [searchParameters, setSearchParameters] = useState({})
@@ -22,11 +23,47 @@ const Search3 = (props) => {
       setResults([])
     }
     else{
-      const questionResults = runQuery(questionTitleQuery(searchParameters))
-      setResults("fetching")
-      questionResults.then((d) => {
-        setResults(d.data.results.bindings)
-      })
+      if (searchParameters.searchType === "text"){
+        setResults("fetching")
+        if (searchParameters.searchEid){
+          const textResults = retrieveExpressionResults(searchParameters.searchTerm, searchParameters.searchEid)
+          textResults.then((d) => {
+            setResults(d.data.results)
+          })
+        }
+        else if (searchParameters.searchAuthor){
+          const textResults = retrieveAuthorResults(searchParameters.searchTerm, searchParameters.searchAuthor)
+          textResults.then((d) => {
+            setResults(d.data.results)
+          })
+        }
+        else{
+          const textResults = retrieveExpressionResults(searchParameters.searchTerm, "all")
+          textResults.then((d) => {
+            setResults(d.data.results)
+          })
+        }
+
+
+      }
+      else{
+        const questionResults = runQuery(questionTitleQuery(searchParameters))
+        setResults("fetching")
+        questionResults.then((d) => {
+          setResults(d.data.results.bindings)
+        })
+      }
+    }
+  }
+  const displayResults = (results) => {
+    if (results === "fetching"){
+      return <Spinner/>
+    }
+    else if (searchParameters.searchType === "questionTitles"){
+      return displayQuestionResults(results, searchParameters)
+    }
+    else if (searchParameters.searchType === "text"){
+      return displayTextResults(results)
     }
   }
   return(
@@ -39,19 +76,12 @@ const Search3 = (props) => {
           searchWorkGroup={props.searchWorkGroup}
           showAdvancedParameters={props.showAdvancedParameters}
           showLabels={props.showLabels}
+          searchType={props.searchType}
           />
           <br/>
       {props.showSubmit && <Button onClick={handleRunSearch}>Submit</Button>}
     </Form>
-    {results === "fetching"
-    ? <Spinner/>
-    : results.map((r, i) => (
-      <div key={r.resource.value + "-" + i}>
-        <p><Link to={"/text?resourceid=" + r.author.value}>{r.authorTitle.value}</Link>: <Link to={"/text?resourceid=" + r.resource.value}>{r.longTitle.value}</Link></p>
-        <p>{r.qtitle.value.toLowerCase().replace(searchParameters.searchTerm.toLowerCase(), searchParameters.searchTerm.toUpperCase())}</p>
-      </div>
-    ))
-    }
+    {displayResults(results)}
     </Container>
 
   )
