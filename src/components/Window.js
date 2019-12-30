@@ -31,7 +31,8 @@ class Window extends React.Component {
         xml: false,
         search:  false,
         textOutline: false,
-        citation: false
+        citation: false,
+        search: false
       }
 
     }
@@ -67,10 +68,17 @@ class Window extends React.Component {
         xml: false,
         search:  false,
         textOutline: false,
-        citation: false
+        citation: false,
+        search: false
       }
       // then, the mount status of the opening window load is changed to true
       newMountStatus[newProps.windowLoad] = true
+    }
+    //now set mount status of components that should only remount if topLevel Resource id changes
+    else if (newProps.topLevel !== this.props.topLevel){
+      newMountStatus = {
+        search: false
+      }
     }
     // if the resource id has not chnaged, but only the windowLoad
     // we change the window mount status to true, to prevent mounting as long as the resource id has not changed
@@ -82,7 +90,6 @@ class Window extends React.Component {
     else{
       newMountStatus = this.state.mountStatus
     }
-
     this.setState(
       {windowLoad: newProps.windowLoad,
       mountStatus: newMountStatus}
@@ -146,6 +153,7 @@ class Window extends React.Component {
           {
             //<SearchWrapper hidden={this.state.windowLoad !== "search"} topLevel={this.props.topLevel} authorId={this.props.info.author}/>
           }
+          {(this.state.windowLoad === "search" || this.state.mountStatus.search) &&
           <Search3
             hidden={this.state.windowLoad !== "search"}
             searchEid={this.props.topLevel}
@@ -154,6 +162,7 @@ class Window extends React.Component {
             showSubmit={true}
             showAdvancedParameters={true}
             showLabels={false}/>
+          }
           {
             //<Surface surfaceid={this.props.surfaceid} topLevel={this.props.topLevel}/>
           }

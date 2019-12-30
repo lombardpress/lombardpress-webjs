@@ -32,10 +32,27 @@ const Search3Parameters = (props) => {
     props.handleSetSearchParameters(searchParameters)
   }
 
+  //begin effects to update hooks when props change
+  // perhaps this could be comined into a single custom hood
+  useEffect(() => {
+    setSearchType(props.searchType ? props.searchType : "questionTitles")
+  }, [props.searchType])
+  useEffect(() => {
+    setSearchAuthor(props.searchAuthor)
+  }, [props.searchAuthor])
+  useEffect(() => {
+    setSearchEid(props.searchEid)
+  }, [props.searchEid])
+  useEffect(() => {
+    setSearchWorkGroup(props.searchWorkGroup)
+  }, [props.searchWorkGroup])
+  //end effects to update hooks when props change
+  //begin other effects
   useEffect(() => {
     handleSetSearchParameters()
   }, [searchParameters])
   useEffect(() => {
+    console.log("mount asyn firing")
     searchExpressionsListDispatch(searchExpressionsListActions.fetchExpressionsList(searchParameters, searchExpressionsListDispatch))
     searchAuthorsListDispatch(searchAuthorsListActions.fetchAuthorsList(searchParameters, searchAuthorsListDispatch))
     searchWorkGroupsListDispatch(searchWorkGroupsListActions.fetchWorkGroupsList(searchParameters, searchWorkGroupsListDispatch))
@@ -47,7 +64,6 @@ const Search3Parameters = (props) => {
   useEffect(() => {
     searchExpressionsListDispatch(searchExpressionsListActions.fetchExpressionsList(searchParameters, searchExpressionsListDispatch))
     searchAuthorsListDispatch(searchAuthorsListActions.fetchAuthorsList(searchParameters, searchAuthorsListDispatch))
-
   }, [searchWorkGroup])
 
 
@@ -55,7 +71,7 @@ const Search3Parameters = (props) => {
     <div>
       <Form.Group>
         {props.showLabels && <Form.Label>Search Term</Form.Label>}
-        <Form.Control as="input" type="text" placeholder="search term " onChange={(e) => setSearchTerm(e.target.value)} value={searchParameters.searchTerm}/>
+        <Form.Control as="input" type="text" placeholder="search term" onChange={(e) => setSearchTerm(e.target.value)} value={searchParameters.searchTerm}/>
       </Form.Group>
       {displayAllParameters &&
         <div>
