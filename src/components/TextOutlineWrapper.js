@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TextOutline from './TextOutline'
 
-import Search3 from './Search3'
-
 import {runQuery} from './utils'
 import {getMembersOf} from './Queries'
 
@@ -38,10 +36,7 @@ class TextOutlineWrapper extends React.Component {
   render(){
     return (
       <div className={this.props.hidden ? "hidden" : "showing"}>
-        <Search3 searchEid={this.props.resourceid}
-        showSubmit={false}
-        showAdvancedParameters={false}
-        showLabels={false}/>
+
         <TextOutline
           key={this.props.resourceid}
           showChildren={true}

@@ -7,6 +7,7 @@ import AuthorCollection from "./AuthorCollection"
 import Codex from "./Codex"
 import TextOutlineWrapper from "./TextOutlineWrapper"
 import Container from 'react-bootstrap/Container';
+import Search3 from './Search3'
 
 import {runQuery} from './utils'
 import {getArticleTranscriptionDoc, getItemTranscription, getItemTranscriptionFromBlockDiv, getStructureType} from './Queries'
@@ -148,6 +149,10 @@ class TextSwitch extends React.Component {
       else if (this.state.displayType === "collection"){
         return (
           <Container className="textOutlineContainer">
+            <Search3 searchEid={this.state.resourceid}
+            showSubmit={false}
+            showAdvancedParameters={false}
+            showLabels={false}/>
             <TextOutlineWrapper
               focusResourceid={this.state.resourceid}
               resourceid={this.state.resourceid}
