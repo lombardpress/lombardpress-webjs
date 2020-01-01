@@ -174,8 +174,10 @@ export function basicInfoQuery(itemExpressionUri){
     // gets all parts
     export function partsInfoQuery(resourceurl){
       const query = [
-        "SELECT DISTINCT ?part ?partTitle ?partQuestionTitle ?partType ?partLevel ",
+        "SELECT DISTINCT ?title ?description ?part ?partTitle ?partQuestionTitle ?partType ?partLevel ",
         "WHERE { ",
+        "<" + resourceurl + "> <http://purl.org/dc/elements/1.1/title> ?title .",
+        "<" + resourceurl + "> <http://purl.org/dc/elements/1.1/description> ?description .",
         "<" + resourceurl + "> <http://purl.org/dc/terms/hasPart> ?part .",
         "?part <http://purl.org/dc/elements/1.1/title> ?partTitle .",
         "?part <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?partType . ",
@@ -269,11 +271,12 @@ export function basicInfoQuery(itemExpressionUri){
   //TODO rename to getType
   export function getStructureType(resourceurl){
     const query = [
-      "SELECT DISTINCT ?type ?structureType ?level ?topLevel ?itemParent ?resourceTitle ?author ",
+      "SELECT DISTINCT ?type ?structureType ?level ?topLevel ?itemParent ?resourceTitle ?author ?authorTitle ",
       "WHERE { ",
       "<" + resourceurl + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type . ",
       "OPTIONAL {",
         "<" + resourceurl + "> <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
+        "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
       "}",
       "OPTIONAL {",
         "<" + resourceurl + "> <http://purl.org/dc/elements/1.1/title> ?resourceTitle .",

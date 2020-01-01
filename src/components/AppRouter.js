@@ -8,9 +8,7 @@ import TextSwitch from "./TextSwitch"
 import About from "./About"
 import Codices from "./Codices"
 import NavBar from './NavBar';
-
-
-
+import Spinner from './Spinner';
 import Footer from './Footer';
 
 import 'bootstrap/dist/css/bootstrap.css'
@@ -19,7 +17,7 @@ import '../styles/App.scss';
 
 const AppRouter = () => {
   return (
-  <Suspense fallback='loading'>
+  <Suspense fallback={<Spinner/>}>
     <HashRouter forceRefresh={false}>
       <div>
         <NavBar/>

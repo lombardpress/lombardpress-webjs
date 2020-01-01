@@ -5,6 +5,8 @@ import {runQuery} from './utils'
 import {getAuthorInformation} from './Queries'
 import Item from "./Item"
 import Search3 from "./Search3"
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 //import Lbp from "lbp.js/lib"
 
@@ -123,14 +125,11 @@ class AuthorCollection extends React.Component {
 
 
     return (
-      <div className="collectionBody">
+      <Container className="collectionBody">
       <h1>{this.state.authorTitle}</h1>
-      <Search3 searchAuthor={this.props.resourceid}
-      showSubmit={false}
-      showAdvancedParameters={false}
-      showLabels={false}/>
-      <br/>
-      {this.state.expressions &&
+      <Row>
+        <Col xs={9}>
+        {this.state.expressions &&
         <Container>
         <h1>Expressions</h1>
         <br/>
@@ -163,7 +162,17 @@ class AuthorCollection extends React.Component {
         </Table>
         </Container>
       }
-      </div>
+      </Col>
+      <Col>
+      <br/>
+      <br/>
+      <Search3 searchAuthor={this.props.resourceid}
+        showSubmit={true}
+        showAdvancedParameters={true}
+        showLabels={false}/>
+      </Col>
+      </Row>
+      </Container>
     );
   }
 }

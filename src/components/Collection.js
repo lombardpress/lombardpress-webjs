@@ -1,5 +1,7 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 import FormControl from 'react-bootstrap/FormControl';
 import Table from 'react-bootstrap/Table';
@@ -9,6 +11,7 @@ import {basicStructureAllItemsInfoQuery, partsInfoQuery,workGroupExpressionQuery
 
 import Item from "./Item"
 import Search3 from "./Search3"
+import {Link} from 'react-router-dom';
 
 //import Lbp from "lbp.js/lib"
 
@@ -22,6 +25,8 @@ class Collection extends React.Component {
     this.filter = React.createRef();
     this.mount = false
     this.state = {
+      title: "",
+      description: "",
       items: {},
       parts: {},
       filter: ""
@@ -37,6 +42,8 @@ class Collection extends React.Component {
     const _this = this
     partsPromise.then((d) => {
         const bindings = d.data.results.bindings
+        const title = bindings[0].title.value
+        const description = bindings[0].description.value
         let partsObject = {}
         bindings.forEach((b) => {
           const pId = b.part.value
@@ -51,6 +58,8 @@ class Collection extends React.Component {
       if (this.mount){
         _this.setState(
           {
+            title,
+            description,
             parts: partsObject
           }
         )
@@ -205,16 +214,33 @@ class Collection extends React.Component {
 
     return (
       <Container className="collectionBody">
-        <Search3 searchWorkGroup={this.props.resourceid}
-        showSubmit={false}
-        showAdvancedParameters={false}
-        showLabels={false}/>
-      <Container className="collectionFilter">
-        <FormControl ref={this.filter} id="filter" placeholder="type to filter by title" onChange={this.handleFilter}/>
+      {this.state.title && <h1>{this.state.title}</h1>}
+      {this.state.title && <p style={{"textAlign": "center"}}>{this.state.description}</p>}
+      {
+        //<p style={{"textAlign": "center"}}><Link to={"/text?resourceid=http://scta.info/resource/scta"}>Back to Top Level</Link></p>
+      }
+
+      <Row>
+        <Col xs={9}>
+          <Container>
+            <Container className="collectionFilter">
+              <FormControl ref={this.filter} id="filter" placeholder="type to filter by title" onChange={this.handleFilter}/>
+            </Container>
+            {displayParts()}
+            {displayQuestions()}
+          </Container>
+        </Col>
+        <Col>
+          <Container>
+          <Search3 searchWorkGroup={this.props.resourceid}
+          showSubmit={true}
+          showAdvancedParameters={true}
+          showLabels={false}/>
+          </Container>
+        </Col>
+      </Row>
       </Container>
-      {displayParts()}
-      {displayQuestions()}
-      </Container>
+
     );
   }
 }
