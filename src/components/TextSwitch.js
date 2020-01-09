@@ -160,12 +160,15 @@ class TextSwitch extends React.Component {
 
       }
       else if (this.state.displayType === "workGroup"){
+        //TODO: this conditional should be comined with the conditional below
         return (
           <Collection resourceid={this.state.resourceid} structureType={this.state.structureType} topLevel={this.state.topLevel} type={this.state.type}/>
         )
       }
       else if (this.state.displayType === "collection"){
         //TODO: this should be moved out to its own component
+        //TODO: now that workGroup is using TextOutlineWrapper i'm not sure there is any need for separation
+        // the above conditional and this one should be combined
         return (
           <Container className="collectionBody">
           <h1>{this.state.resourceTitle}</h1>

@@ -33,7 +33,7 @@ class ImageTextWrapper extends Component {
           displayWidth={this.props.displayWidth}
           />
         </div>
-        <LineText text={this.props.text}/>
+        <LineText text={this.props.text} number={this.props.number + 1}/>
       </div>
     );
   }
