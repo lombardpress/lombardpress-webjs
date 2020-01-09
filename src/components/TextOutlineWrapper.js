@@ -12,6 +12,7 @@ import {getMembersOf} from './Queries'
 class TextOutlineWrapper extends React.Component {
   constructor(props){
     super(props)
+    this.mounted = ""
     this.state = {
       membersOf: [],
     }
@@ -22,10 +23,13 @@ class TextOutlineWrapper extends React.Component {
       const newData = data.data.results.bindings.map((d) => {
         return d.memberOf.value
       })
-      this.setState({membersOf: newData})
+      if (this.mounted){
+        this.setState({membersOf: newData})
+      }
     })
   }
   componentDidMount(){
+    this.mounted = true;
     this.retrieveMembersOf(this.props.focusResourceid)
   }
   componentWillReceiveProps(newProps){
@@ -33,6 +37,9 @@ class TextOutlineWrapper extends React.Component {
       this.retrieveMembersOf(newProps.focusResourceid)
     }
   }
+  componentWillUnmount(){
+    this.mounted = false;
+}
   render(){
     return (
       <div className={this.props.hidden ? "hidden" : "showing"}>
@@ -47,7 +54,9 @@ class TextOutlineWrapper extends React.Component {
           structureType={"http://scta.info/resource/structureCollection"}
           membersOf={this.state.membersOf}
           mtFocus={this.props.mtFocus}
-          collectionLink={this.props.collectionLink}/>
+          collectionLink={this.props.collectionLink}
+          showAuthor={this.props.showAuthor}
+          />
       </div>
     );
   }

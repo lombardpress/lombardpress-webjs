@@ -9,7 +9,8 @@ import TextOutlineWrapper from "./TextOutlineWrapper"
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Search3 from './Search3'
+import Search3 from './Search3';
+import ResourceTypeList from './ResourceTypeList';
 import {Link} from 'react-router-dom';
 
 import {runQuery} from './utils'
@@ -48,8 +49,14 @@ class TextSwitch extends React.Component {
       const authorTitle = bindings.authorTitle ? bindings.authorTitle.value : ""
 
       //const itemTranscriptionId = t.data.results.bindings[0].ctranscription ? t.data.results.bindings[0].ctranscription.value : null
-      if (type === "http://scta.info/resource/person"){
-          this.setState({displayType: "person", resourceid: resourceid, structureType: "", topLevel: "", type: type, resourceTitle: resourceTitle})
+      if (resourceid === "http://scta.info/resource/person"){
+        this.setState({displayType: "personList", resourceid: resourceid, structureType: "", topLevel: "", type: "", resourceTitle: ""})
+      }
+      else if (resourceid === "http://scta.info/resource/codex"){
+        this.setState({displayType: "codexList", resourceid: resourceid, structureType: "", topLevel: "", type: "", resourceTitle: ""})
+      }
+      else if (type === "http://scta.info/resource/person"){
+        this.setState({displayType: "person", resourceid: resourceid, structureType: "", topLevel: "", type: type, resourceTitle: resourceTitle})
       }
       else if (type === "http://scta.info/resource/article"){
         const structureTypePromise = runQuery(getArticleTranscriptionDoc(resourceid))
@@ -138,6 +145,12 @@ class TextSwitch extends React.Component {
 
   render(){
     const display = () => {
+      if (this.state.displayType === "personList"){
+        return (<ResourceTypeList resourceTypeId="http://scta.info/resource/person"/>)
+      }
+      if (this.state.displayType === "codexList"){
+        return (<ResourceTypeList resourceTypeId="http://scta.info/resource/codex"/>)
+      }
       if (this.state.displayType === "person"){
         return (<AuthorCollection resourceid={this.state.resourceid}/>)
 
@@ -168,7 +181,7 @@ class TextSwitch extends React.Component {
                 collectionLink={true}/>
             </Col>
             <Col>
-              <Search3 searchEid={this.state.resourceid}
+              <Search3 searchEid={this.state.topLevel}
               showSubmit={true}
               showAdvancedParameters={true}
               showLabels={false}/>

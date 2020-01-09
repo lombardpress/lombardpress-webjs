@@ -13,6 +13,7 @@ import Item from "./Item"
 import Search3 from "./Search3"
 import {Link} from 'react-router-dom';
 
+import TextOutlineWrapper from "./TextOutlineWrapper"
 //import Lbp from "lbp.js/lib"
 
 
@@ -148,9 +149,9 @@ class Collection extends React.Component {
     if (nextProps.resourceid !== this.props.resourceid){
       this.setState({resourceid: nextProps.resourceid, filter: ""})
       // this conditional resets form value if ref is present
-      if (this.filter){
-        this.filter.current.value = ""
-      }
+      // if (this.filter){
+      //   this.filter.current.value = ""
+      // }
       this.makeRequests(nextProps.resourceid, nextProps.structureType, nextProps.topLevel, nextProps.type)
     }
   }
@@ -223,11 +224,24 @@ class Collection extends React.Component {
       <Row>
         <Col xs={9}>
           <Container>
-            <Container className="collectionFilter">
+
+              <TextOutlineWrapper
+                focusResourceid={this.state.resourceid}
+                resourceid={this.state.resourceid}
+                title={this.state.title}
+                hidden={false}
+                mtFocus={""}
+                collectionLink={true}
+                showAuthor={true}
+                />
+                {
+              /* <Container className="collectionFilter">
               <FormControl ref={this.filter} id="filter" placeholder="type to filter by title" onChange={this.handleFilter}/>
             </Container>
             {displayParts()}
             {displayQuestions()}
+            */
+          }
           </Container>
         </Col>
         <Col>

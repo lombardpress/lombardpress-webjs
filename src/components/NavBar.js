@@ -18,7 +18,9 @@ function NavBar() {
 
 
 
-        <NavLink className="nav-link" to={"/text?resourceid=" + resourceEndpoint}>{t("Text")}</NavLink>
+        <NavLink className="nav-link" to={"/res?resourceid=" + resourceEndpoint}>{t("Texts")}</NavLink>
+        <NavLink className="nav-link" to={"/res?resourceid=" + "http://scta.info/resource/person"}>{t("People")}</NavLink>
+        <NavLink className="nav-link" to={"/res?resourceid=" + "http://scta.info/resource/codex"}>{t("Codices")}</NavLink>
         {// example drop down
           // <NavDropdown title="Dropdown" id="basic-nav-dropdown">
         //   <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>

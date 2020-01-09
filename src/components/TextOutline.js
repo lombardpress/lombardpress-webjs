@@ -13,6 +13,7 @@ class TextOutline extends React.Component {
   constructor(props){
     super(props)
     this.handleToggleChildren = this.handleToggleChildren.bind(this)
+    this.mounted = ""
     this.state = {
       parts: [],
       showChildren: false
@@ -30,27 +31,35 @@ class TextOutline extends React.Component {
     })
   }
   retrieveParts(resourceid){
+    console.log("firing")
     const partsInfo = runQuery(getChildParts(resourceid))
     partsInfo.then((data) => {
+      console.log("data",data )
       // async seems to be working pretty well and efficiently.
       // if a section has many parts, it will be fired several times.
       // if it has a 100 parts, it will fire 100 times.
       // But 100 doesn't seem to causing serious performance issues.
       //console.log("async test; fired")
       const newData = data.data.results.bindings.map((d) => {
+
         return {
           part: d.part.value,
           title: d.title.value,
-          level: d.level.value,
-          structureType: d.structureType.value,
+          level: d.level ? d.level.value : "",
+          author: d.author ? d.author.value : "",
+          authorTitle: d.authorTitle ? d.authorTitle.value : "",
+          structureType: d.structureType ? d.structureType.value : "",
           questionTitle: d.questionTitle ? d.questionTitle.value : ""
         }
       })
-      this.setState({parts: newData})
+      if (this.mounted){
+        this.setState({parts: newData})
+      }
     })
   }
   componentDidMount(){
     //this.setState({showChildren: this.props.showChildren})
+    this.mounted = true;
     this.retrieveParts(this.props.resourceid)
 
     if (this.props.membersOf){
@@ -77,6 +86,9 @@ class TextOutline extends React.Component {
     }
 
   }
+  componentWillUnmount(){
+    this.mounted = false;
+  }
   render(){
     const displayChildren = () => {
       const parts = this.state.parts.map((p) => {
@@ -95,18 +107,29 @@ class TextOutline extends React.Component {
         resourceid={p.part}
         title={p.title}
         level={p.level}
+        author={p.author}
+        authorTitle={p.authorTitle}
         structureType={p.structureType}
         membersOf={this.props.membersOf}
         questionTitle={p.questionTitle}
         mtFocus={this.props.mtFocus}
+        showAuthor={this.props.showAuthor}
         collectionLink={p.structureType === "http://scta.info/resource/structureCollection" ? this.props.collectionLink : true}/>
+
       })
       return parts
     }
     const indent = this.props.level * 5
+    console.log("authorTitle", this.props.authorTitle)
     return (
       <div id="outline" style={{"paddingLeft": indent + "px"}}>
         <p className={this.props.bold}>
+        {(this.props.author && this.props.showAuthor && this.props.level == "1") &&
+          <span>
+            <span>{this.props.authorTitle}: </span>
+            <Link to={"/text?resourceid=" + this.props.author}><FaExternalLinkAlt/></Link>
+          </span>
+        }
         {this.props.title}
         {this.props.questionTitle && <span>: {this.props.questionTitle}</span>}
         {(this.state.parts.length > 0 && !this.state.showChildren) && <span className="outlineArrow" onClick={this.handleToggleChildren}><FaChevronDown/></span>}
