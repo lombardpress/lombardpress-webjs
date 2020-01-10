@@ -16,7 +16,8 @@ class TextOutline extends React.Component {
     this.mounted = ""
     this.state = {
       parts: [],
-      showChildren: false
+      showChildren: false,
+      isPartOf: {}
     }
 
   }
@@ -52,8 +53,18 @@ class TextOutline extends React.Component {
           questionTitle: d.questionTitle ? d.questionTitle.value : ""
         }
       })
+
+      let isPartOf = {isPartOfId: "", isPartOfTitle: ""}
+      if (data.data.results.bindings[0]){
+        if (data.data.results.bindings[0].isPartOf){
+        isPartOf.isPartOfId = data.data.results.bindings[0].isPartOf.value
+        isPartOf.isPartOfTitle = data.data.results.bindings[0].isPartOfTitle.value
+        }
+      }
+
+
       if (this.mounted){
-        this.setState({parts: newData})
+        this.setState({parts: newData, isPartOf: isPartOf})
       }
     })
   }
@@ -114,7 +125,10 @@ class TextOutline extends React.Component {
         questionTitle={p.questionTitle}
         mtFocus={this.props.mtFocus}
         showAuthor={this.props.showAuthor}
-        collectionLink={p.structureType === "http://scta.info/resource/structureCollection" ? this.props.collectionLink : true}/>
+        collectionLink={p.structureType === "http://scta.info/resource/structureCollection" ? this.props.collectionLink : true}
+        showParentLink={false}
+        />
+
 
       })
       return parts
@@ -124,6 +138,7 @@ class TextOutline extends React.Component {
     return (
       <div id="outline" style={{"paddingLeft": indent + "px"}}>
         <p className={this.props.bold}>
+        {(this.state.isPartOf.isPartOfId && this.props.showParentLink) && <Link to={"/text?resourceid=" + this.state.isPartOf.isPartOfId}><FaChevronUp/></Link>}
         {(this.props.author && this.props.showAuthor && this.props.level == "1") &&
           <span>
             <span>{this.props.authorTitle}: </span>

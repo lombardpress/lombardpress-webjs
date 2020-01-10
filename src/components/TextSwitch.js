@@ -181,7 +181,8 @@ class TextSwitch extends React.Component {
                 title={this.state.resourceTitle}
                 hidden={false}
                 mtFocus={""}
-                collectionLink={true}/>
+                collectionLink={true}
+                showParentLink={true}/>
             </Col>
             <Col>
               <Search3 searchEid={this.state.topLevel}

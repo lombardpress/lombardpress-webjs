@@ -438,10 +438,14 @@ export function getAuthorInformation(authorid){
    //gets lines and zone order for
    export function getChildParts(resourceid){
       const query = [
-        "SELECT ?part ?title ?level ?order ?structureType ?questionTitle ?author ?authorTitle ",
+        "SELECT ?part ?title ?level ?order ?structureType ?questionTitle ?author ?authorTitle ?isPartOf ?isPartOfTitle ",
         "{",
           "<" + resourceid + "> <http://purl.org/dc/terms/hasPart> ?part . ",
           "?part <http://purl.org/dc/elements/1.1/title> ?title .",
+          "OPTIONAL {",
+            "?isPartOf <http://purl.org/dc/terms/hasPart> <" + resourceid + "> .",
+            "?isPartOf <http://purl.org/dc/elements/1.1/title> ?isPartOfTitle .",
+          "}",
           "OPTIONAL {",
             "?part <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
             "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",

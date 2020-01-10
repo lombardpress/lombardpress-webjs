@@ -56,6 +56,7 @@ class TextOutlineWrapper extends React.Component {
           mtFocus={this.props.mtFocus}
           collectionLink={this.props.collectionLink}
           showAuthor={this.props.showAuthor}
+          showParentLink={this.props.showParentLink}
           />
       </div>
     );

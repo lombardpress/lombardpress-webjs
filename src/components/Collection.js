@@ -233,6 +233,7 @@ class Collection extends React.Component {
                 mtFocus={""}
                 collectionLink={true}
                 showAuthor={true}
+                showParentLink={true}
                 />
                 {
               /* <Container className="collectionFilter">
