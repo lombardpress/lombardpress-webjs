@@ -16,6 +16,10 @@ class Surface2 extends React.Component {
     this.mount = false
     this.handleNext = this.handleNext.bind(this)
     this.handlePrevious = this.handlePrevious.bind(this)
+    this.handleLineFocusNext = this.handleLineFocusNext.bind(this)
+    this.handleLineFocusPrev = this.handleLineFocusPrev.bind(this)
+    this.isLineNumberLast = this.isLineNumberLast.bind(this)
+    this.isLineNumberFirst = this.isLineNumberFirst.bind(this)
     this.handleToggleTextLines = this.handleToggleTextLines.bind(this)
     this.handleToggleAllLines = this.handleToggleAllLines.bind(this)
     this.state = {
@@ -96,6 +100,45 @@ class Surface2 extends React.Component {
     }
   })
 }
+// next for functions are used to compute next and previous Lines
+// this is a little bit hacky, since there are no resources for lines yet.
+// thus the line id is computed by breaking the line id apart,
+// using the line number to compute the next and the reassembling the line RDF id.
+// this will become unnecessary if/when each lines become and RDF resource and contains a next previous property
+handleLineFocusNext() {
+  const currentLineNumber = parseInt(this.props.lineFocusId.split("/")[this.props.lineFocusId.split("/").length - 1])
+  const newLineArray = this.props.lineFocusId.split("/")
+  newLineArray.pop()
+  newLineArray.push((currentLineNumber + 1).toString())
+  this.props.handleLineFocusChange(newLineArray.join("/"))
+}
+handleLineFocusPrev(){
+  const currentLineNumber = parseInt(this.props.lineFocusId.split("/")[this.props.lineFocusId.split("/").length - 1])
+  const previousLineArray = this.props.lineFocusId.split("/")
+  previousLineArray.pop()
+  previousLineArray.push((currentLineNumber - 1).toString())
+  this.props.handleLineFocusChange(previousLineArray.join("/"))
+}
+isLineNumberFirst(){
+  const lineNumber = parseInt(this.props.lineFocusId.split("/")[this.props.lineFocusId.split("/").length - 1])
+
+  if (lineNumber === 1){
+    return true
+  }
+  else {
+    return false
+  }
+}
+isLineNumberLast(){
+  const total = this.state.annotations.length
+  const lineNumber = parseInt(this.props.lineFocusId.split("/")[this.props.lineFocusId.split("/").length - 1])
+  if (lineNumber === total){
+    return true
+  }
+  else{
+    return false
+  }
+}
 componentDidMount(){
   this.mount = true
     if (this.props.surfaceid){
@@ -111,7 +154,11 @@ componentDidMount(){
   componentWillUnmount(){
     this.mount = false
   }
+
   render() {
+
+    const diplayLinePrev = () => {
+    }
     const displayImages = () => {
       if (this.state.annotations && this.state.annotationsDisplay){
         const imageTextWrappers = this.state.annotations.map((h, i) => {
@@ -155,10 +202,16 @@ componentDidMount(){
         <div>
           <div className="surface-navigation">
             <p>{this.state.surfaceTitle}</p>
-            {this.props.handleSurfaceFocusChange &&
+            {(this.props.handleSurfaceFocusChange) &&
               <div>
-              {this.state.previous && <Button size="sm" onClick={this.handlePrevious}>Previous</Button>}
-              {this.state.next && <Button size="sm" onClick={this.handleNext}>Next</Button>}
+              {this.state.previous && <Button size="sm" onClick={this.handlePrevious}>Previous Page</Button>}
+              {this.state.next && <Button size="sm" onClick={this.handleNext}>Next Page</Button>}
+              </div>
+            }
+            {(this.props.handleLineFocusChange && !this.state.showAllLines) &&
+              <div>
+              {!this.isLineNumberFirst() && <Button size="sm" onClick={this.handleLineFocusPrev}>Previous Line</Button>}
+              {!this.isLineNumberLast() && <Button size="sm" onClick={this.handleLineFocusNext}>Next Line</Button>}
               </div>
             }
             <div>

@@ -32,10 +32,10 @@ class TextOutline extends React.Component {
     })
   }
   retrieveParts(resourceid){
-    console.log("firing")
+
     const partsInfo = runQuery(getChildParts(resourceid))
     partsInfo.then((data) => {
-      console.log("data",data )
+
       // async seems to be working pretty well and efficiently.
       // if a section has many parts, it will be fired several times.
       // if it has a 100 parts, it will fire 100 times.
@@ -134,7 +134,6 @@ class TextOutline extends React.Component {
       return parts
     }
     const indent = this.props.level * 5
-    console.log("authorTitle", this.props.authorTitle)
     return (
       <div id="outline" style={{"paddingLeft": indent + "px"}}>
         <p className={this.props.bold}>

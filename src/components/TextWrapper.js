@@ -404,6 +404,7 @@ class TextWrapper extends React.Component {
               handleChangeManifestation={this.handleChangeManifestation}
               defaultManifestationSlug={this.state.windows[key].defaultManifestationSlug}
               textPreviewResourceId={this.state.textPreviewResourceId}
+              handleLineFocusChange={this.handleLineFocusChange}
               />
             )
           }
