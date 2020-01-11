@@ -98,7 +98,7 @@ class SearchQuery extends React.Component {
     this.getAvailableAuthors()
     this.props.eid && this.setState({eid: this.props.eid, eidFull: "http://scta.info/resource/" + this.props.eid, authorFocusId: this.props.authorId})
   }
-  componentWillReceiveProps(nextProps){
+  UNSAFE_componentWillReceiveProps(nextProps){
     nextProps.eid && this.setState({eid: nextProps.eid})
   }
   render(){

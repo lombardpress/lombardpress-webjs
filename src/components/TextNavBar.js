@@ -14,7 +14,7 @@ class TextNavBar extends React.Component {
       mtFocus: ""
     }
   }
-  componentWillReceiveProps(nextProps){
+  UNSAFE_componentWillReceiveProps(nextProps){
     this.setState({next: nextProps.next, previous: nextProps.previous, mtFocus: nextProps.mtFocus})
   }
   render(){

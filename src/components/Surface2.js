@@ -146,7 +146,7 @@ componentDidMount(){
     }
     this.setState({annotationsDisplay: this.props.annotationsDisplay})
   }
-  componentWillReceiveProps(nextProps){
+  UNSAFE_componentWillReceiveProps(nextProps){
     if (nextProps.surfaceid !== this.props.surfaceid){
     this.retrieveSurfaceInfo(nextProps.surfaceid)
     }

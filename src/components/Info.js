@@ -20,7 +20,7 @@ class Info extends React.Component {
 
 
   }
-  componentWillReceiveProps(newProps){
+  UNSAFE_componentWillReceiveProps(newProps){
 
   }
 

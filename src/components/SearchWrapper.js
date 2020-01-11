@@ -20,7 +20,7 @@ class SearchWrapper extends React.Component {
   componentDidMount(){
 
   }
-  componentWillReceiveProps(){
+  UNSAFE_componentWillReceiveProps(){
 
   }
   render(){

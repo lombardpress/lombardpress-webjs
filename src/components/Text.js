@@ -153,7 +153,7 @@ class Text extends React.Component {
   componentDidMount(){
     this.retrieveText(this.props.doc, this.props.topLevel, this.props.scrollTo)
   }
-  componentWillReceiveProps(newProps){
+  UNSAFE_componentWillReceiveProps(newProps){
 
   }
   render(){

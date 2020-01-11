@@ -81,7 +81,7 @@ class TextOutline extends React.Component {
     }
 
   }
-  componentWillReceiveProps(newProps){
+  UNSAFE_componentWillReceiveProps(newProps){
     if (newProps.resourceid !== this.props.resourceid){
       this.retrieveParts(this.props.resourceid)
     }

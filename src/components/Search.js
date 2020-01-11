@@ -49,7 +49,7 @@ class Search extends React.Component {
 
     }
   }
-  componentWillReceiveProps(nextProps){
+  UNSAFE_componentWillReceiveProps(nextProps){
     if ((nextProps.query !== this.props.query) || (nextProps.eid !== this.props.eid) || (nextProps.authorFocusId !== this.props.authorFocusId)){
       const query = nextProps.query
       const eid =  nextProps.eid

@@ -49,7 +49,7 @@ class Surface3Wrapper extends React.Component {
       })
     }
   }
-  componentWillReceiveProps(nextProps){
+  UNSAFE_componentWillReceiveProps(nextProps){
     if (nextProps.focusedManifestation !== this.props.focusedManifestation){
       this.setState((prevState) => {
         return {

@@ -98,7 +98,7 @@ class AuthorCollection extends React.Component {
 
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.refs.itemFilter ? this.refs.itemFilter.value = "" :
     this.retrieveAuthorCollectionInfo(nextProps.resourceid)
   }

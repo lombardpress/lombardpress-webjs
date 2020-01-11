@@ -80,7 +80,7 @@ class TextCompare extends React.Component {
   }
 
 
-  componentWillReceiveProps(nextProps){
+  UNSAFE_componentWillReceiveProps(nextProps){
     // conditional try to restrict new async calls to only when props.info changes
     if (this.props.info.resourceid !== nextProps.info.resourceid){
       this.setState({baseText: nextProps.baseText})

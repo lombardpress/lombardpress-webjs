@@ -78,7 +78,7 @@ handleSumbitComment(comment){
       this.retrieveComments(this.props.inbox)
     }
   }
-  componentWillReceiveProps(newProps){
+  UNSAFE_componentWillReceiveProps(newProps){
     // conditional prevents against needlessly rerequesting information when "info" is the same
     if (newProps.resourceid !== this.props.resourceid){
       this.setState({inbox: newProps.inbox, resourceid: newProps.resourceid})

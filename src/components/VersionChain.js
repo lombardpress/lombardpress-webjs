@@ -66,7 +66,7 @@ class VersionChain extends React.Component {
       this.getVersionHistory(this.props.transcriptionid)
     }
   }
-  componentWillReceiveProps(newProps){
+  UNSAFE_componentWillReceiveProps(newProps){
       if (newProps.transcriptionid !== this.props.transcriptionid){
         this.setState({versions: []}, () => {
           this.getVersionHistory(newProps.transcriptionid)

@@ -150,7 +150,7 @@ class TextArticle extends React.Component {
   componentDidMount(){
     this.retrieveText(this.props.doc, this.props.scrollTo, this.props.articleType)
   }
-  componentWillReceiveProps(newProps){
+  UNSAFE_componentWillReceiveProps(newProps){
 
   }
   render(){

@@ -53,7 +53,7 @@ class TextCompareWrapper extends React.Component {
       }
     }
   }
-  componentWillReceiveProps(nextProps){
+  UNSAFE_componentWillReceiveProps(nextProps){
     // only fire reload if "info resource" has changed"
     if (this.props.info.resourceid !== nextProps.info.resourceid){
 

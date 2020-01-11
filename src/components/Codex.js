@@ -114,7 +114,7 @@ class Codex extends React.Component {
       this.retrieveCodexInfo(this.props.codexid, "codex")
     }
   }
-  componentWillReceiveProps(newProps){
+  UNSAFE_componentWillReceiveProps(newProps){
     if (newProps.surfaceid && newProps.surfaceid !== this.props.surfaceid){
       this.retrieveCodexInfo(newProps.surfaceid, "surface")
     }

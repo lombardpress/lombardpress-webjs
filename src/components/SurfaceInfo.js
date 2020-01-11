@@ -113,7 +113,7 @@ class SurfaceInfo extends React.Component {
   componentDidMount(){
     this.retrieveSurfaceInfo(this.props.surfaceid)
   }
-  componentWillReceiveProps(newProps){
+  UNSAFE_componentWillReceiveProps(newProps){
     if (newProps.surfaceid !== this.props.surfaceid){
       this.retrieveSurfaceInfo(newProps.surfaceid)
     }

@@ -120,7 +120,7 @@ componentDidMount(){
     )
     }
   }
-  componentWillReceiveProps(nextProps){
+  UNSAFE_componentWillReceiveProps(nextProps){
     if (nextProps.manifestationid !== this.props.manifestationid){
       this.setState((prevState) => {
         return {

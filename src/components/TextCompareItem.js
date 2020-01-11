@@ -67,7 +67,7 @@ class TextCompareItem extends React.Component {
     this.setState({rawText: "", compareText: ""})
     this.createCompare(this.props.base, this.props.compareTranscription)
   }
-  componentWillReceiveProps(newProps){
+  UNSAFE_componentWillReceiveProps(newProps){
     // conditional try to restrict new async calls to only when props.info changes
     if (newProps.base !== this.props.base || newProps.compareTranscription !== this.props.compareTranscription){
       this.setState({rawText: "", compareText: ""})

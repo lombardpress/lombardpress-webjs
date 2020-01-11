@@ -30,7 +30,7 @@ class Print extends React.Component {
     const url = this.props.url
     this.getPdf(url)
   }
-  componentWillReceiveProps(newProps){
+  UNSAFE_componentWillReceiveProps(newProps){
     const newUrl = newProps.url
     const oldUrl = this.props.url
     if (newUrl !== oldUrl){

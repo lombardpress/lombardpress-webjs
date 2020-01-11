@@ -143,7 +143,7 @@ class Collection extends React.Component {
 
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
 
     // conditional prevents new information requestion if resource id has not changed
     if (nextProps.resourceid !== this.props.resourceid){

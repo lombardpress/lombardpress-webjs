@@ -340,7 +340,7 @@ class TextWrapper extends React.Component {
       this.retrieveFocusInfo(this.props.blockDivFocus)
     }
   }
-  componentWillReceiveProps(newProps){
+  UNSAFE_componentWillReceiveProps(newProps){
     //Keep testing, but it seems like this look up only needs to fire, when the transcription id prop changes
     // not when other props changes.
     if (newProps.transcriptionid !== this.props.transcriptionid){

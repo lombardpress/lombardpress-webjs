@@ -19,7 +19,7 @@ class Surface extends React.Component {
 
   }
 
-  componentWillMount(){
+  UNSAFE_componentWillMount(){
 
       settings.id = "yolo";
       // manifest id should be retrieved from query
@@ -80,7 +80,7 @@ class Surface extends React.Component {
 
 
   }
-  componentWillReceiveProps(){
+  UNSAFE_componentWillReceiveProps(){
     // manifest id should be retrieved from query
     // this is a temporary measure until db is corrected and query is posible
     const manifest = "http://scta.info/iiif/" + this.props.topLevel.split("/resource/")[1] + "/" + this.props.surfaceid.split("/resource/")[1].split("/")[0] + "/" + "manifest";
