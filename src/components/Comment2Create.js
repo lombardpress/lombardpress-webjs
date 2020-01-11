@@ -6,7 +6,7 @@ import {useTranslation} from 'react-i18next'
 
 function Comment2Create(props) {
   const {t, i18n} = useTranslation();
-  const [comment, setComment] = useState(props.comment);
+  const [comment, setComment] = useState("");
   const handleCommentUpdate = (e) => {
     e.preventDefault()
     props.submitComment(comment)
