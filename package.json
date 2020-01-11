@@ -24,7 +24,7 @@
     "react-i18next": "^11.2.6",
     "react-icons": "^3.7.0",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "3.0.1",
+    "react-scripts": "^3.0.1",
     "react-styleguidist": "^9.1.11",
     "react-syntax-highlighter": "^10.3.0",
     "uuidv4": "^4.0.0"
