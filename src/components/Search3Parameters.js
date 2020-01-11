@@ -48,9 +48,7 @@ const Search3Parameters = (props) => {
   }, [props.searchWorkGroup])
   //end effects to update hooks when props change
   //begin other effects
-  useEffect(() => {
-    handleSetSearchParameters()
-  }, [searchParameters])
+  useEffect(handleSetSearchParameters, [searchTerm, searchAuthor, searchEid, searchWorkGroup, searchType])
   useEffect(() => {
     console.log("mount asyn firing")
     searchExpressionsListDispatch(searchExpressionsListActions.fetchExpressionsList(searchParameters, searchExpressionsListDispatch))
