@@ -1,5 +1,5 @@
 import React from 'react';
-import {NavLink} from 'react-router-dom';
+import {NavLink, Link} from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import {resourceEndpoint} from './config';
@@ -34,8 +34,10 @@ function NavBar() {
       </Nav>
 
       <Nav>
-        <NavLink className="nav-link" to="/about">{t("About")}</NavLink>
-        <NavLink className="nav-link" to="/donate">{t("Donate")}</NavLink>
+        {
+          //<NavLink className="nav-link" to="/about">{t("About")}</NavLink>
+        }
+        <a className="nav-link" href="https://scta.info/donate">{t("Donate")}</a>
       </Nav>
       </Navbar.Collapse>
     </Navbar>

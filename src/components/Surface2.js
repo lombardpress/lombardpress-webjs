@@ -215,8 +215,9 @@ componentDidMount(){
               </div>
             }
             <div>
-            {this.props.lineFocusId && <Button size="sm" onClick={this.handleToggleAllLines}>Show All Lines</Button>}
-            {this.state.annotations && <Button size="sm" onClick={this.handleToggleTextLines}>Toggle Text Lines</Button>}
+
+            {this.props.lineFocusId && <Button size="sm" onClick={this.handleToggleAllLines}>Toggle All/Focus Lines</Button>}
+            {(this.state.annotations) && <Button size="sm" onClick={this.handleToggleTextLines}>Toggle Show Text Lines</Button>}
             </div>
           </div>
           {displayImages()}
