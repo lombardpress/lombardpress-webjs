@@ -31,7 +31,7 @@ class TextCompareWrapper extends React.Component {
   }
   getText(ctranscription){
     const _this = this;
-    Axios.get("http://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + ctranscription)
+    Axios.get("https://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + ctranscription)
       .then((text) => {
         _this.setState({baseText: text.data})
       })

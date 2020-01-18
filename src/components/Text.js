@@ -25,7 +25,7 @@ class Text extends React.Component {
         xmlurl = doc
       }
       else{
-        xmlurl = "http://exist.scta.info/exist/apps/scta-app/text/" + topLevelFragment + "/" + docFragment;
+        xmlurl = "https://exist.scta.info/exist/apps/scta-app/text/" + topLevelFragment + "/" + docFragment;
       }
       const xslurl = "/xslt/main_view.xsl"
 

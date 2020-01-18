@@ -21,7 +21,7 @@ function Home(props) {
         <Container id="lbp-home" fluid>
             <Container>
               <Jumbotron id="lbp-jumbo">
-              	<h1>{t("Title")} TEST Change on develop</h1>
+              	<h1>{t("Title")}</h1>
                 <p>{t("Subtitle")}</p>
                 <Button><Link className="nav-link" to={"/text?resourceid=" + resourceEndpoint} style={{color: "black"}}>{t("Enter")}</Link></Button>
               </Jumbotron>

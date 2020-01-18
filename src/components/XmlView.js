@@ -19,7 +19,7 @@ class XmlView extends React.Component {
     }
   }
   retrieveXML(tresourceid){
-    const xmlurl = "http://exist.scta.info/exist/apps/scta-app/document/" + tresourceid.split("/resource/")[1]
+    const xmlurl = "https://exist.scta.info/exist/apps/scta-app/document/" + tresourceid.split("/resource/")[1]
     Axios.get(xmlurl).then((d) => {
       if (this.mount){
         this.setState({xmlstring: d.data})

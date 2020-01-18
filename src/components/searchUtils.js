@@ -4,13 +4,13 @@ import Axios from 'axios'
 
 export function retrieveExpressionResults(searchTerm, searchEid){
   const expressionShortId = searchEid === "all" ? searchEid : searchEid.split("/resource/")[1]
-  const url = "http://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-expressionid.xq?query=" + searchTerm + "&expressionid=" + expressionShortId
+  const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-expressionid.xq?query=" + searchTerm + "&expressionid=" + expressionShortId
   const queryPromise = Axios.get(url)
   return queryPromise
 }
 export function retrieveAuthorResults(searchTerm, searchAuthor){
   const authorShortId = searchAuthor.split("/resource/")[1]
-  const url = "http://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-authorid.xq?query=" + searchTerm + "&authorid=" + authorShortId
+  const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-authorid.xq?query=" + searchTerm + "&authorid=" + authorShortId
   const queryPromise = Axios.get(url)
   return queryPromise
 

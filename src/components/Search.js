@@ -18,7 +18,7 @@ class Search extends React.Component {
   retrieveExpressionResults(query, expressionid){
     const _this = this
     this.setState({fetching: true})
-    Axios.get("http://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-expressionid.xq?query=" + query + "&expressionid=" + expressionid)
+    Axios.get("https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-expressionid.xq?query=" + query + "&expressionid=" + expressionid)
       .then((d) => {
             _this.setState({searchResults: d.data.results, count: d.data.count, fetching: false})
           })
@@ -27,7 +27,7 @@ class Search extends React.Component {
     const _this = this
     this.setState({fetching: true})
     const authorShortId = authorid.split("/resource/")[1]
-    Axios.get("http://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-authorid.xq?query=" + query + "&authorid=" + authorShortId)
+    Axios.get("https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-authorid.xq?query=" + query + "&authorid=" + authorShortId)
       .then((d) => {
             _this.setState({searchResults: d.data.results, count: d.data.count, fetching: false})
           })
