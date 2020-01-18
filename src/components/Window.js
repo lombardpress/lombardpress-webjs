@@ -182,7 +182,7 @@ class Window extends React.Component {
       altWindowState={this.props.altWindowState}
       focusSet={!!this.props.info}
       />
-      <NextPrevBar info={this.props.info} handleBlockFocusChange={this.props.handleBlockFocusChange}/>
+      {(this.state.windowLoad != "surface2") && <NextPrevBar info={this.props.info} handleBlockFocusChange={this.props.handleBlockFocusChange}/>}
 
       {displayChild()}
 
