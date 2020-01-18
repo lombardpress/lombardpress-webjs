@@ -43,7 +43,7 @@ class TextCompareItem extends React.Component {
   }
   createCompare(base, transcription){
 
-    Axios.get("http://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + transcription)
+    Axios.get("https://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + transcription)
           .then((text) => {
 
             const dmp = new Diff.diff_match_patch();

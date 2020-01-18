@@ -32,7 +32,7 @@ class TextArticle extends React.Component {
          xmlurl = doc
        }
        else{
-         xmlurl = "http://exist.scta.info/exist/apps/scta-app/text/scta-articles/" + docFragment
+         xmlurl = "https://exist.scta.info/exist/apps/scta-app/text/scta-articles/" + docFragment
        }
       let xslurl = ""
       if (articleType === "http://scta.info/resource/timeline"){
