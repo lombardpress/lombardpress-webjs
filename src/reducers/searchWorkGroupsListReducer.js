@@ -7,7 +7,8 @@ const searchWorkGroupsListReducer = (state, action) => {
           }
       case 'COMPLETE_WORK_GROUPS_LIST_FETCH':
         return [...action.workGroups]
-
+      default:
+        return state
     }
   }
 }

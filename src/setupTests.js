@@ -5,3 +5,8 @@
 //       '^react-syntax-highlighter'
 //     ]
 //   }
+// const config = {
+//   transformIgnorePatterns: [
+//      "/node_modules/(?!(react-syntax-highlighter)/)"
+//    ]
+//  }

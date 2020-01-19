@@ -133,8 +133,11 @@ class TextSwitch extends React.Component {
   }
 
   componentDidMount(){
-    const newResourceId = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).resourceid
-    this.getInfo(newResourceId)
+    // conditional to only get info when props.location exists
+    if (this.props.location){
+      const newResourceId = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).resourceid
+      this.getInfo(newResourceId)
+    }
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
     const newResourceId = Qs.parse(nextProps.location.search, { ignoreQueryPrefix: true }).resourceid

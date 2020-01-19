@@ -156,9 +156,6 @@ componentDidMount(){
   }
 
   render() {
-
-    const diplayLinePrev = () => {
-    }
     const displayImages = () => {
       if (this.state.annotations && this.state.annotationsDisplay){
         const imageTextWrappers = this.state.annotations.map((h, i) => {

@@ -7,7 +7,8 @@ const searchExpressionsListReducer = (state, action) => {
           }
       case 'COMPLETE_EXPRESSIONS_FETCH':
         return [...action.expressions]
-
+      default:
+        return state
     }
   }
 }

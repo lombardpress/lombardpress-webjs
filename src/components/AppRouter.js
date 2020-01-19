@@ -1,8 +1,6 @@
 import React, {Suspense} from 'react';
 import {HashRouter, Route, Switch} from 'react-router-dom';
 import Home from "./Home"
-import SearchWrapper from "./SearchWrapper"
-import Search2 from "./Search2"
 import Search3 from "./Search3"
 import TextSwitch from "./TextSwitch"
 import About from "./About"

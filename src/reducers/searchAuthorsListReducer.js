@@ -7,7 +7,8 @@ const searchAuthorsListReducer = (state, action) => {
           }
       case 'COMPLETE_AUTHORS_FETCH':
         return [...action.authors]
-
+      default:
+        return state
     }
   }
 }

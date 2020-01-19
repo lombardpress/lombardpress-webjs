@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button';
 import {useTranslation} from 'react-i18next'
 
 function Comments2(props) {
-  const {t, i18n} = useTranslation();
+  const {t} = useTranslation();
   const [comments, setComments] = useState(JSON.parse(localStorage.getItem("sctaCommentsState")) || []);
   const [showFocusComments, setShowFocusComments] = useState(true)
   const [commentFilter, setCommentFilter] = useState("")
@@ -18,7 +18,7 @@ function Comments2(props) {
     const dateObject = new Date()
     const annotation = {
       "@context": "http://www.w3.org/ns/anno.jsonld",
-      "id": "http://localhost/annotation/" + randomid,
+      "id": annoId,
       "type": "Annotation",
       "created": dateObject.toISOString(),
       "motivation": "commenting",
@@ -65,6 +65,9 @@ function Comments2(props) {
                 </div>
               )
             }
+            else{
+              return null
+            }
           }
           else{
             if (c.target === props.resourceid && c.body.value.includes(commentFilter)){
@@ -75,7 +78,7 @@ function Comments2(props) {
                   //<button onClick={() => {removeNote(n.title)}}>x</button>
                   }
                 </div>
-              )
+                )
             }
             else if (c.body.value.includes(commentFilter)){
               return (
@@ -86,6 +89,9 @@ function Comments2(props) {
                   }
                 </div>
               )
+            }
+            else{
+              return null
             }
           }
         })}

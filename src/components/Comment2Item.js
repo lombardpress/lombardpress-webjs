@@ -1,12 +1,11 @@
 import React, {useState} from 'react';
 import {Link} from 'react-router-dom';
 import {FaTrash, FaEdit} from 'react-icons/fa';
-import FormControl from 'react-bootstrap/FormControl';
 import Comment2Create from './Comment2Create.js'
 import {useTranslation} from 'react-i18next'
 
 function Comment2Item(props) {
-  const {t, i18n} = useTranslation();
+  const {t} = useTranslation();
   const [editable, setEditable] = useState(false);
 
   const submitUpdate = (update) => {

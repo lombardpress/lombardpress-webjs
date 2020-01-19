@@ -1,5 +1,3 @@
-import Axios from 'axios'
-import {sparqlEndpoint} from '../components/config';
 ///search actions
 //===============
 export var clearSearchParameters = () => {
