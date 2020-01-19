@@ -1,6 +1,8 @@
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/49e1db43-023e-450f-b982-5fd24886d4b0/deploy-status)](https://app.netlify.com/sites/reverent-noyce-f13753/deploys)
 
+[![Build Status](https://travis-ci.com/lombardpress/lombardpress-webjs.svg?branch=master)](https://travis-ci.com/lombardpress/lombardpress-webjs)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
