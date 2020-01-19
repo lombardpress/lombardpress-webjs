@@ -138,7 +138,7 @@ class TextOutline extends React.Component {
       <div id="outline" style={{"paddingLeft": indent + "px"}}>
         <p className={this.props.bold}>
         {(this.state.isPartOf.isPartOfId && this.props.showParentLink) && <Link to={"/text?resourceid=" + this.state.isPartOf.isPartOfId}><FaChevronUp/></Link>}
-        {(this.props.author && this.props.showAuthor && this.props.level == "1") &&
+        {(this.props.author && this.props.showAuthor && this.props.level === "1") &&
           <span>
             <span>{this.props.authorTitle}: </span>
             <Link to={"/text?resourceid=" + this.props.author}><FaExternalLinkAlt/></Link>

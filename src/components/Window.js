@@ -2,13 +2,10 @@ import React from 'react';
 import Surface2 from "./Surface2"
 import Surface3Wrapper from "./Surface3Wrapper"
 import XmlView from "./XmlView"
-//import Info from "./Info"
 import WindowNavBar from "./WindowNavBar"
 import NextPrevBar from "./NextPrevBar"
 import TextCompareWrapper from "./TextCompareWrapper"
-import SearchWrapper from "./SearchWrapper"
 import Search3 from "./Search3"
-import Comments from "./Comments"
 import Comments2 from "./Comments2"
 import CitationWrapper from "./CitationWrapper"
 import TextOutlineWrapper from "./TextOutlineWrapper"
@@ -31,8 +28,7 @@ class Window extends React.Component {
         xml: false,
         search:  false,
         textOutline: false,
-        citation: false,
-        search: false
+        citation: false
       }
 
     }
@@ -68,8 +64,7 @@ class Window extends React.Component {
         xml: false,
         search:  false,
         textOutline: false,
-        citation: false,
-        search: false
+        citation: false
       }
       // then, the mount status of the opening window load is changed to true
       newMountStatus[newProps.windowLoad] = true
@@ -182,7 +177,7 @@ class Window extends React.Component {
       altWindowState={this.props.altWindowState}
       focusSet={!!this.props.info}
       />
-      {(this.state.windowLoad != "surface2") && <NextPrevBar info={this.props.info} handleBlockFocusChange={this.props.handleBlockFocusChange}/>}
+      {(this.state.windowLoad !== "surface2") && <NextPrevBar info={this.props.info} handleBlockFocusChange={this.props.handleBlockFocusChange}/>}
 
       {displayChild()}
 

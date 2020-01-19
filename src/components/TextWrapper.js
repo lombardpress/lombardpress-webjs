@@ -330,14 +330,19 @@ class TextWrapper extends React.Component {
   componentDidMount(){
     this.mount = true
 
-    this.setItemFocus(this.props.transcriptionid)
+    //transcriptionid should be required Prop
+    //conditional here to reinfurce that rule
+    if (this.props.transcriptionid){
+      this.setItemFocus(this.props.transcriptionid)
+      //TODO: splitting strings for this information is not ideal.
+      //info should be part of original query
+      const mFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[1]
+      const tFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[2]
+      this.setState({mtFocus: "/" + mFocus + "/" + tFocus})
 
-    const mFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[1]
-    const tFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[2]
-    this.setState({mtFocus: "/" + mFocus + "/" + tFocus})
-
-    if (this.props.blockDivFocus){
-      this.retrieveFocusInfo(this.props.blockDivFocus)
+      if (this.props.blockDivFocus){
+        this.retrieveFocusInfo(this.props.blockDivFocus)
+      }
     }
   }
   UNSAFE_componentWillReceiveProps(newProps){

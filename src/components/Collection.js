@@ -2,17 +2,9 @@ import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-
-import FormControl from 'react-bootstrap/FormControl';
-import Table from 'react-bootstrap/Table';
-
 import {runQuery} from './utils'
 import {basicStructureAllItemsInfoQuery, partsInfoQuery,workGroupExpressionQuery} from './Queries'
-
-import Item from "./Item"
 import Search3 from "./Search3"
-import {Link} from 'react-router-dom';
-
 import TextOutlineWrapper from "./TextOutlineWrapper"
 //import Lbp from "lbp.js/lib"
 
@@ -161,57 +153,57 @@ class Collection extends React.Component {
   render(){
     //const resourceid = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).resourceid;
 
-    const displayQuestions = () => {
-      const questions = []
-      Object.keys(this.state.items).forEach((key) => {
-        const filterCheck = this.state.items[key].title + " " + this.state.items[key].authorTitle + " " + this.state.items[key].questionTitle
-        if (filterCheck.toLowerCase().includes(this.state.filter.toLowerCase())){
-        questions.push(
-          <Item key={key} item={this.state.items[key]}/>
-        )}
-      });
-      return (
-        <Container>
-
-        <h1>Available Texts</h1>
-        <br/>
-        <Table striped bordered hover size="sm">
-        <tbody>
-        {questions}
-        </tbody>
-        </Table>
-        </Container>
-      )
-    }
-    const displayParts = () => {
-        const questions = []
-        Object.keys(this.state.parts).forEach((key) => {
-          //check against filter
-            if (this.state.parts[key].title.toLowerCase().includes(this.state.filter.toLowerCase())){
-            questions.push(
-              <Item key={key} item={this.state.parts[key]}/>
-              )
-            }
-
-        });
-        //check against top level expression as parts; if parts are top level expression; don't display parts
-        const testPart = this.state.parts[Object.keys(this.state.parts)[0]]
-        if (testPart){
-          if (!(testPart.type === "http://scta.info/resource/expression" && testPart.level === "1")){
-            return (
-              <Container>
-              <h1>Available Text Collections</h1>
-              <br/>
-              <Table striped bordered hover size="sm">
-              <tbody>
-              {questions}
-              </tbody>
-              </Table>
-              </Container>
-            )
-          }
-        }
-      }
+    // const displayQuestions = () => {
+    //   const questions = []
+    //   Object.keys(this.state.items).forEach((key) => {
+    //     const filterCheck = this.state.items[key].title + " " + this.state.items[key].authorTitle + " " + this.state.items[key].questionTitle
+    //     if (filterCheck.toLowerCase().includes(this.state.filter.toLowerCase())){
+    //     questions.push(
+    //       <Item key={key} item={this.state.items[key]}/>
+    //     )}
+    //   });
+    //   return (
+    //     <Container>
+    //
+    //     <h1>Available Texts</h1>
+    //     <br/>
+    //     <Table striped bordered hover size="sm">
+    //     <tbody>
+    //     {questions}
+    //     </tbody>
+    //     </Table>
+    //     </Container>
+    //   )
+    // }
+    // const displayParts = () => {
+    //     const questions = []
+    //     Object.keys(this.state.parts).forEach((key) => {
+    //       //check against filter
+    //         if (this.state.parts[key].title.toLowerCase().includes(this.state.filter.toLowerCase())){
+    //         questions.push(
+    //           <Item key={key} item={this.state.parts[key]}/>
+    //           )
+    //         }
+    //
+    //     });
+    //     //check against top level expression as parts; if parts are top level expression; don't display parts
+    //     const testPart = this.state.parts[Object.keys(this.state.parts)[0]]
+    //     if (testPart){
+    //       if (!(testPart.type === "http://scta.info/resource/expression" && testPart.level === "1")){
+    //         return (
+    //           <Container>
+    //           <h1>Available Text Collections</h1>
+    //           <br/>
+    //           <Table striped bordered hover size="sm">
+    //           <tbody>
+    //           {questions}
+    //           </tbody>
+    //           </Table>
+    //           </Container>
+    //         )
+    //       }
+    //     }
+    //   }
 
     return (
       <Container className="collectionBody">

@@ -1,10 +1,9 @@
-import React, {useState, useEffect, useReducer} from 'react';
+import React, {useState} from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import {runQuery} from './utils'
 import {questionTitleQuery} from '../queries/questionTitleQuery'
 import Spinner from './Spinner';
-import {Link} from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Search3Parameters from './Search3Parameters';
 import {retrieveAuthorResults, retrieveExpressionResults, displayTextResults, displayQuestionResults} from './searchUtils'

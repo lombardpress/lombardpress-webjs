@@ -9,7 +9,7 @@ import {useTranslation} from 'react-i18next'
 
 
 function Home(props) {
-  const {t, i18n} = useTranslation();
+  const {t} = useTranslation();
   //const resourceid = props.location ? Qs.parse(props.location.search, { ignoreQueryPrefix: true }).resourceid : null;
   const displayBody = () => {
     // if (resourceid){

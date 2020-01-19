@@ -27,6 +27,9 @@ const ResourceTypeList = (props) => {
         if (r.resourceTitle.value.includes(filter)){
           return <p key={r.resource.value}><Link to={"/text?resourceid=" + r.resource.value}>{r.resourceTitle.value}</Link></p>
         }
+        else{
+          return null
+        }
       })
     }
     </Container>

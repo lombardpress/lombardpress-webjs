@@ -1,7 +1,4 @@
 import React, {useState, useEffect, useReducer} from 'react';
-import searchParametersReducer from '../reducers/searchParametersReducer'
-import searchParametersContext from '../contexts/searchParametersContext'
-import * as searchParametersActions from '../actions/searchParametersActions'
 import searchExpressionsListReducer from '../reducers/searchExpressionsListReducer'
 import * as searchExpressionsListActions from '../actions/searchExpressionsListActions'
 import searchAuthorsListReducer from '../reducers/searchAuthorsListReducer'
@@ -10,10 +7,7 @@ import searchWorkGroupsListReducer from '../reducers/searchWorkGroupsListReducer
 import * as searchWorkGroupsListActions from '../actions/searchWorkGroupsListActions'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import {runQuery} from './utils'
-import {questionTitleQuery} from '../queries/questionTitleQuery'
-import Spinner from './Spinner';
-import {Link} from 'react-router-dom';
+
 
 const Search3Parameters = (props) => {
   const [searchType, setSearchType] = useState(props.searchType ? props.searchType : "questionTitles")

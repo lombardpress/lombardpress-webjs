@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import {useTranslation} from 'react-i18next'
 
 function Comment2Create(props) {
-  const {t, i18n} = useTranslation();
+  const {t} = useTranslation();
   const [comment, setComment] = useState("");
   const handleCommentUpdate = (e) => {
     e.preventDefault()

@@ -1,12 +1,12 @@
 import React from 'react';
-import {NavLink, Link} from 'react-router-dom';
+import {NavLink} from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import {resourceEndpoint} from './config';
 import {useTranslation} from 'react-i18next'
 
 function NavBar() {
-  const {t, i18n} = useTranslation();
+  const {t} = useTranslation();
   return (
     <Navbar bg="dark" variant="light" expand="lg" fixed="top">
       <Nav>
@@ -19,8 +19,8 @@ function NavBar() {
 
 
         <NavLink className="nav-link" to={"/res?resourceid=" + resourceEndpoint}>{t("Texts")}</NavLink>
-        <NavLink className="nav-link" to={"/res?resourceid=" + "http://scta.info/resource/person"}>{t("People")}</NavLink>
-        <NavLink className="nav-link" to={"/res?resourceid=" + "http://scta.info/resource/codex"}>{t("Codices")}</NavLink>
+        <NavLink className="nav-link" to={"/res?resourceid=http://scta.info/resource/person"}>{t("People")}</NavLink>
+        <NavLink className="nav-link" to={"/res?resourceid=http://scta.info/resource/codex"}>{t("Codices")}</NavLink>
         {// example drop down
           // <NavDropdown title="Dropdown" id="basic-nav-dropdown">
         //   <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>

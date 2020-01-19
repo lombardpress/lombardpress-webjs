@@ -2,9 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Axios from 'axios'
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
-//import xml from 'react-syntax-highlighter/dist/esm/languages/hljs/xml';
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-
+import { docco } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 /**
 * XML view show component
 **/
@@ -29,7 +27,11 @@ class XmlView extends React.Component {
   }
   componentDidMount(){
     this.mount = true
-    this.retrieveXML(this.props.tresourceid)
+    //condition to make sure tresourceid is defined before trying to parse and retrieve
+    // though this should never since tresourceid is a required prop
+    if (this.props.tresourceid){
+      this.retrieveXML(this.props.tresourceid)
+    }
 
   }
   UNSAFE_componentWillReceiveProps(nextProps){
