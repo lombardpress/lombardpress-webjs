@@ -130,7 +130,7 @@ isLineNumberFirst(){
   }
 }
 isLineNumberLast(){
-  const total = this.state.annotations.length
+  const total = this.state.annotations ? this.state.annotations.length : ""
   const lineNumber = parseInt(this.props.lineFocusId.split("/")[this.props.lineFocusId.split("/").length - 1])
   if (lineNumber === total){
     return true
