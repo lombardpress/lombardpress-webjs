@@ -93,6 +93,7 @@ h1, h2, h3, h4, h5, h6 {font-size: 20px; text-align: center;
 .highlight {
     background-color: yellow;
     transition: all 1s ease-in;
+    border-bottom: 1px solid black;
 }
 .highlightNone {
     background-color: white;

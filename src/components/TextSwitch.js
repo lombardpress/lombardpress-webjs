@@ -107,12 +107,15 @@ class TextSwitch extends React.Component {
               });
             }
           }
-      else if (structureType === "http://scta.info/resource/structureBlock" || structureType === "http://scta.info/resource/structureDivision" ){
+      else if (structureType === "http://scta.info/resource/structureElement" || structureType === "http://scta.info/resource/structureBlock" || structureType === "http://scta.info/resource/structureDivision" ){
         const structureTypePromise = runQuery(getItemTranscriptionFromBlockDiv(resourceid))
         structureTypePromise.then((t) => {
+          console.log(t)
+          // if transcription
           if (type === "http://scta.info/resource/transcription"){
             this.setState({itemTranscriptionId: itemParent, blockDivFocus: t.data.results.bindings[0].blockDivExpression.value, displayType: "item", resourceTitle: resourceTitle})
           }
+          // if expression
           else if (type === "http://scta.info/resource/expression"){
             if (t.data.results.bindings[0].ctranscription){
               this.setState({itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, blockDivFocus: resourceid, displayType: "item", resourceTitle: resourceTitle})
@@ -121,6 +124,7 @@ class TextSwitch extends React.Component {
               this.setState({displayType: "notFound"})
             }
           }
+          // if manifestation
           else {
             this.setState({itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, blockDivFocus: t.data.results.bindings[0].blockDivExpression.value, displayType: "item", resourceTitle: resourceTitle})
           }
