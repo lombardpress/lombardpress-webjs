@@ -140,12 +140,22 @@ class TextSwitch extends React.Component {
     // conditional to only get info when props.location exists
     if (this.props.location){
       const newResourceId = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).resourceid
-      this.getInfo(newResourceId)
+      if (newResourceId.includes("https://scta.info/")){
+        this.handleUpdateUrlResource(newResourceId.replace("https://scta.info/", "http://scta.info/"))
+      }
+      else{
+        this.getInfo(newResourceId)
+      }
     }
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
     const newResourceId = Qs.parse(nextProps.location.search, { ignoreQueryPrefix: true }).resourceid
-    this.getInfo(newResourceId)
+    if (newResourceId.includes("https://scta.info/")){
+      this.handleUpdateUrlResource(newResourceId.replace("https://scta.info/", "http://scta.info/"))
+    }
+    else{
+      this.getInfo(newResourceId)
+    }
   }
 
 

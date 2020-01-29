@@ -199,7 +199,7 @@ class SurfaceInfo extends React.Component {
       <div className="SurfaceInfo">
       <h1>Page Info</h1>
         <div style={{"fontSize": "16px"}}>
-        <h1>Text objects on this page <Button size="sm" clasName="lbp-span-link" onClick={this.handleToggleShowQuery}>{this.state.showQuery ? "Hide Proof" : "Prove It!"}</Button></h1>
+        <h1>Text objects on this page <Button size="sm" className="lbp-span-link" onClick={this.handleToggleShowQuery}>{this.state.showQuery ? "Hide Proof" : "Prove It!"}</Button></h1>
         {this.state.showQuery && <p>{this.state.query}</p>}
         {displayExpressions()}
         </div>

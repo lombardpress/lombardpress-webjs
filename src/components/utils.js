@@ -79,6 +79,9 @@ export function scrollToParagraph(hash, highlight){
       element.children(".paragraphnumber").addClass("highlight2")
       element.addClass( "highlight");
       setTimeout(function(){
+        $(".lbp-ref").removeClass("highlight")
+        $(".lbp-quote").removeClass("highlight")
+        $(".plaoulparagraph").removeClass("highlight")
         element.addClass("highlightNone");
     }, 2000);
 
