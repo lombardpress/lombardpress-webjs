@@ -71,10 +71,17 @@ export function scrollToParagraph(hash, highlight){
       element.addClass("highlightNone");
       $(".paragraphnumber").removeClass("highlight2")
       $(".plaoulparagraph").removeClass("highlightNone")
+      $(".lbp-quote").removeClass("highlightNone")
+      $(".lbp-quote").removeClass("highlight")
+      $(".lbp-ref").removeClass("highlightNone")
+      $(".lbp-ref").removeClass("highlight")
       $(".plaoulparagraph").removeClass("highlight")
       element.children(".paragraphnumber").addClass("highlight2")
       element.addClass( "highlight");
       setTimeout(function(){
+        $(".lbp-ref").removeClass("highlight")
+        $(".lbp-quote").removeClass("highlight")
+        $(".plaoulparagraph").removeClass("highlight")
         element.addClass("highlightNone");
     }, 2000);
 

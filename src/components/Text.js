@@ -77,9 +77,12 @@ class Text extends React.Component {
              const text = $(target).html()
              const targetText = $(this).parent().children(".note-display").attr('data-target-id')
              /// toggles highlight for select text segemnts
+             // TODO: class logic could be improved. See related use in utils.js
              if (targetText){
                $("#" + targetText).toggleClass("highlight")
                $("span[data-corresp=" + targetText + "]").toggleClass("highlight")
+               $("#" + targetText).removeClass("highlightNone")
+               $("span[data-corresp=" + targetText + "]").removeClass("highlightNone")
              }
 
              //adds footnote text to noteDisplay Div and toggles hidden class

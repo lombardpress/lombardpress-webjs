@@ -255,7 +255,7 @@ class TextWrapper extends React.Component {
               }
             });
 
-          if (this.mount){
+          if (this.mount && bindings){
             this.setState({
               focus: {
                 resourceid: resourceid,
