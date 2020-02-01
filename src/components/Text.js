@@ -96,6 +96,16 @@ class Text extends React.Component {
              noteDisplay.html(text)
            });
 
+           $(document).on("click", '.js-show-info', function(e) {
+              e.preventDefault();
+              const id = $(this).attr('data-pid')
+              _this.props.setFocus(id)
+              _this.props.openWindow("window1")
+            });
+            if (scrollTo){
+             scrollToParagraph(scrollTo, true)
+           }
+
            $(document).on("click", '.show-line-witness', function(e) {
 
              e.preventDefault();
