@@ -64,8 +64,8 @@
       and on headers that are not question titles -->
       <xsl:if test="$parent-div-id and not(./@type='question-title')">
         <span class="small lbp-div-info">
-          <a href="#" class="js-show-paragraph-info" data-pid="{$parent-div-id}">
-            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+          <a href="#" class="js-show-info" data-pid="{$parent-div-id}">
+            <span class="glyphicon glyphicon-info-sign" aria-hidden="true">I</span>
           </a>
         </span>
       </xsl:if>
@@ -524,10 +524,14 @@
         <!-- checks checks to see if either quote has source, ref has target or bibl child is present; if not, no display entry is created-->
         <xsl:if test="./tei:quote/@source| ./tei:ref/@target|./tei:bibl">
         <xsl:variable name="id"><xsl:number count="//tei:cit" level="any" format="a"/></xsl:variable>
+        <xsl:variable name="elementid" select="./tei:quote/@xml:id | ./tei:ref/@xml:id"></xsl:variable>
         <li id="lbp-footnote{$id}">
-          <a>
+
+          <a href="#" class="js-show-info" data-pid="{$elementid}">
             <xsl:copy-of select="$id"/>
-          </a> --
+          </a>
+
+          --
           <xsl:choose>
             <xsl:when test="./tei:quote">
               <xsl:call-template name="quote-bibl"></xsl:call-template>
