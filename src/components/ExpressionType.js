@@ -37,7 +37,9 @@ const ExpressionType = (props) => {
       })}
       </Col>
       <Col>
-        <Search3 searchEid={""}
+        <Search3
+        searchEid={""}
+        searchEType={props.expressionTypeId}
         showSubmit={true}
         showAdvancedParameters={true}
         showLabels={false}/>

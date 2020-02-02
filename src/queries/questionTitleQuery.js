@@ -7,6 +7,19 @@ export function questionTitleQuery(searchParameters){
         "?workGroup <http://scta.info/property/hasExpression> ?topLevel ."
       ].join(' ')
     }
+  let expressionTypeQuery = "";
+    if (searchParameters.searchEType){
+      expressionTypeQuery = [
+        "BIND(<" + searchParameters.searchEType + "> AS ?expressionType) .",
+        "{",
+          "?resource <http://scta.info/property/expressionType> ?expressionType .",
+        "}",
+        "UNION",
+        "{",
+          "?resource <http://scta.info/property/isMemberOf> ?ancestor .",
+          "?ancestor <http://scta.info/property/expressionType> ?expressionType .",
+        "}"].join(' ')
+    }
   let authorQuery = "";
     if (searchParameters.searchAuthor){
       authorQuery = "BIND(<" + searchParameters.searchAuthor + "> AS ?author)."
@@ -19,10 +32,12 @@ export function questionTitleQuery(searchParameters){
      "SELECT ?resource ?qtitle ?resourceTitle ?structureType ?longTitle ?author ?authorTitle",
      "WHERE",
      "{",
+
        "?resource <http://scta.info/property/questionTitle> ?qtitle  .",
        "?resource <http://purl.org/dc/elements/1.1/title> ?resourceTitle .",
        "?resource <http://scta.info/property/structureType> ?structureType .",
        "?resource <http://scta.info/property/longTitle> ?longTitle .",
+       expressionTypeQuery,
        eidQuery,
        "?resource <http://scta.info/property/isPartOfTopLevelExpression> ?topLevel .",
        authorQuery,
