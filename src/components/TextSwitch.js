@@ -10,6 +10,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Search3 from './Search3';
+import ExpressionType from './ExpressionType';
 import ResourceTypeList from './ResourceTypeList';
 import {Link} from 'react-router-dom';
 
@@ -54,6 +55,12 @@ class TextSwitch extends React.Component {
       }
       else if (resourceid === "http://scta.info/resource/codex"){
         this.setState({displayType: "codexList", resourceid: resourceid, structureType: "", topLevel: "", type: "", resourceTitle: ""})
+      }
+      else if (resourceid === "http://scta.info/resource/expressionType"){
+        this.setState({displayType: "expressionTypeList", resourceid: resourceid, structureType: "", topLevel: "", type: "", resourceTitle: ""})
+      }
+      else if (type === "http://scta.info/resource/expressionType"){
+        this.setState({displayType: "expressionType", resourceid: resourceid, structureType: "", topLevel: "", type: "", resourceTitle: ""})
       }
       else if (type === "http://scta.info/resource/person"){
         this.setState({displayType: "person", resourceid: resourceid, structureType: "", topLevel: "", type: type, resourceTitle: resourceTitle})
@@ -165,14 +172,17 @@ class TextSwitch extends React.Component {
       if (this.state.displayType === "personList"){
         return (<ResourceTypeList resourceTypeId="http://scta.info/resource/person"/>)
       }
-      if (this.state.displayType === "codexList"){
+      else if (this.state.displayType === "codexList"){
         return (<ResourceTypeList resourceTypeId="http://scta.info/resource/codex"/>)
       }
-      if (this.state.displayType === "person"){
+      else if (this.state.displayType === "expressionTypeList"){
+        return (<ResourceTypeList resourceTypeId="http://scta.info/resource/expressionType"/>)
+      }
+      else if (this.state.displayType === "person"){
         return (<AuthorCollection resourceid={this.state.resourceid}/>)
 
       }
-      if (this.state.displayType === "article"){
+      else if (this.state.displayType === "article"){
         return (<TextArticle doc={this.state.articleDoc} articleType={this.state.articleType}/>)
 
       }
@@ -243,6 +253,9 @@ class TextSwitch extends React.Component {
       }
       else if (this.state.displayType === "manifest"){
         return (<Codex manifestid={this.state.resourceid}/>)
+      }
+      else if (this.state.displayType === "expressionType"){
+        return (<ExpressionType expressionTypeId={this.state.resourceid}/>)
       }
       else if (this.state.displayType === "notFound"){
         return (<p>Apologies, this resource could not be found</p>)
