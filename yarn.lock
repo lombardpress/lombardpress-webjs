@@ -953,10 +953,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@bit/jeffreycwitt.lbp.text-preview@^0.0.3":
-  version "0.0.3"
-  resolved "https://node.bit.dev/jeffreycwitt.lbp.text-preview/-/jeffreycwitt.lbp.text-preview-0.0.3.tgz#22b106f2f8f678a3eaf996b3bd31f5c46e348782"
-  integrity sha1-IrEG8vj2eKPq+ZazvTH1xG40h4I=
+"@bit/jeffreycwitt.lbp.text-preview@^0.0.4":
+  version "0.0.4"
+  resolved "https://node.bit.dev/jeffreycwitt.lbp.text-preview/-/jeffreycwitt.lbp.text-preview-0.0.4.tgz#f126ceca3eb84bb7d38ea57a3dc163be1c592a7b"
+  integrity sha1-8SbOyj64S7fTjqV6PcFjvhxZKns=
   dependencies:
     axios "^0.19.0"
     prop-types "15.6.2"
@@ -7196,9 +7196,6 @@ lazy-cache@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/lazy-cache/-/lazy-cache-1.0.4.tgz#a1d78fc3a50474cb80845d3b3b6e1da49a446e8e"
   integrity sha1-odePw6UEdMuAhF07O24dpJpEbo4=
-
-lbp.js@../lbp.js/:
-  version "0.0.1"
 
 lcid@^1.0.0:
   version "1.0.0"
