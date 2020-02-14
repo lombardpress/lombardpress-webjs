@@ -5,6 +5,8 @@ import searchAuthorsListReducer from '../reducers/searchAuthorsListReducer'
 import * as searchAuthorsListActions from '../actions/searchAuthorsListActions'
 import searchWorkGroupsListReducer from '../reducers/searchWorkGroupsListReducer'
 import * as searchWorkGroupsListActions from '../actions/searchWorkGroupsListActions'
+import searchExpressionTypesListReducer from '../reducers/searchExpressionTypesListReducer'
+import * as searchExpressionTypesListActions from '../actions/searchExpressionTypesListActions'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
@@ -14,11 +16,14 @@ const Search3Parameters = (props) => {
   const [searchTerm, setSearchTerm] = useState("")
   const [searchAuthor, setSearchAuthor] = useState(props.searchAuthor)
   const [searchEid, setSearchEid] = useState(props.searchEid)
+  const [searchEType, setSearchEType] = useState(props.searchEType)
   const [searchWorkGroup, setSearchWorkGroup] = useState(props.searchWorkGroup)
+
+  const [searchExpressionTypesList, searchExpressionTypesListDispatch] = useReducer(searchExpressionTypesListReducer, [])
   const [searchExpressionsList, searchExpressionsListDispatch] = useReducer(searchExpressionsListReducer, [])
   const [searchAuthorsList, searchAuthorsListDispatch] = useReducer(searchAuthorsListReducer, [])
   const [searchWorkGroupsList, searchWorkGroupsListDispatch] = useReducer(searchWorkGroupsListReducer, [])
-  const searchParameters = {searchTerm, searchAuthor, searchEid, searchWorkGroup, searchType}
+  const searchParameters = {searchTerm, searchAuthor, searchEid, searchWorkGroup, searchType, searchEType}
 
   const [displayAllParameters, setDisplayAllParameters] = useState(false)
 
@@ -42,12 +47,13 @@ const Search3Parameters = (props) => {
   }, [props.searchWorkGroup])
   //end effects to update hooks when props change
   //begin other effects
-  useEffect(handleSetSearchParameters, [searchTerm, searchAuthor, searchEid, searchWorkGroup, searchType])
+  useEffect(handleSetSearchParameters, [searchTerm, searchAuthor, searchEid, searchWorkGroup, searchType, searchEType])
   useEffect(() => {
     console.log("mount asyn firing")
     searchExpressionsListDispatch(searchExpressionsListActions.fetchExpressionsList(searchParameters, searchExpressionsListDispatch))
     searchAuthorsListDispatch(searchAuthorsListActions.fetchAuthorsList(searchParameters, searchAuthorsListDispatch))
     searchWorkGroupsListDispatch(searchWorkGroupsListActions.fetchWorkGroupsList(searchParameters, searchWorkGroupsListDispatch))
+    searchExpressionTypesListDispatch(searchExpressionTypesListActions.fetchExpressionTypesList(searchParameters, searchExpressionTypesListDispatch))
   }, [])
   useEffect(() => {
     searchExpressionsListDispatch(searchExpressionsListActions.fetchExpressionsList(searchParameters, searchExpressionsListDispatch))
@@ -80,6 +86,16 @@ const Search3Parameters = (props) => {
                 <option value="">All</option>
                 {searchWorkGroupsList && searchWorkGroupsList.map((e, i) => {
                     return (<option key={e.workGroup + "-" + i} value={e.workGroup}>{e.workGroupTitle}</option>)
+                  })
+                }
+              </Form.Control>
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>ExpressionType</Form.Label>
+              <Form.Control as="select" onChange={(e) => {setSearchEType(e.target.value)}} value={searchParameters.searchEType}>
+                <option value="">All</option>
+                {searchExpressionTypesList && searchExpressionTypesList.map((e, i) => {
+                    return (<option key={e.expressionType + "-" + i} value={e.expressionType}>{e.expressionTypeTitle}</option>)
                   })
                 }
               </Form.Control>

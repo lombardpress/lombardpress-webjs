@@ -72,6 +72,7 @@ const Search3 = (props) => {
           handleSetSearchParameters={handleSetSearchParameters}
           searchAuthor={props.searchAuthor}
           searchEid={props.searchEid}
+          searchEType={props.searchEType}
           searchWorkGroup={props.searchWorkGroup}
           showAdvancedParameters={props.showAdvancedParameters}
           showLabels={props.showLabels}
