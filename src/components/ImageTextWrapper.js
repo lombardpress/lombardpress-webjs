@@ -24,7 +24,6 @@ class ImageTextWrapper extends Component {
     return (
       <div className={this.props.targetLabel === this.props.label ? "ImageTextWrapper target" : "ImageTextWrapper"}>
         <div className="labelImageWrapper">
-
         <Image
           imageUrl={this.props.imageUrl}
           canvas={this.props.canvas}
@@ -33,7 +32,7 @@ class ImageTextWrapper extends Component {
           displayWidth={this.props.displayWidth}
           />
         </div>
-        <LineText text={this.props.text} number={this.props.number + 1}/>
+        <LineText text={this.props.text} number={this.props.number} label={this.props.label}/>
       </div>
     );
   }
