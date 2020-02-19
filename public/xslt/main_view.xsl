@@ -608,20 +608,23 @@
               <xsl:when test="./@type='variation-absent'">
                 <xsl:value-of select="."/><xsl:text> </xsl:text>
                 <em>om.</em><xsl:text> </xsl:text>
-                <xsl:value-of select="translate(@wit, '#', '')"/><xsl:text>   </xsl:text>
+                <!--<xsl:value-of select="translate(@wit, '#', '')"/><xsl:text>   </xsl:text>-->
+                <xsl:call-template name="sigla"/>
               </xsl:when>
             	<xsl:when test="./@type='variation-present'">
             		<xsl:choose>
             			<xsl:when test="./@cause='repetition'">
             				<xsl:text> </xsl:text>
             				<em>iter</em>
-            				<xsl:value-of select="translate(@wit, '#', '')"/><xsl:text> </xsl:text>
+            				<!--<xsl:value-of select="translate(@wit, '#', '')"/><xsl:text> </xsl:text>-->
+            			  <xsl:call-template name="sigla"/>
             			</xsl:when>
             			<xsl:otherwise>
             				<xsl:text> </xsl:text>
             				<xsl:value-of select="."/><xsl:text> </xsl:text>
             				<em>in textu</em><xsl:text> </xsl:text>
-            				<xsl:value-of select="translate(@wit, '#', '')"/><xsl:text> </xsl:text>
+            				<!--<xsl:value-of select="translate(@wit, '#', '')"/><xsl:text> </xsl:text>-->
+            			  <xsl:call-template name="sigla"/>
             			</xsl:otherwise>
             		</xsl:choose>
             	</xsl:when>
@@ -629,29 +632,31 @@
             	<xsl:when test="./@type='correction-addition'">
             		<xsl:value-of select="tei:add"/><xsl:text> </xsl:text>
             		<em>add.</em><xsl:text> </xsl:text>
-            		<xsl:value-of select="translate(@wit, '#', '')"/><xsl:text>   </xsl:text>
+            		<!--<xsl:value-of select="translate(@wit, '#', '')"/><xsl:text>   </xsl:text>-->
+            	  <xsl:call-template name="sigla"/>
             	</xsl:when>
 
             	<xsl:when test="./@type='correction-deletion'">
             		<xsl:value-of select="tei:del"/><xsl:text> </xsl:text>
             		<em>add. sed del.</em><xsl:text> </xsl:text>
-            		<xsl:value-of select="translate(@wit, '#', '')"/><xsl:text>   </xsl:text>
+            		<!--<xsl:value-of select="translate(@wit, '#', '')"/><xsl:text>   </xsl:text>-->
+            	  <xsl:call-template name="sigla"/>
             	</xsl:when>
               <xsl:when test="./@type='correction-substitution'">
             		<xsl:value-of select="tei:subst/tei:add"/><xsl:text> </xsl:text>
             		<em>corr. ex</em><xsl:text> </xsl:text>
             		<xsl:value-of select="tei:subst/tei:del"/><xsl:text> </xsl:text>
-            		<xsl:value-of select="translate(@wit, '#', '')"/><xsl:text>   </xsl:text>
+            		<!--<xsl:value-of select="translate(@wit, '#', '')"/><xsl:text>   </xsl:text>-->
+                <xsl:call-template name="sigla"/>
             	</xsl:when>
-
             	<xsl:otherwise>
                 <xsl:value-of select="."/><xsl:text> </xsl:text>
-            	  <xsl:choose>
+            	  <!--<xsl:choose>
             	    <xsl:when test="./@facs">
-               	  <xsl:variable name="ms" select="translate(./@wit, '#', '')"/>
-               	  <xsl:variable name="msSlug" select="/tei:TEI/tei:teiHeader[1]/tei:fileDesc[1]/tei:sourceDesc[1]/tei:listWit[1]/tei:witness[@xml:id=$ms]/@n"/>
-               	  <xsl:variable name="line" select="substring-after(./@facs, '/')"/>
-               	  <xsl:variable name="surface" select="substring-before(./@facs, '/')"/>
+                 	  <xsl:variable name="ms" select="translate(./@wit, '#', '')"/>
+                 	  <xsl:variable name="msSlug" select="/tei:TEI/tei:teiHeader[1]/tei:fileDesc[1]/tei:sourceDesc[1]/tei:listWit[1]/tei:witness[@xml:id=$ms]/@n"/>
+                 	  <xsl:variable name="line" select="substring-after(./@facs, '/')"/>
+                 	  <xsl:variable name="surface" select="substring-before(./@facs, '/')"/>
                    <span class="show-line-witness" data-ln="{$line}" data-pb="{$surface}" data-codex="{$msSlug}" data-surfaceid="{concat($msSlug, '/', $surface)}">
                      <xsl:value-of select="translate(@wit, '#', '')"/><xsl:text>   </xsl:text>
                    </span>
@@ -659,12 +664,29 @@
             	    <xsl:otherwise>
             	      <xsl:value-of select="translate(@wit, '#', '')"/><xsl:text>   </xsl:text>
             	    </xsl:otherwise>
-            	  </xsl:choose>
+            	  </xsl:choose>-->
+            	  <xsl:call-template name="sigla"/>
               </xsl:otherwise>
             </xsl:choose>
           </xsl:for-each>
         </li>
       </xsl:for-each>
     </ul>
+  </xsl:template>
+  <xsl:template name="sigla">
+    <xsl:choose>
+      <xsl:when test="./@facs">
+        <xsl:variable name="ms" select="translate(./@wit, '#', '')"/>
+        <xsl:variable name="msSlug" select="/tei:TEI/tei:teiHeader[1]/tei:fileDesc[1]/tei:sourceDesc[1]/tei:listWit[1]/tei:witness[@xml:id=$ms]/@n"/>
+        <xsl:variable name="line" select="substring-after(./@facs, '/')"/>
+        <xsl:variable name="surface" select="substring-before(./@facs, '/')"/>
+        <span class="show-line-witness" data-ln="{$line}" data-pb="{$surface}" data-codex="{$msSlug}" data-surfaceid="{concat($msSlug, '/', $surface)}">
+          <xsl:value-of select="translate(@wit, '#', '')"/><xsl:text>   </xsl:text>
+        </span>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="translate(@wit, '#', '')"/><xsl:text>   </xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 </xsl:stylesheet>
