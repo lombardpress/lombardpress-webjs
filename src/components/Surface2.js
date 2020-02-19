@@ -174,7 +174,7 @@ componentDidMount(){
               canvasShort={canvasShort}
               text={text}
               label={label}
-              number={i}
+              number={i + 1}
               targetLabel={this.props.targetLabel}
               surfaceButton={false}
               displayWidth={this.props.width ? this.props.width : this.state.width}
