@@ -341,22 +341,30 @@
   <xsl:template match="tei:body//tei:lb[not(parent::tei:reg)]">
     <!-- first check global setting to see if line breaks should be shown -->
     <xsl:if test="$show-line-breaks = 'true'">
-      <xsl:variable name="followingPageBreak" select="count(./preceding::tei:pb[1]//following::tei:lb[not(parent::tei:reg)])"/>
-      <!--<xsl:message><xsl:value-of select="$followingPageBreak"/></xsl:message>-->
-
-      <xsl:variable name="followingLineBreak" select="count(.//following::tei:lb[not(parent::tei:reg)])"/>
-      <!--<xsl:message><xsl:value-of select="$followingLineBreak"/></xsl:message>-->
-      <!--<xsl:variable name="lineNumber" select="$followingPageBreak - $followingLineBreak"/>-->
-      <!--<xsl:message><xsl:value-of select="$lineNumber"/></xsl:message>-->
       <xsl:variable name="pbNumber" select="./preceding::tei:pb[1]/@n"/>
       <xsl:variable name="lineNumber">
         <xsl:choose>
+          <xsl:when test="./@n">
+            <xsl:value-of select="./@n"/>
+          </xsl:when>
           <xsl:when test="not(./preceding::tei:pb[1][ancestor::tei:body])">
+            <xsl:variable name="followingPageBreak" select="count(./preceding::tei:pb[1]//following::tei:lb[not(parent::tei:reg)])"/>
+            <!--<xsl:message><xsl:value-of select="$followingPageBreak"/></xsl:message>-->
+            <xsl:variable name="followingLineBreak" select="count(.//following::tei:lb[not(parent::tei:reg)])"/>
+            <!--<xsl:message><xsl:value-of select="$followingLineBreak"/></xsl:message>-->
+            <!--<xsl:variable name="lineNumber" select="$followingPageBreak - $followingLineBreak"/>-->
+            <!--<xsl:message><xsl:value-of select="$lineNumber"/></xsl:message>-->
             <xsl:variable name="lineCount" select="$followingPageBreak - $followingLineBreak"/>
             <xsl:variable name="startline"><xsl:value-of select="//tei:body//following::tei:lb[1]/@n"/></xsl:variable>
             <xsl:value-of select="$lineCount + $startline - 1"/>
           </xsl:when>
           <xsl:otherwise>
+            <xsl:variable name="followingPageBreak" select="count(./preceding::tei:pb[1]//following::tei:lb[not(parent::tei:reg)])"/>
+            <!--<xsl:message><xsl:value-of select="$followingPageBreak"/></xsl:message>-->
+            <xsl:variable name="followingLineBreak" select="count(.//following::tei:lb[not(parent::tei:reg)])"/>
+            <!--<xsl:message><xsl:value-of select="$followingLineBreak"/></xsl:message>-->
+            <!--<xsl:variable name="lineNumber" select="$followingPageBreak - $followingLineBreak"/>-->
+            <!--<xsl:message><xsl:value-of select="$lineNumber"/></xsl:message>-->
             <xsl:value-of select="$followingPageBreak - $followingLineBreak"/>
           </xsl:otherwise>
         </xsl:choose>

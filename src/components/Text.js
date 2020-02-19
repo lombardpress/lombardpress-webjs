@@ -1,5 +1,5 @@
 import React from 'react';
-
+import Spinner from './Spinner';
 import $ from 'jquery';
 
 import {convertXMLDoc, scrollToParagraph} from './utils'
@@ -8,6 +8,9 @@ class Text extends React.Component {
   constructor(props){
     super(props)
     this.retrieveText = this.retrieveText.bind(this)
+    this.state = {
+      fetching: false
+    }
 
 
   }
@@ -30,8 +33,10 @@ class Text extends React.Component {
       const xslurl = "/xslt/main_view.xsl"
 
       //conversion done in promise in utils.js file
+      this.setState({fetching: true})
       const resultDocument = convertXMLDoc(xmlurl, xslurl)
       resultDocument.then((data) => {
+        this.setState({fetching: false})
         //appendage to file
         //and event binding
         //happens inside promise call back
@@ -160,11 +165,20 @@ class Text extends React.Component {
 
   }
   render(){
+    const displayText = this.state.fetching ? "none" : "block"
 
     return (
       <div>
-        <div id="text"></div>
-      </div>
+        {
+          this.state.fetching
+          &&
+          <div style={{position: "fixed", top: "50%", left: "50%"}}>
+          <Spinner/>
+          </div>
+        }
+        <div id="text" style={{display: displayText}}></div>
+        </div>
+
     );
   }
 }
