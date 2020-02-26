@@ -3,6 +3,7 @@ import Container from 'react-bootstrap/Container';
 import PropTypes from 'prop-types';
 import Axios from 'axios'
 
+import ImageLogo from './ImageLogo';
 import ImageTextWrapper from './ImageTextWrapper';
 
 import {runQuery} from './utils'
@@ -230,6 +231,7 @@ componentDidMount(){
     return (
       <Container className={this.props.hidden ? "hidden" : "showing"}>
       {displayAllImages()}
+      <ImageLogo imageurl={this.state.surfaces[0] ? this.state.surfaces[0].imageurl : ""}/>
       </Container>
 
     );
