@@ -47,6 +47,18 @@
         "origin": "AUTHORED",
         "exported": true
     },
+    "jeffreycwitt.lbp/image-logo@0.0.1": {
+        "files": [
+            {
+                "relativePath": "src/components/ImageLogo.js",
+                "test": false,
+                "name": "ImageLogo.js"
+            }
+        ],
+        "mainFile": "src/components/ImageLogo.js",
+        "origin": "AUTHORED",
+        "exported": true
+    },
     "jeffreycwitt.lbp/manifestation-list@0.0.2": {
         "files": [
             {
