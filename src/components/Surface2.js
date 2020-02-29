@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 
 import ImageTextWrapper from './ImageTextWrapper';
 import ImageLogo from './ImageLogo';
+import OSDInstance from './OSDInstance';
 
 import {runQuery} from './utils'
 import {getSurfaceInfo} from './Queries'
@@ -191,7 +192,8 @@ componentDidMount(){
       }
       else{
         const width = this.props.width ? this.props.width : this.state.width
-        return <img alt="manuscript" src={this.state.imageurl + "/" + this.state.region + "/" + width + ",/0/default.jpg"}/>
+        //return <img alt="manuscript" src={this.state.imageurl + "/" + this.state.region + "/" + width + ",/0/default.jpg"}/>
+        return <OSDInstance key={this.state.imageurl} imageurl={this.state.imageurl}/>
       }
     }
     return (

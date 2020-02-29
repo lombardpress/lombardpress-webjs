@@ -7,6 +7,7 @@ import About from "./About"
 import NavBar from './NavBar';
 import Spinner from './Spinner';
 import Footer from './Footer';
+import OSDInstance from './OSDInstance';
 
 import 'bootstrap/dist/css/bootstrap.css'
 import '../styles/App.scss';
@@ -24,6 +25,7 @@ const AppRouter = () => {
           <Route path="/text"  exact={true} component={TextSwitch}/>
           <Route path="/about" exact={true} component={About}/>
           <Route path="/search" exact={true} component={Search3}/>
+          <Route path="/osd" exact={true} component={OSDInstance}/>
           {
             //<Route path="/edit/:id" exact={true} component={EditExpensePage}/>
           //<Route path="/help" exact={true} component={HelpPage}/>
