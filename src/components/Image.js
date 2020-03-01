@@ -1,4 +1,5 @@
 import React from 'react';
+import OSDInstance from './OSDInstance';
 import PropTypes from 'prop-types';
 
 function Image(props) {
@@ -16,7 +17,8 @@ function Image(props) {
 
   const imageLink = props.imageUrl + "/" + newCoords + "/" + props.displayWidth + ",/0/default.jpg"
   return (
-    <img alt="manuscript" src={imageLink}/>
+      //<img alt="manuscript" src={imageLink}/>
+      <OSDInstance imageurl={props.imageUrl} coords={props.coords}/>
   );
 }
 
