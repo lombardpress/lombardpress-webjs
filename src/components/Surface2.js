@@ -193,7 +193,7 @@ componentDidMount(){
       else{
         const width = this.props.width ? this.props.width : this.state.width
         //return <img alt="manuscript" src={this.state.imageurl + "/" + this.state.region + "/" + width + ",/0/default.jpg"}/>
-        return <OSDInstance key={this.state.imageurl} imageurl={this.state.imageurl}/>
+        return <OSDInstance imageurl={this.state.imageurl}/>
       }
     }
     return (

@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, {useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import OpenSeadragon from 'openseadragon';
 import Axios from 'axios'
 
 const OSDInstance = (props) => {
+  const [instance, setInstance] = useState()
   useEffect(() => {
     Axios.get(props.imageurl + "/info.json").then((d) => {
       console.log("data", d.data)
@@ -16,29 +17,56 @@ const OSDInstance = (props) => {
         nextButton: "next",
         previousButton: "previous"
       };
-      const viewer = OpenSeadragon({
-        id: "osd",
-        prefixUrl: "/img/openseadragon/",
-        preserveViewport: true,
-        visibilityRatio: 1,
-        minZoomLevel: 1,
-        defaultZoomLevel: 1,
-        tileSources: [d.data],
-        ...customControlIds,
-        overlays: [{
-          id: 'example-overlay',
-          x: 0.33,
-          y: 0.75,
-          width: 0.2,
-          height: 0.25,
-          className: 'osdhighlight'
-        }]
-      })
-    })
+      if (instance){
+        // Modify tile source as needed
+        instance.addTiledImage({
+            tileSource: d.data
+        });
+      }
+      else{
+        setInstance(
+          OpenSeadragon({
+          id: "osd",
+          prefixUrl: "/img/openseadragon/",
+          preserveViewport: true,
+          visibilityRatio: 1,
+          minZoomLevel: 1,
+          defaultZoomLevel: 1,
+          tileSources: [d.data],
+          ...customControlIds,
+          overlays: [{
+            id: 'example-overlay',
+            x: 0.33,
+            y: 0.75,
+            width: 0.2,
+            height: 0.25,
+            className: 'osdhighlight'
+          }]
+        })
+      )
+    }
+  })
   }, [props.imageurl])
+  const handleAddOverlay = () => {
+    console.log('click firining')
+    
+    const elt = document.createElement("div");
+    elt.id = "runtime-overlay1";
+    elt.className = "osdhighlight";
+    instance.addOverlay({
+        element: elt,
+        location: new OpenSeadragon.Rect(0.33, 0.90, 0.4, 0.45)
+    });
+    
+    
+  }
+  
 
   return (
     <div>
+      {
+      //<p onClick={handleAddOverlay}>Add overlay</p>
+      }
       <div id={"osd"} className="open-seadragon-container" style={{ height: '100vh' }}></div>
     </div>
   )
