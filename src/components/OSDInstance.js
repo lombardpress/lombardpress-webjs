@@ -137,4 +137,4 @@ OSDInstance.propTypes = {
 
 }
 
-export default OSDInstance;git
+export default OSDInstance;
