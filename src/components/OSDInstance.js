@@ -82,31 +82,40 @@ const OSDInstance = (props) => {
           minZoomLevel: 1,
           defaultZoomLevel: 1,
           tileSources: [d.data],
-          ...customControlIds,
-          overlays: [{
-            id: 'example-overlay',
-            x: 0.33,
-            y: 0.75,
-            width: 0.2,
-            height: 0.25,
-            className: 'osdhighlight'
-          }]
+          //...customControlIds,
         })
         setBounds(instance, props.coords, d.data.width, d.data.height)
+        setOverlay(instance, props.coords, d.data.width, d.data.height)
         setInstance(instance)
       }
     })
   }, [props.imageurl, props.coords])
-  const handleAddOverlay = () => {
-    console.log('click firining')
+  const setOverlay = (instance, inputCoords, imageW, imageH) => {
+    if (inputCoords) {
+    instance.addHandler("open", function () {
+      const coords = inputCoords.split(",")
+      const x = parseInt(coords[0])
+      const y = parseInt(coords[1])
+      const w = parseInt(coords[2])
+      const h = parseInt(coords[3])
 
-    const elt = document.createElement("div");
-    elt.id = "runtime-overlay1";
-    elt.className = "osdhighlight";
-    instance.addOverlay({
-      element: elt,
-      location: new OpenSeadragon.Rect(0.33, 0.90, 0.4, 0.45)
-    });
+      const ar = imageH / imageH
+      const xcomp = x / imageW
+      const ycomp = (y / imageH) * ar
+      const wcomp = w / imageW
+      const hcomp = (h / imageH) * ar
+
+      const newRect = instance.viewport.imageToViewportRectangle(x, y, w, h)
+
+      const elt = document.createElement("div");
+      elt.id = "runtime-overlay1";
+      elt.className = "osdhighlight";
+      instance.addOverlay({
+        element: elt,
+        location: newRect
+      });
+    })
+  }
 
 
   }
@@ -119,7 +128,7 @@ const OSDInstance = (props) => {
       }
       {
         props.coords ? <div id={"osd-" + props.coords} className="open-seadragon-container" style={{ height: props.coords ? props.coords.split(",")[3] + "px" : "1000px", width: props.coords ? props.coords.split(",")[2] + "px" : "" }}></div>
-        : <div id="osd" className="open-seadragon-container" style={{ height: "1000px" }}></div>
+          : <div id="osd" className="open-seadragon-container" style={{ height: "1000px" }}></div>
       }
 
     </div>
