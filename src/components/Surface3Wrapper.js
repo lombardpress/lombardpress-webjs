@@ -75,7 +75,11 @@ class Surface3Wrapper extends React.Component {
     const displayManifestation = () => {
       const manifestation = this.props.manifestations.map((m) => {
         if (m.manifestation === this.state.focusedManifestation){
-          return <Surface3 key={"surface-" + m.manifestation} manifestationid={m.manifestation} annotationsDisplay={this.state.annotationsDisplay} width={this.props.width}/>
+          return <Surface3 key={"surface-" + m.manifestation} 
+          manifestationid={m.manifestation} 
+          annotationsDisplay={this.state.annotationsDisplay} 
+          width={this.props.width}
+          lineFocusId={this.props.lineFocusId}/>
         }
         else{
           return null

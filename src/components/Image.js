@@ -2,6 +2,7 @@ import React from 'react';
 import OSDInstance from './OSDInstance';
 import PropTypes from 'prop-types';
 
+// TODO: osd component makes this component fairly obsolute or a least exchangeable
 function Image(props) {
   let newCoords = ""
   if (props.coords){
@@ -18,7 +19,7 @@ function Image(props) {
   const imageLink = props.imageUrl + "/" + newCoords + "/" + props.displayWidth + ",/0/default.jpg"
   return (
       //<img alt="manuscript" src={imageLink}/>
-      <OSDInstance imageurl={props.imageUrl} coords={props.coords}/>
+      <OSDInstance imageurl={props.imageUrl} coords={props.coords} displayWidth={props.displayWidth} lineFocusCoords={props.lineFocusCoords}/>
   );
 }
 

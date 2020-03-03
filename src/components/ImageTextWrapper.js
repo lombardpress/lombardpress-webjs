@@ -30,6 +30,7 @@ class ImageTextWrapper extends Component {
           coords={this.props.coords}
           canvasShort={this.props.canvasShort}
           displayWidth={this.props.displayWidth}
+          lineFocusCoords={this.props.lineFocusCoords}
           />
         </div>
         <LineText text={this.props.text} number={this.props.number} label={this.props.label}/>

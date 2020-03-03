@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import OpenSeadragon from 'openseadragon';
 import Axios from 'axios'
+import uuidv4 from 'uuid/v4';
 
 const OSDInstance = (props) => {
   const [instance, setInstance] = useState()
   const [viewerWidthHeight, setViewerWidthHeight] = useState({ w: "", h: "" })
+  const [viewerId] = useState(uuidv4())
   useEffect(() => {
     if (props.coords){
       setViewerWidthHeight(computeViewerWidthHeight(props.coords.split(",")[2], props.coords.split(",")[3]))
@@ -25,12 +27,20 @@ const OSDInstance = (props) => {
           const rect = new OpenSeadragon.Rect(sc.x, sc.y, sc.w, sc.h)
           setBounds(instance, rect)
           setOverlay(instance, rect)
+          if (props.lineFocusCoords){
+            console.log('inside new set overlay')
+            console.log("instance", instance)
+            const lsc = getScalarCoordinates(props.lineFocusCoords, d.data.height, d.data.width)
+            const linerect = new OpenSeadragon.Rect(lsc.x, lsc.y, lsc.w, lsc.h)
+            setOverlay(instance, linerect)
+          
+          }
           setGoHome(instance, rect)
           instance.viewport.fitBounds(rect)
         }
       }
       else {
-        const id = props.coords ? "osd-" + props.coords : "osd"
+        const id = "osd-" + viewerId
         const instance = OpenSeadragon({
           id: id,
           prefixUrl: "/img/openseadragon/",
@@ -47,18 +57,29 @@ const OSDInstance = (props) => {
           const rect = new OpenSeadragon.Rect(sc.x, sc.y, sc.w, sc.h)
           setBounds(instance, rect)
           setOverlay(instance, rect)
+          if (props.lineFocusCoords){
+            console.log('inside new set overlay')
+            console.log("instance", instance)
+            const lsc = getScalarCoordinates(props.lineFocusCoords, d.data.height, d.data.width)
+            const linerect = new OpenSeadragon.Rect(lsc.x, lsc.y, lsc.w, lsc.h)
+            setOverlay(instance, linerect)
+          
+        }
           setGoHome(instance, rect)
 
         }
+        
 
         setInstance(instance)
       }
     })
   }, [props.imageurl, props.coords])
+
   const setOverlay = (instance, rect) => {
     instance.addHandler("open", function () {
+      const id = uuidv4()
       const elt = document.createElement("div");
-      elt.id = "runtime-overlay1";
+      elt.id = "runtime-overlay-" + id;
       elt.className = "osdhighlight";
       instance.addOverlay({
         element: elt,
@@ -79,7 +100,7 @@ const OSDInstance = (props) => {
     }
   }
   const getScalarCoordinates = (inputCoords, imageH, imageW) => {
-    const coords = props.coords.split(",")
+    const coords = inputCoords.split(",")
     const x = parseInt(coords[0])
     const y = parseInt(coords[1])
     const w = parseInt(coords[2])
@@ -93,11 +114,11 @@ const OSDInstance = (props) => {
     return { x: xcomp, y: ycomp, w: wcomp, h: hcomp }
   }
   const computeViewerWidthHeight = (w, h) => {
-    const desiredWidth = props.desiredWidth
-    const newHeight = desiredWidth * (parseInt(h) / parseInt(w))
+    const displayWidth = props.displayWidth
+    const newHeight = displayWidth * (parseInt(h) / parseInt(w))
     console.log("newHeight", newHeight)
-    console.log(desiredWidth, newHeight)
-    return { w: desiredWidth, h: newHeight }
+    console.log(displayWidth, newHeight)
+    return { w: displayWidth, h: newHeight }
   }
   return (
     <div>
@@ -105,8 +126,8 @@ const OSDInstance = (props) => {
         //<p onClick={handleAddOverlay}>Add overlay</p>
       }
       {
-        props.coords ? <div id={"osd-" + props.coords} className="open-seadragon-container" style={{ height: viewerWidthHeight.h + "px", width: viewerWidthHeight.w + "px" }}></div>
-          : <div id="osd" className="open-seadragon-container" style={{ height: "100vh" }}></div>
+        props.coords ? <div id={"osd-" + viewerId} className="open-seadragon-container" style={{ height: viewerWidthHeight.h + "px", width: viewerWidthHeight.w + "px" }}></div>
+          : <div id={"osd-" + viewerId} className="open-seadragon-container" style={{ height: "100vh" }}></div>
       }
 
     </div>
@@ -115,7 +136,7 @@ const OSDInstance = (props) => {
 
 OSDInstance.defaultProps = {
   imageurl: "https://loris2.scta.info/vat/V145v.jpg",
-  desiredWidth: 1000
+  displayWidth: 1000
 };
 OSDInstance.propTypes = {
   /**

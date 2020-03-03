@@ -203,6 +203,19 @@ componentDidMount(){
         const imageUrl = h ? h.imageUrl : ""
         // check to see if an Image Url has been found.
         // if not show "error message"
+        
+        // get line coordinates for focused line
+        let lineFocusCoords = ""
+        if (this.props.lineFocusId){
+          console.log("line focus id", this.props.lineFocusId)
+          surface.annotations.forEach((h, i) => {
+            if (parseInt(this.props.lineFocusId.split("/")[this.props.lineFocusId.split("/").length - 1]) === (i + 1) ){
+              lineFocusCoords = h.on.split("#xywh=")[1];
+            }
+          })
+        }
+        console.log('focus line coords', lineFocusCoords)
+
         if (imageUrl){
 
           return (
@@ -217,6 +230,7 @@ componentDidMount(){
               targetLabel={""}
               surfaceButton={false}
               displayWidth={this.props.width}
+              lineFocusCoords={lineFocusCoords}
               />
             )
           }
