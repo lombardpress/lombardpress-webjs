@@ -116,6 +116,7 @@ class Window extends React.Component {
             handleToggleTextLinesView={this.handleToggleTextLinesView}
             handleChangeManifestation={this.handleChangeManifestation}
             width={this.props.windowType === 'bottomWindow' ? "1000" : "501"}
+            lineFocusId={this.props.lineFocusId}
             hidden={this.state.windowLoad !== "surface3"}/>}
 
             {
