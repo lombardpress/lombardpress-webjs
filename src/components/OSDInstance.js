@@ -5,130 +5,108 @@ import Axios from 'axios'
 
 const OSDInstance = (props) => {
   const [instance, setInstance] = useState()
-  const setBounds = (instance, inputCoords, imageW, imageH) => {
-    if (inputCoords) {
-      instance.addHandler("open", function () {
-
-        const coords = inputCoords.split(",")
-        const x = parseInt(coords[0])
-        const y = parseInt(coords[1])
-        const w = parseInt(coords[2])
-        const h = parseInt(coords[3])
-
-        const ar = imageH / imageH
-        const xcomp = x / imageW
-        const ycomp = (y / imageH) * ar
-        const wcomp = w / imageW
-        const hcomp = (h / imageH) * ar
-
-        const newRect = instance.viewport.imageToViewportRectangle(x, y, w, h)
-
-
-        /** 
-        
-        :xcomp => (result[:ulx].to_s.to_i / totalW),
-        :ycomp => (result[:uly].to_s.to_i / totalH) * aspectratio,
-        :heightcomp => (result[:height].to_s.to_i / totalH) * aspectratio,
-        :widthcomp => result[:width].to_s.to_i / totalW,
-        
-        **/
-
-        const rect = new OpenSeadragon.Rect(xcomp, ycomp, wcomp, hcomp)
-        console.log("rect", rect)
-
-        const myBounds = instance.viewport.fitBounds(newRect, true);
-
-        //this helps to keep the viewer in the same spot when toggling full screen
-        instance.preserveViewport = true;
-
-        /* this resets the home tool tip to the rectangle focused on
-          i'm not sure what contentSize.x does -- but it's important for this reset of home to work correctly
-          this below line kind of works, but it prevents someone from being able to move around and navigate away from Home.
-  
-        */
-        //instance.viewport.setHomeBounds(rect, instance.viewport.contentSize.x);
-
-
-
-      });
+  const [viewerWidthHeight, setViewerWidthHeight] = useState({ w: "", h: "" })
+  useEffect(() => {
+    if (props.coords){
+      setViewerWidthHeight(computeViewerWidthHeight(props.coords.split(",")[2], props.coords.split(",")[3]))
     }
-
-  }
+  }, [props.coords])
   useEffect(() => {
     Axios.get(props.imageurl + "/info.json").then((d) => {
-      console.log("data", d.data)
-      //d.data["tiles"] = [{"scaleFactors": [1, 2, 4, 8], "width": 300}]
-      const customControlIds = {
-        zoomInButton: "zoom-in",
-        zoomOutButton: "zoom-out",
-        //homeButton: "home",
-        fullPageButton: "full-page",
-        nextButton: "next",
-        previousButton: "previous"
-      };
       if (instance) {
-        // Modify tile source as needed
+        // Modify tile source as needed to already existing instance
         instance.addTiledImage({
           tileSource: d.data
         });
+        if (props.coords) {
+          // this should be another way to get Scalar coordinates, but it doesn't seem to be working
+          //const newRect = instance.viewport.imageToViewportRectangle(x, y, w, h)
+          const sc = getScalarCoordinates(props.coords, d.data.height, d.data.width)
+          const rect = new OpenSeadragon.Rect(sc.x, sc.y, sc.w, sc.h)
+          setBounds(instance, rect)
+          setOverlay(instance, rect)
+          setGoHome(instance, rect)
+          instance.viewport.fitBounds(rect)
+        }
       }
       else {
         const id = props.coords ? "osd-" + props.coords : "osd"
         const instance = OpenSeadragon({
           id: id,
           prefixUrl: "/img/openseadragon/",
-          preserveViewport: true,
+          preserveViewport: true, //this helps to keep the viewer in the same spot when toggling full screen
           visibilityRatio: 1,
           minZoomLevel: 1,
           defaultZoomLevel: 1,
-          tileSources: [d.data],
-          //...customControlIds,
+          tileSources: [d.data]
         })
-        setBounds(instance, props.coords, d.data.width, d.data.height)
-        setOverlay(instance, props.coords, d.data.width, d.data.height)
+        if (props.coords) {
+          // this should be another way to get Scalar coordinates, but it doesn't seem to be working
+          //const newRect = instance.viewport.imageToViewportRectangle(x, y, w, h)
+          const sc = getScalarCoordinates(props.coords, d.data.height, d.data.width)
+          const rect = new OpenSeadragon.Rect(sc.x, sc.y, sc.w, sc.h)
+          setBounds(instance, rect)
+          setOverlay(instance, rect)
+          setGoHome(instance, rect)
+
+        }
+
         setInstance(instance)
       }
     })
   }, [props.imageurl, props.coords])
-  const setOverlay = (instance, inputCoords, imageW, imageH) => {
-    if (inputCoords) {
+  const setOverlay = (instance, rect) => {
     instance.addHandler("open", function () {
-      const coords = inputCoords.split(",")
-      const x = parseInt(coords[0])
-      const y = parseInt(coords[1])
-      const w = parseInt(coords[2])
-      const h = parseInt(coords[3])
-
-      const ar = imageH / imageH
-      const xcomp = x / imageW
-      const ycomp = (y / imageH) * ar
-      const wcomp = w / imageW
-      const hcomp = (h / imageH) * ar
-
-      const newRect = instance.viewport.imageToViewportRectangle(x, y, w, h)
-
       const elt = document.createElement("div");
       elt.id = "runtime-overlay1";
       elt.className = "osdhighlight";
       instance.addOverlay({
         element: elt,
-        location: newRect
+        location: rect
       });
     })
   }
-
-
+  const setBounds = (instance, rect) => {
+    instance.addHandler("open", function () {
+      instance.viewport.fitBounds(rect, true);
+    });
   }
+  const setGoHome = (instance, rect) => {
+    //OpenSeadragon.Viewport.prototype.goHome = function () {
+    instance.viewport.goHome = function () {
+      // Give it whatever rectangle you want
+      this.fitBounds(rect);
+    }
+  }
+  const getScalarCoordinates = (inputCoords, imageH, imageW) => {
+    const coords = props.coords.split(",")
+    const x = parseInt(coords[0])
+    const y = parseInt(coords[1])
+    const w = parseInt(coords[2])
+    const h = parseInt(coords[3])
 
-
+    const ar = imageH / imageW
+    const xcomp = x / imageW
+    const ycomp = (y / imageH) * ar
+    const wcomp = w / imageW
+    const hcomp = (h / imageH) * ar
+    return { x: xcomp, y: ycomp, w: wcomp, h: hcomp }
+  }
+  const computeViewerWidthHeight = (w, h) => {
+    const desiredWidth = props.desiredWidth
+    const newHeight = desiredWidth * (parseInt(h) / parseInt(w))
+    console.log("newHeight", newHeight)
+    console.log(desiredWidth, newHeight)
+    return { w: desiredWidth, h: newHeight }
+  }
   return (
     <div>
       {
         //<p onClick={handleAddOverlay}>Add overlay</p>
       }
       {
-        props.coords ? <div id={"osd-" + props.coords} className="open-seadragon-container" style={{ height: props.coords ? props.coords.split(",")[3] + "px" : "1000px", width: props.coords ? props.coords.split(",")[2] + "px" : "" }}></div>
-          : <div id="osd" className="open-seadragon-container" style={{ height: "1000px" }}></div>
+        props.coords ? <div id={"osd-" + props.coords} className="open-seadragon-container" style={{ height: viewerWidthHeight.h + "px", width: viewerWidthHeight.w + "px" }}></div>
+          : <div id="osd" className="open-seadragon-container" style={{ height: "100vh" }}></div>
       }
 
     </div>
@@ -136,7 +114,8 @@ const OSDInstance = (props) => {
 }
 
 OSDInstance.defaultProps = {
-  imageurl: "https://loris2.scta.info/vat/V145v.jpg"
+  imageurl: "https://loris2.scta.info/vat/V145v.jpg",
+  desiredWidth: 1000
 };
 OSDInstance.propTypes = {
   /**
