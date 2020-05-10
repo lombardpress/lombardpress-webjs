@@ -308,9 +308,16 @@ export function basicInfoQuery(itemExpressionUri){
       "OPTIONAL {",
       "<" + resourceurl + "> <http://scta.info/property/isPartOfTopLevelTransription> ?topLevel . ",
       "}",
-      "OPTIONAL {",
-      "<" + resourceurl + "> <http://scta.info/property/isPartOfStructureItem> ?itemParent . ",
-      "}",
+        "OPTIONAL {",
+          "{",
+          "<" + resourceurl + "> <http://scta.info/property/isPartOfStructureItem> ?itemParent . ",
+          "}",
+        "UNION",
+          "{",
+          "<" + resourceurl + "> <http://scta.info/property/isPartOfStructureBlock> ?blockParent . ",
+          "?blockParent  <http://scta.info/property/isPartOfStructureItem> ?itemParent .",
+          "}",
+        "}",
       "}"].join('');
       return query
     }
