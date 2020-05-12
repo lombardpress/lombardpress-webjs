@@ -1,17 +1,31 @@
 import React, {useState, useEffect} from 'react';
 import Container from 'react-bootstrap/Container';
 import FormControl from 'react-bootstrap/FormControl';
+import PropTypes from 'prop-types';
 import Comment2Create from './Comment2Create.js'
 import Comment2Item from './Comment2Item.js'
 import uuidv4 from 'uuid/v4';
 import Button from 'react-bootstrap/Button';
 import {useTranslation} from 'react-i18next'
 
+/**
+ * 
+ * A comment wrapper for submitting comments to local storage
+ * 
+ */
+
 function Comments2(props) {
   const {t} = useTranslation();
   const [comments, setComments] = useState(JSON.parse(localStorage.getItem("sctaCommentsState")) || []);
   const [showFocusComments, setShowFocusComments] = useState(true)
   const [commentFilter, setCommentFilter] = useState("")
+
+  /**
+   * submit the comment
+   * 
+   * @param {string} comment 
+   * @public
+   */
   const submitComment = (comment) => {
     const randomid = uuidv4();
     const annoId = "http://inbox.scta.info/notifications/" + randomid
@@ -99,6 +113,16 @@ function Comments2(props) {
 
     </Container>
   );
+}
+
+Comments2.propTypes = {
+  /**
+  * 
+  * resourceid to serve as target of annotation
+  *
+  */
+  resourceid: PropTypes.string.isRequired,
+
 }
 
 export default Comments2;
