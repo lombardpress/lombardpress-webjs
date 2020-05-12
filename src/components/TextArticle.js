@@ -24,7 +24,7 @@ class TextArticle extends React.Component {
     if (doc){
       //construct file url request ot exist db to get a cors enabled copy of the text (github does not serve files with cors enabled)
       const doc = this.props.doc;
-      const docFragment = doc.split("/master/")[1].split("/")[1]
+      
 
 
       let xmlurl = ""
@@ -32,6 +32,7 @@ class TextArticle extends React.Component {
          xmlurl = doc
        }
        else{
+        const docFragment = doc.split("/master/")[1].split("/")[1]
          xmlurl = "https://exist.scta.info/exist/apps/scta-app/text/scta-articles/" + docFragment
        }
       let xslurl = ""
