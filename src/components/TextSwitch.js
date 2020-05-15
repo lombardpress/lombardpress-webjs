@@ -100,7 +100,7 @@ class TextSwitch extends React.Component {
       }
       else if (structureType === "http://scta.info/resource/structureItem" ){
         if (type === "http://scta.info/resource/transcription"){
-          this.setState({itemTranscriptionId: resourceid, displayType: "item", blockDivFocus: "", resourceTitle: resourceTitle})
+          this.setState({itemTranscriptionId: resourceid, displayType: "item", blockDivFocus: resourceid.split("/resource/")[1].split("/")[0], resourceTitle: resourceTitle})
         }
         else {
           const structureTypePromise = runQuery(getItemTranscription(resourceid))
@@ -109,7 +109,7 @@ class TextSwitch extends React.Component {
               {
                 itemTranscriptionId: t.data.results.bindings[0] ? t.data.results.bindings[0].ctranscription.value : "", // conditional checks in case the query comes up empty; if empty it sets transcription id to ""
                 displayType: "item",
-                blockDivFocus: "",
+                blockDivFocus: resourceid.split("/resource/")[1].split("/")[0], // this string split is a bad way to be getting the expression level id
                 resourceTitle: resourceTitle})
               });
             }
@@ -117,7 +117,9 @@ class TextSwitch extends React.Component {
       else if (structureType === "http://scta.info/resource/structureElement" || structureType === "http://scta.info/resource/structureBlock" || structureType === "http://scta.info/resource/structureDivision" ){
         const structureTypePromise = runQuery(getItemTranscriptionFromBlockDiv(resourceid))
         structureTypePromise.then((t) => {
-          console.log(t)
+          console.log("test", t)
+          console.log("type", type)
+          
           // if transcription
           if (type === "http://scta.info/resource/transcription"){
             this.setState({itemTranscriptionId: itemParent, blockDivFocus: t.data.results.bindings[0].blockDivExpression.value, displayType: "item", resourceTitle: resourceTitle})

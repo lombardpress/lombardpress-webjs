@@ -205,7 +205,8 @@ class TextWrapper extends React.Component {
   //TODO
   //These two function should be refactored into one
   setFocus(id){
-    const fullid = id.includes("http") ? id + this.state.mtFocus : "http://scta.info/resource/" + id + this.state.mtFocus
+    //const fullid = id.includes("http") ? id + this.state.mtFocus : "http://scta.info/resource/" + id + this.state.mtFocus
+    const fullid = id.includes("http") ? id : "http://scta.info/resource/" + id
     this.props.handleUpdateUrlResource(fullid)
   }
   setFocus2(newid){
@@ -215,6 +216,7 @@ class TextWrapper extends React.Component {
 
 
   retrieveFocusInfo(id){
+    console.log("retrieving", id)
     const fullid = id.includes("http") ? id : "http://scta.info/resource/" + id
     // get info
     const info = runQuery(basicInfoQuery(fullid))
@@ -235,11 +237,13 @@ class TextWrapper extends React.Component {
   arrangeFocusInfo(info, resourceid){
       info.then((d) => {
         const bindings = d.data.results.bindings[0]
+        console.log("bindings", bindings)
         const manifestations = d.data.results.bindings.map((b) => {
+          console.log("data for structure element", b)
           return {
             manifestation: b.manifestation.value,
             manifestationTitle: b.manifestationTitle.value,
-            transcription: b.manifestationCTranscription.value
+            transcription: b.manifestationCTranscription ? b.manifestationCTranscription.value : ""
           }
         })
         // TODO the need for this 2nd query and async call might
@@ -267,11 +271,11 @@ class TextWrapper extends React.Component {
                 inbox: bindings.inbox.value,
                 next: bindings.next ? bindings.next.value : "",
                 previous: bindings.previous ? bindings.previous.value : "",
-                cdoc: bindings.cdoc.value,
-                cxml: bindings.cxml.value,
+                cdoc: bindings.cdoc ? bindings.cdoc.value : "",
+                cxml: bindings.cxml ? bindings.cxml.value : "",
                 topLevel: bindings.topLevelExpression.value,
                 cmanifestation: bindings.cmanifestation.value,
-                ctranscription: bindings.ctranscription.value,
+                ctranscription: bindings.ctranscription ? bindings.ctranscription.value : "",
                 manifestations: manifestations,
                 relatedExpressions: relatedExpressions
               }
@@ -370,6 +374,7 @@ class TextWrapper extends React.Component {
       this.setState({focus: ""});
     }
     else if (newProps.blockDivFocus !== this.props.blockDivFocus){
+      console.log("test", newProps.blockDivFocus)
       this.retrieveFocusInfo(newProps.blockDivFocus)
     }
   }
