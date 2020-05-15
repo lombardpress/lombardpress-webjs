@@ -1,5 +1,6 @@
 import React from 'react';
-import Qs from "query-string"
+import Qs from "query-string";
+import {Helmet} from "react-helmet";
 import TextWrapper from "./TextWrapper"
 import TextArticle from "./TextArticle"
 import Collection from "./Collection"
@@ -199,7 +200,7 @@ class TextSwitch extends React.Component {
         //TODO: now that workGroup is using TextOutlineWrapper i'm not sure there is any need for separation
         // the above conditional and this one should be combined
         return (
-          <Container className="collectionBody">
+          <Container className="collectionBody">   
           <h1>{this.state.resourceTitle}</h1>
           <p style={{"textAlign": "center"}}>By <Link to={"/text?resourceid=" + this.state.author}>{this.state.authorTitle}</Link></p>
           <Row>
@@ -266,8 +267,34 @@ class TextSwitch extends React.Component {
         return null
       }
     }
+  const dctype = () => {
+    if (this.state.displayType === "codex"){
+      return <meta name="BIB.type" content="Manuscript"/>
+    }
+    else{
+      return <meta name="DC.type" content="document"/>
+    }
+  }
   return (
-    display()
+    <div>
+      <Helmet>
+        <title>{this.state.resourceTitle}</title>
+        <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" ></link>
+        <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/"/>
+        <link rel="schema.BIB" href="http://purl.org/net/biblio#"/>
+        {dctype()}
+        <meta name="DC.identifier" content={this.state.resourceid}/>
+        {//<meta name="DC.description" content="test description"/>
+        }
+        <meta name="DC.title" content={this.state.resourceTitle}/>
+        <meta name="DC.creator" content={this.state.authorTitle}/>
+        <meta name="DC.Language" content="la"/>
+        <meta name="DC.Publisher" content="SCTA"/>
+        
+      </Helmet>
+      {display()}
+    </div>
+    
     );
   }
 
