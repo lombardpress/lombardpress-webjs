@@ -38,7 +38,7 @@ class TextCompare extends React.Component {
           return {
             manifestation: b.manifestation.value,
             manifestationTitle: b.manifestationTitle.value,
-            transcription: b.manifestationCTranscription.value
+            transcription: b.manifestationCTranscription ? b.manifestationCTranscription.value : ""
           }
         })
         if (this.mounted === true && bindings){
@@ -50,11 +50,11 @@ class TextCompare extends React.Component {
               inbox: bindings.inbox.value,
               next: bindings.next ? bindings.next.value : "",
               previous: bindings.previous ? bindings.previous.value : "",
-              cdoc: bindings.cdoc.value,
-              cxml: bindings.cxml.value,
+              cdoc: bindings.cdoc ? bindings.cdoc.value : "",
+              cxml: bindings.cxml ? bindings.cxml.value : "",
               topLevel: bindings.topLevelExpression.value,
-              cmanifestation: bindings.cmanifestation.value,
-              ctranscription: bindings.ctranscription.value,
+              cmanifestation: bindings.cmanifestation ? bindings.cmanifestation.value : "",
+              ctranscription: bindings.ctranscription ? bindings.ctranscription.value : "",
               manifestations: manifestations
             }
           });
@@ -121,7 +121,7 @@ class TextCompare extends React.Component {
       {
         // the link to reroute is not quite working, because the base Text is not resetting, focusBlockChange might be better; but item structure will also need to be changed.
       }
-      <p><span>{this.props.relationLabel}</span> <Link to={"/text?resourceid=" + this.state.info.resourceid}>{this.state.info.resourceid}</Link>
+      <p><span>{this.props.relationLabel}</span> <Link to={"/text?resourceid=" + this.state.info.resourceid}>{this.state.info.resourceid}</Link> {this.props.referringResource && <span>via</span>} <Link to={"/text?resourceid=" + this.props.referringResource}>{this.props.referringResource}</Link>
       <span onClick={() => this.handleToggleShowAll()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span></p>
       <div className={this.state.show ? "unhidden" : "hidden"}>
       {displayComparisons()}

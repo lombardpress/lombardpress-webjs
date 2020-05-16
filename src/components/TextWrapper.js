@@ -251,11 +251,13 @@ class TextWrapper extends React.Component {
         // see example pattern in articles collection
         const relatedExpressions = runQuery(getRelatedExpressions(resourceid))
         relatedExpressions.then((d) => {
+          console.log("related expressions", d)
           const bindings2 = d.data.results.bindings
           const relatedExpressions = bindings2.map((r) => {
               return {
                 resourceid: r.isRelatedTo.value,
-                relationLabel: r.label.value
+                relationLabel: r.label.value,
+                referringResource: r.element ? r.element.value : ""
               }
             });
 
