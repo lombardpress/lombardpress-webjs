@@ -205,8 +205,8 @@ class TextWrapper extends React.Component {
   //TODO
   //These two function should be refactored into one
   setFocus(id){
-    //const fullid = id.includes("http") ? id + this.state.mtFocus : "http://scta.info/resource/" + id + this.state.mtFocus
-    const fullid = id.includes("http") ? id : "http://scta.info/resource/" + id
+    const fullid = id.includes("http") ? id + this.state.mtFocus : "http://scta.info/resource/" + id + this.state.mtFocus
+    //const fullid = id.includes("http") ? id : "http://scta.info/resource/" + id
     this.props.handleUpdateUrlResource(fullid)
   }
   setFocus2(newid){
