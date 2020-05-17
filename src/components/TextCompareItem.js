@@ -42,7 +42,7 @@ class TextCompareItem extends React.Component {
 
   }
   createCompare(base, transcription){
-
+    console.log("text compare item async sent")
     Axios.get("https://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + transcription)
           .then((text) => {
 
@@ -65,14 +65,28 @@ class TextCompareItem extends React.Component {
   componentDidMount(){
     this.mounted = true;
     this.setState({rawText: "", compareText: "", showCompare: this.props.showCompare})
-    this.createCompare(this.props.base, this.props.compareTranscription)
+    //conditional attempts to restrict async call to only those components who are intended to be visible at mount
+    // NOTE: this conditional will important when scaling. (i.e. when there hundres of references and hundreds of transcriptons)
+    if (this.props.show){
+      this.createCompare(this.props.base, this.props.compareTranscription)
+    }
   }
   UNSAFE_componentWillReceiveProps(newProps){
-    // conditional try to restrict new async calls to only when props.info changes
-    if (newProps.base !== this.props.base || newProps.compareTranscription !== this.props.compareTranscription){
-      this.setState({rawText: "", compareText: "", showCompare: newProps.showCompare})
-      this.createCompare(newProps.base, newProps.compareTranscription)
-    }
+    //conditional attempts to restrict async call to only those components who are intended to be visible 
+    // and for whom a previous async call has not bee made 
+    ///or to components where base or compareTranscription has changed requiring a new async call
+    // NOTE: this conditional will important when scaling. (i.e. when there hundres of references and hundreds of transcriptons)
+    if (newProps.show && 
+      (
+        !(this.state.rawText && this.state.compareText) 
+        ||
+        (newProps.base !== this.props.base || newProps.compareTranscription !== this.props.compareTranscription))
+      )
+      {
+        this.setState({rawText: "", compareText: "", showCompare: newProps.showCompare})
+        //this.createCompare(newProps.base, newProps.compareTranscription)
+        this.createCompare(this.props.base, this.props.compareTranscription)
+      }
 
   }
   componentWillUnmount(){
