@@ -90,7 +90,6 @@ class TextCompare extends React.Component {
       }
       else{
         this.getTextInfo(nextProps.expressionid)
-
       }
     }
   }
@@ -109,7 +108,7 @@ class TextCompare extends React.Component {
             compareTranscription={m.transcription}
             handleChangeBase={this.props.handleChangeBase}
             show={this.state.show}
-            showCompare={this.props.isTarget ? true : false}
+            showCompare={this.props.isMainText ? true : false}
             />
           )
         })
@@ -124,7 +123,7 @@ class TextCompare extends React.Component {
       }
       
       <div style={{fontSize: "12px"}}>
-        {this.props.isTarget && <span>[Target] </span>}
+        {this.props.isMainText && <span>[Target] </span>}
         <span>{this.props.relationLabel}</span> 
         {(this.props.referringResource && this.props.referringResource != this.props.info.resourceid) 
         && <span> (<Link to={"/text?resourceid=" + this.props.referringResource}>via</Link>)</span>}

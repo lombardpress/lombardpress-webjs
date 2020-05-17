@@ -85,7 +85,7 @@ class TextCompareItem extends React.Component {
       {
         this.setState({rawText: "", compareText: "", showCompare: newProps.showCompare})
         //this.createCompare(newProps.base, newProps.compareTranscription)
-        this.createCompare(this.props.base, this.props.compareTranscription)
+        this.createCompare(newProps.base, newProps.compareTranscription)
       }
 
   }
