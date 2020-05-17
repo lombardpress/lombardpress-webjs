@@ -7,7 +7,7 @@ import TextCompare from './TextCompare'
 class TextCompareWrapper extends React.Component {
   constructor(props){
     super(props)
-    this.handleCompare = this.handleToggleCompare.bind(this)
+    this.handleToggleCompare = this.handleToggleCompare.bind(this)
     this.handleChangeBase = this.handleChangeBase.bind(this)
     this.getText = this.getText.bind(this)
     this.mounted = ""
@@ -20,6 +20,7 @@ class TextCompareWrapper extends React.Component {
   handleChangeBase(rawText){
     this.setState({baseText: rawText})
   }
+  //TODO: Doesn't seem to be called; should be deleted
   handleToggleCompare(expressionid){
     this.setState((prevState) => {
       const newExpressions = {...prevState.expressions}
@@ -43,11 +44,25 @@ class TextCompareWrapper extends React.Component {
       // prevents check when prop.info.relatedExpressions is not set
       if (this.props.info.relatedExpressions){
         this.getText(this.props.info.ctranscription)
+        //create empty expressions object
         const expressions = {}
-        expressions[this.props.info.resourceid] = {id: this.props.info.resourceid, show: true}
-
+        // add first object which should be compare item for first/target resource
+        expressions[this.props.info.resourceid] = {
+          id: this.props.info.resourceid, 
+          authorTitle: this.props.info.authorTitle, 
+          longTitle: this.props.info.longTitle, 
+          show: false,
+          isTarget: true
+        }
         this.props.info.relatedExpressions.forEach((r) => {
-          expressions[r.resourceid] = {id: r.resourceid, relationLabel: r.relationLabel, referringResource: r.referringResource, show: false}
+          expressions[r.resourceid] = {
+            id: r.resourceid, 
+            relationLabel: r.relationLabel, 
+            referringResource: r.referringResource, 
+            author: r.author,
+            authorTitle: r.authorTitle, 
+            longTitle: r.longTitle,
+            show: false}
         })
         this.setState({expressions: expressions})
       }
@@ -65,10 +80,25 @@ class TextCompareWrapper extends React.Component {
       if (this.props.info.ctranscription !== nextProps.info.ctranscription){
         this.getText(nextProps.info.ctranscription)
       }
+      //create empty expressions object
       const expressions = {}
-      expressions[nextProps.info.resourceid] = {id: nextProps.info.resourceid, show: true}
+      // add first object which should be compare item for first/target resource
+      expressions[nextProps.info.resourceid] = {
+        id: nextProps.info.resourceid, 
+          authorTitle: nextProps.info.authorTitle, 
+          longTitle: nextProps.info.longTitle, 
+          show: false,
+          isTarget: true
+      }
       nextProps.info.relatedExpressions.forEach((r) => {
-        expressions[r.resourceid] = {id: r.resourceid, relationLabel: r.relationLabel, referringResource: r.referringResource, show: false}
+        expressions[r.resourceid] = {
+          id: r.resourceid, 
+          relationLabel: r.relationLabel, 
+          referringResource: r.referringResource, 
+          author: r.author,
+          authorTitle: r.authorTitle, 
+          longTitle: r.longTitle,
+          show: false}
       })
       this.setState({expressions: expressions})
     }
@@ -86,10 +116,14 @@ class TextCompareWrapper extends React.Component {
               expressionid={exObject[key].id}
               relationLabel={exObject[key].relationLabel}
               referringResource={exObject[key].referringResource}
+              author={exObject[key].author}
+              authorTitle={exObject[key].authorTitle}
+              longTitle={exObject[key].longTitle}
               isMainText={isMainText}
               handleChangeBase={this.handleChangeBase}
               baseText={this.state.baseText}
               show={exObject[key].show}
+              isTarget={exObject[key].isTarget}
               />}
           </div>
         )

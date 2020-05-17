@@ -4,7 +4,7 @@
 
  export function getRelatedExpressions(itemExpressionUri){
    const query = [
-    "SELECT DISTINCT ?isRelatedTo ?label ?element ",
+    "SELECT DISTINCT ?isRelatedTo ?label ?element ?longTitle ?author ?authorTitle ",
     "WHERE",
     "{ ",
     "BIND (<" + itemExpressionUri + "> as ?resource)",
@@ -61,7 +61,13 @@
           "BIND ('isReferencedBy' as ?label) .",
         "}",
       "}",
-    "}"
+      "?isRelatedTo <http://scta.info/property/longTitle> ?longTitle .",
+      "?isRelatedTo <http://scta.info/property/isMemberOf> ?mem .",
+      "?mem <http://scta.info/property/level> '1' .",
+      "?mem <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
+      "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle",
+    "}",
+    "ORDER BY ?authorTitle"
    ].join('');
      return query
  }

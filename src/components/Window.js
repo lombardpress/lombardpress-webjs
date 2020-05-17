@@ -99,7 +99,7 @@ class Window extends React.Component {
             // for this reason search is always loaded, so that search results remain when moving between tabs.
             // a compromise approach could be made for similar resources, where some components are dismounted and some are hiddden
           }
-            {(this.state.windowLoad === "textCompare" || this.state.mountStatus.textCompare) && <TextCompareWrapper info={this.props.info} relatedExpressions={this.props.relatedExpressions} hidden={this.state.windowLoad !== "textCompare"}/>}
+            {(this.state.windowLoad === "textCompare" || this.state.mountStatus.textCompare) && <TextCompareWrapper info={this.props.info}  hidden={this.state.windowLoad !== "textCompare"}/>}
             {
               //this.state.windowLoad === "info" &&  <Info info={this.props.info} relatedExpressions={this.props.relatedExpressions} topLevel={this.props.topLevel} hidden={this.state.windowLoad !== "info"}/>
             }

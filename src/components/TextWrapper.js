@@ -257,7 +257,10 @@ class TextWrapper extends React.Component {
               return {
                 resourceid: r.isRelatedTo.value,
                 relationLabel: r.label.value,
-                referringResource: r.element ? r.element.value : ""
+                referringResource: r.element ? r.element.value : "",
+                author: r.author ? r.author.value : "",
+                authorTitle: r.authorTitle ? r.authorTitle.value : "",
+                longTitle: r.longTitle ? r.longTitle.value : ""
               }
             });
 

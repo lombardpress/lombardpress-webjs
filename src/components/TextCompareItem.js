@@ -13,7 +13,7 @@ class TextCompareItem extends React.Component {
     this.handleToggleCompare = this.handleToggleCompare.bind(this)
     this.mounted = ""
     this.state = {
-      showCompare: true,
+      showCompare: false,
       compareText: "",
       rawText: "",
       show: true,
@@ -64,13 +64,13 @@ class TextCompareItem extends React.Component {
 
   componentDidMount(){
     this.mounted = true;
-    this.setState({rawText: "", compareText: ""})
+    this.setState({rawText: "", compareText: "", showCompare: this.props.showCompare})
     this.createCompare(this.props.base, this.props.compareTranscription)
   }
   UNSAFE_componentWillReceiveProps(newProps){
     // conditional try to restrict new async calls to only when props.info changes
     if (newProps.base !== this.props.base || newProps.compareTranscription !== this.props.compareTranscription){
-      this.setState({rawText: "", compareText: ""})
+      this.setState({rawText: "", compareText: "", showCompare: newProps.showCompare})
       this.createCompare(newProps.base, newProps.compareTranscription)
     }
 

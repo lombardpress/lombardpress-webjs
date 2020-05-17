@@ -109,6 +109,7 @@ class TextCompare extends React.Component {
             compareTranscription={m.transcription}
             handleChangeBase={this.props.handleChangeBase}
             show={this.state.show}
+            showCompare={this.props.isTarget ? true : false}
             />
           )
         })
@@ -117,14 +118,26 @@ class TextCompare extends React.Component {
     }
 
   return (
-    <div>
+    <div style={{"borderBottom": "1px solid black", padding: "5px"}}>
       {
         // the link to reroute is not quite working, because the base Text is not resetting, focusBlockChange might be better; but item structure will also need to be changed.
       }
-      <p><span>{this.props.relationLabel}</span> <Link to={"/text?resourceid=" + this.state.info.resourceid}>{this.state.info.resourceid}</Link> {this.props.referringResource && <span>via</span>} <Link to={"/text?resourceid=" + this.props.referringResource}>{this.props.referringResource}</Link>
-      <span onClick={() => this.handleToggleShowAll()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span></p>
-      <div className={this.state.show ? "unhidden" : "hidden"}>
-      {displayComparisons()}
+      
+      <div style={{fontSize: "12px"}}>
+        {this.props.isTarget && <span>[Target] </span>}
+        <span>{this.props.relationLabel}</span> 
+        {(this.props.referringResource && this.props.referringResource != this.props.info.resourceid) 
+        && <span> (<Link to={"/text?resourceid=" + this.props.referringResource}>via</Link>)</span>}
+      </div>
+      <div>
+        <Link to={"/text?resourceid=" + this.state.info.resourceid}>
+          {this.props.authorTitle || this.props.longTitle ? <span> {this.props.authorTitle} {this.props.longTitle}</span> : this.state.info.resourceid}
+        </Link> 
+        
+        <span onClick={() => this.handleToggleShowAll()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>
+      </div>
+      <div className={this.state.show ? "unhidden" : "hidden"} style={{"paddingLeft": "10px"}}>
+        {displayComparisons()}
       </div>
     </div>
 
