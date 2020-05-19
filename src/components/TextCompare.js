@@ -1,12 +1,10 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import { FaEyeSlash, FaEye } from 'react-icons/fa';
+
 import {runQuery} from './utils'
 import {basicInfoQuery} from './Queries'
-
 import TextCompareItem from './TextCompareItem'
-
-
 
 class TextCompare extends React.Component {
   constructor(props){
@@ -18,7 +16,6 @@ class TextCompare extends React.Component {
       show: false,
       baseText: ""
     }
-
   }
 
   handleToggleShowAll(){
@@ -32,40 +29,39 @@ class TextCompare extends React.Component {
   // TODO dupblicate of function in Text Component
   // needs refactoring
   arrangeTextInfo(info, resourceid){
-      info.then((d) => {
-        const bindings = d.data.results.bindings[0]
-        const manifestations = d.data.results.bindings.map((b) => {
-          return {
-            manifestation: b.manifestation.value,
-            manifestationTitle: b.manifestationTitle.value,
-            transcription: b.manifestationCTranscription ? b.manifestationCTranscription.value : ""
-          }
-        })
-        if (this.mounted === true && bindings){
-          this.setState({
-            info: {
-              resourceid: resourceid,
-              title: bindings.title.value,
-              structureType: bindings.structureType.value,
-              inbox: bindings.inbox.value,
-              next: bindings.next ? bindings.next.value : "",
-              previous: bindings.previous ? bindings.previous.value : "",
-              cdoc: bindings.cdoc ? bindings.cdoc.value : "",
-              cxml: bindings.cxml ? bindings.cxml.value : "",
-              topLevel: bindings.topLevelExpression.value,
-              cmanifestation: bindings.cmanifestation ? bindings.cmanifestation.value : "",
-              ctranscription: bindings.ctranscription ? bindings.ctranscription.value : "",
-              manifestations: manifestations
-            }
-          });
+    info.then((d) => {
+      const bindings = d.data.results.bindings[0]
+      const manifestations = d.data.results.bindings.map((b) => {
+        return {
+          manifestation: b.manifestation.value,
+          manifestationTitle: b.manifestationTitle.value,
+          transcription: b.manifestationCTranscription ? b.manifestationCTranscription.value : ""
         }
-      });
-    }
+      })
+      if (this.mounted === true && bindings){
+        this.setState({
+          info: {
+            resourceid: resourceid,
+            title: bindings.title.value,
+            structureType: bindings.structureType.value,
+            inbox: bindings.inbox.value,
+            next: bindings.next ? bindings.next.value : "",
+            previous: bindings.previous ? bindings.previous.value : "",
+            cdoc: bindings.cdoc ? bindings.cdoc.value : "",
+            cxml: bindings.cxml ? bindings.cxml.value : "",
+            topLevel: bindings.topLevelExpression.value,
+            cmanifestation: bindings.cmanifestation ? bindings.cmanifestation.value : "",
+            ctranscription: bindings.ctranscription ? bindings.ctranscription.value : "",
+            manifestations: manifestations
+          }
+        });
+      }
+    });
+  }
   getTextInfo(id){
     const info = runQuery(basicInfoQuery(id))
     this.arrangeTextInfo(info, id)
   }
-
   componentDidMount(){
     this.mounted = true;
     this.setState({show: this.props.show, baseText: this.props.baseText})
@@ -78,8 +74,6 @@ class TextCompare extends React.Component {
       this.getTextInfo(this.props.expressionid)
     }
   }
-
-
   // UNSAFE_componentWillReceiveProps(nextProps){
   //   // conditional try to restrict new async calls to only when props.info changes
   //   if (this.props.info.resourceid !== nextProps.info.resourceid){
@@ -98,7 +92,7 @@ class TextCompare extends React.Component {
   // TODO: delete above comment if everything is working
   componentDidUpdate(prevProps){
     // conditional try to restrict new async calls to only when props.info changes
-    if (prevProps.info.resourceid !== this.props.info.resourceid){
+    if (this.props.info.resourceid !== prevProps.info.resourceid){
       this.setState({baseText: this.props.baseText})
 
       if (this.props.isMainText){
@@ -109,12 +103,9 @@ class TextCompare extends React.Component {
       }
     }
   }
-
-
-    componentWillUnmount(){
-      this.mounted = false;
+  componentWillUnmount(){
+    this.mounted = false;
   }
-
   render(){
     const displayComparisons = () => {
       if (this.state.info.manifestations){
@@ -133,7 +124,6 @@ class TextCompare extends React.Component {
         return texts
       }
     }
-
   return (
     <div style={{"borderBottom": "1px solid black", padding: "5px"}}>
       {
@@ -159,9 +149,7 @@ class TextCompare extends React.Component {
         {displayComparisons()}
       </div>
     </div>
-
-  );
+    );
   }
 }
-
 export default TextCompare;
