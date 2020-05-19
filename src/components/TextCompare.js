@@ -80,19 +80,37 @@ class TextCompare extends React.Component {
   }
 
 
-  UNSAFE_componentWillReceiveProps(nextProps){
-    // conditional try to restrict new async calls to only when props.info changes
-    if (this.props.info.resourceid !== nextProps.info.resourceid){
-      this.setState({baseText: nextProps.baseText})
+  // UNSAFE_componentWillReceiveProps(nextProps){
+  //   // conditional try to restrict new async calls to only when props.info changes
+  //   if (this.props.info.resourceid !== nextProps.info.resourceid){
+  //     this.setState({baseText: nextProps.baseText})
 
-      if (nextProps.isMainText){
-        this.setState({info: nextProps.info})
+  //     if (nextProps.isMainText){
+  //       this.setState({info: nextProps.info})
+  //     }
+  //     else{
+  //       this.getTextInfo(nextProps.expressionid)
+  //     }
+  //   }
+  // }
+
+  // This didUpdate should replace above commented out "willRecieveProps"
+  // TODO: delete above comment if everything is working
+  componentDidUpdate(prevProps){
+    // conditional try to restrict new async calls to only when props.info changes
+    if (prevProps.info.resourceid !== this.props.info.resourceid){
+      this.setState({baseText: this.props.baseText})
+
+      if (this.props.isMainText){
+        this.setState({info: this.props.info})
       }
       else{
-        this.getTextInfo(nextProps.expressionid)
+        this.getTextInfo(this.props.expressionid)
       }
     }
   }
+
+
     componentWillUnmount(){
       this.mounted = false;
   }
@@ -129,11 +147,13 @@ class TextCompare extends React.Component {
         && <span> (<Link to={"/text?resourceid=" + this.props.referringResource}>via</Link>)</span>}
       </div>
       <div>
+        {this.state.info.resourceid ?
         <Link to={"/text?resourceid=" + this.state.info.resourceid}>
           {this.props.authorTitle || this.props.longTitle ? <span> {this.props.authorTitle} {this.props.longTitle}</span> : this.state.info.resourceid}
-        </Link> 
-        
-        <span onClick={() => this.handleToggleShowAll()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>
+        </Link> :
+        this.props.authorTitle || this.props.longTitle ? <span> {this.props.authorTitle} {this.props.longTitle}</span> : this.state.info.resourceid
+        }
+        {this.state.info.resourceid && <span onClick={() => this.handleToggleShowAll()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>}
       </div>
       <div className={this.state.show ? "unhidden" : "hidden"} style={{"paddingLeft": "10px"}}>
         {displayComparisons()}

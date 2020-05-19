@@ -83,6 +83,8 @@ class TextCompareItem extends React.Component {
         (newProps.base !== this.props.base || newProps.compareTranscription !== this.props.compareTranscription))
       )
       {
+        //TODO this setState is a source of trouble. Move from componentWillReceiveProps is blocked by this
+        // need to find a way to reset these without calling state
         this.setState({rawText: "", compareText: "", showCompare: newProps.showCompare})
         //this.createCompare(newProps.base, newProps.compareTranscription)
         this.createCompare(newProps.base, newProps.compareTranscription)
