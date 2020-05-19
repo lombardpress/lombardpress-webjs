@@ -120,7 +120,7 @@ class TextCompare extends React.Component {
       <div style={{fontSize: "12px"}}>
         {this.props.isMainText && <span>[Target] </span>}
         <span>{this.props.relationLabel}</span> 
-        {(this.props.referringResource && this.props.referringResource != this.props.info.resourceid) 
+        {(this.props.referringResource && this.props.referringResource !== this.props.info.resourceid) 
         && <span> (<Link to={"/text?resourceid=" + this.props.referringResource}>via</Link>)</span>}
       </div>
       <div>
