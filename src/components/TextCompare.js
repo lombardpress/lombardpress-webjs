@@ -64,37 +64,24 @@ class TextCompare extends React.Component {
   }
   componentDidMount(){
     this.mounted = true;
-    this.setState({show: this.props.show, baseText: this.props.baseText})
-
+    //TODO: setting "derivative state" here is an anti-pattern
+    //instead this should probably be controlled by parent 
+    //(handleToggleShowAll should probably change parent which would then pass down the required prop rather than setting prop to state)
+    this.setState({show: this.props.show})
+    //NOTE: this conditional, does set prop to state, but there is a reason. 
+    // the point is that the information has already been achieved, thus we save one async call by using props. 
+    // otherwise an async request is called.
+    // I think the "derivate state is acceptable in this case"
     if (this.props.isMainText){
-
       this.setState({info: this.props.info})
     }
     else{
       this.getTextInfo(this.props.expressionid)
     }
   }
-  // UNSAFE_componentWillReceiveProps(nextProps){
-  //   // conditional try to restrict new async calls to only when props.info changes
-  //   if (this.props.info.resourceid !== nextProps.info.resourceid){
-  //     this.setState({baseText: nextProps.baseText})
-
-  //     if (nextProps.isMainText){
-  //       this.setState({info: nextProps.info})
-  //     }
-  //     else{
-  //       this.getTextInfo(nextProps.expressionid)
-  //     }
-  //   }
-  // }
-
-  // This didUpdate should replace above commented out "willRecieveProps"
-  // TODO: delete above comment if everything is working
   componentDidUpdate(prevProps){
     // conditional try to restrict new async calls to only when props.info changes
     if (this.props.info.resourceid !== prevProps.info.resourceid){
-      this.setState({baseText: this.props.baseText})
-
       if (this.props.isMainText){
         this.setState({info: this.props.info})
       }

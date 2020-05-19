@@ -1,9 +1,10 @@
 import React from 'react';
 import Diff from 'diff-match-patch'
 import Axios from 'axios'
+import PropTypes from 'prop-types';
+
 import Spinner from './Spinner';
 import {Link} from 'react-router-dom';
-
 import { FaEyeSlash, FaEye, FaStar, FaToggleOn, FaToggleOff} from 'react-icons/fa';
 
 class TextCompareItem extends React.Component {
@@ -17,7 +18,9 @@ class TextCompareItem extends React.Component {
       compareText: "",
       rawText: "",
       show: true,
-      levenshteinDistance: undefined
+      levenshteinDistance: undefined, 
+      usedBase: undefined,
+      usedCompareTranscription: undefined
     }
   }
   handleToggleShow(){
@@ -42,10 +45,9 @@ class TextCompareItem extends React.Component {
 
   }
   createCompare(base, transcription){
-    console.log("text compare item async sent")
+    console.log("text compare item async sent for", transcription)
     Axios.get("https://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + transcription)
           .then((text) => {
-
             const dmp = new Diff.diff_match_patch();
             const diff = dmp.diff_main(this.textClean(base), this.textClean(text.data));
             // Result: [(-1, "Hell"), (1, "G"), (0, "o"), (1, "odbye"), (0, " World.")]
@@ -53,44 +55,55 @@ class TextCompareItem extends React.Component {
             const levenshteinDistance = dmp.diff_levenshtein(diff)
             const ds = dmp.diff_prettyHtml(diff);
             if (this.mounted === true && base){
-              this.setState({compareText: ds, rawText: text.data, levenshteinDistance: levenshteinDistance})
+              // TODO: setting showCompare to "derivedState" is an ANTI-PATTERN. Better would be to let it be entirely controlled by parent. 
+              // NOTE: usedBase and usedCompare transcription are used to record data used to make compare 
+              // so that componentDidUpdate can efficiently decide if a new comparison is or is not needed
+              this.setState({compareText: ds, rawText: text.data, levenshteinDistance: levenshteinDistance, showCompare: this.props.showCompare, 
+                usedBase: this.props.base, usedCompareTranscription: this.props.compareTranscription})
             }
             else if(this.mounted){
-              this.setState({rawText: text.data})
+              // TODO: setting showCompare to "derivedState" is an ANTI-PATTERN. Better would be to let it be entirely controlled by parent.
+              // NOTE: usedBase and usedCompare transcription are used to record data used to make compare 
+              // so that componentDidUpdate can efficiently decide if a new comparison is or is not needed
+              this.setState({rawText: text.data, showCompare: this.props.showCompare, 
+                usedBase: this.props.base, usedCompareTranscription: this.props.compareTranscription})
             }
-
+          }).catch((error) => {
+            console.log("text request/comparison error", error)
           })
         }
 
   componentDidMount(){
     this.mounted = true;
-    this.setState({rawText: "", compareText: "", showCompare: this.props.showCompare})
+    // TODO: setting showCompare to "derivedState" is an ANTI-PATTERN. Better would be to let it be entirely controlled by parent.
+    this.setState({rawText: "", compareText: "", showCompare: this.props.showCompare})  
     //conditional attempts to restrict async call to only those components who are intended to be visible at mount
     // NOTE: this conditional will important when scaling. (i.e. when there hundres of references and hundreds of transcriptons)
     if (this.props.show){
       this.createCompare(this.props.base, this.props.compareTranscription)
     }
   }
-  UNSAFE_componentWillReceiveProps(newProps){
-    //conditional attempts to restrict async call to only those components who are intended to be visible 
-    // and for whom a previous async call has not bee made 
-    ///or to components where base or compareTranscription has changed requiring a new async call
-    // NOTE: this conditional will important when scaling. (i.e. when there hundres of references and hundreds of transcriptons)
-    if (newProps.show && 
+
+  componentDidUpdate(prevProps){
+    // NOTE: conditional attempts to restrict async call to only those components who are intended to be visible 
+    // and for whom a previous comparison has not been made or needs to be changed.
+    // need for generation of new comparison is detected by comparing props base and props compare transcription 
+    //to base/compare transcription used in previous comparison (or lack there of)
+    // NOTE: this conditional will important when scaling. (i.e. when there are hundreds of references and hundreds of transcriptions)
+    if (this.props.show && 
       (
-        !(this.state.rawText && this.state.compareText) 
-        ||
-        (newProps.base !== this.props.base || newProps.compareTranscription !== this.props.compareTranscription))
+        // NOTE: check to see if the current props base/compareTranscription is different than one the last base/compareTranscription when comparison was ran. 
+        // If it is different, then re-run compare. If not, don't run because the comparison has already been made.
+        (this.props.base !== this.state.usedBase || this.props.compareTranscription !== this.state.usedCompareTranscription))
       )
       {
-        //TODO this setState is a source of trouble. Move from componentWillReceiveProps is blocked by this
-        // need to find a way to reset these without calling state
-        this.setState({rawText: "", compareText: "", showCompare: newProps.showCompare})
-        //this.createCompare(newProps.base, newProps.compareTranscription)
-        this.createCompare(newProps.base, newProps.compareTranscription)
+        this.createCompare(this.props.base, this.props.compareTranscription)
       }
 
   }
+
+
+
   componentWillUnmount(){
       this.mounted = false;
     }
@@ -140,6 +153,17 @@ class TextCompareItem extends React.Component {
       displayComparison()
     );
   }
+}
+
+TextCompareItem.propTypes = {
+  /**
+  * text comparison component
+  **/
+  base: PropTypes.string, // base text to perform comparison against
+  compareTranscription: PropTypes.string, // transcription id of text to be used in comparison against base text
+  handleChangeBase: PropTypes.func, // function to trigger base text change
+  show: PropTypes.bool, // boolean to state whether text should be shown. TODO: currently competing with derivedState "show", needs to be resolved
+  showCompare: PropTypes.bool //boolean to state whether should be shown with comparison markup. TODO: currently competing with derivedState "showCompare" needs to be resolved
 }
 
 export default TextCompareItem;
