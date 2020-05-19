@@ -67,28 +67,28 @@ class TextCompareWrapper extends React.Component {
       }
     }
   }
-  UNSAFE_componentWillReceiveProps(nextProps){
+  componentDidUpdate(prevProps){
     // only fire reload if "info resource" has changed"
-    if (this.props.info.resourceid !== nextProps.info.resourceid){
+    if (prevProps.info.resourceid !== this.props.info.resourceid){
 
     // this conditional is needed, because props are waiting on multiple async calls.
     // when an async call finishes it will up; and the related Expression query last,
     // it will use the old ctranscription prop overriding the the update from the prop update from the other async call
-    if (this.props.info.relatedExpressions){
+    if (prevProps.info.relatedExpressions){
       // this conditional may no longer be necessary based on first conditional check
-      if (this.props.info.ctranscription !== nextProps.info.ctranscription){
-        this.getText(nextProps.info.ctranscription)
+      if (prevProps.info.ctranscription !== this.props.info.ctranscription){
+        this.getText(this.props.info.ctranscription)
       }
       //create empty expressions object
       const expressions = {}
       // add first object which should be compare item for first/target resource
-      expressions[nextProps.info.resourceid] = {
-        id: nextProps.info.resourceid, 
-          authorTitle: nextProps.info.authorTitle, 
-          longTitle: nextProps.info.longTitle, 
+      expressions[this.props.info.resourceid] = {
+        id: this.props.info.resourceid, 
+          authorTitle: this.props.info.authorTitle, 
+          longTitle: this.props.info.longTitle, 
           show: false,
       }
-      nextProps.info.relatedExpressions.forEach((r) => {
+      this.props.info.relatedExpressions.forEach((r) => {
         expressions[r.resourceid] = {
           id: r.resourceid, 
           relationLabel: r.relationLabel, 
@@ -102,6 +102,7 @@ class TextCompareWrapper extends React.Component {
     }
   }
   }
+
   render(){
     const displayExpressions = () => {
       const exObject = this.state.expressions
