@@ -48,7 +48,9 @@ const OSDInstance = (props) => {
           visibilityRatio: 1,
           minZoomLevel: 1,
           defaultZoomLevel: 1,
-          tileSources: [d.data]
+          tileSources: [d.data],
+          controlsFadeDelay: 0,
+          controlsFadeLength: 25
         })
         if (props.coords) {
           // this should be another way to get Scalar coordinates, but it doesn't seem to be working
@@ -63,13 +65,9 @@ const OSDInstance = (props) => {
             const lsc = getScalarCoordinates(props.lineFocusCoords, d.data.height, d.data.width)
             const linerect = new OpenSeadragon.Rect(lsc.x, lsc.y, lsc.w, lsc.h)
             setOverlay(instance, linerect)
-          
         }
           setGoHome(instance, rect)
-
         }
-        
-
         setInstance(instance)
       }
     })
