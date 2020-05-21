@@ -33,8 +33,10 @@ class TextPreviewWrapper extends React.Component {
     this.mounted = true
     this.getTranscriptionId(this.props.textPreviewResourceId)
   }
-  UNSAFE_componentWillReceiveProps(newProps){
-    this.getTranscriptionId(newProps.textPreviewResourceId)
+  componentDidUpdate(prevProps){
+    if (prevProps.textPreviewResourceId !== this.props.textPreviewResourceId){
+      this.getTranscriptionId(this.props.textPreviewResourceId)
+    }
   }
   componentWillUnmount()
   {
