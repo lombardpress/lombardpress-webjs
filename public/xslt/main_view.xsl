@@ -550,7 +550,7 @@
     <xsl:choose>
       <xsl:when test="contains($source, 'http://scta.info/resource/')">
         <!-- added data-target-paragraph attribut here because it is hard for jquery to get id in html dom -->
-        <a href="{$source}" data-url="{$source}" class='js-show-reference-paragraph' data-target-paragraph='{./ancestor::tei:p[1]/@xml:id}'>
+        <a href="{$source}" data-url="{$source}" class='js-show-reference-paragraph' data-target-resource='{./tei:quote[1]/@xml:id}'>
           <xsl:choose>
             <xsl:when test="./tei:bibl">
               <xsl:apply-templates select="./tei:bibl"/>
@@ -572,7 +572,7 @@
     <xsl:choose>
       <xsl:when test="contains($target, 'http://scta.info/resource/')">
         <!-- added data-target-paragraph attribute here because it is hard for jquery to get id in html dom -->
-        <a href="{$target}" data-url="{$target}" class='js-show-reference-paragraph' data-target-paragraph='{./ancestor::tei:p[1]/@xml:id}'>
+        <a href="{$target}" data-url="{$target}" class='js-show-reference-paragraph' data-target-resource='{./tei:ref[1]/@xml:id}'>
           <xsl:choose>
             <xsl:when test="./tei:bibl">
               <xsl:apply-templates select="./tei:bibl"/>

@@ -125,7 +125,7 @@ class Text extends React.Component {
            $(document).on("click", '.js-show-reference-paragraph', function(e){
             e.preventDefault();
             const target = $(this).attr('data-url')
-            const targetParagraph = $(this).attr('data-target-paragraph')
+            const targetParagraph = $(this).attr('data-target-resource')
 
             // set the desired text preview focus to the target of the reference
             _this.props.handleTextPreviewFocusChange(target)
