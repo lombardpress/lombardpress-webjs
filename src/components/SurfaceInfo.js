@@ -1,9 +1,13 @@
+//vendor imports
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import Button from 'react-bootstrap/Button';
 import {Link} from 'react-router-dom';
-import {FaExternalLinkAlt,} from 'react-icons/fa';
-import Comments from './Comments'
+import {FaExternalLinkAlt} from 'react-icons/fa';
 
+//internal imports
+import Comments from './Comments'
 import {runQuery} from './utils'
 import {getSurfaceInfo} from '../queries/SurfaceInfoQuery'
 
@@ -113,9 +117,9 @@ class SurfaceInfo extends React.Component {
   componentDidMount(){
     this.retrieveSurfaceInfo(this.props.surfaceid)
   }
-  UNSAFE_componentWillReceiveProps(newProps){
-    if (newProps.surfaceid !== this.props.surfaceid){
-      this.retrieveSurfaceInfo(newProps.surfaceid)
+  componentDidUpdate(prevProps){
+    if (this.props.surfaceid !== prevProps.surfaceid){
+      this.retrieveSurfaceInfo(this.props.surfaceid)
     }
   }
   render(){
@@ -208,5 +212,17 @@ class SurfaceInfo extends React.Component {
     );
   }
 }
+
+SurfaceInfo.propTypes = {
+  /**
+  * SCTA rdf url surfaceid to use when performing SPARQL query
+  */
+ surfaceid: PropTypes.string.isRequired,
+ /**
+  * a parent function to be triggered to indicate a new view display; namely "swithc to viewTextFocused Region"
+  */
+ handleSurface3Manifestations: PropTypes.func
+}
+
 
 export default SurfaceInfo;
