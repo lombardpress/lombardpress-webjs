@@ -12,6 +12,7 @@ const OSDInstance = (props) => {
     if (props.coords){
       setViewerWidthHeight(computeViewerWidthHeight(props.coords.split(",")[2], props.coords.split(",")[3]))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.coords])
   useEffect(() => {
     Axios.get(props.imageurl + "/info.json").then((d) => {
@@ -71,6 +72,7 @@ const OSDInstance = (props) => {
         setInstance(instance)
       }
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.imageurl, props.coords])
 
   const setOverlay = (instance, rect) => {

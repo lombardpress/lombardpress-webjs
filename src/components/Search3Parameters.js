@@ -54,14 +54,17 @@ const Search3Parameters = (props) => {
     searchAuthorsListDispatch(searchAuthorsListActions.fetchAuthorsList(searchParameters, searchAuthorsListDispatch))
     searchWorkGroupsListDispatch(searchWorkGroupsListActions.fetchWorkGroupsList(searchParameters, searchWorkGroupsListDispatch))
     searchExpressionTypesListDispatch(searchExpressionTypesListActions.fetchExpressionTypesList(searchParameters, searchExpressionTypesListDispatch))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   useEffect(() => {
     searchExpressionsListDispatch(searchExpressionsListActions.fetchExpressionsList(searchParameters, searchExpressionsListDispatch))
     searchWorkGroupsListDispatch(searchWorkGroupsListActions.fetchWorkGroupsList(searchParameters, searchWorkGroupsListDispatch))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchAuthor])
   useEffect(() => {
     searchExpressionsListDispatch(searchExpressionsListActions.fetchExpressionsList(searchParameters, searchExpressionsListDispatch))
     searchAuthorsListDispatch(searchAuthorsListActions.fetchAuthorsList(searchParameters, searchAuthorsListDispatch))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchWorkGroup])
 
 
