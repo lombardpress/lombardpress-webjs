@@ -16,6 +16,7 @@ import {getManifestationCitationInfo} from './Queries'
 class Citation extends React.Component{
   constructor(props){
     super(props)
+    this.mounted = ""
     this.state = {
       eurl: "",
       etitle: "",
@@ -26,8 +27,6 @@ class Citation extends React.Component{
       fetching: false
     }
   }
-
-
 
   retrieveCitation(tresourceid){
     if (tresourceid){
@@ -46,32 +45,42 @@ class Citation extends React.Component{
           const title = bindings.codexTitle ? bindings.codexTitle.value : ""
           const start = bindings.surfaceTitle ? bindings.surfaceTitle.value : ""
           const end = allBindings[allBindings.length - 1].surfaceTitle ? allBindings[allBindings.length - 1].surfaceTitle.value : ""
-
-          this.setState(
-            {
-              author: author,
-              authorTitle: authorTitle,
-              eurl: expressionid,
-              etitle: eLongTitle,
-              murl: manifestationid,
-              mtitle: start !== end ? title + ", " + start + "-" + end : title + ", " + start,
-              turl: tresourceid,
-              datasource: datasource,
-              fetching: false
-            }
-          )
+          if (this.mounted){
+            this.setState(
+              {
+                author: author,
+                authorTitle: authorTitle,
+                eurl: expressionid,
+                etitle: eLongTitle,
+                murl: manifestationid,
+                mtitle: start !== end ? title + ", " + start + "-" + end : title + ", " + start,
+                turl: tresourceid,
+                datasource: datasource,
+                fetching: false
+              }
+            )
+          }
         }
       })
     }
   }
   componentDidMount(){
+    this.mounted = true
     this.retrieveCitation(this.props.tresourceid)
 
   }
-  UNSAFE_componentWillReceiveProps(newProps){
-    if (newProps.tresourceid !== this.props.tresourceid){
-      this.retrieveCitation(newProps.tresourceid)
+  // UNSAFE_componentWillReceiveProps(newProps){
+  //   if (newProps.tresourceid !== this.props.tresourceid){
+  //     this.retrieveCitation(newProps.tresourceid)
+  //   }
+  // }
+  componentDidUpdate(prevProps){
+    if (this.props.tresourceid !== prevProps.tresourceid){
+      this.retrieveCitation(this.props.tresourceid)
     }
+  }
+  componentWillUnmount(){
+    this.mounted = false
   }
   render(){
 
