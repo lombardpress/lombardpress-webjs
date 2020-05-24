@@ -69,11 +69,7 @@ class Citation extends React.Component{
     this.retrieveCitation(this.props.tresourceid)
 
   }
-  // UNSAFE_componentWillReceiveProps(newProps){
-  //   if (newProps.tresourceid !== this.props.tresourceid){
-  //     this.retrieveCitation(newProps.tresourceid)
-  //   }
-  // }
+  
   componentDidUpdate(prevProps){
     if (this.props.tresourceid !== prevProps.tresourceid){
       this.retrieveCitation(this.props.tresourceid)
