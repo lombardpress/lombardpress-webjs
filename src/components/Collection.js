@@ -125,9 +125,7 @@ class Collection extends React.Component {
       }
 
   }
-  componentDidUpdate(prevProps, prevState){
-
-  }
+  
   componentDidMount(){
     this.mount = true
     this.setState({resourceid: this.props.resourceid})

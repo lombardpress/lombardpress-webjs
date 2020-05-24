@@ -90,7 +90,7 @@ class AuthorCollection extends React.Component {
     this.arrangeItems(authorCollectionInfo, resourceid)
   }
   componentDidUpdate(prevProps){
-    if (this.props.resourceid != prevProps.resourceid){
+    if (this.props.resourceid !== prevProps.resourceid){
       this.refs.itemFilter ? this.refs.itemFilter.value = "" :
       this.retrieveAuthorCollectionInfo(this.props.resourceid)
     }
