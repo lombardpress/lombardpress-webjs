@@ -52,11 +52,42 @@ class Window extends React.Component {
 
 
   }
-  UNSAFE_componentWillReceiveProps(newProps){
+  // UNSAFE_componentWillReceiveProps(newProps){
+  //   //when receiving props we check first to see if a new resource id is present,
+  //   // if so, mounting status for all window child components is set back to false
+  //   let newMountStatus = {}
+  //   if (newProps.info.resourceid !== this.props.info.resourceid){
+  //     newMountStatus = {
+  //       textCompare: false,
+  //       surface3: false,
+  //       comments: false,
+  //       xml: false,
+  //       search:  false,
+  //       textOutline: false,
+  //       citation: false
+  //     }
+  //     // then, the mount status of the opening window load is changed to true
+  //     newMountStatus[newProps.windowLoad] = true
+  //   }
+  //   else if (newProps.windowLoad !== this.props.windowLoad){
+  //     const tempNewMount = this.state.mountStatus
+  //     tempNewMount[newProps.windowLoad] = true
+  //     newMountStatus = tempNewMount
+  //   }
+  //   else{
+  //     newMountStatus = this.state.mountStatus
+  //   }
+  //   this.setState(
+  //     {windowLoad: newProps.windowLoad,
+  //     mountStatus: newMountStatus}
+  //   )
+  // }
+
+  componentDidUpdate(prevProps){
     //when receiving props we check first to see if a new resource id is present,
     // if so, mounting status for all window child components is set back to false
     let newMountStatus = {}
-    if (newProps.info.resourceid !== this.props.info.resourceid){
+    if (this.props.info.resourceid !== prevProps.info.resourceid){
       newMountStatus = {
         textCompare: false,
         surface3: false,
@@ -67,20 +98,25 @@ class Window extends React.Component {
         citation: false
       }
       // then, the mount status of the opening window load is changed to true
-      newMountStatus[newProps.windowLoad] = true
+      newMountStatus[this.props.windowLoad] = true
+      this.setState(
+        {windowLoad: this.props.windowLoad,
+        mountStatus: newMountStatus}
+      )
     }
-    else if (newProps.windowLoad !== this.props.windowLoad){
+    else if (this.props.windowLoad !== prevProps.windowLoad){
       const tempNewMount = this.state.mountStatus
-      tempNewMount[newProps.windowLoad] = true
+      tempNewMount[this.props.windowLoad] = true
       newMountStatus = tempNewMount
+      this.setState(
+        {windowLoad: this.props.windowLoad,
+        mountStatus: newMountStatus}
+      )
     }
     else{
       newMountStatus = this.state.mountStatus
     }
-    this.setState(
-      {windowLoad: newProps.windowLoad,
-      mountStatus: newMountStatus}
-    )
+    
   }
 
 
