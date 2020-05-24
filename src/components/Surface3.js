@@ -121,15 +121,15 @@ componentDidMount(){
     )
     }
   }
-  UNSAFE_componentWillReceiveProps(nextProps){
-    if (nextProps.manifestationid !== this.props.manifestationid){
+  componentDidUpdate(prevProps){
+    if (this.props.manifestationid !== prevProps.manifestationid){
       this.setState((prevState) => {
         return {
           surfaces: []
         }
 
       },
-    this.retrieveSurfaceInfo(nextProps.manifestationid))
+    this.retrieveSurfaceInfo(this.props.manifestationid))
     }
   }
   componentWillUnmount(){

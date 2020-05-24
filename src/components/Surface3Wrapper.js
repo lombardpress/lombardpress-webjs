@@ -49,18 +49,40 @@ class Surface3Wrapper extends React.Component {
       })
     }
   }
-  UNSAFE_componentWillReceiveProps(nextProps){
-    if (nextProps.focusedManifestation !== this.props.focusedManifestation){
+  // UNSAFE_componentWillReceiveProps(nextProps){
+  //   if (nextProps.focusedManifestation !== this.props.focusedManifestation){
+  //     this.setState((prevState) => {
+  //       return {
+  //         focusedManifestation: nextProps.focusedManifestation,
+  //       }
+  //     })
+  //   }
+  //   if (nextProps.annotationsDisplay !== this.props.annotationsDisplay){
+  //     this.setState((prevState) => {
+  //       return {
+  //         annotationsDisplay: nextProps.annotationsDisplay,
+  //       }
+  //     })
+  //   }
+  // }
+
+  //TODO: is passing of props to state necessary? settingDerivedState is not ideal
+  //thus there should be a good reason for setting a derived state. 
+  // the goal here is to allow the component to update the state, but for 
+  // the parent component to determine the default state. 
+  // unless there is another way to do this, this seems like a sufficient justification for the derived state.
+  componentDidUpdate(prevProps){
+    if (this.props.focusedManifestation !== prevProps.focusedManifestation){
       this.setState((prevState) => {
         return {
-          focusedManifestation: nextProps.focusedManifestation,
+          focusedManifestation: this.props.focusedManifestation,
         }
       })
     }
-    if (nextProps.annotationsDisplay !== this.props.annotationsDisplay){
+    if (this.props.annotationsDisplay !== prevProps.annotationsDisplay){
       this.setState((prevState) => {
         return {
-          annotationsDisplay: nextProps.annotationsDisplay,
+          annotationsDisplay: this.props.annotationsDisplay,
         }
       })
     }
