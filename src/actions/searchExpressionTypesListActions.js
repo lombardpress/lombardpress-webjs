@@ -30,7 +30,6 @@ export var fetchExpressionTypesList = (searchParameters, dispatch) =>{
         "ORDER BY ?expressionTypeTitle"].join(' ');
   dispatch(startExpressionTypesListFetch());
   Axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
-    console.log("async firing expressionTypes", res)
     const results = res.data.results.bindings;
     const expressionTypes = results.map((result) => {
         return {

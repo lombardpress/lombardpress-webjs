@@ -54,7 +54,6 @@ export var fetchExpressionsList = (searchParameters, dispatch) =>{
 
   dispatch(startExpressionsFetch());
   Axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
-    console.log("async firing")
     var results = res.data.results.bindings;
     var searchWorks = results.map((result) => {
       var workInfo = {

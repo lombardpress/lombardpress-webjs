@@ -49,7 +49,6 @@ const Search3Parameters = (props) => {
   //begin other effects
   useEffect(handleSetSearchParameters, [searchTerm, searchAuthor, searchEid, searchWorkGroup, searchType, searchEType])
   useEffect(() => {
-    console.log("mount asyn firing")
     searchExpressionsListDispatch(searchExpressionsListActions.fetchExpressionsList(searchParameters, searchExpressionsListDispatch))
     searchAuthorsListDispatch(searchAuthorsListActions.fetchAuthorsList(searchParameters, searchAuthorsListDispatch))
     searchWorkGroupsListDispatch(searchWorkGroupsListActions.fetchWorkGroupsList(searchParameters, searchWorkGroupsListDispatch))

@@ -44,7 +44,6 @@ export var fetchWorkGroupsList = (searchParameters, dispatch) =>{
         "ORDER BY ?workGroupTitle"].join(' ');
   dispatch(startWorkGroupsListFetch());
   Axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
-    console.log("async firing workGroups")
     var results = res.data.results.bindings;
     var workGroups = results.map((result) => {
         var workGroupInfo = {

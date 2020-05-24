@@ -29,8 +29,6 @@ const OSDInstance = (props) => {
           setBounds(instance, rect)
           setOverlay(instance, rect)
           if (props.lineFocusCoords){
-            console.log('inside new set overlay')
-            console.log("instance", instance)
             const lsc = getScalarCoordinates(props.lineFocusCoords, d.data.height, d.data.width)
             const linerect = new OpenSeadragon.Rect(lsc.x, lsc.y, lsc.w, lsc.h)
             setOverlay(instance, linerect)
@@ -61,8 +59,6 @@ const OSDInstance = (props) => {
           setBounds(instance, rect)
           setOverlay(instance, rect)
           if (props.lineFocusCoords){
-            console.log('inside new set overlay')
-            console.log("instance", instance)
             const lsc = getScalarCoordinates(props.lineFocusCoords, d.data.height, d.data.width)
             const linerect = new OpenSeadragon.Rect(lsc.x, lsc.y, lsc.w, lsc.h)
             setOverlay(instance, linerect)
@@ -116,8 +112,6 @@ const OSDInstance = (props) => {
   const computeViewerWidthHeight = (w, h) => {
     const displayWidth = props.displayWidth
     const newHeight = displayWidth * (parseInt(h) / parseInt(w))
-    console.log("newHeight", newHeight)
-    console.log(displayWidth, newHeight)
     return { w: displayWidth, h: newHeight }
   }
   return (

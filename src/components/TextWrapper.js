@@ -216,7 +216,6 @@ class TextWrapper extends React.Component {
 
 
   retrieveFocusInfo(id){
-    console.log("retrieving", id)
     const fullid = id.includes("http") ? id : "http://scta.info/resource/" + id
     // get info
     const info = runQuery(basicInfoQuery(fullid))
@@ -237,9 +236,7 @@ class TextWrapper extends React.Component {
   arrangeFocusInfo(info, resourceid){
       info.then((d) => {
         const bindings = d.data.results.bindings[0]
-        console.log("bindings", bindings)
         const manifestations = d.data.results.bindings.map((b) => {
-          console.log("data for structure element", b)
           return {
             manifestation: b.manifestation.value,
             manifestationTitle: b.manifestationTitle.value,
@@ -251,7 +248,6 @@ class TextWrapper extends React.Component {
         // see example pattern in articles collection
         const relatedExpressions = runQuery(getRelatedExpressions(resourceid))
         relatedExpressions.then((d) => {
-          console.log("related expressions", d)
           const bindings2 = d.data.results.bindings
           const relatedExpressions = bindings2.map((r) => {
               return {
@@ -398,7 +394,6 @@ class TextWrapper extends React.Component {
           this.setState({focus: ""});
         }
         else {
-          console.log("test", this.props.blockDivFocus)
           this.retrieveFocusInfo(this.props.blockDivFocus)
         }
       }
