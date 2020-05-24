@@ -40,6 +40,10 @@ export function convertXMLDoc(xmlurl, xslurl){
   })
 }
 
+export function loadXMLDocFromExist(url){
+  return Axios.get("https://exist.scta.info/exist/apps/scta-app/xslt-conversion.xq?xmlurl=" + url)
+}
+
 export function nsResolver(prefix) {
     if(prefix === "tei") {
       return 'http://www.tei-c.org/ns/1.0'

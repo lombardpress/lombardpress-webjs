@@ -2,7 +2,7 @@ import React from 'react';
 import Spinner from './Spinner';
 import $ from 'jquery';
 
-import {convertXMLDoc, scrollToParagraph} from './utils'
+import {convertXMLDoc, scrollToParagraph, loadXMLDocFromExist} from './utils'
 
 class Text extends React.Component {
   constructor(props){
@@ -34,14 +34,17 @@ class Text extends React.Component {
 
       //conversion done in promise in utils.js file
       this.setState({fetching: true})
-      const resultDocument = convertXMLDoc(xmlurl, xslurl)
+      //const resultDocument = convertXMLDoc(xmlurl, xslurl)
+      const resultDocument = loadXMLDocFromExist(xmlurl)
+      console.log("resultDoc", resultDocument)
       resultDocument.then((data) => {
+        console.log("test", data.data)
         this.setState({fetching: false})
         //appendage to file
         //and event binding
         //happens inside promise call back
         document.getElementById("text").innerHTML = "";
-        document.getElementById("text").appendChild(data);
+        document.getElementById("text").innerHTML = data.data;
 
         $('.paragraphnumber').click(function(e) {
            e.preventDefault();
