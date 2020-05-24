@@ -52,6 +52,7 @@ class Window extends React.Component {
 
 
   }
+  //TODO: delete; after newly added replacement componentDidUpdate continues to work reliablys
   // UNSAFE_componentWillReceiveProps(newProps){
   //   //when receiving props we check first to see if a new resource id is present,
   //   // if so, mounting status for all window child components is set back to false

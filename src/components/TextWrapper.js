@@ -354,34 +354,58 @@ class TextWrapper extends React.Component {
       }
     }
   }
-  UNSAFE_componentWillReceiveProps(newProps){
-    //Keep testing, but it seems like this look up only needs to fire, when the transcription id prop changes
-    // not when other props changes.
-    if (newProps.transcriptionid !== this.props.transcriptionid){
-      this.setItemFocus(newProps.transcriptionid)
-      const mFocus = newProps.transcriptionid.split("/resource/")[1].split("/")[1]
-      const tFocus = newProps.transcriptionid.split("/resource/")[1].split("/")[2]
-      //clear or set parts of state when new transcription file is loaded
-      this.setState((prevState) => {
-        const windows = prevState.windows
-        windows["window1"].defaultManifestationSlug = ""
-        windows["window2"].defaultManifestationSlug = ""
-        return {
-          mtFocus: "/" + mFocus + "/" + tFocus,
-          windows: windows
+  //TODO: delete; after newly added replacement componentDidUpdate continues to work reliably
+  // UNSAFE_componentWillReceiveProps(newProps){
+  //   //Keep testing, but it seems like this look up only needs to fire, when the transcription id prop changes
+  //   // not when other props changes.
+  //   if (newProps.transcriptionid !== this.props.transcriptionid){
+  //     this.setItemFocus(newProps.transcriptionid)
+  //     const mFocus = newProps.transcriptionid.split("/resource/")[1].split("/")[1]
+  //     const tFocus = newProps.transcriptionid.split("/resource/")[1].split("/")[2]
+  //     //clear or set parts of state when new transcription file is loaded
+  //     this.setState((prevState) => {
+  //       const windows = prevState.windows
+  //       windows["window1"].defaultManifestationSlug = ""
+  //       windows["window2"].defaultManifestationSlug = ""
+  //       return {
+  //         mtFocus: "/" + mFocus + "/" + tFocus,
+  //         windows: windows
+  //       }
+  //     })
+  //   }
+    componentDidUpdate(prevProps){
+      //Keep testing, but it seems like this look up only needs to fire, when the transcription id prop changes
+      // not when other props changes.
+      if (this.props.transcriptionid !== prevProps.transcriptionid){
+        this.setItemFocus(this.props.transcriptionid)
+        const mFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[1]
+        const tFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[2]
+        //clear or set parts of state when new transcription file is loaded
+        this.setState((prevState) => {
+          const windows = prevState.windows
+          windows["window1"].defaultManifestationSlug = ""
+          windows["window2"].defaultManifestationSlug = ""
+          return {
+            mtFocus: "/" + mFocus + "/" + tFocus,
+            windows: windows
+          }
+        })
+      }
+      //TODO: seems a little dangerous to have these two different setState/async calls 
+      //if one depends on the other, this is a good place for things to get out of sync
+      if (this.props.blockDivFocus !== prevProps.blockDivFocus){
+        if (!this.props.blockDivFocus){
+          this.setState({focus: ""});
         }
-      })
-    }
+        else {
+          console.log("test", this.props.blockDivFocus)
+          this.retrieveFocusInfo(this.props.blockDivFocus)
+        }
+      }
 
 
 
-    if (!newProps.blockDivFocus){
-      this.setState({focus: ""});
-    }
-    else if (newProps.blockDivFocus !== this.props.blockDivFocus){
-      console.log("test", newProps.blockDivFocus)
-      this.retrieveFocusInfo(newProps.blockDivFocus)
-    }
+
   }
   componentWillUnmount(){
     this.mount = false
