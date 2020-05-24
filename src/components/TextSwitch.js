@@ -158,13 +158,25 @@ class TextSwitch extends React.Component {
       }
     }
   }
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const newResourceId = Qs.parse(nextProps.location.search, { ignoreQueryPrefix: true }).resourceid
-    if (newResourceId.includes("https://scta.info/")){
-      this.handleUpdateUrlResource(newResourceId.replace("https://scta.info/", "http://scta.info/"))
-    }
-    else{
-      this.getInfo(newResourceId)
+  // UNSAFE_componentWillReceiveProps(nextProps) {
+  //   const newResourceId = Qs.parse(nextProps.location.search, { ignoreQueryPrefix: true }).resourceid
+  //   if (newResourceId.includes("https://scta.info/")){
+  //     this.handleUpdateUrlResource(newResourceId.replace("https://scta.info/", "http://scta.info/"))
+  //   }
+  //   else{
+  //     this.getInfo(newResourceId)
+  //   }
+  // }
+  componentDidUpdate(prevProps) {
+    const newResourceId = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).resourceid
+    const oldResourceId = Qs.parse(prevProps.location.search, { ignoreQueryPrefix: true }).resourceid
+    if (newResourceId !== oldResourceId){
+      if (newResourceId.includes("https://scta.info/")){
+        this.handleUpdateUrlResource(newResourceId.replace("https://scta.info/", "http://scta.info/"))
+      }
+      else{
+        this.getInfo(newResourceId)
+      }
     }
   }
 
