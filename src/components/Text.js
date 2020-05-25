@@ -22,7 +22,7 @@ class Text extends React.Component {
       const topLevel = this.props.topLevel;
       const docFragment = doc.split("/master/")[1]
       const topLevelFragment = topLevel.split("/resource/")[1]
-
+      
       let xmlurl = ""
       if (doc.includes("ipfs")){
         xmlurl = doc
@@ -174,24 +174,30 @@ class Text extends React.Component {
 
     //check to see if doc has changed
     if (prevProps.doc !== this.props.doc){
-      this.retrieveText(this.props.doc, this.props.topLevel, this.props.scrollTo)
+      // NOTE: ScrollToNew helps ensure that scrollTo id is SCTA ShortID, 
+      //since TextWrapper is (at present) sometimes sending the shortid and sometimes the full url id
+      // TODO: when TextWrapper is refactored and consistently sending the same ID type. this should be removed
+      const scrollToNew = this.props.scrollTo && this.props.scrollTo.includes("/resource/") ? this.props.scrollTo.split("/resource/")[1] : this.props.scrollTo
+      this.retrieveText(this.props.doc, this.props.topLevel, scrollToNew)
     }
     // if doc has already been appended, still scroll to target block
     else{
       if (this.props.scrollTo !== prevProps.scrollTo){
-        scrollToParagraph(this.props.scrollTo, true)
+        // NOTE: ScrollToNew helps ensure that scrollTo id is SCTA ShortID, 
+        //since TextWrapper is (at present) sometimes sending the shortid and sometimes the full url id
+        // TODO: when TextWrapper is refactored and consistently sending the same ID type. this should be removed
+        const scrollToNew = this.props.scrollTo && this.props.scrollTo.includes("/resource/") ? this.props.scrollTo.split("/resource/")[1] : this.props.scrollTo
+        scrollToParagraph(scrollToNew, true)
       }
     }
-
-
-    //this.retrieveText(this.props.doc, this.props.topLevel, this.props.scrollTo)
   }
 
   componentDidMount(){
-    this.retrieveText(this.props.doc, this.props.topLevel, this.props.scrollTo)
-  }
-  UNSAFE_componentWillReceiveProps(newProps){
-
+    // NOTE: ScrollToNew helps ensure that scrollTo id is SCTA ShortID, 
+    //since TextWrapper is (at present) sometimes sending the shortid and sometimes the full url id
+    // TODO: when TextWrapper is refactored and consistently sending the same ID type. this should be removed
+    const scrollToNew = this.props.scrollTo && this.props.scrollTo.includes("/resource/") ? this.props.scrollTo.split("/resource/")[1] : this.props.scrollTo
+    this.retrieveText(this.props.doc, this.props.topLevel, scrollToNew)
   }
   render(){
     const displayText = this.state.fetching ? "none" : "block"

@@ -483,7 +483,8 @@ class TextWrapper extends React.Component {
             openWindow={this.openWindow}
             // NOTE: using props instead of state; seems better, but needs full documentation
             // NOTE: itemid is shortid of item: TODO: needs documentation; or better, refactoring!
-            scrollTo={this.props.blockDivFocus ? this.props.blockDivFocus.split("/resource/")[1] : this.props.itemid}
+            // TODO: when scrollTo id type is consistent, remove id checker in didMount and didUpdate of Text component
+            scrollTo={this.props.blockDivFocus ? this.props.blockDivFocus : this.props.itemid}
             handleTextPreviewFocusChange={this.handleTextPreviewFocusChange}
             />
           }
