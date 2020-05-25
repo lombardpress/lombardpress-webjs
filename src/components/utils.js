@@ -40,7 +40,7 @@ export function convertXMLDoc(xmlurl, xslurl){
   })
 }
 
-export function loadXMLDocFromExist(url){
+export function loadHtmlResultDocFromExist(url){
   return Axios.get("https://exist.scta.info/exist/apps/scta-app/xslt-conversion.xq?xmlurl=" + url)
 }
 
