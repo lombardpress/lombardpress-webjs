@@ -17,7 +17,7 @@ const ImageLogo = (props) => {
     }
   }, [props.imageurl])
   return (
-    <>{logoUrl && <img src={logoUrl} style={{margin: props.margin, height: props.height}}/>}</>
+    <>{logoUrl && <img src={logoUrl} style={{margin: props.margin, height: props.height}} alt="imagelogo"/>}</>
   )
 }
 

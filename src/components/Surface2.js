@@ -191,7 +191,8 @@ componentDidMount(){
         return imageTextWrappers
       }
       else{
-        const width = this.props.width ? this.props.width : this.state.width
+        //TODO uncommnent when ready to make a switch between using OSD or Image
+        //const width = this.props.width ? this.props.width : this.state.width
         //return <img alt="manuscript" src={this.state.imageurl + "/" + this.state.region + "/" + width + ",/0/default.jpg"}/>
         return <OSDInstance imageurl={this.state.imageurl}/>
       }
