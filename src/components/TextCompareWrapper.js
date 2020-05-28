@@ -17,28 +17,20 @@ class TextCompareWrapper extends React.Component {
       expressions: {},
       baseText: "",
       customExpressionId: "", 
-      customExpressionObjects: []
+      customExpressionObject: {}
     }
 
   }
   handleSetCustomExpressionId(customExpressionId){
     this.setState({customExpressionId: customExpressionId})
   }
-  handleCustomUpdateRelatedExpressions(){
+  handleCustomUpdateRelatedExpressions(e){
+    e.preventDefault()
     const expressionObject = {
       resourceid: this.state.customExpressionId,
       relationLabel: "user added comparison"
     }
-    
-    this.setState((prevState) => {
-      const newObjects = prevState.customExpressionObjects.push(expressionObject)
-      return(
-        {
-          ...newObjects,
-          
-        }
-      )
-    })
+    this.setState({customExpressionObject: expressionObject})
   }
   handleChangeBase(rawText){
     this.setState({baseText: rawText})
@@ -91,16 +83,13 @@ class TextCompareWrapper extends React.Component {
     }
   }
   componentDidUpdate(prevProps, prevState){
-    console.log("update prev props", prevProps)
-    console.log("update current props", this.props)
     // only fire reload if "info resource" has changed"
-    if (prevProps.info.resourceid !== this.props.info.resourceid){
-      console.log("state change 1 detected")
+    if ((prevProps.info.resourceid !== this.props.info.resourceid) || (prevState.customExpressionObject !== this.state.customExpressionObject)){
     // this conditional is needed, because props are waiting on multiple async calls.
     // when an async call finishes it will up; and the related Expression query last,
     // it will use the old ctranscription prop overriding the the update from the prop update from the other async call
+    // TODO: above message is unclear; but this conditional seems important. Needs better explanation of why it is necessary
     if (prevProps.info.relatedExpressions){
-      console.log("state change 2 detected")
       // this conditional may no longer be necessary based on first conditional check
       if (prevProps.info.ctranscription !== this.props.info.ctranscription){
         this.getText(this.props.info.ctranscription)
@@ -114,9 +103,8 @@ class TextCompareWrapper extends React.Component {
           longTitle: this.props.info.longTitle, 
           show: false,
       }
-      //combine info.relatedExpressions with customExpressions
-      console.log("merge attempted")
-      const newRelatedExpressions = this.props.info.relatedExpressions.concat(this.state.customExpressionObjects)
+      //combine info.relatedExpressions with customExpression
+      const newRelatedExpressions = this.props.info.relatedExpressions.concat(this.state.customExpressionObject)
       newRelatedExpressions.forEach((r) => {
         expressions[r.resourceid] = {
           id: r.resourceid, 
@@ -129,11 +117,6 @@ class TextCompareWrapper extends React.Component {
       })
       this.setState({expressions: expressions})
     }
-  }
-  console.log("update prev state", prevState)
-    console.log("update current state", this.state)
-  if (prevState.customExpressionObjects.length !== this.state.customExpressionObjects.length){
-    console.log("state change detected")
   }
   }
 
