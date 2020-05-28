@@ -8,8 +8,9 @@ import Comment2Item from './Comment2Item.js'
 import Comments2ImportExport from './Comments2ImportExport'
 import uuidv4 from 'uuid/v4';
 import Button from 'react-bootstrap/Button';
-
+import {FaClipboard} from 'react-icons/fa';
 import {useTranslation} from 'react-i18next'
+import {copyToClipboard} from './utils'
 
 /**
  * 
@@ -93,11 +94,11 @@ function Comments2(props) {
       return []
     }
   }
-
+  // expect list to be in already parsed JSON
   const handleImportList = (list, listname) => {
     // try to load data from local storage
     try {
-      const parsedList = JSON.parse(list);
+      const parsedList = list;
       const name = listname || uuidv4();
       lists[name] = parsedList
       setLists({
@@ -125,13 +126,20 @@ function Comments2(props) {
                   })
                 }
       </FormControl>
-      <span>{mentionedBy.length > 0 && "Discussed By:"} {mentionedBy.length > 0 && mentionedBy.map((m) => {
+      {mentionedBy.length > 0 && 
+      <div>
+        <span>Discussed By:</span>
+        {mentionedBy.map((m) => {
             return(
+              <div>
               <Link key={m} to={"/res?resourceid=" + m}>{m}</Link>
+              <span className="lbp-span-link" title="Copy Resource Url Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(m)}}><FaClipboard /></span>
+              </div>
             )
           })
           }
-          </span>
+      </div>
+      }
       <div>
         {lists[comments].length > 0 && lists[comments].slice(0).reverse().map((c,i) => {
           if (showFocusComments){
@@ -177,7 +185,7 @@ function Comments2(props) {
         })}
       </div>
       {
-      <Comments2ImportExport currentList={lists[comments]} handleImportList={handleImportList} />
+      <Comments2ImportExport currentList={lists[comments]} currentListName={comments} handleImportList={handleImportList} />
     }
 
     </Container>

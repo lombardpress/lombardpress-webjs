@@ -1,7 +1,9 @@
 import React, {useState} from 'react'
+import Axios from 'axios'
 
 const ImportExport = (props) =>{
   const [newListName, setNewListName] = useState('');
+  const [newListUrl, setNewListUrl] = useState('');
 
   const handleFileImport = (e) => {
     var reader = new FileReader();
@@ -12,15 +14,24 @@ const ImportExport = (props) =>{
     reader.onload = function(e) {
       var list = reader.result;
       
-      props.handleImportList(list, fileName)
+      props.handleImportList(JSON.parse(list), fileName)
     }
+
+
+  }
+  const handleUrlImport = (e) => {
+    e.preventDefault()
+    Axios.get(newListUrl).then((d) => {
+      console.log("data", d)
+      props.handleImportList(d.data, newListUrl)
+    })
 
 
   }
   const createNewList = (e) => {
     e.preventDefault();
     //NOTE: first argument needs to be string that will be parsed in the parent component, in this case to an array
-    props.handleImportList('[]', newListName)
+    props.handleImportList([], newListName)
     setNewListName('')
   }
   const packageData = () =>
@@ -31,13 +42,15 @@ const ImportExport = (props) =>{
   }
   const downloadTitle = () =>
    {
-    const title = "lbpwebjs-list-" + new Date().toISOString().slice(0, 10)
+    const title = props.currentListName.split('.json')[0] + "-" + new Date().toISOString().slice(0, 10)
     return title
   }
   return (
     <div>
       <a href={packageData()} download={downloadTitle()}>Download State</a> |
-      Import List <input type="file" id="files" name="files[]" onChange={handleFileImport}/>
+      Import List: 
+      From File <input type="file" id="files" name="files[]" onChange={handleFileImport}/>
+      From Url <form onSubmit={handleUrlImport}><input type="text" value={newListUrl} onChange={(e) => {setNewListUrl(e.target.value)}}></input><input type="submit"/></form>
       |
       New List <form onSubmit={createNewList}><input type="text" value={newListName} onChange={(e) => {setNewListName(e.target.value)}}></input><input type="submit"/></form>
       
