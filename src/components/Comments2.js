@@ -1,11 +1,14 @@
 import React, {useState, useEffect} from 'react';
+import {Link} from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import FormControl from 'react-bootstrap/FormControl';
 import PropTypes from 'prop-types';
 import Comment2Create from './Comment2Create.js'
 import Comment2Item from './Comment2Item.js'
+import Comments2ImportExport from './Comments2ImportExport'
 import uuidv4 from 'uuid/v4';
 import Button from 'react-bootstrap/Button';
+
 import {useTranslation} from 'react-i18next'
 
 /**
@@ -16,9 +19,13 @@ import {useTranslation} from 'react-i18next'
 
 function Comments2(props) {
   const {t} = useTranslation();
-  const [comments, setComments] = useState(JSON.parse(localStorage.getItem("sctaCommentsState")) || []);
+  const [lists, setLists] = useState(JSON.parse(localStorage.getItem("sctaCommentsState2"))|| {"local": []})
+  const [comments, setComments] = useState("local");
   const [showFocusComments, setShowFocusComments] = useState(true)
   const [commentFilter, setCommentFilter] = useState("")
+  const [mentionedBy, setMentionedBy] = useState([])
+  
+  
 
   /**
    * submit the comment
@@ -42,32 +49,91 @@ function Comments2(props) {
       },
       "target": props.resourceid
     }
-    setComments([
-      ...comments,
-      annotation
-    ])
+    console.log("test", lists[comments])
+    lists[comments].push(annotation) 
+    
+    setLists({
+      ...lists,
+    })
     setCommentFilter('')
   }
   const removeComment = (id) => {
-    setComments(comments.filter((c) => (c.id !== id)))
+    //filter current list
+    const newLists = lists[comments].filter((c) => (c.id !== id))
+    // replace current list value with filtered list
+    lists[comments] = newLists
+      setLists({
+        ...lists
+      })
   }
   const updateComment = (id, update) => {
-    const targetComment = comments.filter((c) => (c.id === id))[0]
+    
+    const targetComment = lists[comments].filter((c) => (c.id == id))[0]
     targetComment.body.value = update
-    setComments([...comments])
+    setLists({
+      ...lists
+    })
+  }
+  useEffect(() => {
+    setMentionedBy(getMentionedBy())
+
+  }, [props.resourceid])
+  
+  const getMentionedBy = () => {
+    if (lists[comments].length > 0){
+      let mentionedBy = lists[comments].map((c) => {
+        if (c.body.value.includes(props.resourceid)){
+          return c.target
+        }
+      })
+      mentionedBy = mentionedBy.filter((i) => {return i !== undefined})
+      return mentionedBy
+    }
+    else{
+      return []
+    }
+  }
+
+  const handleImportList = (list, listname) => {
+    // try to load data from local storage
+    try {
+      const parsedList = JSON.parse(list);
+      const name = listname || uuidv4();
+      lists[name] = parsedList
+      setLists({
+        ...lists
+      })
+    }
+    // if import update fails do nothing and proceed with the default state
+    catch (e) {
+      console.log("error", e)
+    }
   }
 
   useEffect(() => {
-    localStorage.setItem("sctaCommentsState", JSON.stringify(comments))
+    localStorage.setItem("sctaCommentsState2", JSON.stringify(lists))
   })
+
   return (
     <Container className={props.hidden ? "hidden" : "showing"}>
       <Comment2Create submitComment={submitComment}/>
       <FormControl style={{margin: "10px 0"}} type="text" value={commentFilter} placeholder={t("filter comments by text")} className="mr-sm-2" onChange={(e) => {setCommentFilter(e.target.value)}}/>
       <Button style={{margin: "10px 0"}} block onClick={() => setShowFocusComments(!showFocusComments)}>{showFocusComments ? t("Show All Comments") : t("Show Comments For Focused Passage") }</Button>
-
+      <FormControl as="select" onChange={(e) => {setComments(e.target.value)}} value={comments}>
+                {lists && Object.keys(lists).map((e, i) => {
+                    return (<option key={e} value={e}>{e}</option>)
+                  })
+                }
+      </FormControl>
+      <span>{mentionedBy.length > 0 && "Discussed By:"} {mentionedBy.length > 0 && mentionedBy.map((m) => {
+            return(
+              <Link key={m} to={"/res?resourceid=" + m}>{m}</Link>
+            )
+          })
+          }
+          </span>
       <div>
-        {comments.slice(0).reverse().map((c,i) => {
+        {lists[comments].length > 0 && lists[comments].slice(0).reverse().map((c,i) => {
           if (showFocusComments){
             if (c.target === props.resourceid && c.body.value.includes(commentFilter)){
               return (
@@ -110,6 +176,9 @@ function Comments2(props) {
           }
         })}
       </div>
+      {
+      <Comments2ImportExport currentList={lists[comments]} handleImportList={handleImportList} />
+    }
 
     </Container>
   );

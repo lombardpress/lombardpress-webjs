@@ -36,9 +36,7 @@ class Text extends React.Component {
       this.setState({fetching: true})
       //frist try to request html converted by eXist
       const resultDocument = loadHtmlResultDocFromExist(xmlurl)
-      console.log("resultDoc", resultDocument)
       resultDocument.then((data) => {
-        console.log("test", data.data)
         this.setState({fetching: false})
         //appendage to file
         //and event binding
@@ -51,7 +49,6 @@ class Text extends React.Component {
       .catch((e) => {
         // if eXist conversion fails, do conversion in browser
         const resultDocument = convertXMLDoc(xmlurl, xslurl)
-        console.log("resultDoc", resultDocument)
         resultDocument.then((data) => {
           this.setState({fetching: false})
           document.getElementById("text").innerHTML = "";
