@@ -24,9 +24,9 @@ class TextCompareWrapper extends React.Component {
   handleSetCustomExpressionId(customExpressionId){
     this.setState({customExpressionId: customExpressionId})
   }
-  handleCustomUpdateRelatedExpressions(value){
+  handleCustomUpdateRelatedExpressions(){
     const expressionObject = {
-      resourceid: value,
+      resourceid: this.state.customExpressionId,
       relationLabel: "user added comparison"
     }
     
@@ -168,11 +168,8 @@ class TextCompareWrapper extends React.Component {
     <h4>Text Comparisons</h4>
     {displayExpressions()}
     <hr/>
-    <form onSubmit={(e) => {this.handleCustomUpdateRelatedExpressions("http://scta.info/resource/pgb1q1-uqvovs")}}>
-      <input type="text" value={this.state.customExpressionId} onChange={(e) => {this.handleSetCustomExpressionId(e.target.value)}}>
-      </input>
-      <input type="submit"/>
-    </form>
+    <form onSubmit={this.handleCustomUpdateRelatedExpressions}><input type="text" value={this.state.customExpressionId} onChange={(e) => {this.handleSetCustomExpressionId(e.target.value)}}></input>
+    <input type="submit"/></form>
     <hr/>
     <div>
       <p>Other Comparison/Connection Visualizations</p>
