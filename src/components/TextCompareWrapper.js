@@ -9,13 +9,36 @@ class TextCompareWrapper extends React.Component {
     super(props)
     this.handleToggleCompare = this.handleToggleCompare.bind(this)
     this.handleChangeBase = this.handleChangeBase.bind(this)
+    this.handleCustomUpdateRelatedExpressions = this.handleCustomUpdateRelatedExpressions.bind(this)
+    this.handleSetCustomExpressionId = this.handleSetCustomExpressionId.bind(this)
     this.getText = this.getText.bind(this)
     this.mounted = ""
     this.state = {
       expressions: {},
-      baseText: ""
+      baseText: "",
+      customExpressionId: "", 
+      customExpressionObjects: []
     }
 
+  }
+  handleSetCustomExpressionId(customExpressionId){
+    this.setState({customExpressionId: customExpressionId})
+  }
+  handleCustomUpdateRelatedExpressions(value){
+    const expressionObject = {
+      resourceid: value,
+      relationLabel: "user added comparison"
+    }
+    
+    this.setState((prevState) => {
+      const newObjects = prevState.customExpressionObjects.push(expressionObject)
+      return(
+        {
+          ...newObjects,
+          
+        }
+      )
+    })
   }
   handleChangeBase(rawText){
     this.setState({baseText: rawText})
@@ -67,14 +90,17 @@ class TextCompareWrapper extends React.Component {
       }
     }
   }
-  componentDidUpdate(prevProps){
+  componentDidUpdate(prevProps, prevState){
+    console.log("update prev props", prevProps)
+    console.log("update current props", this.props)
     // only fire reload if "info resource" has changed"
     if (prevProps.info.resourceid !== this.props.info.resourceid){
-
+      console.log("state change 1 detected")
     // this conditional is needed, because props are waiting on multiple async calls.
     // when an async call finishes it will up; and the related Expression query last,
     // it will use the old ctranscription prop overriding the the update from the prop update from the other async call
     if (prevProps.info.relatedExpressions){
+      console.log("state change 2 detected")
       // this conditional may no longer be necessary based on first conditional check
       if (prevProps.info.ctranscription !== this.props.info.ctranscription){
         this.getText(this.props.info.ctranscription)
@@ -88,7 +114,10 @@ class TextCompareWrapper extends React.Component {
           longTitle: this.props.info.longTitle, 
           show: false,
       }
-      this.props.info.relatedExpressions.forEach((r) => {
+      //combine info.relatedExpressions with customExpressions
+      console.log("merge attempted")
+      const newRelatedExpressions = this.props.info.relatedExpressions.concat(this.state.customExpressionObjects)
+      newRelatedExpressions.forEach((r) => {
         expressions[r.resourceid] = {
           id: r.resourceid, 
           relationLabel: r.relationLabel, 
@@ -100,6 +129,11 @@ class TextCompareWrapper extends React.Component {
       })
       this.setState({expressions: expressions})
     }
+  }
+  console.log("update prev state", prevState)
+    console.log("update current state", this.state)
+  if (prevState.customExpressionObjects.length !== this.state.customExpressionObjects.length){
+    console.log("state change detected")
   }
   }
 
@@ -133,6 +167,12 @@ class TextCompareWrapper extends React.Component {
     <Container className={this.props.hidden ? "hidden" : "showing"}>
     <h4>Text Comparisons</h4>
     {displayExpressions()}
+    <hr/>
+    <form onSubmit={(e) => {this.handleCustomUpdateRelatedExpressions("http://scta.info/resource/pgb1q1-uqvovs")}}>
+      <input type="text" value={this.state.customExpressionId} onChange={(e) => {this.handleSetCustomExpressionId(e.target.value)}}>
+      </input>
+      <input type="submit"/>
+    </form>
     <hr/>
     <div>
       <p>Other Comparison/Connection Visualizations</p>

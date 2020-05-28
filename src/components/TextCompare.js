@@ -81,7 +81,7 @@ class TextCompare extends React.Component {
   }
   componentDidUpdate(prevProps){
     // conditional try to restrict new async calls to only when props.info changes
-    if (this.props.info.resourceid !== prevProps.info.resourceid){
+    if ((this.props.info.resourceid !== prevProps.info.resourceid) || (this.props.info.relatedExpressions !== prevProps.info.relatedExpressions)){
       if (this.props.isMainText){
         this.setState({info: this.props.info})
       }
