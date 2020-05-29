@@ -8,51 +8,28 @@ exports[`should render and conform to snapshot  1`] = `
   <Comment2Create
     submitComment={[Function]}
   />
-  <FormControl
-    className="mr-sm-2"
-    onChange={[Function]}
-    placeholder="filter comments by text"
-    style={
-      Object {
-        "margin": "10px 0",
-      }
-    }
-    type="text"
-    value=""
-  />
   <Button
     active={false}
     block={true}
     disabled={false}
     onClick={[Function]}
+    size="sm"
     style={
       Object {
-        "margin": "10px 0",
+        "margin": "2px",
       }
     }
     type="button"
     variant="primary"
   >
-    Show All Comments
+    <FaFilter />
+     Filters
   </Button>
-  <FormControl
-    as="select"
-    onChange={[Function]}
-    value="local"
-  >
-    <option
-      key="local"
-      value="local"
-    >
-      local
-    </option>
-  </FormControl>
-  <span>
-     
-  </span>
+  <hr />
   <div />
   <ImportExport
     currentList={Array []}
+    currentListName="local"
     handleImportList={[Function]}
   />
 </Container>

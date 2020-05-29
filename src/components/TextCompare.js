@@ -112,7 +112,7 @@ class TextCompare extends React.Component {
       }
     }
   return (
-    <div style={{"borderBottom": "1px solid black", padding: "5px"}}>
+    <div style={{"borderBottom": "1px solid rgba(0, 0, 0, 0.1)", padding: "5px"}}>
       {
         // the link to reroute is not quite working, because the base Text is not resetting, focusBlockChange might be better; but item structure will also need to be changed.
       }

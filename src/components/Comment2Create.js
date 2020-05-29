@@ -15,9 +15,8 @@ function Comment2Create(props) {
 
   return (
     <Form onSubmit={handleCommentUpdate}>
-     <FormControl type="text" id="comment" value={comment} placeholder={t("comment")} className="mr-sm-2" onChange={(e) => {setComment(e.target.value)}}/>
-     <hr/>
-     <Button type="submit" block>{t("Submit")}</Button>
+     <FormControl as="textarea" type="text" id="comment" rows="3" value={comment} placeholder={t("comment")} className="mr-sm-2" onChange={(e) => {setComment(e.target.value)}}/>
+     <Button size="sm"  type="submit" block style={{margin: "2px"}}>{t("Submit")}</Button>
    </Form>
   );
 }

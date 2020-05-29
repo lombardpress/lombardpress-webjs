@@ -1,6 +1,9 @@
 import React from 'react';
 import Axios from 'axios'
 import Container from 'react-bootstrap/Container';
+import Form from 'react-bootstrap/Form';
+import FormControl from 'react-bootstrap/FormControl';
+import Button from 'react-bootstrap/Button';
 import TextCompare from './TextCompare'
 
 
@@ -150,9 +153,14 @@ class TextCompareWrapper extends React.Component {
     <Container className={this.props.hidden ? "hidden" : "showing"}>
     <h4>Text Comparisons</h4>
     {displayExpressions()}
-    <hr/>
-    <form onSubmit={this.handleCustomUpdateRelatedExpressions}><input type="text" value={this.state.customExpressionId} onChange={(e) => {this.handleSetCustomExpressionId(e.target.value)}}></input>
-    <input type="submit"/></form>
+    <div style={{"borderBottom": "1px solid rgba(0, 0, 0, 0.1)", padding: "5px"}}>
+      <p style={{fontSize: "12px"}}>Create custom user compare</p>
+      <Form onSubmit={this.handleCustomUpdateRelatedExpressions} inline > 
+      <FormControl inline size="sm" id="text" type="text" value={this.state.customExpressionId} placeholder="expression id" className="mr-sm-2" onChange={(e) => {this.handleSetCustomExpressionId(e.target.value)}}/>
+      <Button inline size="sm"  type="submit" style={{margin: "2px"}}>Submit</Button>
+    </Form>
+   </div>
+
     <hr/>
     <div>
       <p>Other Comparison/Connection Visualizations</p>

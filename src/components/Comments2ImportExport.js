@@ -1,9 +1,11 @@
 import React, {useState} from 'react'
 import Axios from 'axios'
+import {FaDownload, FaCloudDownloadAlt, FaUpload, FaCloudUploadAlt, FaPlusCircle} from 'react-icons/fa';
 
 const ImportExport = (props) =>{
   const [newListName, setNewListName] = useState('');
   const [newListUrl, setNewListUrl] = useState('');
+  const [showImport, setShowImport] = useState(false);
 
   const handleFileImport = (e) => {
     var reader = new FileReader();
@@ -47,12 +49,22 @@ const ImportExport = (props) =>{
   }
   return (
     <div>
-      <a href={packageData()} download={downloadTitle()}>Download State</a> |
-      Import List: 
-      From File <input type="file" id="files" name="files[]" onChange={handleFileImport}/>
-      From Url <form onSubmit={handleUrlImport}><input type="text" value={newListUrl} onChange={(e) => {setNewListUrl(e.target.value)}}></input><input type="submit"/></form>
-      |
-      New List <form onSubmit={createNewList}><input type="text" value={newListName} onChange={(e) => {setNewListName(e.target.value)}}></input><input type="submit"/></form>
+      <span className="lbp-span-link" onClick={() => setShowImport(!showImport)}>Import <FaUpload/></span> 
+      {showImport &&
+        <div>
+          <span className="lbp-span-link"><FaUpload/> Load from local file</span> 
+          <br/>
+          <input type="file" id="files" name="files[]" onChange={handleFileImport}/>
+          <br/>
+          <span className="lbp-span-link"><FaCloudDownloadAlt/> Load from Cloud</span>
+          <form onSubmit={handleUrlImport}><input type="text" value={newListUrl} onChange={(e) => {setNewListUrl(e.target.value)}}></input><input type="submit"/></form>
+          
+          <span className="lbp-span-link"><FaPlusCircle/> Create New List</span> 
+          <form onSubmit={createNewList}><input type="text" value={newListName} onChange={(e) => {setNewListName(e.target.value)}}></input><input type="submit"/></form>
+        </div>
+      }
+      <br/> 
+      <a href={packageData()} download={downloadTitle()}><span className="lbp-span-link">Export <FaDownload/></span></a>
       
     </div>
   );

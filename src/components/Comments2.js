@@ -8,7 +8,7 @@ import Comment2Item from './Comment2Item.js'
 import Comments2ImportExport from './Comments2ImportExport'
 import uuidv4 from 'uuid/v4';
 import Button from 'react-bootstrap/Button';
-import {FaClipboard} from 'react-icons/fa';
+import {FaClipboard, FaFilter} from 'react-icons/fa';
 import {useTranslation} from 'react-i18next'
 import {copyToClipboard} from './utils'
 
@@ -25,6 +25,7 @@ function Comments2(props) {
   const [showFocusComments, setShowFocusComments] = useState(true)
   const [commentFilter, setCommentFilter] = useState("")
   const [mentionedBy, setMentionedBy] = useState([])
+  const [showFilters, setShowFilters] = useState(false)
   
   
 
@@ -83,7 +84,7 @@ function Comments2(props) {
   const getMentionedBy = () => {
     if (lists[comments].length > 0){
       let mentionedBy = lists[comments].map((c) => {
-        if (c.body.value.includes(props.resourceid)){
+        if (c.body.value && c.body.value.includes(props.resourceid)){
           return c.target
         }
       })
@@ -118,14 +119,21 @@ function Comments2(props) {
   return (
     <Container className={props.hidden ? "hidden" : "showing"}>
       <Comment2Create submitComment={submitComment}/>
-      <FormControl style={{margin: "10px 0"}} type="text" value={commentFilter} placeholder={t("filter comments by text")} className="mr-sm-2" onChange={(e) => {setCommentFilter(e.target.value)}}/>
-      <Button style={{margin: "10px 0"}} block onClick={() => setShowFocusComments(!showFocusComments)}>{showFocusComments ? t("Show All Comments") : t("Show Comments For Focused Passage") }</Button>
-      <FormControl as="select" onChange={(e) => {setComments(e.target.value)}} value={comments}>
+      <Button size="sm" style={{margin: "2px"}} block onClick={() => setShowFilters(!showFilters)}><FaFilter/> Filters</Button>
+      { showFilters &&
+      <div>
+        <span>Select Annotation List</span>
+      <FormControl size="sm" as="select" onChange={(e) => {setComments(e.target.value)}} value={comments}>
                 {lists && Object.keys(lists).map((e, i) => {
                     return (<option key={e} value={e}>{e}</option>)
                   })
                 }
       </FormControl>
+      <FormControl size="sm" style={{margin: "10px 0"}} type="text" value={commentFilter} placeholder={t("filter comments by text")} className="mr-sm-2" onChange={(e) => {setCommentFilter(e.target.value)}}/>
+      <Button id="btnAllCommentsToggle" size="sm" style={{margin: "2px"}} block onClick={() => setShowFocusComments(!showFocusComments)}>{showFocusComments ? t("Show All Comments") : t("Show Comments For Focused Passage") }</Button>
+      </div>
+      }
+      <hr/>
       {mentionedBy.length > 0 && 
       <div>
         <span>Discussed By:</span>
@@ -138,12 +146,13 @@ function Comments2(props) {
             )
           })
           }
+        <hr/>
       </div>
       }
       <div>
         {lists[comments].length > 0 && lists[comments].slice(0).reverse().map((c,i) => {
           if (showFocusComments){
-            if (c.target === props.resourceid && c.body.value.includes(commentFilter)){
+            if (c.target === props.resourceid && (c.body.value && c.body.value.includes(commentFilter))){
               return (
                 <div key={i}>
                   <Comment2Item comment={c} focused={true} removeComment={removeComment} updateComment={updateComment}/>
@@ -158,7 +167,7 @@ function Comments2(props) {
             }
           }
           else{
-            if (c.target === props.resourceid && c.body.value.includes(commentFilter)){
+            if (c.target === props.resourceid && (c.body.value && c.body.value.includes(commentFilter))){
               return (
                 <div key={i} style={{borderLeft: "1px solid black"}}>
                   <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment}/>
@@ -168,7 +177,7 @@ function Comments2(props) {
                 </div>
                 )
             }
-            else if (c.body.value.includes(commentFilter)){
+            else if (c.body.value && c.body.value.includes(commentFilter)){
               return (
                 <div key={i}>
                   <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment}/>
