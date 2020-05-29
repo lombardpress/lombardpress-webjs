@@ -55,13 +55,10 @@ function Comment2Item(props) {
           //<span dangerouslySetInnerHTML={{ __html: addSCTALinksToValue(props.comment.body.value)}}/>
           }
           <span>{addSCTALinksToValue(props.comment.body.value)}</span>
-          | {props.comment.created && props.comment.created.split("T")[0]}
-          | <span className="lbp-span-link" onClick={() => {props.removeComment(props.comment.id)}}>
-              <FaTrash/>
-            </span>
-          | <span className="lbp-span-link" onClick={() => setEditable(true)}>
-              <FaEdit/>
-            </span>
+          <br/>
+          <span>Submitted: </span> {props.comment.created && props.comment.created.split("T")[0]} | 
+          <span className="lbp-span-link" onClick={() => {props.removeComment(props.comment.id)}}><FaTrash/> </span> | 
+          <span className="lbp-span-link" onClick={() => setEditable(true)}> <FaEdit/></span>
           </p>
         }
         <hr/>
