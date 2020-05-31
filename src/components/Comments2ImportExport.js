@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import Axios from 'axios'
-import {FaDownload, FaCloudDownloadAlt, FaUpload, FaCloudUploadAlt, FaPlusCircle} from 'react-icons/fa';
+import {FaDownload, FaCloudDownloadAlt, FaUpload, FaPlusCircle} from 'react-icons/fa';
 
 const ImportExport = (props) =>{
   const [newListName, setNewListName] = useState('');

@@ -70,7 +70,7 @@ function Comments2(props) {
   }
   const updateComment = (id, update) => {
     
-    const targetComment = lists[comments].filter((c) => (c.id == id))[0]
+    const targetComment = lists[comments].filter((c) => (c.id === id))[0]
     targetComment.body.value = update
     setLists({
       ...lists
@@ -78,7 +78,7 @@ function Comments2(props) {
   }
   useEffect(() => {
     setMentionedBy(getMentionedBy())
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.resourceid])
   
   const getMentionedBy = () => {
@@ -86,6 +86,9 @@ function Comments2(props) {
       let mentionedBy = lists[comments].map((c) => {
         if (c.body.value && c.body.value.includes(props.resourceid)){
           return c.target
+        }
+        else{
+          return undefined
         }
       })
       mentionedBy = mentionedBy.filter((i) => {return i !== undefined})
