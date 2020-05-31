@@ -71,7 +71,7 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "jeffreycwitt.lbp/surface3wrapper@1.2.0": {
+    "jeffreycwitt.lbp/surface3wrapper@1.2.1": {
         "files": [
             {
                 "relativePath": "src/components/Image.js",
@@ -87,6 +87,11 @@
                 "relativePath": "src/components/LineText.js",
                 "test": false,
                 "name": "LineText.js"
+            },
+            {
+                "relativePath": "src/components/OSDInstance.js",
+                "test": false,
+                "name": "OSDInstance.js"
             },
             {
                 "relativePath": "src/components/Queries.js",
