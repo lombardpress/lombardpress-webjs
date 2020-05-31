@@ -2,8 +2,12 @@ import React from 'react';
 import Surface3 from './Surface3';
 import PropTypes from 'prop-types';
 import Form from 'react-bootstrap/Form';
-
+import FormControl from 'react-bootstrap/FormControl';
+import Button from 'react-bootstrap/Button';
 import { FaList, FaFile, FaParagraph} from 'react-icons/fa';
+
+import {runQuery} from './utils'
+import {basicInfoQuery} from './Queries'
 
 //TODO: surface 3 needs to run in a wrapper which allows the user to choose between manifestations.
 //TODO: rdf dbase needs to include first line numbers for paragraphs that start in the middle of al line.
@@ -13,11 +17,40 @@ class Surface3Wrapper extends React.Component {
     super(props)
     this.handleChangeManifestation = this.handleChangeManifestation.bind(this)
     this.handleToggleTextLinesView = this.handleToggleTextLinesView.bind(this)
+    this.handleSetCustomExpressionId = this.handleSetCustomExpressionId.bind(this)
+    this.handleGetCustomManifestations = this.handleGetCustomManifestations.bind(this)
+    this.handleChangeCustomManifestation = this.handleChangeCustomManifestation.bind(this)
     this.state = {
       focusedManifestation: "",
-      annotationsDisplay: "lines"
+      annotationsDisplay: "lines",
+      userAddedExpressionId: "",
+      userAddedManifestations: [],
+      focusedCustomManifestation: ""
     }
   }
+  handleChangeCustomManifestation(value){
+    this.setState({focusedCustomManifestation: value})
+  }
+  handleSetCustomExpressionId(value){
+    this.setState({userAddedExpressionId: value})
+  }
+  handleGetCustomManifestations(e){
+    e.preventDefault()
+    const results = runQuery(basicInfoQuery(this.state.userAddedExpressionId))
+    results.then((d) => {
+      const manifestations = d.data.results.bindings.map((b) => {
+        return {
+          manifestation: b.manifestation.value,
+          manifestationTitle: b.manifestationTitle.value,
+          transcription: b.manifestationCTranscription ? b.manifestationCTranscription.value : ""
+        }
+      })
+      this.setState({userAddedManifestations: manifestations, focusedCustomManifestation: d.data.results.bindings[0].cmanifestation.value})
+    })
+     
+
+  }
+
   handleToggleTextLinesView(view){
     //optional prop to allow parent container to reset default view prop
     if (this.props.handleToggleTextLinesView){
@@ -130,6 +163,29 @@ class Surface3Wrapper extends React.Component {
             {displayManifestation()}
           </div>
         </div>
+        {!this.props.isDependentSurface3 &&
+        <div style={{"borderBottom": "1px solid rgba(0, 0, 0, 0.1)", "borderTop": "1px solid rgba(0, 0, 0, 0.1)", padding: "5px"}} >
+          <p style={{fontSize: "12px"}}>Create custom user compare</p>
+          <Form onSubmit={this.handleGetCustomManifestations} inline> 
+            <FormControl inline="true" size="sm" id="text" type="text" value={this.state.userAddedExpressionId} placeholder="expression id" className="mr-sm-2" onChange={(e) => {this.handleSetCustomExpressionId(e.target.value)}}/>
+            <Button inline="true" size="sm"  type="submit" style={{margin: "2px"}}>Submit</Button>
+          </Form>
+        </div>
+        }
+        {
+          this.state.userAddedManifestations.length > 0 && 
+          <Surface3Wrapper 
+            manifestations={this.state.userAddedManifestations}
+            focusedManifestation={this.state.focusedCustomManifestation}
+            annotationsDisplay={this.state.annotationsDisplay}
+            handleToggleTextLinesView={this.props.handleToggleTextLinesView}
+            handleChangeManifestation={this.handleChangeCustomManifestation}
+            width={this.props.width}
+            lineFocusId={""}
+            hidden={false}
+            isDependentSurface3={true}/>
+        }
+
       </div>
     );
   }
