@@ -52,11 +52,14 @@ class TextCompareWrapper extends React.Component {
     const _this = this;
     Axios.get("https://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + ctranscription)
       .then((text) => {
-        _this.setState({baseText: text.data})
+        if (this.mounted){
+          _this.setState({baseText: text.data})
+        }
       })
     }
 
   componentDidMount(){
+    this.mounted = true
     // prevents check when prop.info is not set
     if (this.props.info){
       // prevents check when prop.info.relatedExpressions is not set
@@ -122,6 +125,10 @@ class TextCompareWrapper extends React.Component {
     }
   }
   }
+  componentWillUnmount(){
+    this.mounted = false
+  }
+
 
   render(){
     const displayExpressions = () => {
@@ -155,9 +162,9 @@ class TextCompareWrapper extends React.Component {
     {displayExpressions()}
     <div style={{"borderBottom": "1px solid rgba(0, 0, 0, 0.1)", padding: "5px"}}>
       <p style={{fontSize: "12px"}}>Create custom user compare</p>
-      <Form onSubmit={this.handleCustomUpdateRelatedExpressions} inline > 
-      <FormControl inline size="sm" id="text" type="text" value={this.state.customExpressionId} placeholder="expression id" className="mr-sm-2" onChange={(e) => {this.handleSetCustomExpressionId(e.target.value)}}/>
-      <Button inline size="sm"  type="submit" style={{margin: "2px"}}>Submit</Button>
+      <Form onSubmit={this.handleCustomUpdateRelatedExpressions} inline="true" > 
+      <FormControl inline="true" size="sm" id="text" type="text" value={this.state.customExpressionId} placeholder="expression id" className="mr-sm-2" onChange={(e) => {this.handleSetCustomExpressionId(e.target.value)}}/>
+      <Button inline="true" size="sm"  type="submit" style={{margin: "2px"}}>Submit</Button>
     </Form>
    </div>
 

@@ -17,7 +17,6 @@ function Comment2Item(props) {
   const addSCTALinksToValue = (value) => {
     // conversion template source: http://talkerscode.com/webtricks/convert-url-text-into-clickable-html-links-using-javascript.php 
     const link = value.match(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig)
-    console.log("link", link)
     if (link){
       const firstString = value.split(link[0])[0]
       let strings = [firstString]
@@ -30,7 +29,6 @@ function Comment2Item(props) {
         const prunedString = afterString.split(link[i+1])[0]
         strings.push(prunedString)
       })
-      console.log(strings)
       return strings
     }
     else{
