@@ -147,7 +147,7 @@ class Surface3Wrapper extends React.Component {
     return (
       <div className={this.props.hidden ? "hidden" : "showing"}>
         <div className="manifestationsList">
-          <Form.Control as="select" onChange={this.handleChangeManifestation} value={this.state.focusedManifestation}>
+          <Form.Control size="sm" as="select" onChange={this.handleChangeManifestation} value={this.state.focusedManifestation}>
             {displayManifestationsList()}
           </Form.Control>
         </div>
@@ -163,15 +163,7 @@ class Surface3Wrapper extends React.Component {
             {displayManifestation()}
           </div>
         </div>
-        {!this.props.isDependentSurface3 &&
-        <div style={{"borderBottom": "1px solid rgba(0, 0, 0, 0.1)", "borderTop": "1px solid rgba(0, 0, 0, 0.1)", padding: "5px"}} >
-          <p style={{fontSize: "12px"}}>Create custom user compare</p>
-          <Form onSubmit={this.handleGetCustomManifestations} inline> 
-            <FormControl inline="true" size="sm" id="text" type="text" value={this.state.userAddedExpressionId} placeholder="expression id" className="mr-sm-2" onChange={(e) => {this.handleSetCustomExpressionId(e.target.value)}}/>
-            <Button inline="true" size="sm"  type="submit" style={{margin: "2px"}}>Submit</Button>
-          </Form>
-        </div>
-        }
+        
         {
           this.state.userAddedManifestations.length > 0 && 
           <Surface3Wrapper 
@@ -184,6 +176,15 @@ class Surface3Wrapper extends React.Component {
             lineFocusId={""}
             hidden={false}
             isDependentSurface3={true}/>
+        }
+        {!this.props.isDependentSurface3 &&
+        <div style={{"borderBottom": "1px solid rgba(0, 0, 0, 0.1)", "borderTop": "1px solid rgba(0, 0, 0, 0.1)", marginTop: "5px", padding: "5px"}} >
+          <p style={{fontSize: "12px"}}>Create custom user compare</p>
+          <Form onSubmit={this.handleGetCustomManifestations} inline> 
+            <FormControl inline="true" size="sm" id="text" type="text" value={this.state.userAddedExpressionId} placeholder="expression id" className="mr-sm-2" onChange={(e) => {this.handleSetCustomExpressionId(e.target.value)}}/>
+            <Button inline="true" size="sm"  type="submit" style={{margin: "2px"}}>Submit</Button>
+          </Form>
+        </div>
         }
 
       </div>
