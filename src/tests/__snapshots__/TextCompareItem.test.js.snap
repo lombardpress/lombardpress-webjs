@@ -13,7 +13,7 @@ exports[`set states and displays compare text when showCompare is changed to tru
     <Link
       to="/text?resourceid=http://scta.info/resource/l1-cpspfs/reims/transcription"
     >
-      http://scta.info/resource/l1-cpspfs/reims/transcription
+      Paragraph l1-cpspfs/reims
     </Link>
      
   </span>
@@ -67,7 +67,7 @@ exports[`set states and displays raw text when showCompare is changed to False 1
     <Link
       to="/text?resourceid=http://scta.info/resource/l1-cpspfs/reims/transcription"
     >
-      http://scta.info/resource/l1-cpspfs/reims/transcription
+      Paragraph l1-cpspfs/reims
     </Link>
   </span>
    |

@@ -47,6 +47,7 @@ it('set states and displays raw text when showCompare is changed to False', () =
   const wrapper = shallow(<TextCompareItem 
     base="circa prologum sententiarum in quo magister dicit quod intentionis suae est munire davidicam turrim vel potius munitam ostendere clypeis etc quaero istam quaestionem utrum in causa iudiciali fidei contra traditionem pure humanitus adinventam iudex idoneus ferret pro fide sententiam"
     compareTranscription="http://scta.info/resource/l1-cpspfs/reims/transcription"
+    manifestationTitle="Paragraph l1-cpspfs/reims"
     show={false}
     showCompare={true}
     />)
@@ -66,6 +67,7 @@ it('set states and displays compare text when showCompare is changed to true', (
   const wrapper = shallow(<TextCompareItem 
     base="circa prologum sententiarum in quo magister dicit quod intentionis suae est munire davidicam turrim vel potius munitam ostendere clypeis etc quaero istam quaestionem utrum in causa iudiciali fidei contra traditionem pure humanitus adinventam iudex idoneus ferret pro fide sententiam"
     compareTranscription="http://scta.info/resource/l1-cpspfs/reims/transcription"
+    manifestationTitle="Paragraph l1-cpspfs/reims"
     show={false}
     showCompare={false}
     />)
