@@ -117,7 +117,7 @@ class TextCompareItem extends React.Component {
         const heatColor = levenNum * 5
         return (
           <div style={{borderLeft: "5px solid rgba(" + heatColor + ", 0, 255, 1)", paddingLeft: "5px"}}>
-            <span><Link to={"/text?resourceid=" + this.props.compareTranscription}>{this.props.compareTranscription}</Link> </span>
+            <span><Link to={"/text?resourceid=" + this.props.compareTranscription}>{this.props.manifestationTitle}</Link> </span>
             <span className="lbp-span-link" title="show/hide" onClick={() => this.handleToggleShow()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>
             <span className="lbp-span-link" title="toggle comparison off" onClick={() => this.handleToggleCompare()}><FaToggleOn/></span>
             {!isBase && <span className="lbp-span-link" title="set as base" onClick={() => this.props.handleChangeBase(this.state.rawText)}><FaStar/></span>}
@@ -133,7 +133,7 @@ class TextCompareItem extends React.Component {
       else if (this.state.rawText){
         return (
           <div>
-            <span><Link to={"/text?resourceid=" + this.props.compareTranscription}>{this.props.compareTranscription}</Link></span> |
+            <span><Link to={"/text?resourceid=" + this.props.compareTranscription}>{this.props.manifestationTitle}</Link></span> |
             <span className="lbp-span-link" title="show/hide" onClick={() => this.handleToggleShow()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>
             <span className="lbp-span-link" title="toggle comparison on" onClick={() => this.handleToggleCompare()}><FaToggleOff/></span>
             {!isBase && <span className="lbp-span-link" title="set as base" onClick={() => this.props.handleChangeBase(this.state.rawText)}><FaStar/></span>}
