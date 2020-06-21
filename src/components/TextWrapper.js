@@ -41,6 +41,8 @@ class TextWrapper extends React.Component {
       surfaceid: "",
       lineFocusId: "",
       textPreviewResourceId: "",
+      textPreviewStart: "",
+      textPreviewEnd: "",
       pdfView: false,
       windows: {
         window1: {
@@ -199,8 +201,8 @@ class TextWrapper extends React.Component {
   handleLineFocusChange(lineFocusId){
     this.setState({lineFocusId: lineFocusId})
   }
-  handleTextPreviewFocusChange(textPreviewResourceId){
-    this.setState({textPreviewResourceId: textPreviewResourceId})
+  handleTextPreviewFocusChange(textPreviewResourceId, start, end){
+    this.setState({textPreviewResourceId: textPreviewResourceId, textPreviewStart: start, textPreviewEnd: end})
   }
   //TODO
   //These two function should be refactored into one
@@ -438,6 +440,8 @@ class TextWrapper extends React.Component {
               handleChangeManifestation={this.handleChangeManifestation}
               defaultManifestationSlug={this.state.windows[key].defaultManifestationSlug}
               textPreviewResourceId={this.state.textPreviewResourceId}
+              textPreviewStart={this.state.textPreviewStart}
+              textPreviewEnd={this.state.textPreviewEnd}
               handleLineFocusChange={this.handleLineFocusChange}
               />
             )

@@ -47,7 +47,7 @@ class TextPreviewWrapper extends React.Component {
       <Container className={this.props.hidden ? "hidden" : "showing"}>
       <p>Go to: <span className="lbp-span-link" onClick={() => this.props.handleFocusChange(this.state.tresourceid)}>{this.state.tresourceid}</span></p>
       {
-       this.state.tresourceid && <TextPreview tresourceid={this.state.tresourceid}/>
+       this.state.tresourceid && <TextPreview tresourceid={this.state.tresourceid} start={this.props.textPreviewStart} stop={this.props.textPreviewEnd} context={true}/>
       }
       </Container>
     );

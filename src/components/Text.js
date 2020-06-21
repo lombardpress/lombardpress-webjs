@@ -149,9 +149,11 @@ class Text extends React.Component {
        e.preventDefault();
        const target = $(this).attr('data-url')
        const targetParagraph = $(this).attr('data-target-resource')
+       const start = $(this).attr('data-start')
+       const end = $(this).attr('data-end')
 
        // set the desired text preview focus to the target of the reference
-       _this.props.handleTextPreviewFocusChange(target)
+       _this.props.handleTextPreviewFocusChange(target, start, end)
        //opening bottomw window 2 to textPreview
        _this.props.openWindow("window2", "textPreview")
 

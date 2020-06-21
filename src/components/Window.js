@@ -191,7 +191,12 @@ class Window extends React.Component {
           }
           {
             // text preview wrapper -- loads a text preview from expression resource id
-            this.state.windowLoad === "textPreview" &&  <TextPreviewWrapper textPreviewResourceId={this.props.textPreviewResourceId} handleFocusChange={this.props.handleFocusChange} hidden={this.state.windowLoad !== "textPreview"}/>
+            this.state.windowLoad === "textPreview" &&  <TextPreviewWrapper 
+              textPreviewResourceId={this.props.textPreviewResourceId} 
+              textPreviewStart={this.props.textPreviewStart} 
+              textPreviewEnd={this.props.textPreviewEnd} 
+              handleFocusChange={this.props.handleFocusChange} 
+              hidden={this.state.windowLoad !== "textPreview"}/>
           }
         </div>
       )
