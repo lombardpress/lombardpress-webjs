@@ -3,14 +3,22 @@ import Container from 'react-bootstrap/Container';
 import TextPreview from '@bit/jeffreycwitt.lbp.text-preview'
 import {runQuery} from './utils'
 import {getCanonicalTranscription} from '../queries/TextPreviewWrapperQueries'
+import {FaToggleOn, FaToggleOff} from 'react-icons/fa';
 
 class TextPreviewWrapper extends React.Component {
   constructor(props){
     super(props)
+    this.handleToggleShowTokenPosition = this.handleToggleShowTokenPosition.bind(this)
     this.mounted = false
     this.state = {
-      tresourceid: ""
+      tresourceid: "",
+      showTokenPosition: false
     }
+  }
+  handleToggleShowTokenPosition(){
+    this.setState((prevState)=> {
+      return {showTokenPosition: !prevState.showTokenPosition}
+    })
   }
   getTranscriptionId(textPreviewResourceId){
     const info = runQuery(getCanonicalTranscription(textPreviewResourceId))
@@ -47,7 +55,11 @@ class TextPreviewWrapper extends React.Component {
       <Container className={this.props.hidden ? "hidden" : "showing"}>
       <p>Go to: <span className="lbp-span-link" onClick={() => this.props.handleFocusChange(this.state.tresourceid)}>{this.state.tresourceid}</span></p>
       {
-       this.state.tresourceid && <TextPreview tresourceid={this.state.tresourceid} start={this.props.textPreviewStart} stop={this.props.textPreviewEnd} context={true}/>
+       this.state.tresourceid && 
+       <div>
+         <TextPreview tresourceid={this.state.tresourceid} start={parseInt(this.props.textPreviewStart)} stop={parseInt(this.props.textPreviewEnd)} context={true} showTokenPosition={this.state.showTokenPosition}/>
+      <span className="lbp-span-link" alt="show word token position" onClick={this.handleToggleShowTokenPosition}>{this.state.showTokenPosition ? <FaToggleOn/> : <FaToggleOff/>}</span>
+       </div>
       }
       </Container>
     );
