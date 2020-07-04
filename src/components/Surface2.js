@@ -70,7 +70,7 @@ class Surface2 extends React.Component {
       // only preceed if sparql query returns results
       if (b){
         //second nested async call for annotation list
-        const alUrl = "https://exist.scta.info/exist/apps/scta-app/folio-annotaiton-list-from-simpleXmlCoordinates.xq?surfaceid=" + surfaceid.split("/resource/")[1]
+        const alUrl = "https://exist.scta.info/exist/apps/scta-app/folio-annotaiton-list-from-simpleXmlCoordinates.xq?surfaceid=" + surfaceid.split("/resource/")[1] + "&coords=loose"
         Axios.get(alUrl).then((d2) => {
           if (this.mount){
               this.setState({
