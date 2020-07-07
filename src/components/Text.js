@@ -104,18 +104,37 @@ class Text extends React.Component {
         const target = $(link).attr('href')
         const text = $(target).html()
         const targetText = $(this).parent().children(".note-display").attr('data-target-id')
-        /// toggles highlight for select text segemnts
-        // TODO: class logic could be improved. See related use in utils.js
-        if (targetText){
-          $("#" + targetText).toggleClass("highlight")
-          $("span[data-corresp=" + targetText + "]").toggleClass("highlight")
+        
+        //capture note display element
+        const noteDisplay = $(this).parent().children(".note-display")
+
+        // TODO: the below highlighting procedures seems to work
+        // but it could be improved in coordination with the improvement of highlighting and fading paragraph/div 
+        // see utils.js for the companion highlighting toggle functions
+
+        /// NOTE: below is an explanation of the conditional
+        // toggles highlight for select text segments
+        // conditional checks if note display is already showing
+        // if not showing, it removes hidden class and highlights target element (quote or ref)
+        if (targetText && noteDisplay.attr("class").includes("hidden")){
+          noteDisplay.removeClass("hidden")
+          $("#" + targetText).addClass("highlight")
+          $("span[data-corresp=" + targetText + "]").addClass("highlight")
+          $("#" + targetText).removeClass("highlightNone")
+          $("span[data-corresp=" + targetText + "]").removeClass("highlightNone")
+        }
+        // if note display is showing, it removes the display and unhighlights the target elements (quote or ref)
+        else{
+          noteDisplay.addClass("hidden")
+          $("#" + targetText).removeClass("highlight")
+          $("span[data-corresp=" + targetText + "]").removeClass("highlight")
           $("#" + targetText).removeClass("highlightNone")
           $("span[data-corresp=" + targetText + "]").removeClass("highlightNone")
         }
 
         //adds footnote text to noteDisplay Div and toggles hidden class
-        const noteDisplay = $(this).parent().children(".note-display")
-        noteDisplay.toggleClass("hidden")
+        
+        
         noteDisplay.html(text)
       });
 

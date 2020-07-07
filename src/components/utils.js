@@ -70,7 +70,7 @@ export function runQuery(query){
 export function scrollToParagraph(hash, highlight){
     const element = $("#" + hash);
 
-    // TODO: highlighting is NOT working
+    // TODO: refactor. this could be a lot simpler
     if (highlight){
       element.addClass("highlightNone");
       $(".paragraphnumber").removeClass("highlight2")
@@ -82,12 +82,21 @@ export function scrollToParagraph(hash, highlight){
       $(".plaoulparagraph").removeClass("highlight")
       element.children(".paragraphnumber").addClass("highlight2")
       element.addClass( "highlight");
-      setTimeout(function(){
-        $(".lbp-ref").removeClass("highlight")
-        $(".lbp-quote").removeClass("highlight")
-        $(".plaoulparagraph").removeClass("highlight")
-        element.addClass("highlightNone");
-    }, 2000);
+      
+      // TODO: Refactor
+      // conditional to ensure fire of next conditional ONLY IF element[0] is found
+      // prevents error with include method below when element does not exist
+      if (element[0]){
+        // condition set to prevent fade if element is quote or ref 
+        if (!element[0].className.includes('lbp-quote') && !element[0].className.includes('lbp-ref')){
+          setTimeout(function(){
+            $(".lbp-ref").removeClass("highlight")
+            $(".lbp-quote").removeClass("highlight")
+            $(".plaoulparagraph").removeClass("highlight")
+            element.addClass("highlightNone");
+          }, 2000);
+        }
+      }
 
     }
   	if (element.length > 0) {
