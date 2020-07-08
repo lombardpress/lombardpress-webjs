@@ -552,11 +552,16 @@ export function getAuthorInformation(authorid){
 
     export function getManifestationCitationInfo(transcriptionid){
        var query = [
-       "SELECT DISTINCT ?manifestation ?manifestationTitle ?manifestationSurface ?surfaceTitle ?codexTitle ?datasource ?eLongTitle ?author ?authorTitle ?expression ",
+       "SELECT DISTINCT ?manifestation ?manifestationTitle ?manifestationSurface ?surfaceTitle ?codexTitle ?datasource ?eLongTitle ?author ?authorTitle ?expression ?editor ?editorTitle",
        "{",
        "<" + transcriptionid + "> <http://scta.info/property/isTranscriptionOf> ?manifestation .",
        "<" + transcriptionid + "> <http://scta.info/property/hasDocument> ?datasource . ",
        "?manifestation <http://purl.org/dc/elements/1.1/title> ?manifestationTitle .",
+       "?manifestation <http://scta.info/property/isPartOfTopLevelManifestation> ?topLevelManifestation .",
+       "OPTIONAL {",
+         "?topLevelManifestation <http://scta.info/property/editor> ?editor .",
+         "?editor <http://purl.org/dc/elements/1.1/title> ?editorTitle .",
+       "}",
        "?manifestation <http://scta.info/property/isManifestationOf> ?expression .",
        "?expression <http://scta.info/property/isPartOfTopLevelExpression> ?topLevelExpression .",
        "OPTIONAL {",

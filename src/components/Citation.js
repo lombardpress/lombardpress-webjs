@@ -40,7 +40,9 @@ class Citation extends React.Component{
           const manifestationid = bindings.manifestation ? bindings.manifestation.value : ""
           const eLongTitle = bindings.eLongTitle ? bindings.eLongTitle.value : ""
           const authorTitle = bindings.authorTitle ? bindings.authorTitle.value : ""
-          const author = bindings.authorTitle ? bindings.author.value : ""
+          const author = bindings.author ? bindings.author.value : ""
+          const editorTitle = bindings.editorTitle ? bindings.editorTitle.value : ""
+          const editor = bindings.editor ? bindings.editor.value : ""
           const datasource = bindings.datasource ? bindings.datasource.value : ""
           const title = bindings.codexTitle ? bindings.codexTitle.value : ""
           const start = bindings.surfaceTitle ? bindings.surfaceTitle.value : ""
@@ -50,6 +52,8 @@ class Citation extends React.Component{
               {
                 author: author,
                 authorTitle: authorTitle,
+                editor: editor,
+                editorTitle: editorTitle,
                 eurl: expressionid,
                 etitle: eLongTitle,
                 murl: manifestationid,
@@ -89,10 +93,21 @@ class Citation extends React.Component{
       <div>
         <p className="etitle">{this.state.authorTitle}, {this.state.etitle} (<a href={this.state.eurl} target="_blank" rel="noopener noreferrer">{this.state.eurl}</a> <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(this.state.eurl)}}><FaClipboard /></span>)</p>
 
-        <p className="mtitle">({this.state.mtitle} (<a href={this.state.murl} target="_blank" rel="noopener noreferrer">{this.state.murl}</a> <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(this.state.murl)}}><FaClipboard /></span>))</p>
+        <p className="mtitle">
+          {this.state.editor && <span>Ed. {this.state.editorTitle}, </span>}
+          {this.state.mtitle} (<a href={this.state.murl} target="_blank" rel="noopener noreferrer">{this.state.murl}</a> 
+          <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(this.state.murl)}}><FaClipboard /></span>)
+        </p>
 
-        <p className="ttitle">(Transcription Resource: <a href={this.state.turl} target="_blank" rel="noopener noreferrer">{this.state.turl}</a> <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(this.state.turl)}}><FaClipboard /></span>;
-        (Data source:<a href={this.state.datasource} target="_blank" rel="noopener noreferrer"> {this.state.datasource}</a> <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(this.state.datasource)}}><FaClipboard /></span>)</p>
+        <p className="ttitle">
+          <span>Transcription Resource: </span>
+          <a href={this.state.turl} target="_blank" rel="noopener noreferrer">{this.state.turl}</a>
+          <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(this.state.turl)}}><FaClipboard /></span>
+          <br/>
+          <span>Data source: </span>
+          <a href={this.state.datasource} target="_blank" rel="noopener noreferrer"> {this.state.datasource}</a> 
+          <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(this.state.datasource)}}><FaClipboard /></span>
+          </p>
         <p className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(fullCitationString)}}><FaClipboard /> Copy Full Citation to Clipboard</p>
       </div>
       }
