@@ -186,6 +186,19 @@ class Text extends React.Component {
        //setting paragraph focus for paragraph containing target footnote
        _this.props.setFocus(targetParagraph)
      })
+
+     $(document).on("mouseup", '.plaoulparagraph', function(e){
+        e.preventDefault();
+        console.log("firing")
+        if (!document.all) document.captureEvents(Event.MOUSEUP);
+        const t = (document.all) ? document.selection.createRange().text : document.getSelection();
+        let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
+width=600,height=300,left=100,top=100`;
+        if (t != ''){
+          window.open('https://logeion.uchicago.edu/' + t, 'dict', params)
+        }
+     })
+     
   }
 
   componentDidUpdate(prevProps, prevState){
