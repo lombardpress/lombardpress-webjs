@@ -1,8 +1,12 @@
+
 import React from 'react';
 import Spinner from './Spinner';
 import $ from 'jquery';
-
 import {convertXMLDoc, scrollToParagraph, loadHtmlResultDocFromExist} from './utils'
+
+import 'tooltipster/dist/css/tooltipster.bundle.css'
+import 'tooltipster';
+
 
 class Text extends React.Component {
   constructor(props){
@@ -37,6 +41,7 @@ class Text extends React.Component {
       //frist try to request html converted by eXist
       const resultDocument = loadHtmlResultDocFromExist(xmlurl)
       resultDocument.then((data) => {
+        throw "test exception"
         this.setState({fetching: false})
         //appendage to file
         //and event binding
@@ -66,6 +71,10 @@ class Text extends React.Component {
   }
 
   setEvents(_this, scrollTo){
+    $('.tooltipTest').tooltipster({
+      theme: 'tooltipster-noir'
+    });
+
     $('.paragraphnumber').click(function(e) {
       e.preventDefault();
       const id = $(this).parent("p").attr('id')
@@ -100,6 +109,7 @@ class Text extends React.Component {
 
    $('.appnote, .footnote').click(function(e) {
         e.preventDefault();
+        $(this).attr("data-tip", "hello world")
         const link = $(this).parent().children('.appnote, .footnote')
         const target = $(link).attr('href')
         const text = $(target).html()

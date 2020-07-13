@@ -85,7 +85,7 @@
     <xsl:variable name="pid"><xsl:value-of select="@xml:id"/></xsl:variable>
 
     <div class='para_wrap' id='pwrap_{@xml:id}' style="clear: both; float: none;">
-      <p id="{@xml:id}" class="plaoulparagraph">
+      <p id="{@xml:id}" class="plaoulparagraph tooltipTest" title="This is my image's tooltip message!">
       <span id="pn{$pn}" class="paragraphnumber">
         <xsl:number level="any" from="tei:text"/>
       </span>
