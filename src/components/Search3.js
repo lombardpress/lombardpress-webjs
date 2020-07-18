@@ -6,7 +6,7 @@ import {questionTitleQuery} from '../queries/questionTitleQuery'
 import Spinner from './Spinner';
 import Container from 'react-bootstrap/Container';
 import Search3Parameters from './Search3Parameters';
-import {retrieveAuthorResults, retrieveExpressionResults, displayTextResults, displayQuestionResults} from './searchUtils'
+import {retrieveAuthorResults, retrieveExpressionResults, retrieveWorkGroupResults, displayTextResults, displayQuestionResults} from './searchUtils'
 
 const Search3 = (props) => {
   const [searchParameters, setSearchParameters] = useState({})
@@ -32,6 +32,12 @@ const Search3 = (props) => {
         }
         else if (searchParameters.searchAuthor){
           const textResults = retrieveAuthorResults(searchParameters.searchTerm, searchParameters.searchAuthor)
+          textResults.then((d) => {
+            setResults(d.data.results)
+          })
+        }
+        else if (searchParameters.searchWorkGroup){
+          const textResults = retrieveWorkGroupResults(searchParameters.searchTerm, searchParameters.searchWorkGroup)
           textResults.then((d) => {
             setResults(d.data.results)
           })

@@ -2,6 +2,8 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import Axios from 'axios'
 
+//TODO: these retrieves need to be refactored into; 
+// if exist db api is improved then a single request should be easier
 export function retrieveExpressionResults(searchTerm, searchEid){
   const expressionShortId = searchEid === "all" ? searchEid : searchEid.split("/resource/")[1]
   const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-expressionid.xq?query=" + searchTerm + "&expressionid=" + expressionShortId
@@ -11,6 +13,13 @@ export function retrieveExpressionResults(searchTerm, searchEid){
 export function retrieveAuthorResults(searchTerm, searchAuthor){
   const authorShortId = searchAuthor.split("/resource/")[1]
   const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-authorid.xq?query=" + searchTerm + "&authorid=" + authorShortId
+  const queryPromise = Axios.get(url)
+  return queryPromise
+
+}
+export function retrieveWorkGroupResults(searchTerm, searchWorkGroup){
+  const workGroupShortId = searchWorkGroup.split("/resource/")[1]
+  const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-workGroupId.xq?query=" + searchTerm + "&workGroupId=" + workGroupShortId
   const queryPromise = Axios.get(url)
   return queryPromise
 
