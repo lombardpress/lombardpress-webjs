@@ -3,23 +3,25 @@ import React from 'react';
 import Spinner from './Spinner';
 import $ from 'jquery';
 import {convertXMLDoc, scrollToParagraph, loadHtmlResultDocFromExist} from './utils'
-
-import 'tooltipster/dist/css/tooltipster.bundle.css'
-import 'tooltipster';
+import ReactTooltip from 'react-tooltip';
 
 
 class Text extends React.Component {
   constructor(props){
     super(props)
     this.retrieveText = this.retrieveText.bind(this)
+    this.handleOnClick = this.handleOnClick.bind(this)
     this.state = {
-      fetching: false
+      fetching: false,
+      selectionRect: {left: "", top: ""},
+      selectedText: ""
     }
 
 
   }
   retrieveText(doc, topLevel, scrollTo){
     const _this = this;
+    
     if (doc){
       //construct file url request ot exist db to get a cors enabled copy of the text (github does not serve files with cors enabled)
       const doc = this.props.doc;
@@ -71,9 +73,6 @@ class Text extends React.Component {
   }
 
   setEvents(_this, scrollTo){
-    $('.tooltipTest').tooltipster({
-      theme: 'tooltipster-noir'
-    });
 
     $('.paragraphnumber').click(function(e) {
       e.preventDefault();
@@ -197,19 +196,59 @@ class Text extends React.Component {
        _this.props.setFocus(targetParagraph)
      })
 
-     $(document).on("mouseup", '.plaoulparagraph', function(e){
-        e.preventDefault();
-        console.log("firing")
-        if (!document.all) document.captureEvents(Event.MOUSEUP);
-        const t = (document.all) ? document.selection.createRange().text : document.getSelection();
-        let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
-width=600,height=300,left=100,top=100`;
-        if (t != ''){
-          window.open('https://logeion.uchicago.edu/' + t, 'dict', params)
+//      $(document).on("mouseup", '.plaoulparagraph', function(e){
+//         e.preventDefault();
+//         console.log("firing")
+//         if (!document.all) document.captureEvents(Event.MOUSEUP);
+//         const t = (document.all) ? document.selection.createRange().text : document.getSelection();
+//         let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
+// width=600,height=300,left=100,top=100`;
+//         if (t != ''){
+//           window.open('https://logeion.uchicago.edu/' + t, 'dict', params)
+//         }
+//      })
+
+      function mark(e) {
+        //if (e.altKey) {
+          var sel = document.getSelection();
+          var rng = sel.getRangeAt(0);
+          var cnt = rng.extractContents();
+          var node = document.createElement('MARK');
+          node.style.backgroundColor = "orange";
+          $(node).attr('class', "tooltipHighlight")
+          //$(node).attr('title', "https://logeion.uchicago.edu/" + cnt.textContent )
+          //$(node).attr('data-tooltipster', '{"url": "https://logeion.uchicago.edu/' + cnt.textContent + '"}')
+          const oRect = rng.getBoundingClientRect();
+          console.log("sel", sel);
+          console.log("rng", rng);
+          console.log("cnt", cnt);
+          _this.handleOnClick(cnt.textContent, oRect);
+          
+          node.appendChild(cnt);
+          rng.insertNode(node);
+          sel.removeAllRanges();
+          
+          
+        //}
+      }
+
+      function unmark(e) {
+        var cur = e.currentTarget;
+        var tgt = e.target;
+        if (tgt.tagName === 'MARK') {
+          if (e.altKey) {
+            var txt = tgt.textContent;
+            tgt.parentNode.replaceChild(document.createTextNode(txt), tgt);
+          }
         }
-     })
-     
-  }
+        cur.normalize();
+      }
+      document.addEventListener('keyup', mark); // ctrl+keyup
+      document.addEventListener('mouseup', mark);// ctrl+mouseup
+      document.addEventListener('click', unmark); // alt+click
+
+
+    }
 
   componentDidUpdate(prevProps, prevState){
 
@@ -232,7 +271,16 @@ width=600,height=300,left=100,top=100`;
       }
     }
   }
-
+  handleOnClick(selectedText, oRect){
+    console.log(oRect)
+    console.log("selectedText", selectedText)
+    this.setState(
+      {
+        selectionRect: oRect, 
+        selectedText: selectedText}
+      )
+    ReactTooltip.show(this.fooRef)
+  }
   componentDidMount(){
     // NOTE: ScrollToNew helps ensure that scrollTo id is SCTA ShortID, 
     //since TextWrapper is (at present) sometimes sending the shortid and sometimes the full url id
@@ -240,6 +288,7 @@ width=600,height=300,left=100,top=100`;
     const scrollToNew = this.props.scrollTo && this.props.scrollTo.includes("/resource/") ? this.props.scrollTo.split("/resource/")[1] : this.props.scrollTo
     this.retrieveText(this.props.doc, this.props.topLevel, scrollToNew)
   }
+  
   render(){
     const displayText = this.state.fetching ? "none" : "block"
 
@@ -252,8 +301,28 @@ width=600,height=300,left=100,top=100`;
           <Spinner/>
           </div>
         }
+        
+        <p ref={ref => this.fooRef = ref} data-tip='tooltip' style={{position: "fixed", top: this.state.selectionRect.top, left: this.state.selectionRect.left}}></p>
+        <button onClick={this.handleOnClick}>button</button>
+        <ReactTooltip 
+        
+        overridePosition={ (
+          { left, top },
+          currentEvent, currentTarget, node) => {
+        const d = document.documentElement;
+        left = Math.min(d.clientWidth - node.clientWidth, left);
+        top = Math.min(d.clientHeight - node.clientHeight, top);
+        left = Math.max(0, left);
+        top = Math.max(0, top);
+        return { top, left }
+      } }>
+          <p>Info</p>
+          <p>Define</p>
+          <p>Edit</p>
+          <p>Comment</p>
+        </ReactTooltip>
         <div id="text" style={{display: displayText}}></div>
-        </div>
+      </div>
 
     );
   }

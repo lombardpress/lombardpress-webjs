@@ -29,7 +29,6 @@
     "react-styleguidist": "^9.1.11",
     "react-syntax-highlighter": "^10.3.0",
     "react-tooltip": "^4.2.7",
-    "tooltipster": "^4.2.8",
     "uuidv4": "^4.0.0"
   },
   "scripts": {
