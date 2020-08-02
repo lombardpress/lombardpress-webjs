@@ -15,7 +15,9 @@ class Text extends React.Component {
     this.state = {
       fetching: false,
       selectionRect: {left: "", top: ""},
-      selectedText: "", 
+      selectedText: "",
+      startToken: undefined,
+      endToken: undefined 
     }
 
 
@@ -208,6 +210,8 @@ class Text extends React.Component {
 //           window.open('https://logeion.uchicago.edu/' + t, 'dict', params)
 //         }
 //      })
+
+      // function to ancestor paragraph of selection
       function getContainingP(node) {
         while (node) {
             if (node.nodeType == 1 && node.tagName.toLowerCase() == "p") {
@@ -218,62 +222,35 @@ class Text extends React.Component {
         }
       }
       function mark(e) {
-        console.log(e)
+        // hide tooltip
         _this.handleHide();
-        // var all = document.getElementsByTagName("MARK");
-        // console.log("all", all)
-        // Array.from(all).forEach((i)=> {
-        //     var txt = i.textContent;
-        //     i.parentNode.replaceChild(document.createTextNode(txt), i);
-        //   })
-        
-        //if (e.altKey) {
-          var sel = document.getSelection();
-          var rng = sel.getRangeAt(0);
-          const pAncestor = getContainingP(rng.commonAncestorContainer)
-          if (pAncestor && pAncestor.className.includes("plaoulparagraph")){
-            console.log("range", rng)
-            var cnt = rng.cloneContents();
-            if (cnt.textContent.length > 0){
-              //var node = document.createElement('MARK');
-              //node.style.backgroundColor = "orange";
-              //$(node).attr('class', "tooltipHighlight")
-              //$(node).attr('title', "https://logeion.uchicago.edu/" + cnt.textContent )
-              //$(node).attr('data-tooltipster', '{"url": "https://logeion.uchicago.edu/' + cnt.textContent + '"}')
-              const oRect = rng.getBoundingClientRect();
-              console.log("sel", sel);
-              console.log("rng", rng);
-              //console.log("cnt", cnt);
-              _this.handleOnClick(cnt.textContent, oRect);
-              //_this.handleOnClick("fides", oRect);
-              
-              // node.appendChild(cnt);
-              // rng.insertNode(node);
-              // sel.removeAllRanges();
-            }
+        //get selection object
+        var sel = document.getSelection();
+        var rng = sel.getRangeAt(0);
+        const pAncestor = getContainingP(rng.commonAncestorContainer)
+        //if selection is in a text paragraph
+        if (pAncestor && pAncestor.className.includes("plaoulparagraph")){
+          var cnt = rng.cloneContents();
+          // if selection is greater than 0 
+          if (cnt.textContent.length > 0){
+            //get ancestor p text
+            const pText = _this.cleanText($(pAncestor).text())
+            const selectionText = _this.cleanText(cnt.textContent)
+            let precedingTextArray = pText.split(selectionText)[0].split(" "); 
+            //slice to remove first item which is paragraph number; filter to remove blank items scattered throughout
+            precedingTextArray = precedingTextArray.slice(1).filter(n=>n)
+            const precedingTextLength = precedingTextArray.length
+            const startToken = precedingTextLength + 1
+            // filter to remove blank items in array
+            const endToken = precedingTextLength + (selectionText.split(" ").filter(n=>n).length) 
+            
+            const oRect = rng.getBoundingClientRect();
+            _this.handleOnClick(selectionText, oRect, startToken, endToken);
           }
-          
-          
-        //}
-      }
-
-      function unmark(e) {
-        var cur = e.currentTarget;
-        var tgt = e.target;
-        if (tgt.tagName === 'MARK') {
-          //if (e.altKey) {
-            _this.handleHide();
-            var txt = tgt.textContent;
-            tgt.parentNode.replaceChild(document.createTextNode(txt), tgt);
-          //}
         }
-        cur.normalize();
       }
       document.addEventListener('keyup', mark); // ctrl+keyup
       document.addEventListener('mouseup', mark);// ctrl+mouseup
-      //document.addEventListener('click', unmark); // alt+click
-
-
     }
 
   componentDidUpdate(prevProps, prevState){
@@ -300,12 +277,11 @@ class Text extends React.Component {
   handleHide(){
     ReactTooltip.hide(this.fooRef)
   }
-  handleOnClick(selectedText, oRect){
-    console.log(oRect)
-    console.log("selectedText", selectedText)
-    
-    selectedText = selectedText.replace(/\*/gi, '' )
-    selectedText = selectedText.replace(/\[[a-z][a-z]\]/gi, '' )
+  // function to remove spaces from selected html text
+  cleanText(selectedText){
+    selectedText = selectedText.replace(/\*/gi, '' ) // remove app note links
+    selectedText = selectedText.replace(/\[[a-z][a-z]\]/gi, '' ) // remove footnotes
+    selectedText = selectedText.replace(/\w*[0-9]+[rvab]+/gi, '' ) // remove folio markers
     selectedText = selectedText.replace(/\s+/gi, ' ' )
     selectedText = selectedText.replace(/\s,\s/gi, ', ' )
     
@@ -315,11 +291,16 @@ class Text extends React.Component {
     selectedText = selectedText.replace(/\s"\s/gi, '" ' )
     selectedText = selectedText.replace(/"\s\."/gi, '." ' )
     selectedText = selectedText.replace(/\s+/gi, ' ' )
-
+    return selectedText
+  }
+  handleOnClick(selectedText, oRect, startToken, endToken){
     this.setState(
       {
         selectionRect: oRect, 
-        selectedText: selectedText}
+        selectedText: selectedText,
+        startToken: startToken, 
+        endToken, endToken
+      }
       )
     ReactTooltip.show(this.fooRef)
   }
@@ -350,7 +331,7 @@ class Text extends React.Component {
             {/* <p >Info</p> */}
             {(this.state.selectedText.split(" ").length === 1) && <p><iframe src={"https://logeion.uchicago.edu/" + this.state.selectedText }></iframe></p>}
             <p>
-              <i>{this.state.selectedText}</i>
+              <i>{this.state.selectedText}</i> ({this.state.startToken}-{this.state.endToken})
               <br/>
               Comment on: 
               <input type="text" placeholder="leave comment"></input>
