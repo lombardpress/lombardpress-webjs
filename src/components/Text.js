@@ -226,15 +226,19 @@ class Text extends React.Component {
         _this.handleHide();
         //get selection object
         var sel = document.getSelection();
-        var rng = sel.getRangeAt(0);
+        var rng = sel && sel.getRangeAt(0);
         const pAncestor = getContainingP(rng.commonAncestorContainer)
         //if selection is in a text paragraph
         if (pAncestor && pAncestor.className.includes("plaoulparagraph")){
           var cnt = rng.cloneContents();
+          $(cnt).children(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
+          console.log(cnt)
           // if selection is greater than 0 
           if (cnt.textContent.length > 0){
             //get ancestor p text
-            const pText = _this.cleanText($(pAncestor).text())
+            const pClone = $(pAncestor).clone()
+            pClone.children(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
+            const pText = _this.cleanText($(pClone).text())
             const selectionText = _this.cleanText(cnt.textContent)
             let precedingTextArray = pText.split(selectionText)[0].split(" "); 
             //slice to remove first item which is paragraph number; filter to remove blank items scattered throughout
@@ -326,19 +330,20 @@ class Text extends React.Component {
         }
         
         <p ref={ref => this.fooRef = ref} data-tip='tooltip' style={{position: "fixed", top: this.state.selectionRect.top + 10, left: this.state.selectionRect.left}}></p>
-        <ReactTooltip clickable={true} place="bottom" style={{overflow: "scroll"}}>
-          <div>
+        <ReactTooltip clickable={true} place="top">
+          <div style={{overflow: "scroll", "maxWidth": "300px"}}>
             {/* <p >Info</p> */}
             {(this.state.selectedText.split(" ").length === 1) && <p><iframe src={"https://logeion.uchicago.edu/" + this.state.selectedText }></iframe></p>}
             <p>
-              <i>{this.state.selectedText}</i> ({this.state.startToken}-{this.state.endToken})
-              <br/>
               Comment on: 
               <input type="text" placeholder="leave comment"></input>
               <br/>
               and/or edit:
               <input type="text" value={this.state.selectedText}></input>
+              <br/>
+              <i>{this.state.selectedText}</i> ({this.state.startToken}-{this.state.endToken})
             </p>
+            
           </div>
         </ReactTooltip>
         <div id="text" style={{display: displayText}}></div>
