@@ -11,10 +11,11 @@ class Text extends React.Component {
     super(props)
     this.retrieveText = this.retrieveText.bind(this)
     this.handleOnClick = this.handleOnClick.bind(this)
+    this.handleHide = this.handleHide.bind(this)
     this.state = {
       fetching: false,
       selectionRect: {left: "", top: ""},
-      selectedText: ""
+      selectedText: "", 
     }
 
 
@@ -207,26 +208,50 @@ class Text extends React.Component {
 //           window.open('https://logeion.uchicago.edu/' + t, 'dict', params)
 //         }
 //      })
-
+      function getContainingP(node) {
+        while (node) {
+            if (node.nodeType == 1 && node.tagName.toLowerCase() == "p") {
+              console.log("node", node)
+                return node;
+            }
+            node = node.parentElement;
+        }
+      }
       function mark(e) {
+        console.log(e)
+        _this.handleHide();
+        // var all = document.getElementsByTagName("MARK");
+        // console.log("all", all)
+        // Array.from(all).forEach((i)=> {
+        //     var txt = i.textContent;
+        //     i.parentNode.replaceChild(document.createTextNode(txt), i);
+        //   })
+        
         //if (e.altKey) {
           var sel = document.getSelection();
           var rng = sel.getRangeAt(0);
-          var cnt = rng.extractContents();
-          var node = document.createElement('MARK');
-          node.style.backgroundColor = "orange";
-          $(node).attr('class', "tooltipHighlight")
-          //$(node).attr('title', "https://logeion.uchicago.edu/" + cnt.textContent )
-          //$(node).attr('data-tooltipster', '{"url": "https://logeion.uchicago.edu/' + cnt.textContent + '"}')
-          const oRect = rng.getBoundingClientRect();
-          console.log("sel", sel);
-          console.log("rng", rng);
-          console.log("cnt", cnt);
-          _this.handleOnClick(cnt.textContent, oRect);
-          
-          node.appendChild(cnt);
-          rng.insertNode(node);
-          sel.removeAllRanges();
+          const pAncestor = getContainingP(rng.commonAncestorContainer)
+          if (pAncestor && pAncestor.className.includes("plaoulparagraph")){
+            console.log("range", rng)
+            var cnt = rng.cloneContents();
+            if (cnt.textContent.length > 0){
+              //var node = document.createElement('MARK');
+              //node.style.backgroundColor = "orange";
+              //$(node).attr('class', "tooltipHighlight")
+              //$(node).attr('title', "https://logeion.uchicago.edu/" + cnt.textContent )
+              //$(node).attr('data-tooltipster', '{"url": "https://logeion.uchicago.edu/' + cnt.textContent + '"}')
+              const oRect = rng.getBoundingClientRect();
+              console.log("sel", sel);
+              console.log("rng", rng);
+              //console.log("cnt", cnt);
+              _this.handleOnClick(cnt.textContent, oRect);
+              //_this.handleOnClick("fides", oRect);
+              
+              // node.appendChild(cnt);
+              // rng.insertNode(node);
+              // sel.removeAllRanges();
+            }
+          }
           
           
         //}
@@ -236,16 +261,17 @@ class Text extends React.Component {
         var cur = e.currentTarget;
         var tgt = e.target;
         if (tgt.tagName === 'MARK') {
-          if (e.altKey) {
+          //if (e.altKey) {
+            _this.handleHide();
             var txt = tgt.textContent;
             tgt.parentNode.replaceChild(document.createTextNode(txt), tgt);
-          }
+          //}
         }
         cur.normalize();
       }
       document.addEventListener('keyup', mark); // ctrl+keyup
       document.addEventListener('mouseup', mark);// ctrl+mouseup
-      document.addEventListener('click', unmark); // alt+click
+      //document.addEventListener('click', unmark); // alt+click
 
 
     }
@@ -271,9 +297,25 @@ class Text extends React.Component {
       }
     }
   }
+  handleHide(){
+    ReactTooltip.hide(this.fooRef)
+  }
   handleOnClick(selectedText, oRect){
     console.log(oRect)
     console.log("selectedText", selectedText)
+    
+    selectedText = selectedText.replace(/\*/gi, '' )
+    selectedText = selectedText.replace(/\[[a-z][a-z]\]/gi, '' )
+    selectedText = selectedText.replace(/\s+/gi, ' ' )
+    selectedText = selectedText.replace(/\s,\s/gi, ', ' )
+    
+    selectedText = selectedText.replace(/\s"\./gi, '". ' )
+    selectedText = selectedText.replace(/\s:\s/gi, ': ' )
+    selectedText = selectedText.replace(/\s\.\s/gi, '. ' )
+    selectedText = selectedText.replace(/\s"\s/gi, '" ' )
+    selectedText = selectedText.replace(/"\s\."/gi, '." ' )
+    selectedText = selectedText.replace(/\s+/gi, ' ' )
+
     this.setState(
       {
         selectionRect: oRect, 
@@ -302,24 +344,21 @@ class Text extends React.Component {
           </div>
         }
         
-        <p ref={ref => this.fooRef = ref} data-tip='tooltip' style={{position: "fixed", top: this.state.selectionRect.top, left: this.state.selectionRect.left}}></p>
-        <button onClick={this.handleOnClick}>button</button>
-        <ReactTooltip 
-        
-        overridePosition={ (
-          { left, top },
-          currentEvent, currentTarget, node) => {
-        const d = document.documentElement;
-        left = Math.min(d.clientWidth - node.clientWidth, left);
-        top = Math.min(d.clientHeight - node.clientHeight, top);
-        left = Math.max(0, left);
-        top = Math.max(0, top);
-        return { top, left }
-      } }>
-          <p>Info</p>
-          <p>Define</p>
-          <p>Edit</p>
-          <p>Comment</p>
+        <p ref={ref => this.fooRef = ref} data-tip='tooltip' style={{position: "fixed", top: this.state.selectionRect.top + 10, left: this.state.selectionRect.left}}></p>
+        <ReactTooltip clickable={true} place="bottom" style={{overflow: "scroll"}}>
+          <div>
+            {/* <p >Info</p> */}
+            {(this.state.selectedText.split(" ").length === 1) && <p><iframe src={"https://logeion.uchicago.edu/" + this.state.selectedText }></iframe></p>}
+            <p>
+              <i>{this.state.selectedText}</i>
+              <br/>
+              Comment on: 
+              <input type="text" placeholder="leave comment"></input>
+              <br/>
+              and/or edit:
+              <input type="text" value={this.state.selectedText}></input>
+            </p>
+          </div>
         </ReactTooltip>
         <div id="text" style={{display: displayText}}></div>
       </div>
