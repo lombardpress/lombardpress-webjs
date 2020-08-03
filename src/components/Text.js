@@ -168,7 +168,6 @@ class Text extends React.Component {
         e.preventDefault();
         const surfaceid = $(this).attr('data-surfaceid');
         const ln = $(this).attr('data-ln');
-        console.log("sid", surfaceid)
 
 
         const paragraphid = $(this).closest('.plaoulparagraph').attr("id");
@@ -207,8 +206,7 @@ class Text extends React.Component {
       // function to ancestor paragraph of selection
       function getContainingP(node) {
         while (node) {
-            if (node.nodeType == 1 && node.tagName.toLowerCase() == "p") {
-              console.log("node", node)
+            if (node.nodeType === 1 && node.tagName.toLowerCase() === "p") {
                 return node;
             }
             node = node.parentElement;
@@ -226,7 +224,6 @@ class Text extends React.Component {
           const selectedElementTargetId = pAncestor.id;
           var cnt = rng.cloneContents();
           $(cnt).children(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
-          console.log(cnt)
           // if selection is greater than 0 
           if (cnt.textContent.length > 0){
             //get ancestor p text
@@ -253,7 +250,8 @@ class Text extends React.Component {
 
     /* @editable as boolean if true, then should be edited in comment */
   handleOnClickComment(editable){
-    this.props.handleOnClickComment(this.state.selectedElementTargetId, this.state.selectedText, editable)
+    const selectedRange = {start: this.state.startToken, end: this.state.endToken}
+    this.props.handleOnClickComment(this.state.selectedElementTargetId, this.state.selectedText, editable, selectedRange)
     // this.props.setFocus(this.state.selectedElementTargetId)
     // this.props.openWindow("window1", "comments")
   }
@@ -334,7 +332,7 @@ class Text extends React.Component {
         <ReactTooltip clickable={true} place="top">
           <div style={{overflow: "scroll", "maxWidth": "300px"}}>
             {/* <p >Info</p> */}
-            {(this.state.selectedText.split(" ").length === 1) && <p><iframe src={"https://logeion.uchicago.edu/" + this.state.selectedText }></iframe></p>}
+            {(this.state.selectedText && this.state.selectedText.split(" ").length === 1) && <p><iframe title="logeion" src={"https://logeion.uchicago.edu/" + this.state.selectedText }></iframe></p>}
             {/* <p>
               Comment on: 
               <input type="text" placeholder="leave comment"></input>

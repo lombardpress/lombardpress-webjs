@@ -35,23 +35,40 @@ function Comments2(props) {
    * @param {string} comment 
    * @public
    */
-  const submitComment = (comment) => {
+  const submitComment = (comment, type, selectedFragment, selectedRange, editedText) => {
     const randomid = uuidv4();
     const annoId = "http://inbox.scta.info/notifications/" + randomid
-    const dateObject = new Date()
+    const dateObject = new Date();
+
+    const selector = [
+      {
+        "type": "TextQuoteSelector",
+        "exact": selectedFragment
+      },
+      {
+        "type": "TextPositionSelector",
+        "start": selectedRange && selectedRange.start,
+        "end": selectedRange && selectedRange.end
+      }
+    ]
+    
     const annotation = {
       "@context": "http://www.w3.org/ns/anno.jsonld",
       "id": annoId,
       "type": "Annotation",
       "created": dateObject.toISOString(),
-      "motivation": "commenting",
+      "motivation": type,
       "body": {
         "type": "TextualBody",
-        "value": comment
+        "value": comment,
+        "editedValue": editedText
       },
-      "target": props.resourceid
+      "target": { // changing target to object rather than string will break retrieval
+        source: props.resourceid, 
+        selector: selector
+      }
+      
     }
-    console.log("test", lists[comments])
     lists[comments].push(annotation) 
     
     setLists({
@@ -85,7 +102,8 @@ function Comments2(props) {
     if (lists[comments].length > 0){
       let mentionedBy = lists[comments].map((c) => {
         if (c.body.value && c.body.value.includes(props.resourceid)){
-          return c.target
+          const target =  typeof(c.target) === 'string' ? c.target : c.target.source;
+          return target
         }
         else{
           return undefined
@@ -118,13 +136,14 @@ function Comments2(props) {
   useEffect(() => {
     localStorage.setItem("sctaCommentsState2", JSON.stringify(lists))
   })
-
+  
   return (
     <Container className={props.hidden ? "hidden" : "showing"}>
       <Comment2Create 
         submitComment={submitComment} 
         selectedFragment={props.selectedFragment} 
         selectedFragmentEditable={props.selectedFragmentEditable}
+        selectedRange={props.selectedRange}
         />
       <Button size="sm" style={{margin: "2px"}} block onClick={() => setShowFilters(!showFilters)}><FaFilter/> Filters</Button>
       { showFilters &&
@@ -158,8 +177,9 @@ function Comments2(props) {
       }
       <div>
         {lists[comments].length > 0 && lists[comments].slice(0).reverse().map((c,i) => {
+          const target = typeof(c.target) === 'string' ? c.target : c.target.source;
           if (showFocusComments){
-            if (c.target === props.resourceid && (c.body.value && c.body.value.includes(commentFilter))){
+            if (target === props.resourceid && (c.body.value && c.body.value.includes(commentFilter))){
               return (
                 <div key={i}>
                   <Comment2Item comment={c} focused={true} removeComment={removeComment} updateComment={updateComment}/>
@@ -174,7 +194,7 @@ function Comments2(props) {
             }
           }
           else{
-            if (c.target === props.resourceid && (c.body.value && c.body.value.includes(commentFilter))){
+            if (target === props.resourceid && (c.body.value && c.body.value.includes(commentFilter))){
               return (
                 <div key={i} style={{borderLeft: "1px solid black"}}>
                   <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment}/>

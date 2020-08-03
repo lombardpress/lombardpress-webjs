@@ -165,6 +165,7 @@ class Window extends React.Component {
               hidden={this.state.windowLoad !== "comments"}
               selectedFragment={this.props.selectedFragment}
               selectedFragmentEditable={this.props.selectedFragmentEditable}
+              selectedRange={this.props.selectedRange}
               />
             }
           </div>

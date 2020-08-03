@@ -37,11 +37,18 @@ function Comment2Item(props) {
   }
   
   
-
+  const target =  typeof(props.comment.target) === 'string' ? props.comment.target : props.comment.target.source;
+  let selectedFragment = undefined;
+  let selectedFragmentRange = undefined;
+  if (props.comment.target.selector){
+    selectedFragment = props.comment.target.selector.filter((i) => (i.type === "TextQuoteSelector"))[0].exact;
+    selectedFragmentRange =  props.comment.target.selector.filter((i) => (i.type === "TextPositionSelector"))[0];
+    }
+  
 
   return (
       <div>
-        {!props.focused && <p>{t("For")}: <Link to={"/text?resourceid=" + props.comment.target}>{props.comment.target}</Link></p>}
+        {!props.focused && <p>{t("For")}: <Link to={"/text?resourceid=" + target}>{target}</Link></p>}
 
         {
           editable ?
@@ -50,6 +57,11 @@ function Comment2Item(props) {
           {
           //<span dangerouslySetInnerHTML={{ __html: addSCTALinksToValue(props.comment.body.value)}}/>
           }
+          {selectedFragment && <span>Comment on: <i>{selectedFragment}</i></span>}
+          {selectedFragmentRange.start && <span> ({selectedFragmentRange.start}-{selectedFragmentRange.end})</span>}
+          <br/>
+          {props.comment.body.editedValue && <span>Suggested Correction: {props.comment.body.editedValue}</span>}
+          <br/>
           <span>{addSCTALinksToValue(props.comment.body.value)}</span>
           <br/>
           <span>Submitted: </span> {props.comment.created && props.comment.created.split("T")[0]} | 

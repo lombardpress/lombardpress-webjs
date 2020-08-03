@@ -47,6 +47,7 @@ class TextWrapper extends React.Component {
       pdfView: false,
       selectedElementTargetId: "", // target parent of selected text
       selectedFragment: "", // selected text 
+      selectedRange: "", // selected text 
       selectedFragmentEditable: undefined, // true false whether selected fragment should be a comment or an suggested edit
       windows: {
         window1: {
@@ -143,8 +144,8 @@ class TextWrapper extends React.Component {
 
     })
   }
-  handleOnClickComment(selectedElementTargetId, selectedFragment, editable){
-    this.setState({selectedElementTargetId, selectedFragment, selectedFragmentEditable: editable})
+  handleOnClickComment(selectedElementTargetId, selectedFragment, editable, selectedRange){
+    this.setState({selectedElementTargetId, selectedFragment, selectedFragmentEditable: editable, selectedRange})
     this.setFocus(selectedElementTargetId)
     this.openWindow("window1", "comments")
   }
@@ -456,6 +457,8 @@ class TextWrapper extends React.Component {
               selectedFragment={this.state.selectedFragment}
               selectedElementTargetId={this.state.selectedFragment}
               selectedFragmentEditable={this.state.selectedFragmentEditable}
+              selectedRange={this.state.selectedRange}
+              
               />
             )
           }
