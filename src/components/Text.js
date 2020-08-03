@@ -12,12 +12,15 @@ class Text extends React.Component {
     this.retrieveText = this.retrieveText.bind(this)
     this.handleOnClick = this.handleOnClick.bind(this)
     this.handleHide = this.handleHide.bind(this)
+    this.handleOnClickComment = this.handleOnClickComment.bind(this)
+    
     this.state = {
       fetching: false,
       selectionRect: {left: "", top: ""},
       selectedText: "",
+      selectedElementTargetId: "",
       startToken: undefined,
-      endToken: undefined 
+      endToken: undefined, 
     }
 
 
@@ -199,17 +202,7 @@ class Text extends React.Component {
        _this.props.setFocus(targetParagraph)
      })
 
-//      $(document).on("mouseup", '.plaoulparagraph', function(e){
-//         e.preventDefault();
-//         console.log("firing")
-//         if (!document.all) document.captureEvents(Event.MOUSEUP);
-//         const t = (document.all) ? document.selection.createRange().text : document.getSelection();
-//         let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
-// width=600,height=300,left=100,top=100`;
-//         if (t != ''){
-//           window.open('https://logeion.uchicago.edu/' + t, 'dict', params)
-//         }
-//      })
+
 
       // function to ancestor paragraph of selection
       function getContainingP(node) {
@@ -230,6 +223,7 @@ class Text extends React.Component {
         const pAncestor = getContainingP(rng.commonAncestorContainer)
         //if selection is in a text paragraph
         if (pAncestor && pAncestor.className.includes("plaoulparagraph")){
+          const selectedElementTargetId = pAncestor.id;
           var cnt = rng.cloneContents();
           $(cnt).children(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
           console.log(cnt)
@@ -249,7 +243,7 @@ class Text extends React.Component {
             const endToken = precedingTextLength + (selectionText.split(" ").filter(n=>n).length) 
             
             const oRect = rng.getBoundingClientRect();
-            _this.handleOnClick(selectionText, oRect, startToken, endToken);
+            _this.handleOnClick(selectionText, oRect, startToken, endToken, selectedElementTargetId);
           }
         }
       }
@@ -257,6 +251,12 @@ class Text extends React.Component {
       document.addEventListener('mouseup', mark);// ctrl+mouseup
     }
 
+    /* @editable as boolean if true, then should be edited in comment */
+  handleOnClickComment(editable){
+    this.props.handleOnClickComment(this.state.selectedElementTargetId, this.state.selectedText, editable)
+    // this.props.setFocus(this.state.selectedElementTargetId)
+    // this.props.openWindow("window1", "comments")
+  }
   componentDidUpdate(prevProps, prevState){
 
     //check to see if doc has changed
@@ -297,13 +297,14 @@ class Text extends React.Component {
     selectedText = selectedText.replace(/\s+/gi, ' ' )
     return selectedText
   }
-  handleOnClick(selectedText, oRect, startToken, endToken){
+  handleOnClick(selectedText, oRect, startToken, endToken, selectedElementTargetId){
     this.setState(
       {
         selectionRect: oRect, 
         selectedText: selectedText,
         startToken: startToken, 
-        endToken, endToken
+        endToken: endToken,
+        selectedElementTargetId: selectedElementTargetId
       }
       )
     ReactTooltip.show(this.fooRef)
@@ -334,7 +335,7 @@ class Text extends React.Component {
           <div style={{overflow: "scroll", "maxWidth": "300px"}}>
             {/* <p >Info</p> */}
             {(this.state.selectedText.split(" ").length === 1) && <p><iframe src={"https://logeion.uchicago.edu/" + this.state.selectedText }></iframe></p>}
-            <p>
+            {/* <p>
               Comment on: 
               <input type="text" placeholder="leave comment"></input>
               <br/>
@@ -342,8 +343,10 @@ class Text extends React.Component {
               <input type="text" value={this.state.selectedText}></input>
               <br/>
               <i>{this.state.selectedText}</i> ({this.state.startToken}-{this.state.endToken})
-            </p>
-            
+            </p> */}
+            <span>{this.state.startToken}-{this.state.endToken}</span>
+            <span className="lbp-span-link" onClick={() => {this.handleOnClickComment(false)}}>Comment</span>
+            <span className="lbp-span-link" onClick={() => {this.handleOnClickComment(true)}}>edit</span>
           </div>
         </ReactTooltip>
         <div id="text" style={{display: displayText}}></div>

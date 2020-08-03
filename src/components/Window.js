@@ -160,7 +160,12 @@ class Window extends React.Component {
               //(this.state.windowLoad === "comments" || this.state.mountStatus.comments) &&  <Comments resourceid={this.props.info.resourceid} inbox={this.props.info.inbox} hidden={this.state.windowLoad !== "comments"}/>
             }
             {
-              (this.state.windowLoad === "comments" || this.state.mountStatus.comments) &&  <Comments2 resourceid={this.props.info.resourceid} hidden={this.state.windowLoad !== "comments"}/>
+              (this.state.windowLoad === "comments" || this.state.mountStatus.comments) &&  
+              <Comments2 resourceid={this.props.info.resourceid} 
+              hidden={this.state.windowLoad !== "comments"}
+              selectedFragment={this.props.selectedFragment}
+              selectedFragmentEditable={this.props.selectedFragmentEditable}
+              />
             }
           </div>
           }

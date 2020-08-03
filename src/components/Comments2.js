@@ -121,7 +121,11 @@ function Comments2(props) {
 
   return (
     <Container className={props.hidden ? "hidden" : "showing"}>
-      <Comment2Create submitComment={submitComment}/>
+      <Comment2Create 
+        submitComment={submitComment} 
+        selectedFragment={props.selectedFragment} 
+        selectedFragmentEditable={props.selectedFragmentEditable}
+        />
       <Button size="sm" style={{margin: "2px"}} block onClick={() => setShowFilters(!showFilters)}><FaFilter/> Filters</Button>
       { showFilters &&
       <div>

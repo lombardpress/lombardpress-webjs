@@ -32,6 +32,7 @@ class TextWrapper extends React.Component {
     this.handleChangeManifestation = this.handleChangeManifestation.bind(this)
     this.handleTextPreviewFocusChange = this.handleTextPreviewFocusChange.bind(this)
     this.handleTogglePdfView = this.handleTogglePdfView.bind(this)
+    this.handleOnClickComment = this.handleOnClickComment.bind(this)
     this.state = {
       doc: "",
       focus: "",
@@ -44,6 +45,9 @@ class TextWrapper extends React.Component {
       textPreviewStart: "",
       textPreviewEnd: "",
       pdfView: false,
+      selectedElementTargetId: "", // target parent of selected text
+      selectedFragment: "", // selected text 
+      selectedFragmentEditable: undefined, // true false whether selected fragment should be a comment or an suggested edit
       windows: {
         window1: {
           windowId: "window1",
@@ -114,6 +118,7 @@ class TextWrapper extends React.Component {
     scrollToParagraph(this.state.blockFocus, true)
 
   }
+  
   handleMinimize(windowId){
     this.setState((prevState) => {
       const windows = prevState.windows
@@ -137,6 +142,11 @@ class TextWrapper extends React.Component {
       return {windows: windows}
 
     })
+  }
+  handleOnClickComment(selectedElementTargetId, selectedFragment, editable){
+    this.setState({selectedElementTargetId, selectedFragment, selectedFragmentEditable: editable})
+    this.setFocus(selectedElementTargetId)
+    this.openWindow("window1", "comments")
   }
   handleSwitchWindow(windowId, windowType){
     this.setState((prevState) => {
@@ -443,6 +453,9 @@ class TextWrapper extends React.Component {
               textPreviewStart={this.state.textPreviewStart}
               textPreviewEnd={this.state.textPreviewEnd}
               handleLineFocusChange={this.handleLineFocusChange}
+              selectedFragment={this.state.selectedFragment}
+              selectedElementTargetId={this.state.selectedFragment}
+              selectedFragmentEditable={this.state.selectedFragmentEditable}
               />
             )
           }
@@ -490,6 +503,7 @@ class TextWrapper extends React.Component {
             // TODO: when scrollTo id type is consistent, remove id checker in didMount and didUpdate of Text component
             scrollTo={this.props.blockDivFocus ? this.props.blockDivFocus : this.props.itemid}
             handleTextPreviewFocusChange={this.handleTextPreviewFocusChange}
+            handleOnClickComment={this.handleOnClickComment}
             />
           }
         </Container>
