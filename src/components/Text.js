@@ -5,7 +5,7 @@ import $ from 'jquery';
 import {convertXMLDoc, scrollToParagraph, loadHtmlResultDocFromExist, toRange} from './utils'
 import ReactTooltip from 'react-tooltip';
 import Nav from 'react-bootstrap/Nav';
-import {FaComments, FaEdit, FaInfo} from 'react-icons/fa';
+import {FaComments, FaEdit, FaInfo, FaBook} from 'react-icons/fa';
 
 class Text extends React.Component {
   constructor(props){
@@ -14,6 +14,7 @@ class Text extends React.Component {
     this.handleOnClick = this.handleOnClick.bind(this)
     this.handleHide = this.handleHide.bind(this)
     this.handleOnClickComment = this.handleOnClickComment.bind(this)
+    this.handleDictionaryChange = this.handleDictionaryChange.bind(this)
     
     this.state = {
       fetching: false,
@@ -22,6 +23,7 @@ class Text extends React.Component {
       selectedElementTargetId: "",
       startToken: undefined,
       endToken: undefined, 
+      dictionary: ""
     }
 
 
@@ -307,6 +309,10 @@ class Text extends React.Component {
     // this.props.openWindow("window1", "comments")
   }
   
+  handleDictionaryChange(dictionary){
+    this.setState({dictionary})
+  }
+  
   componentDidUpdate(prevProps, prevState){
 
     //check to see if doc has changed
@@ -399,7 +405,14 @@ class Text extends React.Component {
         <ReactTooltip clickable={true} place="top">
           <div style={{overflow: "scroll", "maxWidth": "300px"}}>
             {/* <p >Info</p> */}
-            {(this.state.selectedText && this.state.selectedText.split(" ").length === 1) && <p><iframe title="logeion" src={"https://logeion.uchicago.edu/" + this.state.selectedText }></iframe></p>}
+            {(this.state.selectedText && this.state.selectedText.split(" ").length === 1) && 
+            <div>
+            <p>
+              {this.state.dictionary === "whitakerswords" ? <iframe title="whitakerswords" src={"http://archives.nd.edu/cgi-bin/wordz.pl?keyword=" + this.state.selectedText }></iframe>
+              : <iframe title="logeion" src={"https://logeion.uchicago.edu/" + this.state.selectedText }></iframe>}
+            </p>
+            </div>
+            }
             {/* <p>
               Comment on: 
               <input type="text" placeholder="leave comment"></input>
@@ -414,6 +427,11 @@ class Text extends React.Component {
               <Nav.Link title={this.state.startToken + "-" +this.state.endToken} onClick={() => {this.handleOnClickComment(false)}}><FaInfo/></Nav.Link>
               <Nav.Link onClick={() => {this.handleOnClickComment(false)}}><FaComments/></Nav.Link>
               <Nav.Link onClick={() => {this.handleOnClickComment(true)}}><FaEdit/></Nav.Link>
+              {(this.state.selectedText && this.state.selectedText.split(" ").length === 1) &&
+              (this.state.dictionary === 'whitakerswords') ?  
+              <Nav.Link title="select logeion" onClick={()=>this.handleDictionaryChange("logeion")}><FaBook/> L</Nav.Link>
+              : <Nav.Link title="select whitaker's words" onClick={()=>this.handleDictionaryChange("whitakerswords")}><FaBook/> W</Nav.Link>
+              }
             </Nav>
           </div>
         </ReactTooltip>
