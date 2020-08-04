@@ -224,6 +224,7 @@ class Text extends React.Component {
         if (pAncestor && pAncestor.className.includes("plaoulparagraph")){
           const selectedElementTargetId = pAncestor.id;
           var cnt = rng.cloneContents();
+          console.log("selected cnt", rng)
           $(cnt).children(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
           // if selection is greater than 0 
           if (cnt.textContent.length > 0){
@@ -241,21 +242,53 @@ class Text extends React.Component {
             const endToken = precedingTextLength + (selectionText.split(" ").filter(n=>n).length) 
             
             const oRect = rng.getBoundingClientRect();
-            _this.handleOnClick(selectionText, oRect, startToken, endToken, selectedElementTargetId);
+            _this.handleOnClick(selectionText, oRect, startToken, endToken, selectedElementTargetId, rng);
           }
         }
       }
       document.addEventListener('keyup', mark); // ctrl+keyup
       document.addEventListener('mouseup', mark);// ctrl+mouseup
     }
+    markWithElement(selectedElementTargetId, selectedText, selectedRange, selectedRangeObject){
+      const parent = $('mark').parent();
+      $('mark').contents().unwrap();
+      // parent.html((i, html) => html) // if you remove this, then the text will be split
+      // // Highlight the street and city
+      // const para = document.getElementById(selectedElementTargetId);
+      // const startOffset = selectedRange.start;  // Start at third node: 101 E. Main St.
+      // const endOffset = selectedRange.end;    // End at fifth node: Dodge City, KS
+      // const textNode = para.childNodes[1];
+      // console.log("textnode index 0", para.childNodes[0]);
+      // console.log("textnode index 1", textNode);
+      // console.log("textnode index 2", para.childNodes[2]);
+      // const range = document.createRange();
+      // range.setStart(textNode, startOffset);
+      // range.setEnd(textNode, endOffset);
+
+      const range = selectedRangeObject;
+
+      var cnt = range.extractContents();
+      var node = document.createElement('mark');
+      node.style.backgroundColor = "orange";
+      node.appendChild(cnt);
+      range.insertNode(node);
+      //sel.removeAllRanges();
+
+      
+      // const mark = document.createElement('mark');
+      // $(mark).attr("style", "background-color: lightblue");
+      // range.surroundContents(mark);
+    }
 
     /* @editable as boolean if true, then should be edited in comment */
   handleOnClickComment(editable){
     const selectedRange = {start: this.state.startToken, end: this.state.endToken}
+    this.markWithElement(this.state.selectedElementTargetId, this.state.selectedText, selectedRange, this.state.selectedRangeObject)
     this.props.handleOnClickComment(this.state.selectedElementTargetId, this.state.selectedText, editable, selectedRange)
     // this.props.setFocus(this.state.selectedElementTargetId)
     // this.props.openWindow("window1", "comments")
   }
+  
   componentDidUpdate(prevProps, prevState){
 
     //check to see if doc has changed
@@ -296,14 +329,15 @@ class Text extends React.Component {
     selectedText = selectedText.replace(/\s+/gi, ' ' )
     return selectedText
   }
-  handleOnClick(selectedText, oRect, startToken, endToken, selectedElementTargetId){
+  handleOnClick(selectedText, oRect, startToken, endToken, selectedElementTargetId, selectedRangeObject){
     this.setState(
       {
         selectionRect: oRect, 
         selectedText: selectedText,
         startToken: startToken, 
         endToken: endToken,
-        selectedElementTargetId: selectedElementTargetId
+        selectedElementTargetId: selectedElementTargetId,
+        selectedRangeObject: selectedRangeObject
       }
       )
     ReactTooltip.show(this.fooRef)
