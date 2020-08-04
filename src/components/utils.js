@@ -108,3 +108,72 @@ export function scrollToParagraph(hash, highlight){
      }
 
   }
+
+  // adopted from https://github.com/hypothesis/client/blob/master/src/annotator/anchoring/text-position.js
+  /**
+ * Convert `start` and `end` character offset positions within the `textContent`
+ * of a `root` element into a `Range`.
+ *
+ * Throws if the `start` or `end` offsets are outside of the range `[0,
+ * root.textContent.length]`.
+ *
+ * @param {HTMLElement} root
+ * @param {number} start - Character offset within `root.textContent`
+ * @param {number} end - Character offset within `root.textContent`
+ * @return {Range} Range spanning text from `start` to `end`
+ */
+export function toRange(root, start, end) {
+  // The `filter` and `expandEntityReferences` arguments are mandatory in IE
+  // although optional according to the spec.
+  console.log("root", root)
+  const nodeIter = root.ownerDocument.createNodeIterator(
+    root,
+    NodeFilter.SHOW_TEXT,
+    null, // filter
+    false // expandEntityReferences
+  );
+
+  let startContainer;
+  let startOffset;
+  let endContainer;
+  let endOffset;
+
+  let textLength = 0;
+
+  let node;
+  while ((node = nodeIter.nextNode()) && (!startContainer || !endContainer)) {
+    const nodeText = node.nodeValue;
+    if (
+      !startContainer &&
+      start >= textLength &&
+      start <= textLength + nodeText.length
+    ) {
+      startContainer = node;
+      startOffset = start - textLength;
+    }
+
+    if (
+      !endContainer &&
+      end >= textLength &&
+      end <= textLength + nodeText.length
+    ) {
+      endContainer = node;
+      endOffset = end - textLength;
+    }
+
+    textLength += nodeText.length;
+  }
+
+  if (!startContainer) {
+    throw new Error('invalid start offset');
+  }
+  if (!endContainer) {
+    throw new Error('invalid end offset');
+  }
+
+  const range = root.ownerDocument.createRange();
+  range.setStart(startContainer, startOffset);
+  range.setEnd(endContainer, endOffset);
+
+  return range;
+}

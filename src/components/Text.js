@@ -2,7 +2,7 @@
 import React from 'react';
 import Spinner from './Spinner';
 import $ from 'jquery';
-import {convertXMLDoc, scrollToParagraph, loadHtmlResultDocFromExist} from './utils'
+import {convertXMLDoc, scrollToParagraph, loadHtmlResultDocFromExist, toRange} from './utils'
 import ReactTooltip from 'react-tooltip';
 import Nav from 'react-bootstrap/Nav';
 import {FaComments, FaEdit, FaInfo} from 'react-icons/fa';
@@ -26,7 +26,7 @@ class Text extends React.Component {
 
 
   }
-  retrieveText(doc, topLevel, scrollTo){
+  retrieveText(doc, topLevel, scrollTo, selectedCharacterRange){
     const _this = this;
     
     if (doc){
@@ -68,7 +68,7 @@ class Text extends React.Component {
           document.getElementById("text").innerHTML = "";
           document.getElementById("text").appendChild(data)
           // add event binding
-          this.setEvents(_this, scrollTo)
+          this.setEvents(_this, scrollTo, selectedCharacterRange)
           }).catch((e) => {
             //if browswer conversion fails, log error message
             console.log("something went wrong", e)
@@ -79,7 +79,7 @@ class Text extends React.Component {
       }
   }
 
-  setEvents(_this, scrollTo){
+  setEvents(_this, scrollTo, selectedCharacterRange){
 
     $('.paragraphnumber').click(function(e) {
       e.preventDefault();
@@ -90,6 +90,11 @@ class Text extends React.Component {
     if (scrollTo){
      scrollToParagraph(scrollTo, true)
    }
+   if(selectedCharacterRange){
+    const selectedElementTargetId = document.getElementById(scrollTo).id
+    console.log("selectedElementTargetId", selectedElementTargetId)
+    _this.markWithElement(selectedElementTargetId, "", "", "", selectedCharacterRange)
+  }
 
    $('.js-show-folio-image').click(function(e) {
      e.preventDefault();
@@ -222,7 +227,10 @@ class Text extends React.Component {
         const pAncestor = getContainingP(rng.commonAncestorContainer)
         //if selection is in a text paragraph
         if (pAncestor && pAncestor.className.includes("plaoulparagraph")){
+          console.log("pAncestor", pAncestor);
+          console.log("pAncestor.id", pAncestor.id);
           const selectedElementTargetId = pAncestor.id;
+          console.log("selectedElementTargetId", selectedElementTargetId);
           var cnt = rng.cloneContents();
           console.log("selected cnt", rng)
           $(cnt).children(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
@@ -241,15 +249,19 @@ class Text extends React.Component {
             // filter to remove blank items in array
             const endToken = precedingTextLength + (selectionText.split(" ").filter(n=>n).length) 
             
+            const startCharacter = $(pClone).text().split(cnt.textContent)[0].length + 1 ;
+            console.log("start character", startCharacter);
+            const endCharacter = $(pClone).text().split(cnt.textContent)[0].length + cnt.textContent.length + 1;
+            console.log("end character", endCharacter);
             const oRect = rng.getBoundingClientRect();
-            _this.handleOnClick(selectionText, oRect, startToken, endToken, selectedElementTargetId, rng);
+            _this.handleOnClick(selectionText, oRect, startToken, endToken, selectedElementTargetId, rng, startCharacter, endCharacter);
           }
         }
       }
       document.addEventListener('keyup', mark); // ctrl+keyup
       document.addEventListener('mouseup', mark);// ctrl+mouseup
     }
-    markWithElement(selectedElementTargetId, selectedText, selectedRange, selectedRangeObject){
+    markWithElement(selectedElementTargetId, selectedText, selectedRange, selectedRangeObject, selectedCharacterRange){
       const parent = $('mark').parent();
       $('mark').contents().unwrap();
       // parent.html((i, html) => html) // if you remove this, then the text will be split
@@ -264,27 +276,33 @@ class Text extends React.Component {
       // const range = document.createRange();
       // range.setStart(textNode, startOffset);
       // range.setEnd(textNode, endOffset);
+      console.log('id inside mark with Element', selectedElementTargetId);
+      const container = document.getElementById(selectedElementTargetId);
+      //only attempt to set mark if container can be found
+      if (container){
+        const range = toRange(container, selectedCharacterRange.start, selectedCharacterRange.end)
+        //const range = selectedRangeObject;
 
-      const range = selectedRangeObject;
+        var cnt = range.extractContents();
+        var node = document.createElement('mark');
+        node.style.backgroundColor = "orange";
+        node.appendChild(cnt);
+        range.insertNode(node);
+        //sel.removeAllRanges();
 
-      var cnt = range.extractContents();
-      var node = document.createElement('mark');
-      node.style.backgroundColor = "orange";
-      node.appendChild(cnt);
-      range.insertNode(node);
-      //sel.removeAllRanges();
-
-      
-      // const mark = document.createElement('mark');
-      // $(mark).attr("style", "background-color: lightblue");
-      // range.surroundContents(mark);
+        
+        // const mark = document.createElement('mark');
+        // $(mark).attr("style", "background-color: lightblue");
+        // range.surroundContents(mark);
+        }
     }
 
     /* @editable as boolean if true, then should be edited in comment */
   handleOnClickComment(editable){
     const selectedRange = {start: this.state.startToken, end: this.state.endToken}
-    this.markWithElement(this.state.selectedElementTargetId, this.state.selectedText, selectedRange, this.state.selectedRangeObject)
-    this.props.handleOnClickComment(this.state.selectedElementTargetId, this.state.selectedText, editable, selectedRange)
+    const selectedCharacterRange = {start: this.state.startCharacter, end: this.state.endCharacter}
+    this.markWithElement(this.state.selectedElementTargetId, this.state.selectedText, selectedRange, this.state.selectedRangeObject, selectedCharacterRange)
+    this.props.handleOnClickComment(this.state.selectedElementTargetId, this.state.selectedText, editable, selectedRange, selectedCharacterRange )
     // this.props.setFocus(this.state.selectedElementTargetId)
     // this.props.openWindow("window1", "comments")
   }
@@ -297,7 +315,7 @@ class Text extends React.Component {
       //since TextWrapper is (at present) sometimes sending the shortid and sometimes the full url id
       // TODO: when TextWrapper is refactored and consistently sending the same ID type. this should be removed
       const scrollToNew = this.props.scrollTo && this.props.scrollTo.includes("/resource/") ? this.props.scrollTo.split("/resource/")[1] : this.props.scrollTo
-      this.retrieveText(this.props.doc, this.props.topLevel, scrollToNew)
+      this.retrieveText(this.props.doc, this.props.topLevel, scrollToNew, this.props.selectedCharacterRange)
     }
     // if doc has already been appended, still scroll to target block
     else{
@@ -308,7 +326,14 @@ class Text extends React.Component {
         const scrollToNew = this.props.scrollTo && this.props.scrollTo.includes("/resource/") ? this.props.scrollTo.split("/resource/")[1] : this.props.scrollTo
         scrollToParagraph(scrollToNew, true)
       }
+      // TODO/Note: this seems to be firing even when it seems like the prevProps.doc !== this.props.doc
+      if ((this.props.selectedCharacterRange !== prevProps.selectedCharacterRange) && this.props.selectedElementTargetId){
+        console.log("this.props.selectedElementTargetId", this.props.selectedElementTargetId);
+        this.markWithElement(this.props.selectedElementTargetId, "", "", "", this.props.selectedCharacterRange)
+      };
     }
+    
+    
   }
   handleHide(){
     ReactTooltip.hide(this.fooRef)
@@ -329,7 +354,7 @@ class Text extends React.Component {
     selectedText = selectedText.replace(/\s+/gi, ' ' )
     return selectedText
   }
-  handleOnClick(selectedText, oRect, startToken, endToken, selectedElementTargetId, selectedRangeObject){
+  handleOnClick(selectedText, oRect, startToken, endToken, selectedElementTargetId, selectedRangeObject, startCharacter, endCharacter){
     this.setState(
       {
         selectionRect: oRect, 
@@ -337,7 +362,9 @@ class Text extends React.Component {
         startToken: startToken, 
         endToken: endToken,
         selectedElementTargetId: selectedElementTargetId,
-        selectedRangeObject: selectedRangeObject
+        selectedRangeObject: selectedRangeObject,
+        startCharacter: startCharacter,
+        endCharacter: endCharacter
       }
       )
     ReactTooltip.show(this.fooRef)

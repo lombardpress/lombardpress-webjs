@@ -11,7 +11,7 @@ function Comment2Create(props) {
   const handleCommentUpdate = (e) => {
     e.preventDefault()
     const commentType = props.selectedFragmentEditable ? "editing" : "commenting"
-    props.submitComment(comment, commentType, props.selectedFragment, props.selectedRange, editedText)
+    props.submitComment(comment, commentType, props.selectedFragment, props.selectedRange, editedText, props.selectedCharacterRange)
     setComment('')
   }
   useEffect(() => {

@@ -40,16 +40,18 @@ function Comment2Item(props) {
   const target =  typeof(props.comment.target) === 'string' ? props.comment.target : props.comment.target.source;
   let selectedFragment = undefined;
   let selectedFragmentRange = undefined;
+  let selectedCharacterRange;
   if (props.comment.target.selector){
     selectedFragment = props.comment.target.selector.filter((i) => (i.type === "TextQuoteSelector"))[0].exact;
-    selectedFragmentRange =  props.comment.target.selector.filter((i) => (i.type === "TextPositionSelector"))[0];
+    selectedFragmentRange = props.comment.target.selector.filter((i) => (i.type === "TextPositionSelector"))[0];
+    selectedCharacterRange = props.comment.target.selector.filter((i) => (i.type === "TextPositionSelector"))[0];
     }
   
 
   return (
       <div>
         {!props.focused && <p>{t("For")}: <Link to={"/text?resourceid=" + target}>{target}</Link></p>}
-
+        <p onClick={() => props.handleOnClickComment(target.split("/resource/")[1], selectedFragment, props.comment.body.editedValue, selectedFragmentRange, selectedCharacterRange)}>Test highlight</p>
         {
           editable ?
           <Comment2Create submitComment={submitUpdate} comment={props.comment.body.value}/> :
@@ -58,7 +60,7 @@ function Comment2Item(props) {
           //<span dangerouslySetInnerHTML={{ __html: addSCTALinksToValue(props.comment.body.value)}}/>
           }
           {selectedFragment && <span>Comment on: <i>{selectedFragment}</i></span>}
-          {selectedFragmentRange.start && <span> ({selectedFragmentRange.start}-{selectedFragmentRange.end})</span>}
+          {selectedFragmentRange && <span> ({selectedFragmentRange.start}-{selectedFragmentRange.end})</span>}
           <br/>
           {props.comment.body.editedValue && <span>Suggested Correction: {props.comment.body.editedValue}</span>}
           <br/>

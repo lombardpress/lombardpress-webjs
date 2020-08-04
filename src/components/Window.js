@@ -166,6 +166,9 @@ class Window extends React.Component {
               selectedFragment={this.props.selectedFragment}
               selectedFragmentEditable={this.props.selectedFragmentEditable}
               selectedRange={this.props.selectedRange}
+              selectedCharacterRange={this.props.selectedCharacterRange}
+              handleOnClickComment={this.props.handleOnClickComment}
+              
               />
             }
           </div>
