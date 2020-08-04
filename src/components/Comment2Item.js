@@ -51,7 +51,7 @@ function Comment2Item(props) {
   return (
       <div>
         {/* {!props.focused && <p>{t("For")}: <Link to={"/text?resourceid=" + target}>{target}</Link></p>} */}
-        <span class="lbp-span-link" onClick={() => props.handleOnClickComment(target.split("/resource/")[1], selectedFragment, props.comment.body.editedValue, selectedFragmentRange, selectedCharacterRange)}>{target} {selectedFragmentRange && <span> ({selectedFragmentRange.start}-{selectedFragmentRange.end})</span>}</span>
+        <span className="lbp-span-link" onClick={() => props.handleOnClickComment(target.split("/resource/")[1], selectedFragment, props.comment.body.editedValue, selectedFragmentRange, selectedCharacterRange)}>{target} {selectedFragmentRange && <span> ({selectedFragmentRange.start}-{selectedFragmentRange.end})</span>}</span>
         {
           editable ?
           <Comment2Create submitComment={submitUpdate} comment={props.comment.body.value}/> :
