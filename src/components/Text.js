@@ -327,6 +327,11 @@ class Text extends React.Component {
         scrollToParagraph(scrollToNew, true)
       }
       // TODO/Note: this seems to be firing even when it seems like the prevProps.doc !== this.props.doc
+      // perhaps props are not changing/updating at the same time. So the doc prop has already changed
+      // then the range changes and tries to mark element, but the retrieve text asynch request has not finished 
+      // and so the marking container element cannot be found. 
+      // NOTE: error solved by preventing attempt to mark if container cannot be found. 
+      // but it doesn't seem great that this is firing at undesired times.
       if ((this.props.selectedCharacterRange !== prevProps.selectedCharacterRange) && this.props.selectedElementTargetId){
         console.log("this.props.selectedElementTargetId", this.props.selectedElementTargetId);
         this.markWithElement(this.props.selectedElementTargetId, "", "", "", this.props.selectedCharacterRange)
