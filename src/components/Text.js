@@ -279,13 +279,13 @@ class Text extends React.Component {
       console.log('id inside mark with Element', selectedElementTargetId);
       const container = document.getElementById(selectedElementTargetId);
       //only attempt to set mark if container can be found
-      if (container){
+      if (container && selectedCharacterRange.start && selectedCharacterRange.end){
         const range = toRange(container, selectedCharacterRange.start, selectedCharacterRange.end)
         //const range = selectedRangeObject;
 
         var cnt = range.extractContents();
         var node = document.createElement('mark');
-        node.style.backgroundColor = "orange";
+        node.style.backgroundColor = "#BBCEBE";
         node.appendChild(cnt);
         range.insertNode(node);
         //sel.removeAllRanges();

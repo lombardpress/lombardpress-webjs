@@ -50,8 +50,8 @@ function Comment2Item(props) {
 
   return (
       <div>
-        {!props.focused && <p>{t("For")}: <Link to={"/text?resourceid=" + target}>{target}</Link></p>}
-        <p onClick={() => props.handleOnClickComment(target.split("/resource/")[1], selectedFragment, props.comment.body.editedValue, selectedFragmentRange, selectedCharacterRange)}>Test highlight</p>
+        {/* {!props.focused && <p>{t("For")}: <Link to={"/text?resourceid=" + target}>{target}</Link></p>} */}
+        <span class="lbp-span-link" onClick={() => props.handleOnClickComment(target.split("/resource/")[1], selectedFragment, props.comment.body.editedValue, selectedFragmentRange, selectedCharacterRange)}>{target} {selectedFragmentRange && <span> ({selectedFragmentRange.start}-{selectedFragmentRange.end})</span>}</span>
         {
           editable ?
           <Comment2Create submitComment={submitUpdate} comment={props.comment.body.value}/> :
@@ -60,10 +60,9 @@ function Comment2Item(props) {
           //<span dangerouslySetInnerHTML={{ __html: addSCTALinksToValue(props.comment.body.value)}}/>
           }
           {selectedFragment && <span>Comment on: <i>{selectedFragment}</i></span>}
-          {selectedFragmentRange && <span> ({selectedFragmentRange.start}-{selectedFragmentRange.end})</span>}
           <br/>
-          {props.comment.body.editedValue && <span>Suggested Correction: {props.comment.body.editedValue}</span>}
-          <br/>
+          {props.comment.body.editedValue && <span>Suggested Correction: {props.comment.body.editedValue}<br/></span>}
+          
           <span>{addSCTALinksToValue(props.comment.body.value)}</span>
           <br/>
           <span>Submitted: </span> {props.comment.created && props.comment.created.split("T")[0]} | 

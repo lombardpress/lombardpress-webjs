@@ -7,7 +7,7 @@ import {useTranslation} from 'react-i18next'
 function Comment2Create(props) {
   const {t} = useTranslation();
   const [comment, setComment] = useState(props.comment);
-  const [editedText, setEditedText] = useState(props.selectedFragment);
+  const [editedText, setEditedText] = useState(props.selectedFragmentEditable ? props.selectedFragment : "");
   const handleCommentUpdate = (e) => {
     e.preventDefault()
     const commentType = props.selectedFragmentEditable ? "editing" : "commenting"
@@ -15,7 +15,7 @@ function Comment2Create(props) {
     setComment('')
   }
   useEffect(() => {
-    setEditedText(props.selectedFragment)
+    setEditedText(props.selectedFragmentEditable ? props.selectedFragment : "")
   }, [props.selectedFragment])
 
   return (

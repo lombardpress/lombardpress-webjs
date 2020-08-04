@@ -141,6 +141,8 @@ export function toRange(root, start, end) {
   let textLength = 0;
 
   let node;
+
+  // TODO: modify this so that start container and character start are found based on word token position
   while ((node = nodeIter.nextNode()) && (!startContainer || !endContainer)) {
     const nodeText = node.nodeValue;
     if (
