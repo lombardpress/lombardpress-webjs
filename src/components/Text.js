@@ -4,7 +4,8 @@ import Spinner from './Spinner';
 import $ from 'jquery';
 import {convertXMLDoc, scrollToParagraph, loadHtmlResultDocFromExist} from './utils'
 import ReactTooltip from 'react-tooltip';
-
+import Nav from 'react-bootstrap/Nav';
+import {FaComments, FaEdit, FaInfo} from 'react-icons/fa';
 
 class Text extends React.Component {
   constructor(props){
@@ -342,9 +343,12 @@ class Text extends React.Component {
               <br/>
               <i>{this.state.selectedText}</i> ({this.state.startToken}-{this.state.endToken})
             </p> */}
-            <span>{this.state.startToken}-{this.state.endToken}</span>
-            <span className="lbp-span-link" onClick={() => {this.handleOnClickComment(false)}}>Comment</span>
-            <span className="lbp-span-link" onClick={() => {this.handleOnClickComment(true)}}>edit</span>
+            
+            <Nav>
+              <Nav.Link title={this.state.startToken + "-" +this.state.endToken} onClick={() => {this.handleOnClickComment(false)}}><FaInfo/></Nav.Link>
+              <Nav.Link onClick={() => {this.handleOnClickComment(false)}}><FaComments/></Nav.Link>
+              <Nav.Link onClick={() => {this.handleOnClickComment(true)}}><FaEdit/></Nav.Link>
+            </Nav>
           </div>
         </ReactTooltip>
         <div id="text" style={{display: displayText}}></div>
