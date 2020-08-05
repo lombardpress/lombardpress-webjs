@@ -427,10 +427,13 @@ class Text extends React.Component {
               <Nav.Link title={this.state.startToken + "-" +this.state.endToken} onClick={() => {this.handleOnClickComment(false)}}><FaInfo/></Nav.Link>
               <Nav.Link onClick={() => {this.handleOnClickComment(false)}}><FaComments/></Nav.Link>
               <Nav.Link onClick={() => {this.handleOnClickComment(true)}}><FaEdit/></Nav.Link>
-              {(this.state.selectedText && this.state.selectedText.split(" ").length === 1) &&
-              (this.state.dictionary === 'whitakerswords') ?  
+              {(this.state.selectedText && this.state.selectedText.split(" ").length === 1) && 
+              <span>
+              {(this.state.dictionary === 'whitakerswords') ? 
               <Nav.Link title="select logeion" onClick={()=>this.handleDictionaryChange("logeion")}><FaBook/> L</Nav.Link>
-              : <Nav.Link title="select whitaker's words" onClick={()=>this.handleDictionaryChange("whitakerswords")}><FaBook/> W</Nav.Link>
+              : 
+              <Nav.Link title="select whitaker's words" onClick={()=>this.handleDictionaryChange("whitakerswords")}><FaBook/> W</Nav.Link>}
+              </span>
               }
             </Nav>
           </div>
