@@ -6,12 +6,13 @@
   <xsl:param name="show-images">true</xsl:param>
   <xsl:param name="default-ms-image">reims</xsl:param>
   <xsl:variable name="schema-type" select="/tei:TEI/tei:teiHeader[1]/tei:encodingDesc[1]/tei:schemaRef[1]/@n"/>
-  <xsl:param name="show-line-breaks">
+  <xsl:param name="show-line-breaks"><!-- aka isDiplomatic? -->
     <xsl:choose>
       <xsl:when test="contains($schema-type, 'critical')">false</xsl:when>
       <xsl:otherwise>true</xsl:otherwise>
     </xsl:choose>
   </xsl:param>
+  <xsl:param name="isDiplomatic" select="$show-line-breaks"/> <!-- alias of show line breaks -->
 
   <!-- this param needs to change if, for example, you want the show xml function to display XML for something other than "critical"; Alternatively, this slug could be found somewhere in the TEI document being processed -->
   <xsl:param name="default-msslug" select="/tei:TEI/tei:teiHeader[1]/tei:fileDesc[1]/tei:sourceDesc[1]/tei:listWit[1]/tei:witness[1]/@n"></xsl:param>
@@ -151,23 +152,82 @@
 
   <!-- quote template -->
   <xsl:template match="tei:quote">
-      <xsl:variable name="quoterefid" select="translate(./@ana, '#', '')"/>
-    <span id="{@xml:id}" class="lbp-quote" data-quote="{$quoterefid}">
-      <xsl:text>"</xsl:text>
-      <xsl:apply-templates/>
-      <xsl:text>"</xsl:text>
-    </span>
+    <xsl:variable name="quoterefid" select="translate(./@ana, '#', '')"/>
+    <xsl:variable name="source" select="./@source"/>
+    <xsl:variable name="id" select="./@xml:id"/>
+    <xsl:variable name="start" select="substring-before(./@synch, '-')"/>
+    <xsl:variable name="end" select="substring-after(./@synch, '-')"/>
+    
+    <xsl:choose>
+      <xsl:when test="$isDiplomatic and $id and contains($source, 'http://scta.info/resource/')">
+        <!-- added data-target-paragraph attribut here because it is hard for jquery to get id in html dom -->
+        <span id="{@xml:id}" 
+          class="lbp-quote js-show-info lbp-quote-clickable js-show-reference-paragraph" 
+          data-pid="{$id}" 
+          data-url="{$source}"
+          data-target-resource="{$id}"
+          data-start="{$start}" data-end="{$end}">
+          <xsl:text></xsl:text>
+          <xsl:apply-templates/>
+          <xsl:text></xsl:text>
+        </span>
+      </xsl:when>
+      <xsl:when test="$isDiplomatic and $id">
+        <span id="{@xml:id}" class="lbp-quote js-show-info lbp-quote-clickable" data-pid="{$id}">
+          <xsl:text></xsl:text>
+          <xsl:apply-templates/>
+          <xsl:text></xsl:text>
+        </span>
+      </xsl:when>
+      <xsl:otherwise>
+        <span id="{@xml:id}" class="lbp-quote" data-quote="{$quoterefid}">
+          <xsl:text>"</xsl:text>
+          <xsl:apply-templates/>
+          <xsl:text>"</xsl:text>
+        </span>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <!-- ref template -->
   <xsl:template match="tei:ref">
     <xsl:variable name="refid" select="translate(./@ana, '#', '')"/>
     <xsl:variable name="corresp" select="translate(./@corresp, '#', '')"/>
-    <span id="{@xml:id}" class="lbp-ref" data-ref="{$refid}" data-corresp="{$corresp}">
-      <xsl:text/>
-      <xsl:apply-templates/>
-      <xsl:text/>
-    </span>
+    <xsl:variable name="target" select="./target"/>
+    <xsl:variable name="id" select="./@xml:id"/>
+    <xsl:variable name="start" select="substring-before(./@synch, '-')"/>
+    <xsl:variable name="end" select="substring-after(./@synch, '-')"/>
+    <xsl:choose>
+      <xsl:when test="$isDiplomatic and $id and contains($target, 'http://scta.info/resource/')">
+        <!-- added data-target-paragraph attribut here because it is hard for jquery to get id in html dom -->
+        <span id="{@xml:id}" 
+          class="lbp-ref js-show-info lbp-ref-clickable js-show-reference-paragraph" 
+          data-pid="{$id}" 
+          data-url="{$target}"
+          data-ref="{$refid}" 
+          data-corresp="{$corresp}"
+          data-target-resource="{$id}"
+          data-start="{$start}" data-end="{$end}">
+          <xsl:text></xsl:text>
+          <xsl:apply-templates/>
+          <xsl:text></xsl:text>
+        </span>
+      </xsl:when>
+      <xsl:when test="$isDiplomatic and $id">
+        <span id="{@xml:id}" class="lbp-ref js-show-info lbp-ref-clickable" data-pid="{$id}" data-ref="{$refid}" data-corresp="{$corresp}">
+          <xsl:text></xsl:text>
+          <xsl:apply-templates/>
+          <xsl:text></xsl:text>
+        </span>
+      </xsl:when>
+      <xsl:otherwise>
+      <span id="{@xml:id}" class="lbp-ref" data-ref="{$refid}" data-corresp="{$corresp}">
+        <xsl:text/>
+        <xsl:apply-templates/>
+        <xsl:text/>
+      </span>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
 

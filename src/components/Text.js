@@ -227,49 +227,52 @@ class Text extends React.Component {
         _this.handleHide();
         //get selection object
         var sel = document.getSelection();
-        var rng = sel && sel.getRangeAt(0);
-        const pAncestor = getContainingP(rng.commonAncestorContainer)
-        //if selection is in a text paragraph
-        if (pAncestor && pAncestor.className.includes("plaoulparagraph")){
-          console.log("pAncestor", pAncestor);
-          console.log("pAncestor.id", pAncestor.id);
-          const selectedElementTargetId = pAncestor.id;
-          console.log("selectedElementTargetId", selectedElementTargetId);
-          var cnt = rng.cloneContents();
-          console.log("selected cnt", rng)
-          $(cnt).children(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
-          // if selection is greater than 0 
-          if (cnt.textContent.length > 0){
-            //get ancestor p text
-            const pClone = $(pAncestor).clone()
-            pClone.children(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
-            const pText = cleanText($(pClone).text())
-            const selectionText = cleanText(cnt.textContent)
-            let precedingTextArray = pText.split(selectionText)[0].split(" "); 
-            //slice to remove first item which is paragraph number; filter to remove blank items scattered throughout
-            precedingTextArray = precedingTextArray.slice(1).filter(n=>n)
-            const precedingTextLength = precedingTextArray.length
-            const startToken = precedingTextLength + 1
-            // filter to remove blank items in array
-            const endToken = precedingTextLength + (selectionText.split(" ").filter(n=>n).length) 
-            const wordRange = {start: startToken, end: endToken}
-            
-            const startCharacter = $(pClone).text().split(cnt.textContent)[0].length + 1 ;
-            const endCharacter = $(pClone).text().split(cnt.textContent)[0].length + cnt.textContent.length + 1;
-            const characterRange = {start: startCharacter, end: endCharacter}
-            const oRect = rng.getBoundingClientRect();
-            console.log("test", rng)
-            console.log("test", oRect)
-            const selectionRange = {
-              text: selectionText,
-              coords: oRect,
-              wordRange, 
-              characterRange,
-              objectRange: rng,
-              selectedElementTargetId, 
-            }
+        // condition to test against invalid getRangeAt index
+        if (window.getSelection().rangeCount >= 1){
+          var rng = sel && sel.getRangeAt(0);
+          const pAncestor = getContainingP(rng.commonAncestorContainer)
+          //if selection is in a text paragraph
+          if (pAncestor && pAncestor.className.includes("plaoulparagraph")){
+            console.log("pAncestor", pAncestor);
+            console.log("pAncestor.id", pAncestor.id);
+            const selectedElementTargetId = pAncestor.id;
+            console.log("selectedElementTargetId", selectedElementTargetId);
+            var cnt = rng.cloneContents();
+            console.log("selected cnt", rng)
+            $(cnt).children(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
+            // if selection is greater than 0 
+            if (cnt.textContent.length > 0){
+              //get ancestor p text
+              const pClone = $(pAncestor).clone()
+              pClone.children(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
+              const pText = cleanText($(pClone).text())
+              const selectionText = cleanText(cnt.textContent)
+              let precedingTextArray = pText.split(selectionText)[0].split(" "); 
+              //slice to remove first item which is paragraph number; filter to remove blank items scattered throughout
+              precedingTextArray = precedingTextArray.slice(1).filter(n=>n)
+              const precedingTextLength = precedingTextArray.length
+              const startToken = precedingTextLength + 1
+              // filter to remove blank items in array
+              const endToken = precedingTextLength + (selectionText.split(" ").filter(n=>n).length) 
+              const wordRange = {start: startToken, end: endToken}
+              
+              const startCharacter = $(pClone).text().split(cnt.textContent)[0].length + 1 ;
+              const endCharacter = $(pClone).text().split(cnt.textContent)[0].length + cnt.textContent.length + 1;
+              const characterRange = {start: startCharacter, end: endCharacter}
+              const oRect = rng.getBoundingClientRect();
+              console.log("test", rng)
+              console.log("test", oRect)
+              const selectionRange = {
+                text: selectionText,
+                coords: oRect,
+                wordRange, 
+                characterRange,
+                objectRange: rng,
+                selectedElementTargetId, 
+              }
 
-            _this.handleOnClick(selectionRange);
+              _this.handleOnClick(selectionRange);
+            }
           }
         }
       }
