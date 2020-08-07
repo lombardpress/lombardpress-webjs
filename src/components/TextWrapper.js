@@ -45,11 +45,7 @@ class TextWrapper extends React.Component {
       textPreviewStart: "",
       textPreviewEnd: "",
       pdfView: false,
-      selectedElementTargetId: "", // target parent of selected text
-      selectedFragment: "", // selected text 
-      selectedRange: "", // selected text 
-      selectedCharacterRange: "", //selected character range in html output
-      selectedFragmentEditable: undefined, // true false whether selected fragment should be a comment or an suggested edit
+      selectionRange: undefined, // should be undefined or object
       windows: {
         window1: {
           windowId: "window1",
@@ -145,9 +141,14 @@ class TextWrapper extends React.Component {
 
     })
   }
-  handleOnClickComment(selectedElementTargetId, selectedFragment, editable, selectedRange, selectedCharacterRange){
-    this.setState({selectedElementTargetId, selectedFragment, selectedFragmentEditable: editable, selectedRange, selectedCharacterRange})
-    this.setFocus(selectedElementTargetId)
+  /**
+   * 
+   * @param {object} selectionRange
+   */
+  handleOnClickComment(selectionRange){
+    const s = selectionRange
+    this.setState({selectionRange: s})
+    this.setFocus(s.selectedElementTargetId + "@" + s.characterRange.start + "-" + s.characterRange.end)
     this.openWindow("window1", "comments")
   }
   handleSwitchWindow(windowId, windowType){
@@ -219,7 +220,9 @@ class TextWrapper extends React.Component {
   //TODO
   //These two function should be refactored into one
   setFocus(id){
-    const fullid = id.includes("http") ? id + this.state.mtFocus : "http://scta.info/resource/" + id + this.state.mtFocus
+    const range = id.split("@")[1] ? "@" + id.split("@")[1] : ""
+    id = id.split("@")[0];
+    const fullid = id.includes("http") ? id + this.state.mtFocus + range : "http://scta.info/resource/" + id + this.state.mtFocus + range;
     //const fullid = id.includes("http") ? id : "http://scta.info/resource/" + id
     this.props.handleUpdateUrlResource(fullid)
   }
@@ -357,7 +360,13 @@ class TextWrapper extends React.Component {
       //info should be part of original query
       const mFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[1]
       const tFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[2]
-      this.setState({mtFocus: "/" + mFocus + "/" + tFocus})
+      this.setState(
+        {mtFocus: "/" + mFocus + "/" + tFocus, 
+        selectionRange: {
+          characterRange: this.props.tokenRange, 
+          selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1]
+        }
+      })
 
       if (this.props.blockDivFocus){
         this.retrieveFocusInfo(this.props.blockDivFocus)
@@ -397,6 +406,14 @@ class TextWrapper extends React.Component {
           windows["window2"].defaultManifestationSlug = ""
           return {
             mtFocus: "/" + mFocus + "/" + tFocus,
+            selectionRange: {
+              // NOTE: the destructuring of ...prevState ensures that extra highlighted info not coming from url 
+              // will be present, but this means it gets out of sync when new url info is passed own 
+              // and other info from text selection does not exist. It will get back in sync once a new selection and click occurs
+              ...prevState.selectionRange, 
+              characterRange: this.props.tokenRange,
+              selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1],
+            },
             windows: windows
           }
         })
@@ -405,11 +422,34 @@ class TextWrapper extends React.Component {
       //if one depends on the other, this is a good place for things to get out of sync
       if (this.props.blockDivFocus !== prevProps.blockDivFocus){
         if (!this.props.blockDivFocus){
-          this.setState({focus: ""});
+          this.setState(
+            {
+              focus: ""
+          });
         }
         else {
-          this.retrieveFocusInfo(this.props.blockDivFocus)
+          this.setState((prevState) => {
+            return({
+            selectionRange: {
+              ...prevState.selectionRange,
+              characterRange: this.props.tokenRange,
+              selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1]
+              }
+            })  
+          })
+          this.retrieveFocusInfo(this.props.blockDivFocus,)
         }
+      }
+      if (this.props.tokenRange !== prevProps.tokenRange){
+        this.setState((prevState)=>{
+          return({
+          selectionRange: {
+            ...prevState.selectionRange,
+            characterRange: this.props.tokenRange,
+            selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1],
+          }
+        })
+        })
       }
 
 
@@ -455,14 +495,8 @@ class TextWrapper extends React.Component {
               textPreviewStart={this.state.textPreviewStart}
               textPreviewEnd={this.state.textPreviewEnd}
               handleLineFocusChange={this.handleLineFocusChange}
-              selectedFragment={this.state.selectedFragment}
-              selectedElementTargetId={this.state.selectedFragment}
-              selectedFragmentEditable={this.state.selectedFragmentEditable}
-              selectedRange={this.state.selectedRange}
-              selectedCharacterRange={this.state.selectedCharacterRange}
+              selectionRange={this.state.selectionRange}
               handleOnClickComment={this.handleOnClickComment}
-              
-              
               />
             )
           }
@@ -511,8 +545,7 @@ class TextWrapper extends React.Component {
             scrollTo={this.props.blockDivFocus ? this.props.blockDivFocus : this.props.itemid}
             handleTextPreviewFocusChange={this.handleTextPreviewFocusChange}
             handleOnClickComment={this.handleOnClickComment}
-            selectedCharacterRange={this.state.selectedCharacterRange}
-            selectedElementTargetId={this.state.selectedElementTargetId}
+            selectionRange={this.state.selectionRange}
             />
           }
         </Container>

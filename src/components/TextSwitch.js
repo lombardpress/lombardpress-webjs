@@ -29,13 +29,24 @@ class TextSwitch extends React.Component {
       blockDivFocus: "",
       resourceTitle: "",
       author: "",
-      authorTitle: ""
+      authorTitle: "",
+      tokenRange: ""
+
     }
   }
   handleUpdateUrlResource(fullid){
     this.props.history.push({search: '?resourceid=' + fullid})
   }
   getInfo(resourceid){
+    let tokenRange;
+    if (resourceid.split("@")[1]){
+      tokenRange = {start: parseInt(resourceid.split("@")[1].split("-")[0]), end: parseInt(resourceid.split("@")[1].split("-")[1])}
+    }
+    
+    resourceid = resourceid.split("@")[0]
+    
+    
+
     const structureTypePromise = runQuery(getStructureType(resourceid))
     structureTypePromise.then((t) => {
       // reduce results to bindings variable
@@ -101,7 +112,13 @@ class TextSwitch extends React.Component {
       }
       else if (structureType === "http://scta.info/resource/structureItem" ){
         if (type === "http://scta.info/resource/transcription"){
-          this.setState({itemTranscriptionId: resourceid, displayType: "item", blockDivFocus: resourceid.split("/resource/")[1].split("/")[0], resourceTitle: resourceTitle})
+          this.setState({
+            itemTranscriptionId: resourceid, 
+            displayType: "item", 
+            blockDivFocus: resourceid.split("/resource/")[1].split("/")[0], 
+            resourceTitle: resourceTitle, 
+            tokenRange: tokenRange
+          })
         }
         else {
           const structureTypePromise = runQuery(getItemTranscription(resourceid))
@@ -111,7 +128,9 @@ class TextSwitch extends React.Component {
                 itemTranscriptionId: t.data.results.bindings[0] ? t.data.results.bindings[0].ctranscription.value : "", // conditional checks in case the query comes up empty; if empty it sets transcription id to ""
                 displayType: "item",
                 blockDivFocus: resourceid.split("/resource/")[1].split("/")[0], // this string split is a bad way to be getting the expression level id
-                resourceTitle: resourceTitle})
+                resourceTitle: resourceTitle,
+                tokenRange: tokenRange
+              })
               });
             }
           }
@@ -120,12 +139,20 @@ class TextSwitch extends React.Component {
         structureTypePromise.then((t) => {
           // if transcription
           if (type === "http://scta.info/resource/transcription"){
-            this.setState({itemTranscriptionId: itemParent, blockDivFocus: t.data.results.bindings[0].blockDivExpression.value, displayType: "item", resourceTitle: resourceTitle})
+            this.setState({itemTranscriptionId: itemParent, 
+              blockDivFocus: t.data.results.bindings[0].blockDivExpression.value, 
+              displayType: "item", resourceTitle: resourceTitle, 
+              tokenRange: tokenRange
+            })
           }
           // if expression
           else if (type === "http://scta.info/resource/expression"){
             if (t.data.results.bindings[0].ctranscription){
-              this.setState({itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, blockDivFocus: resourceid, displayType: "item", resourceTitle: resourceTitle})
+              this.setState({
+                itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, 
+                blockDivFocus: resourceid, displayType: "item", 
+                resourceTitle: resourceTitle, 
+                tokenRange: tokenRange})
             }
             else{
               this.setState({displayType: "notFound"})
@@ -133,7 +160,12 @@ class TextSwitch extends React.Component {
           }
           // if manifestation
           else {
-            this.setState({itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, blockDivFocus: t.data.results.bindings[0].blockDivExpression.value, displayType: "item", resourceTitle: resourceTitle})
+            this.setState(
+              {itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, 
+              blockDivFocus: t.data.results.bindings[0].blockDivExpression.value, 
+              displayType: "item", 
+              resourceTitle: resourceTitle, 
+              tokenRange: tokenRange})
           }
         });
       }
@@ -244,7 +276,9 @@ class TextSwitch extends React.Component {
             <TextWrapper itemid={this.state.itemTranscriptionId.split("/resource/")[1].split("/")[0]}
             transcriptionid={this.state.itemTranscriptionId}
             blockDivFocus={this.state.blockDivFocus}
-            handleUpdateUrlResource={this.handleUpdateUrlResource}/>
+            handleUpdateUrlResource={this.handleUpdateUrlResource}
+            tokenRange={this.state.tokenRange}
+            />
           )
         }
         // if no transcription resource id, exists return message

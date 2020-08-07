@@ -2,7 +2,7 @@
 import React from 'react';
 import Spinner from './Spinner';
 import $ from 'jquery';
-import {convertXMLDoc, scrollToParagraph, loadHtmlResultDocFromExist, toRange} from './utils'
+import {convertXMLDoc, scrollToParagraph, loadHtmlResultDocFromExist, toRange, cleanText} from './utils'
 import ReactTooltip from 'react-tooltip';
 import Nav from 'react-bootstrap/Nav';
 import {FaComments, FaEdit, FaInfo, FaBook} from 'react-icons/fa';
@@ -18,17 +18,19 @@ class Text extends React.Component {
     
     this.state = {
       fetching: false,
-      selectionRect: {left: "", top: ""},
-      selectedText: "",
-      selectedElementTargetId: "",
-      startToken: undefined,
-      endToken: undefined, 
+      selectionRange: "",
+      //TODO systematic rename of all instances of properties below
+      // selectionRect: {left: "", top: ""},
+      // selectedText: "",
+      // selectedElementTargetId: "",
+      // startToken: undefined,
+      // endToken: undefined, 
       dictionary: ""
     }
 
 
   }
-  retrieveText(doc, topLevel, scrollTo, selectedCharacterRange){
+  retrieveText(doc, topLevel, scrollTo, selectionRange){
     const _this = this;
     
     if (doc){
@@ -70,7 +72,7 @@ class Text extends React.Component {
           document.getElementById("text").innerHTML = "";
           document.getElementById("text").appendChild(data)
           // add event binding
-          this.setEvents(_this, scrollTo, selectedCharacterRange)
+          this.setEvents(_this, scrollTo, selectionRange)
           }).catch((e) => {
             //if browswer conversion fails, log error message
             console.log("something went wrong", e)
@@ -81,7 +83,7 @@ class Text extends React.Component {
       }
   }
 
-  setEvents(_this, scrollTo, selectedCharacterRange){
+  setEvents(_this, scrollTo, selectionRange){
 
     $('.paragraphnumber').click(function(e) {
       e.preventDefault();
@@ -92,10 +94,10 @@ class Text extends React.Component {
     if (scrollTo){
      scrollToParagraph(scrollTo, true)
    }
-   if(selectedCharacterRange){
+   if(selectionRange){
     const selectedElementTargetId = document.getElementById(scrollTo).id
     console.log("selectedElementTargetId", selectedElementTargetId)
-    _this.markWithElement(selectedElementTargetId, "", "", "", selectedCharacterRange)
+    _this.markWithElement(selectionRange)
   }
 
    $('.js-show-folio-image').click(function(e) {
@@ -241,8 +243,8 @@ class Text extends React.Component {
             //get ancestor p text
             const pClone = $(pAncestor).clone()
             pClone.children(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
-            const pText = _this.cleanText($(pClone).text())
-            const selectionText = _this.cleanText(cnt.textContent)
+            const pText = cleanText($(pClone).text())
+            const selectionText = cleanText(cnt.textContent)
             let precedingTextArray = pText.split(selectionText)[0].split(" "); 
             //slice to remove first item which is paragraph number; filter to remove blank items scattered throughout
             precedingTextArray = precedingTextArray.slice(1).filter(n=>n)
@@ -250,39 +252,42 @@ class Text extends React.Component {
             const startToken = precedingTextLength + 1
             // filter to remove blank items in array
             const endToken = precedingTextLength + (selectionText.split(" ").filter(n=>n).length) 
+            const wordRange = {start: startToken, end: endToken}
             
             const startCharacter = $(pClone).text().split(cnt.textContent)[0].length + 1 ;
-            console.log("start character", startCharacter);
             const endCharacter = $(pClone).text().split(cnt.textContent)[0].length + cnt.textContent.length + 1;
-            console.log("end character", endCharacter);
+            const characterRange = {start: startCharacter, end: endCharacter}
             const oRect = rng.getBoundingClientRect();
-            _this.handleOnClick(selectionText, oRect, startToken, endToken, selectedElementTargetId, rng, startCharacter, endCharacter);
+            console.log("test", rng)
+            console.log("test", oRect)
+            const selectionRange = {
+              text: selectionText,
+              coords: oRect,
+              wordRange, 
+              characterRange,
+              objectRange: rng,
+              selectedElementTargetId, 
+            }
+
+            _this.handleOnClick(selectionRange);
           }
         }
       }
       document.addEventListener('keyup', mark); // ctrl+keyup
       document.addEventListener('mouseup', mark);// ctrl+mouseup
     }
-    markWithElement(selectedElementTargetId, selectedText, selectedRange, selectedRangeObject, selectedCharacterRange){
+    /**
+     * 
+     * @param {object} selectionRange 
+     
+     */
+    markWithElement(selectionRange){
       const parent = $('mark').parent();
       $('mark').contents().unwrap();
-      // parent.html((i, html) => html) // if you remove this, then the text will be split
-      // // Highlight the street and city
-      // const para = document.getElementById(selectedElementTargetId);
-      // const startOffset = selectedRange.start;  // Start at third node: 101 E. Main St.
-      // const endOffset = selectedRange.end;    // End at fifth node: Dodge City, KS
-      // const textNode = para.childNodes[1];
-      // console.log("textnode index 0", para.childNodes[0]);
-      // console.log("textnode index 1", textNode);
-      // console.log("textnode index 2", para.childNodes[2]);
-      // const range = document.createRange();
-      // range.setStart(textNode, startOffset);
-      // range.setEnd(textNode, endOffset);
-      console.log('id inside mark with Element', selectedElementTargetId);
-      const container = document.getElementById(selectedElementTargetId);
+      const container = document.getElementById(selectionRange.selectedElementTargetId);
       //only attempt to set mark if container can be found
-      if (container && selectedCharacterRange.start && selectedCharacterRange.end){
-        const range = toRange(container, selectedCharacterRange.start, selectedCharacterRange.end)
+      if (container && selectionRange.characterRange){
+        const range = toRange(container, selectionRange.characterRange.start, selectionRange.characterRange.end)
         //const range = selectedRangeObject;
 
         var cnt = range.extractContents();
@@ -301,10 +306,17 @@ class Text extends React.Component {
 
     /* @editable as boolean if true, then should be edited in comment */
   handleOnClickComment(editable){
-    const selectedRange = {start: this.state.startToken, end: this.state.endToken}
-    const selectedCharacterRange = {start: this.state.startCharacter, end: this.state.endCharacter}
-    this.markWithElement(this.state.selectedElementTargetId, this.state.selectedText, selectedRange, this.state.selectedRangeObject, selectedCharacterRange)
-    this.props.handleOnClickComment(this.state.selectedElementTargetId, this.state.selectedText, editable, selectedRange, selectedCharacterRange )
+    const selectionRange = this.state.selectionRange
+    const selectionRangeNew = {
+      ...selectionRange,
+      editable: editable
+    }
+    console.log("selectionRangeNew", selectionRangeNew)
+    // const selectedRange = {start: this.state.startToken, end: this.state.endToken}
+    // const selectedCharacterRange = {start: this.state.startCharacter, end: this.state.endCharacter}
+
+    this.markWithElement(selectionRangeNew);
+    this.props.handleOnClickComment(selectionRangeNew);
     // this.props.setFocus(this.state.selectedElementTargetId)
     // this.props.openWindow("window1", "comments")
   }
@@ -313,6 +325,35 @@ class Text extends React.Component {
     this.setState({dictionary})
   }
   
+  
+  handleHide(){
+    ReactTooltip.hide(this.fooRef)
+  }
+ 
+  /**
+   * 
+   * @param {{
+      text: string,
+      coords: object,
+      wordRange: object, 
+      characterRange: object,
+      objectRange: Range,
+      selectedElementTargetId: string,
+    }} selectionRange - object contain needed if about selectedRange
+   */
+  handleOnClick(selectionRange){
+    this.setState({selectionRange: selectionRange})
+    console.log("test in click", selectionRange)
+    ReactTooltip.show(this.fooRef)
+  }
+  componentDidMount(){
+    // NOTE: ScrollToNew helps ensure that scrollTo id is SCTA ShortID, 
+    //since TextWrapper is (at present) sometimes sending the shortid and sometimes the full url id
+    // TODO: when TextWrapper is refactored and consistently sending the same ID type. this should be removed
+    const scrollToNew = this.props.scrollTo && this.props.scrollTo.includes("/resource/") ? this.props.scrollTo.split("/resource/")[1] : this.props.scrollTo
+    this.retrieveText(this.props.doc, this.props.topLevel, scrollToNew, this.props.selectionRange)
+  }
+
   componentDidUpdate(prevProps, prevState){
 
     //check to see if doc has changed
@@ -321,7 +362,7 @@ class Text extends React.Component {
       //since TextWrapper is (at present) sometimes sending the shortid and sometimes the full url id
       // TODO: when TextWrapper is refactored and consistently sending the same ID type. this should be removed
       const scrollToNew = this.props.scrollTo && this.props.scrollTo.includes("/resource/") ? this.props.scrollTo.split("/resource/")[1] : this.props.scrollTo
-      this.retrieveText(this.props.doc, this.props.topLevel, scrollToNew, this.props.selectedCharacterRange)
+      this.retrieveText(this.props.doc, this.props.topLevel, scrollToNew, this.props.selectionRange)
     }
     // if doc has already been appended, still scroll to target block
     else{
@@ -331,6 +372,10 @@ class Text extends React.Component {
         // TODO: when TextWrapper is refactored and consistently sending the same ID type. this should be removed
         const scrollToNew = this.props.scrollTo && this.props.scrollTo.includes("/resource/") ? this.props.scrollTo.split("/resource/")[1] : this.props.scrollTo
         scrollToParagraph(scrollToNew, true)
+        if (this.props.selectionRange){
+          console.log("firing 1")
+          this.markWithElement(this.props.selectionRange)
+        };
       }
       // TODO/Note: this seems to be firing even when it seems like the prevProps.doc !== this.props.doc
       // perhaps props are not changing/updating at the same time. So the doc prop has already changed
@@ -338,54 +383,12 @@ class Text extends React.Component {
       // and so the marking container element cannot be found. 
       // NOTE: error solved by preventing attempt to mark if container cannot be found. 
       // but it doesn't seem great that this is firing at undesired times.
-      if ((this.props.selectedCharacterRange !== prevProps.selectedCharacterRange) && this.props.selectedElementTargetId){
-        console.log("this.props.selectedElementTargetId", this.props.selectedElementTargetId);
-        this.markWithElement(this.props.selectedElementTargetId, "", "", "", this.props.selectedCharacterRange)
-      };
+      else if (this.props.selectionRange.characterRange !== prevProps.selectionRange.characterRange && this.props.selectionRange.selectedElementTargetId){
+        console.log("firing 2")
+        this.markWithElement(this.props.selectionRange)
+      }  
     }
     
-    
-  }
-  handleHide(){
-    ReactTooltip.hide(this.fooRef)
-  }
-  // function to remove spaces from selected html text
-  cleanText(selectedText){
-    selectedText = selectedText.replace(/\*/gi, '' ) // remove app note links
-    selectedText = selectedText.replace(/\[[a-z][a-z]\]/gi, '' ) // remove footnotes
-    selectedText = selectedText.replace(/\w*[0-9]+[rvab]+/gi, '' ) // remove folio markers
-    selectedText = selectedText.replace(/\s+/gi, ' ' )
-    selectedText = selectedText.replace(/\s,\s/gi, ', ' )
-    
-    selectedText = selectedText.replace(/\s"\./gi, '". ' )
-    selectedText = selectedText.replace(/\s:\s/gi, ': ' )
-    selectedText = selectedText.replace(/\s\.\s/gi, '. ' )
-    selectedText = selectedText.replace(/\s"\s/gi, '" ' )
-    selectedText = selectedText.replace(/"\s\."/gi, '." ' )
-    selectedText = selectedText.replace(/\s+/gi, ' ' )
-    return selectedText
-  }
-  handleOnClick(selectedText, oRect, startToken, endToken, selectedElementTargetId, selectedRangeObject, startCharacter, endCharacter){
-    this.setState(
-      {
-        selectionRect: oRect, 
-        selectedText: selectedText,
-        startToken: startToken, 
-        endToken: endToken,
-        selectedElementTargetId: selectedElementTargetId,
-        selectedRangeObject: selectedRangeObject,
-        startCharacter: startCharacter,
-        endCharacter: endCharacter
-      }
-      )
-    ReactTooltip.show(this.fooRef)
-  }
-  componentDidMount(){
-    // NOTE: ScrollToNew helps ensure that scrollTo id is SCTA ShortID, 
-    //since TextWrapper is (at present) sometimes sending the shortid and sometimes the full url id
-    // TODO: when TextWrapper is refactored and consistently sending the same ID type. this should be removed
-    const scrollToNew = this.props.scrollTo && this.props.scrollTo.includes("/resource/") ? this.props.scrollTo.split("/resource/")[1] : this.props.scrollTo
-    this.retrieveText(this.props.doc, this.props.topLevel, scrollToNew)
   }
   
   render(){
@@ -401,11 +404,11 @@ class Text extends React.Component {
           </div>
         }
         
-        <p ref={ref => this.fooRef = ref} data-tip='tooltip' style={{position: "fixed", top: this.state.selectionRect.top + 10, left: this.state.selectionRect.left}}></p>
+        {this.state.selectionRange && <p ref={ref => this.fooRef = ref} data-tip='tooltip' style={{position: "fixed", top: this.state.selectionRange.coords.top + 10, left: this.state.selectionRange.coords.left}}></p>}
         <ReactTooltip clickable={true} place="top">
+          {/* TODO: should become its own comonent */}
           <div style={{overflow: "scroll", "maxWidth": "300px"}}>
-            {/* <p >Info</p> */}
-            {(this.state.selectedText && this.state.selectedText.split(" ").length === 1) && 
+            {(this.state.selectionRange.text && this.state.selectionRange.text.split(" ").length === 1) && 
             <div>
             <p>
               {this.state.dictionary === "whitakerswords" ? <iframe title="whitakerswords" src={"http://archives.nd.edu/cgi-bin/wordz.pl?keyword=" + this.state.selectedText }></iframe>
@@ -413,21 +416,12 @@ class Text extends React.Component {
             </p>
             </div>
             }
-            {/* <p>
-              Comment on: 
-              <input type="text" placeholder="leave comment"></input>
-              <br/>
-              and/or edit:
-              <input type="text" value={this.state.selectedText}></input>
-              <br/>
-              <i>{this.state.selectedText}</i> ({this.state.startToken}-{this.state.endToken})
-            </p> */}
-            
+            {this.state.selectionRange &&
             <Nav>
-              <Nav.Link title={this.state.startToken + "-" +this.state.endToken} onClick={() => {this.handleOnClickComment(false)}}><FaInfo/></Nav.Link>
+              <Nav.Link title={this.state.selectionRange.wordRange.start + "-" +this.state.selectionRange.wordRange.end} onClick={() => {this.handleOnClickComment(false)}}><FaInfo/></Nav.Link>
               <Nav.Link onClick={() => {this.handleOnClickComment(false)}}><FaComments/></Nav.Link>
               <Nav.Link onClick={() => {this.handleOnClickComment(true)}}><FaEdit/></Nav.Link>
-              {(this.state.selectedText && this.state.selectedText.split(" ").length === 1) && 
+              {(this.state.selectionRange.text && this.state.selectionRange.text.split(" ").length === 1) && 
               <span>
               {(this.state.dictionary === 'whitakerswords') ? 
               <Nav.Link title="select logeion" onClick={()=>this.handleDictionaryChange("logeion")}><FaBook/> L</Nav.Link>
@@ -436,6 +430,7 @@ class Text extends React.Component {
               </span>
               }
             </Nav>
+            }
           </div>
         </ReactTooltip>
         <div id="text" style={{display: displayText}}></div>

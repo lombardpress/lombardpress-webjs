@@ -37,7 +37,8 @@ function Comment2Item(props) {
   }
   
   
-  const target =  typeof(props.comment.target) === 'string' ? props.comment.target : props.comment.target.source;
+  let target =  typeof(props.comment.target) === 'string' ? props.comment.target : props.comment.target.source;
+  
   let selectedFragment = undefined;
   let selectedFragmentRange = undefined;
   let selectedCharacterRange;
@@ -45,13 +46,15 @@ function Comment2Item(props) {
     selectedFragment = props.comment.target.selector.filter((i) => (i.type === "TextQuoteSelector"))[0].exact;
     selectedFragmentRange = props.comment.target.selector.filter((i) => (i.type === "TextPositionSelector"))[0];
     selectedCharacterRange = props.comment.target.selector.filter((i) => (i.type === "TextPositionSelector"))[0];
+    target = target + "@" + selectedFragmentRange.start + "-" + selectedFragmentRange.end
     }
   
-
+  
   return (
       <div>
         {/* {!props.focused && <p>{t("For")}: <Link to={"/text?resourceid=" + target}>{target}</Link></p>} */}
-        <span className="lbp-span-link" onClick={() => props.handleOnClickComment(target.split("/resource/")[1], selectedFragment, props.comment.body.editedValue, selectedFragmentRange, selectedCharacterRange)}>{target} {selectedFragmentRange && <span> ({selectedFragmentRange.start}-{selectedFragmentRange.end})</span>}</span>
+        {/* <span className="lbp-span-link" onClick={() => props.handleOnClickComment(target.split("/resource/")[1], selectedFragment, props.comment.body.editedValue, selectedFragmentRange, selectedCharacterRange)}>{target} {selectedFragmentRange && <span> ({selectedFragmentRange.start}-{selectedFragmentRange.end})</span>}</span> */}
+        <p>{t("For")}: <Link to={"/text?resourceid=" + target}>{target}</Link></p>
         {
           editable ?
           <Comment2Create submitComment={submitUpdate} comment={props.comment.body.value}/> :

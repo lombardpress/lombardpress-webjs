@@ -179,3 +179,21 @@ export function toRange(root, start, end) {
 
   return range;
 }
+
+// function to remove spaces from selected html text
+// less necessary now that jquery $(element).children('selectors').remove() can remove many unwanted spans
+export function cleanText(selectedText){
+  selectedText = selectedText.replace(/\*/gi, '' ) // remove app note links
+  selectedText = selectedText.replace(/\[[a-z][a-z]\]/gi, '' ) // remove footnotes
+  selectedText = selectedText.replace(/\w*[0-9]+[rvab]+/gi, '' ) // remove folio markers
+  selectedText = selectedText.replace(/\s+/gi, ' ' )
+  selectedText = selectedText.replace(/\s,\s/gi, ', ' )
+  
+  selectedText = selectedText.replace(/\s"\./gi, '". ' )
+  selectedText = selectedText.replace(/\s:\s/gi, ': ' )
+  selectedText = selectedText.replace(/\s\.\s/gi, '. ' )
+  selectedText = selectedText.replace(/\s"\s/gi, '" ' )
+  selectedText = selectedText.replace(/"\s\."/gi, '." ' )
+  selectedText = selectedText.replace(/\s+/gi, ' ' )
+  return selectedText
+}

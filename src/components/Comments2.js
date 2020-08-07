@@ -35,7 +35,7 @@ function Comments2(props) {
    * @param {string} comment 
    * @public
    */
-  const submitComment = (comment, type, selectedFragment, selectedRange, editedText, selectedCharacterRange) => {
+  const submitComment = (comment, type, editedText, selectionRange) => {
     const randomid = uuidv4();
     const annoId = "http://inbox.scta.info/notifications/" + randomid
     const dateObject = new Date();
@@ -43,12 +43,12 @@ function Comments2(props) {
     const selector = [
       {
         "type": "TextQuoteSelector",
-        "exact": selectedFragment
+        "exact": selectionRange.text
       },
       {
         "type": "TextPositionSelector",
-        "start": selectedCharacterRange && selectedCharacterRange.start,
-        "end": selectedCharacterRange && selectedCharacterRange.end
+        "start": selectionRange.characterRange && selectionRange.characterRange.start,
+        "end": selectionRange.characterRange && selectionRange.characterRange.end
       }
     ]
     
@@ -141,10 +141,7 @@ function Comments2(props) {
     <Container className={props.hidden ? "hidden" : "showing"}>
       <Comment2Create 
         submitComment={submitComment} 
-        selectedFragment={props.selectedFragment} 
-        selectedFragmentEditable={props.selectedFragmentEditable}
-        selectedRange={props.selectedRange}
-        selectedCharacterRange={props.selectedCharacterRange}
+        selectionRange={props.selectionRange}
         />
       <Button size="sm" style={{margin: "2px"}} block onClick={() => setShowFilters(!showFilters)}><FaFilter/> Filters</Button>
       { showFilters &&
@@ -199,8 +196,7 @@ function Comments2(props) {
             if (target === props.resourceid && (c.body.value && c.body.value.includes(commentFilter))){
               return (
                 <div key={i} style={{borderLeft: "1px solid black"}}>
-                  <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment} 
-                  handleOnClickComment={props.handleOnClickComment}/>/>
+                  <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment}/>
                   {
                   //<button onClick={() => {removeNote(n.title)}}>x</button>
                   }
@@ -210,8 +206,7 @@ function Comments2(props) {
             else if (c.body.value && c.body.value.includes(commentFilter)){
               return (
                 <div key={i}>
-                  <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment}
-                  handleOnClickComment={props.handleOnClickComment}/>/>
+                  <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment}/>
                   {
                   //<button onClick={() => {removeNote(n.title)}}>x</button>
                   }
