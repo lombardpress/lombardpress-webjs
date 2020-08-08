@@ -148,7 +148,7 @@ class TextWrapper extends React.Component {
   handleOnClickComment(selectionRange){
     const s = selectionRange
     this.setState({selectionRange: s})
-    this.setFocus(s.selectedElementTargetId + "@" + s.characterRange.start + "-" + s.characterRange.end)
+    this.setFocus(s.selectedElementTargetId + "@" + s.wordRange.start + "-" + s.wordRange.end)
     this.openWindow("window1", "comments")
   }
   handleSwitchWindow(windowId, windowType){
@@ -363,7 +363,7 @@ class TextWrapper extends React.Component {
       this.setState(
         {mtFocus: "/" + mFocus + "/" + tFocus, 
         selectionRange: {
-          characterRange: this.props.tokenRange, 
+          wordRange: this.props.tokenRange, 
           selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1]
         }
       })
@@ -411,7 +411,7 @@ class TextWrapper extends React.Component {
               // will be present, but this means it gets out of sync when new url info is passed own 
               // and other info from text selection does not exist. It will get back in sync once a new selection and click occurs
               ...prevState.selectionRange, 
-              characterRange: this.props.tokenRange,
+              wordRange: this.props.tokenRange,
               selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1],
             },
             windows: windows
@@ -432,7 +432,7 @@ class TextWrapper extends React.Component {
             return({
             selectionRange: {
               ...prevState.selectionRange,
-              characterRange: this.props.tokenRange,
+              wordRange: this.props.tokenRange,
               selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1]
               }
             })  
@@ -445,7 +445,7 @@ class TextWrapper extends React.Component {
           return({
           selectionRange: {
             ...prevState.selectionRange,
-            characterRange: this.props.tokenRange,
+            wordRange: this.props.tokenRange,
             selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1],
           }
         })

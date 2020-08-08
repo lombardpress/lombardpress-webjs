@@ -2,6 +2,7 @@ import Axios from 'axios'
 import {sparqlEndpoint} from './config';
 import $ from 'jquery';
 
+
 export function loadXMLDoc(url){
   //See https://github.com/martin-honnen/martin-honnen.github.io/blob/master/xslt/arcor-archive/2016/test2016081501.html
   return new Promise(function(resolve) {
@@ -122,48 +123,93 @@ export function scrollToParagraph(hash, highlight){
  * @param {number} end - Character offset within `root.textContent`
  * @return {Range} Range spanning text from `start` to `end`
  */
+
+function nodeFilterCheck(node){
+  
+  const check = node.parentElement.className
+  // skip text nodes if their parent has the following classes
+  if (check.includes("paragraphnumber") 
+  || check.includes("lbp-line-number")
+  || check.includes("appnote") 
+  || check.includes("paragraphnumber")
+  || check.includes("footnote")
+  || check.includes("lbp-reg")
+  || check.includes("lbp-folionumber")
+  || check.includes("js-show-folio-image") // removes folio number
+  ){
+    return NodeFilter.FILTER_REJECT
+  }
+  // i don't this is necessary
+  // else if (!(/\S/.test(node))){ 
+  //   console.log("reject for being empty space", node)
+  //   return NodeFilter.FILTER_REJECT
+  // }
+  else if (!node.nodeValue){
+    return NodeFilter.FILTER_REJECT
+  }
+  else{
+    console.log("returning accept", node.nodeValue)
+    return NodeFilter.FILTER_ACCEPT;
+  }
+  
+}
+
 export function toRange(root, start, end) {
   // The `filter` and `expandEntityReferences` arguments are mandatory in IE
   // although optional according to the spec.
-  console.log("root", root)
+  //console.log("root", root)
   const nodeIter = root.ownerDocument.createNodeIterator(
     root,
     NodeFilter.SHOW_TEXT,
-    null, // filter
-    false // expandEntityReferences
+    nodeFilterCheck, // filter
+    true // expandEntityReferences
   );
 
   let startContainer;
   let startOffset;
+  let startWordOffset
   let endContainer;
   let endOffset;
+  let endWordOffset;
 
-  let textLength = 0;
+ // let textLength = 0;
+  let wordLength = 0;
 
   let node;
 
   // TODO: modify this so that start container and character start are found based on word token position
   while ((node = nodeIter.nextNode()) && (!startContainer || !endContainer)) {
     const nodeText = node.nodeValue;
+    let newWordLength = 0
+    // use clean text to remove punctuation and unwanted white space, then filter to get rid of blank array items, then count
+      newWordLength = cleanText(nodeText).split(" ").filter(n=>n).length;
+      
+    // if start word is greater than length of wordcount in preceding notes, but less than or equal 
+    // to word count of of preceding plus this node, then selection starts somewhere within this node
+    // select node, then find precise word and character position start
     if (
       !startContainer &&
-      start >= textLength &&
-      start <= textLength + nodeText.length
+      start >= wordLength &&
+      start <= wordLength + newWordLength
     ) {
       startContainer = node;
-      startOffset = start - textLength;
+      startWordOffset = start - wordLength;
+      startOffset = node.nodeValue.split(cleanText(nodeText).split(" ").filter(n=>n)[startWordOffset - 1])[0].length
     }
-
+    // similar to above only for final position
     if (
       !endContainer &&
-      end >= textLength &&
-      end <= textLength + nodeText.length
+      end >= wordLength &&
+      end <= wordLength + newWordLength
     ) {
       endContainer = node;
-      endOffset = end - textLength;
+      endWordOffset = end - wordLength;
+      endOffset = node.nodeValue.split(cleanText(nodeText).split(" ").filter(n=>n)[endWordOffset])[0].length
     }
 
-    textLength += nodeText.length;
+    //textLength += nodeText.length;
+    wordLength += newWordLength
+    
   }
 
   if (!startContainer) {
@@ -181,19 +227,9 @@ export function toRange(root, start, end) {
 }
 
 // function to remove spaces from selected html text
-// less necessary now that jquery $(element).children('selectors').remove() can remove many unwanted spans
 export function cleanText(selectedText){
-  selectedText = selectedText.replace(/\*/gi, '' ) // remove app note links
-  selectedText = selectedText.replace(/\[[a-z][a-z]\]/gi, '' ) // remove footnotes
-  selectedText = selectedText.replace(/\w*[0-9]+[rvab]+/gi, '' ) // remove folio markers
-  selectedText = selectedText.replace(/\s+/gi, ' ' )
-  selectedText = selectedText.replace(/\s,\s/gi, ', ' )
-  
-  selectedText = selectedText.replace(/\s"\./gi, '". ' )
-  selectedText = selectedText.replace(/\s:\s/gi, ': ' )
-  selectedText = selectedText.replace(/\s\.\s/gi, '. ' )
-  selectedText = selectedText.replace(/\s"\s/gi, '" ' )
-  selectedText = selectedText.replace(/"\s\."/gi, '." ' )
-  selectedText = selectedText.replace(/\s+/gi, ' ' )
+  selectedText = selectedText.replace(/^[ ]+|[ ]+$/g,''); // remove leading and trailing white space
+  selectedText = selectedText.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()"]/g,"") //remove all punctuation
+  selectedText = selectedText.replace(/\s+/gi, ' ' ) // condences 1 or more space to single space
   return selectedText
 }

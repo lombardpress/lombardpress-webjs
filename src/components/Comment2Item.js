@@ -9,9 +9,10 @@ function Comment2Item(props) {
   const {t} = useTranslation();
   const [editable, setEditable] = useState(false);
   
-
-  const submitUpdate = (update) => {
-    props.updateComment(props.comment.id, update)
+  
+  const submitUpdate = (update, type, editedText) => {
+    console.log("editedText in comment2 Item", editedText)
+    props.updateComment(props.comment.id, update, editedText)
     setEditable(false)
   }
   const addSCTALinksToValue = (value) => {
@@ -39,15 +40,24 @@ function Comment2Item(props) {
   
   let target =  typeof(props.comment.target) === 'string' ? props.comment.target : props.comment.target.source;
   
+
   let selectedFragment = undefined;
   let selectedFragmentRange = undefined;
   let selectedCharacterRange;
   if (props.comment.target.selector){
     selectedFragment = props.comment.target.selector.filter((i) => (i.type === "TextQuoteSelector"))[0].exact;
     selectedFragmentRange = props.comment.target.selector.filter((i) => (i.type === "TextPositionSelector"))[0];
-    selectedCharacterRange = props.comment.target.selector.filter((i) => (i.type === "TextPositionSelector"))[0];
+    //selectedCharacterRange = props.comment.target.selector.filter((i) => (i.type === "TextPositionSelector"))[0];
     target = target + "@" + selectedFragmentRange.start + "-" + selectedFragmentRange.end
-    }
+
+  }
+  const selectionRange = {
+    text: selectedFragment, 
+    textEdited: props.comment.body.editedValue,
+    wordRange: selectedFragmentRange,
+    editable: props.comment.motivation === 'editing' ? true : false 
+
+  }
   
   
   return (
@@ -57,7 +67,7 @@ function Comment2Item(props) {
         <p>{t("For")}: <Link to={"/text?resourceid=" + target}>{target}</Link></p>
         {
           editable ?
-          <Comment2Create submitComment={submitUpdate} comment={props.comment.body.value}/> :
+          <Comment2Create submitComment={submitUpdate} comment={props.comment.body.value} selectionRange={selectionRange}/> :
           <p>
           {
           //<span dangerouslySetInnerHTML={{ __html: addSCTALinksToValue(props.comment.body.value)}}/>

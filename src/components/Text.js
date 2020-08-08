@@ -239,17 +239,18 @@ class Text extends React.Component {
             console.log("selectedElementTargetId", selectedElementTargetId);
             var cnt = rng.cloneContents();
             console.log("selected cnt", rng)
-            $(cnt).children(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
+            $(cnt).find(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
             // if selection is greater than 0 
             if (cnt.textContent.length > 0){
               //get ancestor p text
               const pClone = $(pAncestor).clone()
-              pClone.children(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
+              pClone.find(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
+              
               const pText = cleanText($(pClone).text())
               const selectionText = cleanText(cnt.textContent)
-              let precedingTextArray = pText.split(selectionText)[0].split(" "); 
-              //slice to remove first item which is paragraph number; filter to remove blank items scattered throughout
-              precedingTextArray = precedingTextArray.slice(1).filter(n=>n)
+              
+              let precedingTextArray = pText.split(selectionText)[0].split(" ").filter(n=>n); 
+              
               const precedingTextLength = precedingTextArray.length
               const startToken = precedingTextLength + 1
               // filter to remove blank items in array
@@ -260,8 +261,6 @@ class Text extends React.Component {
               const endCharacter = $(pClone).text().split(cnt.textContent)[0].length + cnt.textContent.length + 1;
               const characterRange = {start: startCharacter, end: endCharacter}
               const oRect = rng.getBoundingClientRect();
-              console.log("test", rng)
-              console.log("test", oRect)
               const selectionRange = {
                 text: selectionText,
                 coords: oRect,
@@ -289,8 +288,8 @@ class Text extends React.Component {
       $('mark').contents().unwrap();
       const container = document.getElementById(selectionRange.selectedElementTargetId);
       //only attempt to set mark if container can be found
-      if (container && selectionRange.characterRange){
-        const range = toRange(container, selectionRange.characterRange.start, selectionRange.characterRange.end)
+      if (container && selectionRange.wordRange){
+        const range = toRange(container, selectionRange.wordRange.start, selectionRange.wordRange.end)
         //const range = selectedRangeObject;
 
         var cnt = range.extractContents();
@@ -386,8 +385,7 @@ class Text extends React.Component {
       // and so the marking container element cannot be found. 
       // NOTE: error solved by preventing attempt to mark if container cannot be found. 
       // but it doesn't seem great that this is firing at undesired times.
-      else if (this.props.selectionRange.characterRange !== prevProps.selectionRange.characterRange && this.props.selectionRange.selectedElementTargetId){
-        console.log("firing 2")
+      else if (this.props.selectionRange.wordRange !== prevProps.selectionRange.wordRange && this.props.selectionRange.selectedElementTargetId){
         this.markWithElement(this.props.selectionRange)
       }  
     }

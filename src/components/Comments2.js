@@ -36,6 +36,7 @@ function Comments2(props) {
    * @public
    */
   const submitComment = (comment, type, editedText, selectionRange) => {
+    console.log("editedText", editedText);
     const randomid = uuidv4();
     const annoId = "http://inbox.scta.info/notifications/" + randomid
     const dateObject = new Date();
@@ -47,8 +48,8 @@ function Comments2(props) {
       },
       {
         "type": "TextPositionSelector",
-        "start": selectionRange.characterRange && selectionRange.characterRange.start,
-        "end": selectionRange.characterRange && selectionRange.characterRange.end
+        "start": selectionRange.wordRange && selectionRange.wordRange.start,
+        "end": selectionRange.wordRange && selectionRange.wordRange.end
       }
     ]
     
@@ -85,10 +86,11 @@ function Comments2(props) {
         ...lists
       })
   }
-  const updateComment = (id, update) => {
+  const updateComment = (id, update, editedText) => {
     
     const targetComment = lists[comments].filter((c) => (c.id === id))[0]
     targetComment.body.value = update
+    targetComment.body.editedValue = editedText
     setLists({
       ...lists
     })

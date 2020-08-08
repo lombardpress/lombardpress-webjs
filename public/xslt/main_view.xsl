@@ -159,7 +159,7 @@
     <xsl:variable name="end" select="substring-after(./@synch, '-')"/>
     
     <xsl:choose>
-      <xsl:when test="$isDiplomatic and $id and contains($source, 'http://scta.info/resource/')">
+      <xsl:when test="($isDiplomatic = 'true') and $id and contains($source, 'http://scta.info/resource/')">
         <!-- added data-target-paragraph attribut here because it is hard for jquery to get id in html dom -->
         <span id="{@xml:id}" 
           class="lbp-quote js-show-info lbp-quote-clickable js-show-reference-paragraph" 
@@ -172,7 +172,7 @@
           <xsl:text></xsl:text>
         </span>
       </xsl:when>
-      <xsl:when test="$isDiplomatic and $id">
+      <xsl:when test="($isDiplomatic = 'true') and $id">
         <span id="{@xml:id}" class="lbp-quote js-show-info lbp-quote-clickable" data-pid="{$id}">
           <xsl:text></xsl:text>
           <xsl:apply-templates/>
@@ -198,7 +198,7 @@
     <xsl:variable name="start" select="substring-before(./@synch, '-')"/>
     <xsl:variable name="end" select="substring-after(./@synch, '-')"/>
     <xsl:choose>
-      <xsl:when test="$isDiplomatic and $id and contains($target, 'http://scta.info/resource/')">
+      <xsl:when test="($isDiplomatic = 'true') and $id and contains($target, 'http://scta.info/resource/')">
         <!-- added data-target-paragraph attribut here because it is hard for jquery to get id in html dom -->
         <span id="{@xml:id}" 
           class="lbp-ref js-show-info lbp-ref-clickable js-show-reference-paragraph" 
@@ -213,7 +213,7 @@
           <xsl:text></xsl:text>
         </span>
       </xsl:when>
-      <xsl:when test="$isDiplomatic and $id">
+      <xsl:when test="($isDiplomatic = 'true') and $id">
         <span id="{@xml:id}" class="lbp-ref js-show-info lbp-ref-clickable" data-pid="{$id}" data-ref="{$refid}" data-corresp="{$corresp}">
           <xsl:text></xsl:text>
           <xsl:apply-templates/>
