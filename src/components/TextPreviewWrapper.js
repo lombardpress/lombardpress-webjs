@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import TextPreview from '@bit/jeffreycwitt.lbp.text-preview'
 import {runQuery} from './utils'
@@ -51,9 +52,13 @@ class TextPreviewWrapper extends React.Component {
     this.mounted = false
   }
   render(){
+    const link = (this.props.textPreviewStart && this.props.textPreviewEnd) 
+    ? this.state.tresourceid + "@" + this.props.textPreviewStart + "-" + this.props.textPreviewEnd
+    : this.state.tresourceid
     return (
       <Container className={this.props.hidden ? "hidden" : "showing"}>
-      <p>Go to: <span className="lbp-span-link" onClick={() => this.props.handleFocusChange(this.state.tresourceid)}>{this.state.tresourceid}</span></p>
+      {/* <p>Go to: <span className="lbp-span-link" onClick={() => this.props.handleFocusChange(this.state.tresourceid)}>{this.state.tresourceid}</span></p> */}
+      <p>Go to: <Link to={"/text?resourceid=" + link}>{link}</Link></p>
       {
        this.state.tresourceid && 
        <div>
