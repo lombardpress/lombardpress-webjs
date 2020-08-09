@@ -166,6 +166,7 @@ export function toRange(root, start, end) {
   let endOffset;
   let endWordOffset;
   let breaks = 0;
+  let cummulativeWordArray = []
 
  // let textLength = 0;
   let wordLength = 0;
@@ -183,11 +184,15 @@ export function toRange(root, start, end) {
         }
       }
     }
+    console.log("number of breaks", breaks)
     const nodeText = node.nodeValue;
-    let newWordLength = 0
+    // get array of words in node
+    const nodeTextArray = cleanText(nodeText).split(" ").filter(n=>n)
+    cummulativeWordArray = cummulativeWordArray.concat(nodeTextArray);
     // use clean text to remove punctuation and unwanted white space, then filter to get rid of blank array items, then count
-      newWordLength = cleanText(nodeText).split(" ").filter(n=>n).length;
-    // if start word is greater than length of wordcount in preceding nodes, but less than or equal 
+    const newWordLength = nodeTextArray.length
+    
+    // if start word is greater than length of word count in preceding nodes, but less than or equal 
     // to word count of of preceding plus this node, then selection starts somewhere within this node
     // select node, then find precise word and character position start
     if (
@@ -196,8 +201,10 @@ export function toRange(root, start, end) {
       start + breaks <= wordLength + newWordLength
     ) {
       startContainer = node;
-      startWordOffset = start + breaks - wordLength;
-      startOffset = node.nodeValue.split(cleanText(nodeText).split(" ").filter(n=>n)[startWordOffset - 1])[0].length
+      startWordOffset = (start + breaks) - wordLength;
+      
+      const instanceNumber = getInstanceNumber(nodeTextArray, startWordOffset - 1)
+      startOffset = getStringBeforeWord(node.nodeValue, nodeTextArray[startWordOffset - 1], instanceNumber, true)
     }
     // similar to above only for final position
     if (
@@ -206,12 +213,17 @@ export function toRange(root, start, end) {
       end + breaks <= wordLength + newWordLength
     ) {
       endContainer = node;
-      endWordOffset = end + breaks - wordLength;
-      endOffset = node.nodeValue.split(cleanText(nodeText).split(" ").filter(n=>n)[endWordOffset])[0].length
+      endWordOffset = (end + breaks) - wordLength;
+      console.log("cummulative array", cummulativeWordArray)
+      console.log("nodeTextArray", nodeTextArray)
+      console.log("endWordOffset", endWordOffset)
+      const instanceNumber = getInstanceNumber(nodeTextArray, endWordOffset - 1)
+      endOffset = getStringBeforeWord(node.nodeValue, nodeTextArray[endWordOffset - 1], instanceNumber, false)
     }
 
     //textLength += nodeText.length;
     wordLength += newWordLength
+    
     
   }
 
@@ -236,3 +248,42 @@ export function cleanText(selectedText){
   selectedText = selectedText.replace(/\s+/gi, ' ' ) // condences 1 or more space to single space
   return selectedText
 }
+
+/**
+ * @description returns identical instance number of a certain item in array,
+ * e.g. if we have array [1, 2, 3, 4, 5, 1, 2, 3] 
+ * and we ask for the instanceNumber of index position 5, 
+ * the function will return 2, as this is the second instance of the number 1 in this array
+ * @param {array} wordArray 
+ * @param {number} wordPosition 
+ */
+function getInstanceNumber(wordArray, wordPosition){
+  let number = 0
+  // using <= to include self in count
+  for (let i=0; i <= wordPosition; i++){
+    if (wordArray[i] === wordArray[wordPosition]){
+      number++
+    }
+  }
+  return number
+}
+/**
+ * @description get strings before nth instance of a word
+ * @param {string} text - string to be search
+ * @param {string} word - word to be matched
+ * @param {number} instanceNumber - number instance of word to be matched
+ * modified from https://stackoverflow.com/questions/14480345/how-to-get-the-nth-occurrence-in-a-string
+ */
+function getStringBeforeWord(text, word, instanceNumber, first) {
+  const splitText = text.split(word, instanceNumber).join(word);  
+  if (first){
+    const characterOffset = splitText.length
+    return characterOffset
+  }
+  else{
+    const characterOffset = splitText.length + word.length
+    return characterOffset
+
+  }
+}
+

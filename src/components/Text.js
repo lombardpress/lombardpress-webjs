@@ -240,7 +240,8 @@ class Text extends React.Component {
               const pText = cleanText($(pClone).text())
               const selectionText = cleanText(cnt.textContent)
               
-              let precedingTextArray = pText.split(selectionText)[0].split(" ").filter(n=>n); 
+              //TODO: this is failing to get accurate word for words already present earlier in the string
+              let precedingTextArray = pText.split(cleanText(selectionText))[0].split(" ").filter(n=>n); 
               
               const precedingTextLength = precedingTextArray.length
               const startToken = precedingTextLength + 1
