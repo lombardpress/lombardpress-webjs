@@ -32,7 +32,7 @@ class TextWrapper extends React.Component {
     this.handleChangeManifestation = this.handleChangeManifestation.bind(this)
     this.handleTextPreviewFocusChange = this.handleTextPreviewFocusChange.bind(this)
     this.handleTogglePdfView = this.handleTogglePdfView.bind(this)
-    this.handleOnClickComment = this.handleOnClickComment.bind(this)
+    this.handleUpdateSelectionRange = this.handleUpdateSelectionRange.bind(this)
     this.state = {
       doc: "",
       focus: "",
@@ -49,7 +49,7 @@ class TextWrapper extends React.Component {
       windows: {
         window1: {
           windowId: "window1",
-          open: false,
+          open: true,
           windowLoad: "citation",
           position: "sideWindow",
           openWidthHeight: "middle",
@@ -141,15 +141,14 @@ class TextWrapper extends React.Component {
 
     })
   }
+  
   /**
-   * 
+   * @description update state with selectionRangeObject
    * @param {object} selectionRange
    */
-  handleOnClickComment(selectionRange){
+  handleUpdateSelectionRange(selectionRange){
     const s = selectionRange
     this.setState({selectionRange: s})
-    this.setFocus(s.selectedElementTargetId + "@" + s.wordRange.start + "-" + s.wordRange.end)
-    this.openWindow("window1", "comments")
   }
   handleSwitchWindow(windowId, windowType){
     this.setState((prevState) => {
@@ -223,7 +222,6 @@ class TextWrapper extends React.Component {
     const range = id.split("@")[1] ? "@" + id.split("@")[1] : ""
     id = id.split("@")[0];
     const fullid = id.includes("http") ? id + this.state.mtFocus + range : "http://scta.info/resource/" + id + this.state.mtFocus + range;
-    //const fullid = id.includes("http") ? id : "http://scta.info/resource/" + id
     this.props.handleUpdateUrlResource(fullid)
   }
   setFocus2(newid){
@@ -351,7 +349,6 @@ class TextWrapper extends React.Component {
 
   componentDidMount(){
     this.mount = true
-
     //transcriptionid should be required Prop
     //conditional here to reinfurce that rule
     if (this.props.transcriptionid){
@@ -360,12 +357,13 @@ class TextWrapper extends React.Component {
       //info should be part of original query
       const mFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[1]
       const tFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[2]
+      const selectionRange = this.props.tokenRange ? {
+        wordRange: this.props.tokenRange,
+        selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1],
+      } : {}
       this.setState(
         {mtFocus: "/" + mFocus + "/" + tFocus, 
-        selectionRange: {
-          wordRange: this.props.tokenRange, 
-          selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1]
-        }
+        selectionRange: selectionRange
       })
 
       if (this.props.blockDivFocus){
@@ -404,16 +402,14 @@ class TextWrapper extends React.Component {
           const windows = prevState.windows
           windows["window1"].defaultManifestationSlug = ""
           windows["window2"].defaultManifestationSlug = ""
+          const selectionRange = this.props.tokenRange ? {
+            ...prevState.selectionRange, 
+            wordRange: this.props.tokenRange,
+            selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1],
+          } : {}
           return {
             mtFocus: "/" + mFocus + "/" + tFocus,
-            selectionRange: {
-              // NOTE: the destructuring of ...prevState ensures that extra highlighted info not coming from url 
-              // will be present, but this means it gets out of sync when new url info is passed own 
-              // and other info from text selection does not exist. It will get back in sync once a new selection and click occurs
-              ...prevState.selectionRange, 
-              wordRange: this.props.tokenRange,
-              selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1],
-            },
+            selectionRange: selectionRange,
             windows: windows
           }
         })
@@ -424,17 +420,19 @@ class TextWrapper extends React.Component {
         if (!this.props.blockDivFocus){
           this.setState(
             {
-              focus: ""
+              focus: "",
+              selectionRange: ""
           });
         }
         else {
           this.setState((prevState) => {
-            return({
-            selectionRange: {
-              ...prevState.selectionRange,
+            const selectionRange = this.props.tokenRange ? {
+              ...prevState.selectionRange, 
               wordRange: this.props.tokenRange,
-              selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1]
-              }
+              selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1],
+            } : {}
+            return({
+            selectionRange: selectionRange
             })  
           })
           this.retrieveFocusInfo(this.props.blockDivFocus,)
@@ -442,12 +440,13 @@ class TextWrapper extends React.Component {
       }
       if (this.props.tokenRange !== prevProps.tokenRange){
         this.setState((prevState)=>{
-          return({
-          selectionRange: {
-            ...prevState.selectionRange,
+          const selectionRange = this.props.tokenRange ? {
+            ...prevState.selectionRange, 
             wordRange: this.props.tokenRange,
             selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1],
-          }
+          } : {}
+          return({
+          selectionRange: selectionRange
         })
         })
       }
@@ -496,7 +495,6 @@ class TextWrapper extends React.Component {
               textPreviewEnd={this.state.textPreviewEnd}
               handleLineFocusChange={this.handleLineFocusChange}
               selectionRange={this.state.selectionRange}
-              handleOnClickComment={this.handleOnClickComment}
               />
             )
           }
@@ -544,7 +542,7 @@ class TextWrapper extends React.Component {
             // TODO: when scrollTo id type is consistent, remove id checker in didMount and didUpdate of Text component
             scrollTo={this.props.blockDivFocus ? this.props.blockDivFocus : this.props.itemid}
             handleTextPreviewFocusChange={this.handleTextPreviewFocusChange}
-            handleOnClickComment={this.handleOnClickComment}
+            handleUpdateSelectionRange={this.handleUpdateSelectionRange}
             selectionRange={this.state.selectionRange}
             />
           }

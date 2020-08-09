@@ -8,7 +8,7 @@ import ManifestationList from './ManifestationList'
 function CitationWrapper(props) {
   return (
     <Container className={props.hidden ? "CitationWrapper hidden" : "CitationWrapper showing"}>
-      <Citation tresourceid={props.tresourceid}/>
+      <Citation tresourceid={props.tresourceid} selectionRange={props.selectionRange}/>
       <CitationExplanation/>
       <hr/>
       <ManifestationList manifestations={props.manifestations} handleFocusChange={props.handleFocusChange}/>

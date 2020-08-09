@@ -9,10 +9,8 @@ function Comment2Item(props) {
   const {t} = useTranslation();
   const [editable, setEditable] = useState(false);
   
-  
-  const submitUpdate = (update, type, editedText) => {
-    console.log("editedText in comment2 Item", editedText)
-    props.updateComment(props.comment.id, update, editedText)
+  const submitUpdate = (update, motivation, editedText) => {
+    props.updateComment(props.comment.id, update, editedText, motivation)
     setEditable(false)
   }
   const addSCTALinksToValue = (value) => {
@@ -43,22 +41,19 @@ function Comment2Item(props) {
 
   let selectedFragment = undefined;
   let selectedFragmentRange = undefined;
-  let selectedCharacterRange;
   if (props.comment.target.selector){
     selectedFragment = props.comment.target.selector.filter((i) => (i.type === "TextQuoteSelector"))[0].exact;
     selectedFragmentRange = props.comment.target.selector.filter((i) => (i.type === "TextPositionSelector"))[0];
     //selectedCharacterRange = props.comment.target.selector.filter((i) => (i.type === "TextPositionSelector"))[0];
-    target = target + "@" + selectedFragmentRange.start + "-" + selectedFragmentRange.end
-
-  }
-  const selectionRange = {
-    text: selectedFragment, 
-    textEdited: props.comment.body.editedValue,
-    wordRange: selectedFragmentRange,
-    editable: props.comment.motivation === 'editing' ? true : false 
+    target = selectedFragmentRange.start ? target + "@" + selectedFragmentRange.start + "-" + selectedFragmentRange.end : target;
 
   }
   
+  const selectionRange = {
+    text: selectedFragment, 
+    textEdited: props.comment.body.editedValue,
+    wordRange: selectedFragmentRange
+  }
   
   return (
       <div>
@@ -67,14 +62,17 @@ function Comment2Item(props) {
         <p>{t("For")}: <Link to={"/text?resourceid=" + target}>{target}</Link></p>
         {
           editable ?
-          <Comment2Create submitComment={submitUpdate} comment={props.comment.body.value} selectionRange={selectionRange}/> :
+          <Comment2Create submitComment={submitUpdate} 
+          comment={props.comment.body.value} 
+          selectionRange={selectionRange} 
+          motivation={props.comment.motivation}/> :
           <p>
           {
           //<span dangerouslySetInnerHTML={{ __html: addSCTALinksToValue(props.comment.body.value)}}/>
           }
           {selectedFragment && <span>Comment on: <i>{selectedFragment}</i></span>}
           <br/>
-          {props.comment.body.editedValue && <span>Suggested Correction: {props.comment.body.editedValue}<br/></span>}
+          {props.comment.motivation === "editing" && <span>Suggested Correction: {props.comment.body.editedValue}<br/></span>}
           
           <span>{addSCTALinksToValue(props.comment.body.value)}</span>
           <br/>

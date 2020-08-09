@@ -139,16 +139,10 @@ function nodeFilterCheck(node){
   ){
     return NodeFilter.FILTER_REJECT
   }
-  // i don't this is necessary
-  // else if (!(/\S/.test(node))){ 
-  //   console.log("reject for being empty space", node)
-  //   return NodeFilter.FILTER_REJECT
-  // }
   else if (!node.nodeValue){
     return NodeFilter.FILTER_REJECT
   }
   else{
-    console.log("returning accept", node.nodeValue)
     return NodeFilter.FILTER_ACCEPT;
   }
   
@@ -171,39 +165,48 @@ export function toRange(root, start, end) {
   let endContainer;
   let endOffset;
   let endWordOffset;
+  let breaks = 0;
 
  // let textLength = 0;
   let wordLength = 0;
-
   let node;
 
-  // TODO: modify this so that start container and character start are found based on word token position
+  
   while ((node = nodeIter.nextNode()) && (!startContainer || !endContainer)) {
+    // keep running total of break words and then use this to adjust word count 
+    // in comparison to word count with broken words; then adjust;
+    // NOTE: requires xslt to add data-break='no' to line break span
+    if (node.previousSibling){
+      if (node.previousSibling.getAttribute){
+        if (node.previousSibling && node.previousSibling.getAttribute("data-break") === "no"){
+          breaks += 1
+        }
+      }
+    }
     const nodeText = node.nodeValue;
     let newWordLength = 0
     // use clean text to remove punctuation and unwanted white space, then filter to get rid of blank array items, then count
       newWordLength = cleanText(nodeText).split(" ").filter(n=>n).length;
-      
-    // if start word is greater than length of wordcount in preceding notes, but less than or equal 
+    // if start word is greater than length of wordcount in preceding nodes, but less than or equal 
     // to word count of of preceding plus this node, then selection starts somewhere within this node
     // select node, then find precise word and character position start
     if (
       !startContainer &&
-      start >= wordLength &&
-      start <= wordLength + newWordLength
+      start + breaks >= wordLength &&
+      start + breaks <= wordLength + newWordLength
     ) {
       startContainer = node;
-      startWordOffset = start - wordLength;
+      startWordOffset = start + breaks - wordLength;
       startOffset = node.nodeValue.split(cleanText(nodeText).split(" ").filter(n=>n)[startWordOffset - 1])[0].length
     }
     // similar to above only for final position
     if (
       !endContainer &&
-      end >= wordLength &&
-      end <= wordLength + newWordLength
+      end + breaks >= wordLength &&
+      end + breaks <= wordLength + newWordLength
     ) {
       endContainer = node;
-      endWordOffset = end - wordLength;
+      endWordOffset = end + breaks - wordLength;
       endOffset = node.nodeValue.split(cleanText(nodeText).split(" ").filter(n=>n)[endWordOffset])[0].length
     }
 

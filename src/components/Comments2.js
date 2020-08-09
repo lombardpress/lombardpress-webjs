@@ -12,6 +12,7 @@ import {FaClipboard, FaFilter} from 'react-icons/fa';
 import {useTranslation} from 'react-i18next'
 import {copyToClipboard} from './utils'
 
+
 /**
  * 
  * A comment wrapper for submitting comments to local storage
@@ -28,6 +29,7 @@ function Comments2(props) {
   const [showFilters, setShowFilters] = useState(false)
   
   
+  
 
   /**
    * submit the comment
@@ -35,8 +37,7 @@ function Comments2(props) {
    * @param {string} comment 
    * @public
    */
-  const submitComment = (comment, type, editedText, selectionRange) => {
-    console.log("editedText", editedText);
+  const submitComment = (comment, motivation, editedText, selectionRange) => {
     const randomid = uuidv4();
     const annoId = "http://inbox.scta.info/notifications/" + randomid
     const dateObject = new Date();
@@ -58,17 +59,23 @@ function Comments2(props) {
       "id": annoId,
       "type": "Annotation",
       "created": dateObject.toISOString(),
-      "motivation": type,
+      "motivation": motivation,
       "body": {
         "type": "TextualBody",
-        "value": comment,
-        "editedValue": editedText
+        "value": comment
       },
       "target": { // changing target to object rather than string will break retrieval
         source: props.resourceid, 
         selector: selector
       }
       
+    }
+    // conditionally add editedValue only if motivation is editing
+    if (motivation === "editing"){
+      annotation.body.editedValue = editedText;
+    }
+    else {
+      delete annotation.body["editedValue"];
     }
     lists[comments].push(annotation) 
     
@@ -86,11 +93,12 @@ function Comments2(props) {
         ...lists
       })
   }
-  const updateComment = (id, update, editedText) => {
+  const updateComment = (id, update, editedText, motivation) => {
     
     const targetComment = lists[comments].filter((c) => (c.id === id))[0]
     targetComment.body.value = update
     targetComment.body.editedValue = editedText
+    targetComment.motivation = motivation
     setLists({
       ...lists
     })
@@ -144,6 +152,7 @@ function Comments2(props) {
       <Comment2Create 
         submitComment={submitComment} 
         selectionRange={props.selectionRange}
+        textEdit={props.textEdit}
         />
       <Button size="sm" style={{margin: "2px"}} block onClick={() => setShowFilters(!showFilters)}><FaFilter/> Filters</Button>
       { showFilters &&

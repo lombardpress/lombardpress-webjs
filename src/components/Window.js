@@ -144,7 +144,13 @@ class Window extends React.Component {
               //always load search to keep search results present even when navigating two diffferent tabs
               // uncomment to prevent auto mounting this.state.windowLoad === "citation" &&
             }
-            {(this.state.windowLoad === "citation" || this.state.mountStatus.citation) && <CitationWrapper tresourceid={this.props.info.resourceid + this.props.mtFocus} manifestations={this.props.info.manifestations} handleFocusChange={this.props.handleFocusChange} hidden={this.state.windowLoad !== "citation"}/>}
+            {(this.state.windowLoad === "citation" || this.state.mountStatus.citation) &&
+            <CitationWrapper tresourceid={this.props.info.resourceid + this.props.mtFocus} 
+            manifestations={this.props.info.manifestations} 
+            handleFocusChange={this.props.handleFocusChange} 
+            hidden={this.state.windowLoad !== "citation"}
+            selectionRange={this.props.selectionRange}
+            />}
             {this.state.windowLoad === "surface2" &&  <Surface2 surfaceid={this.props.surfaceid} lineFocusId={this.props.lineFocusId} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} handleLineFocusChange={this.props.handleLineFocusChange} hidden={this.state.windowLoad !== "surface2"}/>}
             {(this.state.windowLoad === "surface3" || this.state.mountStatus.surface3) &&  <Surface3Wrapper
             manifestations={this.props.info.manifestations}
@@ -160,7 +166,8 @@ class Window extends React.Component {
               //(this.state.windowLoad === "comments" || this.state.mountStatus.comments) &&  <Comments resourceid={this.props.info.resourceid} inbox={this.props.info.inbox} hidden={this.state.windowLoad !== "comments"}/>
             }
             {
-              (this.state.windowLoad === "comments" || this.state.mountStatus.comments) &&  
+              ((this.state.windowLoad === "comments") 
+              || this.state.mountStatus.comments) &&  
               <Comments2 resourceid={this.props.info.resourceid} 
               hidden={this.state.windowLoad !== "comments"}
               selectionRange={this.props.selectionRange}
@@ -189,7 +196,9 @@ class Window extends React.Component {
             searchType="text"
             showSubmit={true}
             showAdvancedParameters={true}
-            showLabels={false}/>
+            showLabels={false}
+            searchTerm={this.props.selectionRange && '"' + this.props.selectionRange.text + '"'}
+            />
           {
             //<Surface surfaceid={this.props.surfaceid} topLevel={this.props.topLevel}/>
           }

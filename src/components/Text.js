@@ -5,30 +5,25 @@ import $ from 'jquery';
 import {convertXMLDoc, scrollToParagraph, loadHtmlResultDocFromExist, toRange, cleanText} from './utils'
 import ReactTooltip from 'react-tooltip';
 import Nav from 'react-bootstrap/Nav';
-import {FaComments, FaEdit, FaInfo, FaBook} from 'react-icons/fa';
+import {FaComments, FaInfo, FaBook, FaSearch} from 'react-icons/fa';
 
 class Text extends React.Component {
   constructor(props){
     super(props)
     this.retrieveText = this.retrieveText.bind(this)
-    this.handleOnClick = this.handleOnClick.bind(this)
-    this.handleHide = this.handleHide.bind(this)
-    this.handleOnClickComment = this.handleOnClickComment.bind(this)
+    this.handleShowToolTip = this.handleShowToolTip.bind(this)
+    this.handleHideToolTip = this.handleHideToolTip.bind(this)
+    this.handleOnToolTipClick = this.handleOnToolTipClick.bind(this)
     this.handleDictionaryChange = this.handleDictionaryChange.bind(this)
     
     this.state = {
       fetching: false,
-      selectionRange: "",
-      //TODO systematic rename of all instances of properties below
-      // selectionRect: {left: "", top: ""},
-      // selectedText: "",
-      // selectedElementTargetId: "",
-      // startToken: undefined,
-      // endToken: undefined, 
+      // state.selectionRange is puposevively different than props.selection Range
+      // it governs selection state of component without yet changing focus selection State of the entire app
+      selectionRange: "", 
+      selectionCoords: "",
       dictionary: ""
     }
-
-
   }
   retrieveText(doc, topLevel, scrollTo, selectionRange){
     const _this = this;
@@ -96,7 +91,6 @@ class Text extends React.Component {
    }
    if(selectionRange){
     const selectedElementTargetId = document.getElementById(scrollTo).id
-    console.log("selectedElementTargetId", selectedElementTargetId)
     _this.markWithElement(selectionRange)
   }
 
@@ -214,6 +208,7 @@ class Text extends React.Component {
 
 
       // function to ancestor paragraph of selection
+      // TODO: move to utilities
       function getContainingP(node) {
         while (node) {
             if (node.nodeType === 1 && node.tagName.toLowerCase() === "p") {
@@ -224,7 +219,7 @@ class Text extends React.Component {
       }
       function mark(e) {
         // hide tooltip
-        _this.handleHide();
+        _this.handleHideToolTip();
         //get selection object
         var sel = document.getSelection();
         // condition to test against invalid getRangeAt index
@@ -233,12 +228,8 @@ class Text extends React.Component {
           const pAncestor = getContainingP(rng.commonAncestorContainer)
           //if selection is in a text paragraph
           if (pAncestor && pAncestor.className.includes("plaoulparagraph")){
-            console.log("pAncestor", pAncestor);
-            console.log("pAncestor.id", pAncestor.id);
             const selectedElementTargetId = pAncestor.id;
-            console.log("selectedElementTargetId", selectedElementTargetId);
             var cnt = rng.cloneContents();
-            console.log("selected cnt", rng)
             $(cnt).find(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
             // if selection is greater than 0 
             if (cnt.textContent.length > 0){
@@ -263,14 +254,11 @@ class Text extends React.Component {
               const oRect = rng.getBoundingClientRect();
               const selectionRange = {
                 text: selectionText,
-                coords: oRect,
                 wordRange, 
-                characterRange,
-                objectRange: rng,
                 selectedElementTargetId, 
               }
 
-              _this.handleOnClick(selectionRange);
+              _this.handleShowToolTip(selectionRange, oRect);
             }
           }
         }
@@ -278,79 +266,70 @@ class Text extends React.Component {
       document.addEventListener('keyup', mark); // ctrl+keyup
       document.addEventListener('mouseup', mark);// ctrl+mouseup
     }
-    /**
-     * 
-     * @param {object} selectionRange 
-     
-     */
-    markWithElement(selectionRange){
-      const parent = $('mark').parent();
-      $('mark').contents().unwrap();
-      const container = document.getElementById(selectionRange.selectedElementTargetId);
-      //only attempt to set mark if container can be found
-      if (container && selectionRange.wordRange){
-        const range = toRange(container, selectionRange.wordRange.start, selectionRange.wordRange.end)
-        //const range = selectedRangeObject;
-
-        var cnt = range.extractContents();
-        var node = document.createElement('mark');
-        node.style.backgroundColor = "#BBCEBE";
-        node.appendChild(cnt);
-        range.insertNode(node);
-        //sel.removeAllRanges();
-
-        
-        // const mark = document.createElement('mark');
-        // $(mark).attr("style", "background-color: lightblue");
-        // range.surroundContents(mark);
-        }
+  /**
+  * 
+  * @param {object} selectionRange    
+  */
+  markWithElement(selectionRange){
+    // remove existing mark elements
+    this.markElementRemove()
+    //only attempt to set mark if container can be found
+    const container = document.getElementById(selectionRange.selectedElementTargetId);
+    // NOTE: this conditional is a backup test, 
+    //required properties should already be check in didUpdate method
+    if (container && selectionRange.wordRange){
+      const range = toRange(container, selectionRange.wordRange.start, selectionRange.wordRange.end)
+      const cnt = range.extractContents();
+      const node = document.createElement('mark');
+      node.style.backgroundColor = "#BBCEBE";
+      node.appendChild(cnt);
+      range.insertNode(node);
+      //get selection text from clone
+      const clone = $(node).clone();
+      $(clone).find(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
+      selectionRange.text = cleanText($(clone).text());
+      this.props.handleUpdateSelectionRange(selectionRange)
     }
-
-    /* @editable as boolean if true, then should be edited in comment */
-  handleOnClickComment(editable){
-    const selectionRange = this.state.selectionRange
-    const selectionRangeNew = {
-      ...selectionRange,
-      editable: editable
-    }
-    console.log("selectionRangeNew", selectionRangeNew)
-    // const selectedRange = {start: this.state.startToken, end: this.state.endToken}
-    // const selectedCharacterRange = {start: this.state.startCharacter, end: this.state.endCharacter}
-
-    this.markWithElement(selectionRangeNew);
-    this.props.handleOnClickComment(selectionRangeNew);
-    // this.props.setFocus(this.state.selectedElementTargetId)
-    // this.props.openWindow("window1", "comments")
   }
-  
+  /**
+   * @description finds any exiting mark element and removes it
+   */
+  markElementRemove(){
+    const parent = $('mark').parent();
+    $('mark').contents().unwrap();
+  }
+  handleOnToolTipClick(windowLoad){
+    const selectionRange = this.state.selectionRange
+    // send selectionRange up to App State
+    this.markWithElement(selectionRange);
+    const s = selectionRange;
+    this.props.setFocus(s.selectedElementTargetId + "@" + s.wordRange.start + "-" + s.wordRange.end)
+    // open display window
+    this.props.openWindow("window1", windowLoad)
+  }
+  handleHideToolTip(){
+    ReactTooltip.hide(this.fooRef)
+  }
+  /**
+   * @description show tool tip relative to selected text
+   * @param {{
+      text: string,
+      wordRange: object, 
+      selectedElementTargetId: string,
+    }} selectionRange - object contain needed if about selectedRange
+   * @param {object} - coords object resulting from from current selection
+   */
+  handleShowToolTip(selectionRange, selectionCoords){
+    this.setState({selectionRange: selectionRange, selectionCoords: selectionCoords})
+    ReactTooltip.show(this.fooRef)
+  }
+
   handleDictionaryChange(dictionary){
     this.setState({dictionary})
   }
-  
-  
-  handleHide(){
-    ReactTooltip.hide(this.fooRef)
-  }
- 
-  /**
-   * 
-   * @param {{
-      text: string,
-      coords: object,
-      wordRange: object, 
-      characterRange: object,
-      objectRange: Range,
-      selectedElementTargetId: string,
-    }} selectionRange - object contain needed if about selectedRange
-   */
-  handleOnClick(selectionRange){
-    this.setState({selectionRange: selectionRange})
-    console.log("test in click", selectionRange)
-    ReactTooltip.show(this.fooRef)
-  }
   componentDidMount(){
     // NOTE: ScrollToNew helps ensure that scrollTo id is SCTA ShortID, 
-    //since TextWrapper is (at present) sometimes sending the shortid and sometimes the full url id
+    // since TextWrapper is (at present) sometimes sending the shortid and sometimes the full url id
     // TODO: when TextWrapper is refactored and consistently sending the same ID type. this should be removed
     const scrollToNew = this.props.scrollTo && this.props.scrollTo.includes("/resource/") ? this.props.scrollTo.split("/resource/")[1] : this.props.scrollTo
     this.retrieveText(this.props.doc, this.props.topLevel, scrollToNew, this.props.selectionRange)
@@ -361,7 +340,7 @@ class Text extends React.Component {
     //check to see if doc has changed
     if (prevProps.doc !== this.props.doc){
       // NOTE: ScrollToNew helps ensure that scrollTo id is SCTA ShortID, 
-      //since TextWrapper is (at present) sometimes sending the shortid and sometimes the full url id
+      // since TextWrapper is (at present) sometimes sending the shortid and sometimes the full url id
       // TODO: when TextWrapper is refactored and consistently sending the same ID type. this should be removed
       const scrollToNew = this.props.scrollTo && this.props.scrollTo.includes("/resource/") ? this.props.scrollTo.split("/resource/")[1] : this.props.scrollTo
       this.retrieveText(this.props.doc, this.props.topLevel, scrollToNew, this.props.selectionRange)
@@ -370,14 +349,18 @@ class Text extends React.Component {
     else{
       if (this.props.scrollTo !== prevProps.scrollTo){
         // NOTE: ScrollToNew helps ensure that scrollTo id is SCTA ShortID, 
-        //since TextWrapper is (at present) sometimes sending the shortid and sometimes the full url id
+        // since TextWrapper is (at present) sometimes sending the shortid and sometimes the full url id
         // TODO: when TextWrapper is refactored and consistently sending the same ID type. this should be removed
         const scrollToNew = this.props.scrollTo && this.props.scrollTo.includes("/resource/") ? this.props.scrollTo.split("/resource/")[1] : this.props.scrollTo
         scrollToParagraph(scrollToNew, true)
-        if (this.props.selectionRange){
-          console.log("firing 1")
+        
+        // set mark if object is present with required properties
+        if (this.props.selectionRange.selectedElementTargetId && this.props.selectionRange.wordRange){
           this.markWithElement(this.props.selectionRange)
-        };
+        }
+        else{
+          this.markElementRemove()
+        }
       }
       // TODO/Note: this seems to be firing even when it seems like the prevProps.doc !== this.props.doc
       // perhaps props are not changing/updating at the same time. So the doc prop has already changed
@@ -387,7 +370,11 @@ class Text extends React.Component {
       // but it doesn't seem great that this is firing at undesired times.
       else if (this.props.selectionRange.wordRange !== prevProps.selectionRange.wordRange && this.props.selectionRange.selectedElementTargetId){
         this.markWithElement(this.props.selectionRange)
-      }  
+      }
+      //final check if selection range required properties are removed then remove existing mark
+      else if (!this.props.selectionRange.selectedElementTargetId && !this.props.selectionRange.wordRange) {
+        this.markElementRemove()
+      }
     }
     
   }
@@ -405,7 +392,7 @@ class Text extends React.Component {
           </div>
         }
         
-        {this.state.selectionRange && <p ref={ref => this.fooRef = ref} data-tip='tooltip' style={{position: "fixed", top: this.state.selectionRange.coords.top + 10, left: this.state.selectionRange.coords.left}}></p>}
+        {this.state.selectionRange && <p ref={ref => this.fooRef = ref} data-tip='tooltip' style={{position: "fixed", top: this.state.selectionCoords.top + 10, left: this.state.selectionCoords.left}}></p>}
         <ReactTooltip clickable={true} place="top">
           {/* TODO: should become its own comonent */}
           <div style={{overflow: "scroll", "maxWidth": "300px"}}>
@@ -419,9 +406,9 @@ class Text extends React.Component {
             }
             {this.state.selectionRange &&
             <Nav>
-              <Nav.Link title={this.state.selectionRange.wordRange.start + "-" +this.state.selectionRange.wordRange.end} onClick={() => {this.handleOnClickComment(false)}}><FaInfo/></Nav.Link>
-              <Nav.Link onClick={() => {this.handleOnClickComment(false)}}><FaComments/></Nav.Link>
-              <Nav.Link onClick={() => {this.handleOnClickComment(true)}}><FaEdit/></Nav.Link>
+              <Nav.Link title={this.state.selectionRange.wordRange.start + "-" +this.state.selectionRange.wordRange.end} onClick={() => {this.handleOnToolTipClick("citation")}}><FaInfo/></Nav.Link>
+              <Nav.Link onClick={() => {this.handleOnToolTipClick("comments")}}><FaComments/></Nav.Link>
+              <Nav.Link onClick={() => {this.handleOnToolTipClick("search")}}><FaSearch/></Nav.Link>
               {(this.state.selectionRange.text && this.state.selectionRange.text.split(" ").length === 1) && 
               <span>
               {(this.state.dictionary === 'whitakerswords') ? 

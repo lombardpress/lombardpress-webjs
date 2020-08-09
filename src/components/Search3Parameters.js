@@ -13,7 +13,7 @@ import Button from 'react-bootstrap/Button';
 
 const Search3Parameters = (props) => {
   const [searchType, setSearchType] = useState(props.searchType ? props.searchType : "text")
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState(props.searchTerm)
   const [searchAuthor, setSearchAuthor] = useState(props.searchAuthor)
   const [searchEid, setSearchEid] = useState(props.searchEid)
   const [searchEType, setSearchEType] = useState(props.searchEType)
@@ -32,7 +32,7 @@ const Search3Parameters = (props) => {
   }
 
   //begin effects to update hooks when props change
-  // perhaps this could be comined into a single custom hood
+  // perhaps this could be combined into a single custom hood
   useEffect(() => {
     setSearchType(props.searchType ? props.searchType : "text")
   }, [props.searchType])
@@ -45,6 +45,9 @@ const Search3Parameters = (props) => {
   useEffect(() => {
     setSearchWorkGroup(props.searchWorkGroup)
   }, [props.searchWorkGroup])
+  useEffect(() => {
+    setSearchTerm(props.searchTerm)
+  }, [props.searchTerm])
   //end effects to update hooks when props change
   //begin other effects
   useEffect(handleSetSearchParameters, [searchTerm, searchAuthor, searchEid, searchWorkGroup, searchType, searchEType])

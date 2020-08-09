@@ -85,6 +85,8 @@ class Citation extends React.Component{
   render(){
 
     const fullCitationString = this.state.authorTitle + ", " + this.state.etitle + "(" + this.state.mtitle + ") Data source: " + this.state.datasource + "."
+    const wordRange = this.props.selectionRange.wordRange && 
+      this.props.selectionRange.wordRange.start + "-" + this.props.selectionRange.wordRange.end;
     return (
       <Container>
       <h4>Citation</h4>
@@ -95,7 +97,9 @@ class Citation extends React.Component{
 
         <p className="mtitle">
           {this.state.editor && <span>Ed. {this.state.editorTitle}, </span>}
-          {this.state.mtitle} (<a href={this.state.murl} target="_blank" rel="noopener noreferrer">{this.state.murl}</a> 
+          {this.state.mtitle} {wordRange && <span>, words {wordRange} </span>}
+          (<a href={this.state.murl} target="_blank" rel="noopener noreferrer">{this.state.murl}</a> 
+          
           <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(this.state.murl)}}><FaClipboard /></span>)
         </p>
 

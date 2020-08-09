@@ -83,6 +83,7 @@ const Search3 = (props) => {
           showAdvancedParameters={props.showAdvancedParameters}
           showLabels={props.showLabels}
           searchType={props.searchType}
+          searchTerm={props.searchTerm}
           />
           <br/>
       {props.showSubmit && <Button onClick={handleRunSearch}>Submit</Button>}

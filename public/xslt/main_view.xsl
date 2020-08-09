@@ -403,6 +403,7 @@
     <!-- first check global setting to see if line breaks should be shown -->
     <xsl:if test="$show-line-breaks = 'true'">
       <xsl:variable name="pbNumber" select="./preceding::tei:pb[1]/@n"/>
+      <xsl:variable name="break" select="./@break"/>
       <xsl:variable name="lineNumber">
         <xsl:choose>
           <xsl:when test="./@n">
@@ -445,7 +446,7 @@
       <xsl:variable name="surfaceid">
         <xsl:value-of select="concat($default-msslug, '/', $folio, $side)"/>
       </xsl:variable>
-      <br/> <span class="lbp-line-number" data-ln="{$lineNumber}" data-pb="{$pbNumber}" data-codex="{$default-msslug}" data-surfaceid="{$surfaceid}"><xsl:value-of select="$lineNumber"/> </span>
+      <br/> <span class="lbp-line-number" data-break="{$break}" data-ln="{$lineNumber}" data-pb="{$pbNumber}" data-codex="{$default-msslug}" data-surfaceid="{$surfaceid}"><xsl:value-of select="$lineNumber"/> </span>
     </xsl:if>
   </xsl:template>
   <!-- END line number creation -->
