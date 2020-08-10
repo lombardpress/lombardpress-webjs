@@ -255,9 +255,9 @@
   </xsl:template>
 
   <!-- app template -->
-  <xsl:template match="tei:app">
+  <!-- <xsl:template match="tei:app">
     <xsl:apply-templates/>
-  </xsl:template>
+  </xsl:template> -->
 
   <!-- if graphic element is present display description -->
   <xsl:template match="tei:graphic">

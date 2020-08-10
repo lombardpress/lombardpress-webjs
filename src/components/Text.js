@@ -49,7 +49,8 @@ class Text extends React.Component {
       //frist try to request html converted by eXist
       const resultDocument = loadHtmlResultDocFromExist(xmlurl)
       resultDocument.then((data) => {
-        throw "test exception"
+        //uncomment "throw" to force use of local xslt
+        //throw "test exception" 
         this.setState({fetching: false})
         //appendage to file
         //and event binding
@@ -57,7 +58,7 @@ class Text extends React.Component {
         document.getElementById("text").innerHTML = "";
         document.getElementById("text").innerHTML = data.data;
         // add event binding
-        this.setEvents(_this, scrollTo)
+        this.setEvents(_this, scrollTo, selectionRange)
       })
       .catch((e) => {
         // if eXist conversion fails, do conversion in browser
@@ -89,6 +90,7 @@ class Text extends React.Component {
     if (scrollTo){
      scrollToParagraph(scrollTo, true)
    }
+   console.log("selection range", selectionRange)
    if(selectionRange){
     const selectedElementTargetId = document.getElementById(scrollTo).id
     _this.markWithElement(selectionRange)
