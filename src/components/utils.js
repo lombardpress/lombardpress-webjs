@@ -166,7 +166,6 @@ export function toRange(root, start, end) {
   let endOffset;
   let endWordOffset;
   let breaks = 0;
-  let cummulativeWordArray = []
 
  // let textLength = 0;
   let wordLength = 0;
@@ -184,11 +183,9 @@ export function toRange(root, start, end) {
         }
       }
     }
-    console.log("number of breaks", breaks)
     const nodeText = node.nodeValue;
     // get array of words in node
     const nodeTextArray = cleanText(nodeText).split(" ").filter(n=>n)
-    cummulativeWordArray = cummulativeWordArray.concat(nodeTextArray);
     // use clean text to remove punctuation and unwanted white space, then filter to get rid of blank array items, then count
     const newWordLength = nodeTextArray.length
     
@@ -203,7 +200,9 @@ export function toRange(root, start, end) {
       startContainer = node;
       startWordOffset = (start + breaks) - wordLength;
       
+      // get the occurrence instance within the node (needed in case there are two more instances of the same word in the node)
       const instanceNumber = getInstanceNumber(nodeTextArray, startWordOffset - 1)
+      // calculate character offset of word within containing node
       startOffset = getStringBeforeWord(node.nodeValue, nodeTextArray[startWordOffset - 1], instanceNumber, true)
     }
     // similar to above only for final position
@@ -214,10 +213,9 @@ export function toRange(root, start, end) {
     ) {
       endContainer = node;
       endWordOffset = (end + breaks) - wordLength;
-      console.log("cummulative array", cummulativeWordArray)
-      console.log("nodeTextArray", nodeTextArray)
-      console.log("endWordOffset", endWordOffset)
+      // get the occurrence instance within the node (needed in case there are two more instances of the same word in the node)
       const instanceNumber = getInstanceNumber(nodeTextArray, endWordOffset - 1)
+      // calculate character offset of word within containing node
       endOffset = getStringBeforeWord(node.nodeValue, nodeTextArray[endWordOffset - 1], instanceNumber, false)
     }
 
@@ -286,4 +284,47 @@ function getStringBeforeWord(text, word, instanceNumber, first) {
 
   }
 }
+/**
+ * @description creates a range
+ * @param {*} root 
+ * @param {*} startContainer 
+ * @param {number} startOffset start character relative to containing node
+ * @param {*} endContainer 
+ * @param {number} endOffset - end character length relative to containing node
+ */
 
+export function createRange(root, startContainer, startOffset, endContainer, endOffset){
+  console.log("endOffset", endOffset)
+  const range = root.ownerDocument.createRange();
+  range.setStart(startContainer, startOffset);
+  range.setEnd(endContainer, endOffset);
+  return range;
+}
+/**
+ * @description takes a range object and computes the Word Count after filtering elements nodes not to be counted
+ * @param {Range} rng - must take a Range object
+ */
+export function getRangeWordCount(rng){
+  const pAncestor = getContainingP(rng.commonAncestorContainer)
+  var cnt = rng.cloneContents();
+  $(cnt).find(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
+  const selectionText = cleanText(cnt.textContent)
+  console.log("selectionText", selectionText)
+  console.log("precedingSelectionTextArray", selectionText.split(" ").filter(n=>n))
+  const length = selectionText.split(" ").filter(n=>n).length
+  return length;
+}
+
+ 
+/**
+ * @description gets the containing paragraph node for a node somewhere within the paragraph node
+ * @param {node} node 
+ */
+export function getContainingP(node) {
+  while (node) {
+    if (node.nodeType === 1 && node.tagName.toLowerCase() === "p") {
+        return node;
+    }
+    node = node.parentElement;
+  }
+}

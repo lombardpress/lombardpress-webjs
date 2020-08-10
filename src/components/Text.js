@@ -2,7 +2,7 @@
 import React from 'react';
 import Spinner from './Spinner';
 import $ from 'jquery';
-import {convertXMLDoc, scrollToParagraph, loadHtmlResultDocFromExist, toRange, cleanText} from './utils'
+import {convertXMLDoc, scrollToParagraph, loadHtmlResultDocFromExist, toRange, cleanText, getContainingP, getRangeWordCount, createRange} from './utils'
 import ReactTooltip from 'react-tooltip';
 import Nav from 'react-bootstrap/Nav';
 import {FaComments, FaInfo, FaBook, FaSearch} from 'react-icons/fa';
@@ -207,16 +207,7 @@ class Text extends React.Component {
 
 
 
-      // function to ancestor paragraph of selection
-      // TODO: move to utilities
-      function getContainingP(node) {
-        while (node) {
-            if (node.nodeType === 1 && node.tagName.toLowerCase() === "p") {
-                return node;
-            }
-            node = node.parentElement;
-        }
-      }
+     
       function mark(e) {
         // hide tooltip
         _this.handleHideToolTip();
@@ -240,18 +231,28 @@ class Text extends React.Component {
               const pText = cleanText($(pClone).text())
               const selectionText = cleanText(cnt.textContent)
               
-              //TODO: this is failing to get accurate word for words already present earlier in the string
-              let precedingTextArray = pText.split(cleanText(selectionText))[0].split(" ").filter(n=>n); 
               
-              const precedingTextLength = precedingTextArray.length
+              // Get preceding word token length in order to identify start word position of selected range.
+                // NOTE: this replaces  
+                //let precedingTextArray = pText.split(cleanText(selectionText))[0].split(" ").filter(n=>n); 
+                // the above split approach was finding previous instances of the select word and giving false results.
+              let startOffset;
+              let startContainer;
+              if (rng.startOffset === 0){
+                startOffset = rng.startOffset;
+                startContainer = rng.startContainer;
+              }
+              else{
+                startOffset = rng.startOffset - 1;
+                startContainer = rng.startContainer;
+
+              }
+              const precedingRange = createRange(pAncestor, pAncestor, 0, startContainer, startOffset)
+              const precedingTextLength = getRangeWordCount(precedingRange);
               const startToken = precedingTextLength + 1
-              // filter to remove blank items in array
               const endToken = precedingTextLength + (selectionText.split(" ").filter(n=>n).length) 
               const wordRange = {start: startToken, end: endToken}
               
-              const startCharacter = $(pClone).text().split(cnt.textContent)[0].length + 1 ;
-              const endCharacter = $(pClone).text().split(cnt.textContent)[0].length + cnt.textContent.length + 1;
-              const characterRange = {start: startCharacter, end: endCharacter}
               const oRect = rng.getBoundingClientRect();
               const selectionRange = {
                 text: selectionText,

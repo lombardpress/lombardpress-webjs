@@ -197,7 +197,7 @@ class Window extends React.Component {
             showSubmit={true}
             showAdvancedParameters={true}
             showLabels={false}
-            searchTerm={this.props.selectionRange && '"' + this.props.selectionRange.text + '"'}
+            searchTerm={(this.props.selectionRange && this.props.selectionRange.text) ? '"' + this.props.selectionRange.text + '"' : ""}
             />
           {
             //<Surface surfaceid={this.props.surfaceid} topLevel={this.props.topLevel}/>
