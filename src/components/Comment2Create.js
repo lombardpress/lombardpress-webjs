@@ -9,7 +9,8 @@ function Comment2Create(props) {
   const {t} = useTranslation();
   const [comment, setComment] = useState(props.comment);
   const [motivation, setMotivation] = useState(props.motivation || "commenting") // "commenting" vs "editing"; default "commenting"
-  const [editedText, setEditedText] = useState(props.selectionRange.textEdited ? props.selectionRange.textEdited : props.selectionRange.text);
+  const editedTextDefault = props.selectionRange && props.selectionRange.text ? props.selectionRange.text : ""
+  const [editedText, setEditedText] = useState((props.selectionRange && props.selectionRange.textEdited) ? props.selectionRange.textEdited : editedTextDefault);
   
   const handleCommentUpdate = (e) => {
     e.preventDefault()
@@ -18,15 +19,16 @@ function Comment2Create(props) {
     setComment('')
   }
   useEffect(() => {
-    setEditedText(props.selectionRange.textEdited ? props.selectionRange.textEdited : props.selectionRange.text)
+    const editedTextDefault = props.selectionRange && props.selectionRange.text ? props.selectionRange.text : ""
+    setEditedText((props.selectionRange && props.selectionRange.textEdited) ? props.selectionRange.textEdited : editedTextDefault)
   }, [props.selectionRange])
   useEffect(() => {
     if (motivation === "commenting"){
-      setEditedText(props.selectionRange.text)
+      setEditedText(props.selectionRange ? props.selectionRange.text : "")
     }
   }, [motivation])
 
-  const wordRange = props.selectionRange.wordRange ? props.selectionRange.wordRange.start + "-" + props.selectionRange.wordRange.end : ""
+  const wordRange = (props.selectionRange && props.selectionRange.wordRange) ? props.selectionRange.wordRange.start + "-" + props.selectionRange.wordRange.end : ""
   return (
     <Form onSubmit={handleCommentUpdate}>
       {motivation === "editing" && 
@@ -41,7 +43,7 @@ function Comment2Create(props) {
       </div>
       }
         <div>
-        {props.selectionRange.text &&
+        {(props.selectionRange && props.selectionRange.text) &&
         <div>
         {motivation === "editing" ? 
         <span>Leave comment on edit</span> 

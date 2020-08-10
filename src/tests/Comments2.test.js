@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import {shallow} from 'enzyme'
 import toJson from 'enzyme-to-json';
 
+
+
 import Comments2 from '../components/Comments2';
 
 it('renders without crashing', () => {
