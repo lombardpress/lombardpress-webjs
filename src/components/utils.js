@@ -242,7 +242,11 @@ export function toRange(root, start, end) {
 // function to remove spaces from selected html text
 export function cleanText(selectedText){
   selectedText = selectedText.replace(/^[ ]+|[ ]+$/g,''); // remove leading and trailing white space
-  selectedText = selectedText.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()"]/g,"") //remove all punctuation
+    // remove all punctuation with escape slashes; escape slashes don't seem needed as the line below with slashes seems to work.
+    // this line with extra slashes produces lint errors
+    // selectedText = selectedText.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()"]/g,"") //remove all punctuation
+  selectedText = selectedText.replace(/[.,/#!$%^&*;:{}=\-_`~()"]/g,"") //remove all punctuation
+  
   selectedText = selectedText.replace(/\s+/gi, ' ' ) // condences 1 or more space to single space
   return selectedText
 }
@@ -305,7 +309,6 @@ export function createRange(root, startContainer, startOffset, endContainer, end
  * @param {Range} rng - must take a Range object
  */
 export function getRangeWordCount(rng){
-  const pAncestor = getContainingP(rng.commonAncestorContainer)
   var cnt = rng.cloneContents();
   $(cnt).find(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
   const selectionText = cleanText(cnt.textContent)

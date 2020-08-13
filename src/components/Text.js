@@ -90,9 +90,7 @@ class Text extends React.Component {
     if (scrollTo){
      scrollToParagraph(scrollTo, true)
    }
-   console.log("selection range", selectionRange)
    if(selectionRange){
-    const selectedElementTargetId = document.getElementById(scrollTo).id
     _this.markWithElement(selectionRange)
   }
 
@@ -230,7 +228,7 @@ class Text extends React.Component {
               const pClone = $(pAncestor).clone()
               pClone.find(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
               
-              const pText = cleanText($(pClone).text())
+              
               const selectionText = cleanText(cnt.textContent)
               
               
@@ -299,7 +297,6 @@ class Text extends React.Component {
    * @description finds any exiting mark element and removes it
    */
   markElementRemove(){
-    const parent = $('mark').parent();
     $('mark').contents().unwrap();
   }
   handleOnToolTipClick(windowLoad){

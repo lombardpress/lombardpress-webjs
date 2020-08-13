@@ -26,6 +26,7 @@ function Comment2Create(props) {
     if (motivation === "commenting"){
       setEditedText(props.selectionRange ? props.selectionRange.text : "")
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [motivation])
 
   const wordRange = (props.selectionRange && props.selectionRange.wordRange) ? props.selectionRange.wordRange.start + "-" + props.selectionRange.wordRange.end : ""
