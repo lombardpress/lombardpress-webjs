@@ -55,10 +55,12 @@ class TextPreviewWrapper extends React.Component {
     const link = (this.props.textPreviewStart && this.props.textPreviewEnd) 
     ? this.state.tresourceid + "@" + this.props.textPreviewStart + "-" + this.props.textPreviewEnd
     : this.state.tresourceid
+    const referringStart = this.props.referringSelectionRange.wordRange && this.props.referringSelectionRange.wordRange.start
+    const referringEnd = this.props.referringSelectionRange.wordRange && this.props.referringSelectionRange.wordRange.end
     return (
       <Container className={this.props.hidden ? "hidden" : "showing"}>
       {/* <p>Go to: <span className="lbp-span-link" onClick={() => this.props.handleFocusChange(this.state.tresourceid)}>{this.state.tresourceid}</span></p> */}
-      <p>Go to: <Link to={"/text?resourceid=" + link}>{link}</Link></p>
+      <p>Go to: <Link onClick={() => {this.props.handleTextPreviewFocusChange(this.props.referringResource, referringStart, referringEnd)}} to={"/text?resourceid=" + link}>{link}</Link></p>
       {
        this.state.tresourceid && 
        <div>

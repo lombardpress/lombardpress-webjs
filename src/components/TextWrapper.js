@@ -493,6 +493,7 @@ class TextWrapper extends React.Component {
               textPreviewResourceId={this.state.textPreviewResourceId}
               textPreviewStart={this.state.textPreviewStart}
               textPreviewEnd={this.state.textPreviewEnd}
+              handleTextPreviewFocusChange={this.handleTextPreviewFocusChange}
               handleLineFocusChange={this.handleLineFocusChange}
               selectionRange={this.state.selectionRange}
               />

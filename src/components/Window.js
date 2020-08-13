@@ -209,7 +209,11 @@ class Window extends React.Component {
               textPreviewStart={this.props.textPreviewStart} 
               textPreviewEnd={this.props.textPreviewEnd} 
               handleFocusChange={this.props.handleFocusChange} 
-              hidden={this.state.windowLoad !== "textPreview"}/>
+              hidden={this.state.windowLoad !== "textPreview"}
+              handleTextPreviewFocusChange={this.props.handleTextPreviewFocusChange}
+              referringResource={this.props.info.ctranscription}
+              referringSelectionRange={this.props.selectionRange}
+              />
           }
         </div>
       )
