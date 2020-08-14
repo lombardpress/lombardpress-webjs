@@ -14,8 +14,6 @@ class Text extends React.Component {
     this.handleShowToolTip = this.handleShowToolTip.bind(this)
     this.handleHideToolTip = this.handleHideToolTip.bind(this)
     this.handleOnToolTipClick = this.handleOnToolTipClick.bind(this)
-    this.handleDictionaryChange = this.handleDictionaryChange.bind(this)
-    
     this.state = {
       fetching: false,
       // state.selectionRange is puposevively different than props.selection Range
@@ -299,14 +297,14 @@ class Text extends React.Component {
   markElementRemove(){
     $('mark').contents().unwrap();
   }
-  handleOnToolTipClick(windowLoad){
+  handleOnToolTipClick(windowLoad, window = "window1"){
     const selectionRange = this.state.selectionRange
     // send selectionRange up to App State
     this.markWithElement(selectionRange);
     const s = selectionRange;
     this.props.setFocus(s.selectedElementTargetId + "@" + s.wordRange.start + "-" + s.wordRange.end)
     // open display window
-    this.props.openWindow("window1", windowLoad)
+    this.props.openWindow(window, windowLoad)
   }
   handleHideToolTip(){
     ReactTooltip.hide(this.fooRef)
@@ -323,10 +321,6 @@ class Text extends React.Component {
   handleShowToolTip(selectionRange, selectionCoords){
     this.setState({selectionRange: selectionRange, selectionCoords: selectionCoords})
     ReactTooltip.show(this.fooRef)
-  }
-
-  handleDictionaryChange(dictionary){
-    this.setState({dictionary})
   }
   componentDidMount(){
     // NOTE: ScrollToNew helps ensure that scrollTo id is SCTA ShortID, 
@@ -395,32 +389,16 @@ class Text extends React.Component {
         
         {this.state.selectionRange && <p ref={ref => this.fooRef = ref} data-tip='tooltip' style={{position: "fixed", top: this.state.selectionCoords.top + 10, left: this.state.selectionCoords.left}}></p>}
         <ReactTooltip clickable={true} place="top">
-          {/* TODO: should become its own comonent */}
-          <div style={{overflow: "scroll", "maxWidth": "300px"}}>
-            {(this.state.selectionRange.text && this.state.selectionRange.text.split(" ").length === 1) && 
-            <div>
-            <p>
-              {this.state.dictionary === "whitakerswords" ? <iframe title="whitakerswords" src={"http://archives.nd.edu/cgi-bin/wordz.pl?keyword=" + this.state.selectedText }></iframe>
-              : <iframe title="logeion" src={"https://logeion.uchicago.edu/" + this.state.selectedText }></iframe>}
-            </p>
-            </div>
-            }
             {this.state.selectionRange &&
             <Nav>
               <Nav.Link title={this.state.selectionRange.wordRange.start + "-" +this.state.selectionRange.wordRange.end} onClick={() => {this.handleOnToolTipClick("citation")}}><FaInfo/></Nav.Link>
               <Nav.Link onClick={() => {this.handleOnToolTipClick("comments")}}><FaComments/></Nav.Link>
               <Nav.Link onClick={() => {this.handleOnToolTipClick("search")}}><FaSearch/></Nav.Link>
               {(this.state.selectionRange.text && this.state.selectionRange.text.split(" ").length === 1) && 
-              <span>
-              {(this.state.dictionary === 'whitakerswords') ? 
-              <Nav.Link title="select logeion" onClick={()=>this.handleDictionaryChange("logeion")}><FaBook/> L</Nav.Link>
-              : 
-              <Nav.Link title="select whitaker's words" onClick={()=>this.handleDictionaryChange("whitakerswords")}><FaBook/> W</Nav.Link>}
-              </span>
+              <Nav.Link title="look up word" onClick={()=>this.handleOnToolTipClick("dictionary", "window2")}><FaBook/></Nav.Link>
               }
             </Nav>
             }
-          </div>
         </ReactTooltip>
         <div id="text" style={{display: displayText}}></div>
       </div>

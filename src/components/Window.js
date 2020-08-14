@@ -10,6 +10,7 @@ import Comments2 from "./Comments2"
 import CitationWrapper from "./CitationWrapper"
 import TextOutlineWrapper from "./TextOutlineWrapper"
 import TextPreviewWrapper from "./TextPreviewWrapper"
+import Dictionary from "./Dictionary"
 
 
 
@@ -178,7 +179,7 @@ class Window extends React.Component {
           {
             //TODO: use of info, topLevel, itemFocus, focusResearceid, resourceid, needs to be better organized and clarified
           }
-          {(this.state.windowLoad === "xml" || this.state.mountStatus.xmls) &&  <XmlView tresourceid={this.props.info ? this.props.info.resourceid + this.props.mtFocus : this.props.itemFocus.expression + this.props.mtFocus} hidden={this.state.windowLoad !== "xml"}/>}
+          {(this.state.windowLoad === "xml" || this.state.mountStatus.xml) &&  <XmlView tresourceid={this.props.info ? this.props.info.resourceid + this.props.mtFocus : this.props.itemFocus.expression + this.props.mtFocus} hidden={this.state.windowLoad !== "xml"}/>}
           {
             //always load outline since it reduces number of calls, as most info is the same for all paragraphs
           }
@@ -215,6 +216,11 @@ class Window extends React.Component {
               referringSelectionRange={this.props.selectionRange}
               />
           }
+          {
+            (this.state.windowLoad === "dictionary" && this.props.selectionRange.text) &&
+            <Dictionary text={this.props.selectionRange.text} hidden={this.state.windowLoad !== "dictionary"}/>}
+
+          }
         </div>
       )
 
@@ -237,7 +243,8 @@ class Window extends React.Component {
       altWindowState={this.props.altWindowState}
       focusSet={!!this.props.info}
       />
-      {(this.state.windowLoad !== "surface2") && <NextPrevBar info={this.props.info} handleBlockFocusChange={this.props.handleBlockFocusChange}/>}
+      {(this.state.windowLoad !== "surface2" && this.state.windowLoad !== "dictionary" ) 
+      && <NextPrevBar info={this.props.info} handleBlockFocusChange={this.props.handleBlockFocusChange}/>}
 
       {displayChild()}
 
