@@ -169,7 +169,9 @@ class Window extends React.Component {
             {
               ((this.state.windowLoad === "comments") 
               || this.state.mountStatus.comments) &&  
-              <Comments2 resourceid={this.props.info.resourceid} 
+              <Comments2 
+              resourceid={this.props.info.resourceid + this.props.mtFocus}
+              expressionid={this.props.info.resourceid} 
               hidden={this.state.windowLoad !== "comments"}
               selectionRange={this.props.selectionRange}
               />
@@ -220,7 +222,7 @@ class Window extends React.Component {
             (this.state.windowLoad === "dictionary" && this.props.selectionRange.text) &&
             <Dictionary text={this.props.selectionRange.text} hidden={this.state.windowLoad !== "dictionary"}/>}
 
-          }
+          
         </div>
       )
 

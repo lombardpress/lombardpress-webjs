@@ -188,7 +188,7 @@ function Comments2(props) {
         {lists[comments].length > 0 && lists[comments].slice(0).reverse().map((c,i) => {
           const target = typeof(c.target) === 'string' ? c.target : c.target.source;
           if (showFocusComments){
-            if (target === props.resourceid && (c.body.value && c.body.value.includes(commentFilter))){
+            if (target && target.includes(props.expressionid) && (c.body.value && c.body.value.includes(commentFilter))){
               return (
                 <div key={i}>
                   <Comment2Item comment={c} focused={true} removeComment={removeComment} updateComment={updateComment}
@@ -204,7 +204,7 @@ function Comments2(props) {
             }
           }
           else{
-            if (target === props.resourceid && (c.body.value && c.body.value.includes(commentFilter))){
+            if (target && target.includes(props.expressionid) && (c.body.value && c.body.value.includes(commentFilter))){
               return (
                 <div key={i} style={{borderLeft: "1px solid black"}}>
                   <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment}/>
