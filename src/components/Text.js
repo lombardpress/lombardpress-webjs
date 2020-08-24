@@ -13,6 +13,8 @@ class Text extends React.Component {
     this.retrieveText = this.retrieveText.bind(this)
     this.handleShowToolTip = this.handleShowToolTip.bind(this)
     this.handleHideToolTip = this.handleHideToolTip.bind(this)
+    this.handleHideFootnoteToolTip = this.handleHideFootnoteToolTip.bind(this)
+    this.handleShowFootnoteToolTip = this.handleShowFootnoteToolTip.bind(this)
     this.handleOnToolTipClick = this.handleOnToolTipClick.bind(this)
     this.state = {
       fetching: false,
@@ -120,39 +122,15 @@ class Text extends React.Component {
         const link = $(this).parent().children('.appnote, .footnote')
         const target = $(link).attr('href')
         const text = $(target).html()
+        const footnoteOffset = this.getBoundingClientRect()
+        _this.setState({footnoteText: text, footnoteOffset: footnoteOffset})
+        _this.handleShowFootnoteToolTip()
         const targetText = $(this).parent().children(".note-display").attr('data-target-id')
-        
-        //capture note display element
-        const noteDisplay = $(this).parent().children(".note-display")
-
-        // TODO: the below highlighting procedures seems to work
-        // but it could be improved in coordination with the improvement of highlighting and fading paragraph/div 
-        // see utils.js for the companion highlighting toggle functions
-
-        /// NOTE: below is an explanation of the conditional
-        // toggles highlight for select text segments
-        // conditional checks if note display is already showing
-        // if not showing, it removes hidden class and highlights target element (quote or ref)
-        if (targetText && noteDisplay.attr("class").includes("hidden")){
-          noteDisplay.removeClass("hidden")
-          $("#" + targetText).addClass("highlight")
-          $("span[data-corresp=" + targetText + "]").addClass("highlight")
-          $("#" + targetText).removeClass("highlightNone")
-          $("span[data-corresp=" + targetText + "]").removeClass("highlightNone")
-        }
-        // if note display is showing, it removes the display and unhighlights the target elements (quote or ref)
-        else{
-          noteDisplay.addClass("hidden")
-          $("#" + targetText).removeClass("highlight")
-          $("span[data-corresp=" + targetText + "]").removeClass("highlight")
-          $("#" + targetText).removeClass("highlightNone")
-          $("span[data-corresp=" + targetText + "]").removeClass("highlightNone")
-        }
-
-        //adds footnote text to noteDisplay Div and toggles hidden class
-        
-        
-        noteDisplay.html(text)
+        $(".highlight").removeClass("highlight")
+        $("#" + targetText).addClass("highlight")
+        $("span[data-corresp=" + targetText + "]").addClass("highlight")
+          
+      
       });
 
       $(document).on("click", '.js-show-info', function(e) {
@@ -161,6 +139,7 @@ class Text extends React.Component {
          _this.props.setFocus(id)
          _this.props.openWindow("window1")
        });
+       // this seems like a repetition of line 88
        if (scrollTo){
         scrollToParagraph(scrollTo, true)
       }
@@ -170,10 +149,10 @@ class Text extends React.Component {
         e.preventDefault();
         const surfaceid = $(this).attr('data-surfaceid');
         const ln = $(this).attr('data-ln');
+        
 
-
-        const paragraphid = $(this).closest('.plaoulparagraph').attr("id");
-        _this.props.setFocus(paragraphid)
+        //const paragraphid = $(this).closest('.plaoulparagraph').attr("id");
+        //_this.props.setFocus(paragraphid)
 
         _this.props.handleSurfaceFocusChange("http://scta.info/resource/" + surfaceid)
         _this.props.handleLineFocusChange("http://scta.info/resource/" + surfaceid + "/" + ln)
@@ -216,6 +195,7 @@ class Text extends React.Component {
           var rng = sel && sel.getRangeAt(0);
           const pAncestor = getContainingP(rng.commonAncestorContainer)
           //if selection is in a text paragraph
+          //TODO: improve this so that selections within .appnote or .footnote get excluded
           if (pAncestor && pAncestor.className.includes("plaoulparagraph")){
             const selectedElementTargetId = pAncestor.id;
             var cnt = rng.cloneContents();
@@ -309,6 +289,9 @@ class Text extends React.Component {
   handleHideToolTip(){
     ReactTooltip.hide(this.fooRef)
   }
+  handleHideFootnoteToolTip(){
+    ReactTooltip.hide(this.foonoteRef)
+  }
   /**
    * @description show tool tip relative to selected text
    * @param {{
@@ -321,6 +304,9 @@ class Text extends React.Component {
   handleShowToolTip(selectionRange, selectionCoords){
     this.setState({selectionRange: selectionRange, selectionCoords: selectionCoords})
     ReactTooltip.show(this.fooRef)
+  }
+  handleShowFootnoteToolTip(){
+    ReactTooltip.show(this.foonoteRef)
   }
   componentDidMount(){
     // NOTE: ScrollToNew helps ensure that scrollTo id is SCTA ShortID, 
@@ -387,8 +373,9 @@ class Text extends React.Component {
           </div>
         }
         
-        {this.state.selectionRange && <p ref={ref => this.fooRef = ref} data-tip='tooltip' style={{position: "fixed", top: this.state.selectionCoords.top + 10, left: this.state.selectionCoords.left}}></p>}
-        <ReactTooltip clickable={true} place="top">
+        {this.state.selectionRange && <p ref={ref => this.fooRef = ref} data-tip='tooltip' data-for="selection" style={{position: "fixed", top: this.state.selectionCoords.top + 10, left: this.state.selectionCoords.left}}></p>}
+        {this.state.footnoteText && <p ref={ref => this.foonoteRef = ref} data-tip='tooltip' data-for="footnote" style={{position: "fixed", top: this.state.footnoteOffset.top + 10, left: this.state.footnoteOffset.left}}></p>}
+        <ReactTooltip clickable={true} place="top" id="selection">
             {this.state.selectionRange &&
             <Nav>
               <Nav.Link title={this.state.selectionRange.wordRange.start + "-" +this.state.selectionRange.wordRange.end} onClick={() => {this.handleOnToolTipClick("citation")}}><FaInfo/></Nav.Link>
@@ -399,6 +386,10 @@ class Text extends React.Component {
               }
             </Nav>
             }
+        </ReactTooltip>
+        <ReactTooltip id="footnote" clickable={true} place="top">
+        
+          <p dangerouslySetInnerHTML={{ __html: this.state.footnoteText}}></p>
         </ReactTooltip>
         <div id="text" style={{display: displayText}}></div>
       </div>
