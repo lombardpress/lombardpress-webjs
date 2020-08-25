@@ -7,12 +7,12 @@ function Dictionary(props) {
 
   return (
     <div className={props.hidden ? "hidden dict-container" : "showing dict-container"} >
-      <Nav>
+      {/* commented out because whitaker's words does not run over https and therefore is not accessible as iframe on https sites<Nav>
         {(dictionary === 'whitakerswords') ? 
         <Nav.Link title="select logeion" onClick={()=>setDictionary("logeion")}><FaBook/> Logeion</Nav.Link>
         : 
         <Nav.Link title="select whitaker's words" onClick={()=>setDictionary("whitakerswords")}><FaBook/> Whitaker's Words</Nav.Link>}
-      </Nav>
+      </Nav> */}
       {(props.text && props.text.split(" ").length === 1) && 
       <div className="dict-container2">
         {
