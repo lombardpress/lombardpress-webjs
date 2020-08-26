@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
-import Nav from 'react-bootstrap/Nav';
-import {FaBook} from 'react-icons/fa';
+//import Nav from 'react-bootstrap/Nav';
+//import {FaBook} from 'react-icons/fa';
 
 function Dictionary(props) {
-  const [dictionary, setDictionary] = useState("logeion")
+  //const [dictionary, setDictionary] = useState("logeion")
+  const [dictionary] = useState("logeion")
 
   return (
     <div className={props.hidden ? "hidden dict-container" : "showing dict-container"} >

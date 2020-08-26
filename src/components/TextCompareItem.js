@@ -5,7 +5,9 @@ import PropTypes from 'prop-types';
 
 import Spinner from './Spinner';
 import {Link} from 'react-router-dom';
-import { FaEyeSlash, FaEye, FaStar, FaToggleOn, FaToggleOff} from 'react-icons/fa';
+import { FaEyeSlash, FaEye, FaStar, FaToggleOn, FaToggleOff, FaRegImage} from 'react-icons/fa';
+
+import Surface3Wrapper from './Surface3Wrapper'
 
 class TextCompareItem extends React.Component {
   constructor(props){
@@ -110,6 +112,33 @@ class TextCompareItem extends React.Component {
 
 
   render(){
+    
+
+    const displayImage = () => {
+      const newManifestations = [{
+        manifestation: this.props.manifestation,
+        manifestationTitle: this.props.manifestationTitle,
+        transcription: ""
+      }]
+      return (
+            <div>
+              <span onClick={() => {this.setState((prevState)=> {return({showImage: !prevState.showImage})})}}><FaRegImage/></span> 
+              {this.state.showImage &&
+                <div>
+                  <Surface3Wrapper
+                  manifestations={newManifestations}
+                  focusedManifestation={this.props.manifestation}
+                  width={this.props.surfaceWidth}
+                  hideSelectionList={true}
+                  isDependentSurface3={true}
+                />
+                </div>
+                }
+            </div>
+      )
+
+    }
+
     const displayComparison = () => {
       const isBase = this.props.base === this.state.rawText
       if (this.state.showCompare && this.props.base && this.state.compareText){
@@ -124,13 +153,14 @@ class TextCompareItem extends React.Component {
             <span style={{fontSize: "14px", paddingLeft: "4px"}} title="levenshtein distance">{levenNum}</span>
             <div className={this.state.show ? "unhidden" : "hidden"}>
               <div ref="text" dangerouslySetInnerHTML={{ __html: this.state.compareText}}></div>
-
+              {displayImage()}
 
             </div>
           </div>
         )
       }
       else if (this.state.rawText){
+        
         return (
           <div>
             <span><Link to={"/text?resourceid=" + this.props.compareTranscription}>{this.props.manifestationTitle}</Link></span> |
@@ -140,6 +170,7 @@ class TextCompareItem extends React.Component {
 
             <div className={this.state.show ? "unhidden" : "hidden"}>
               <div ref="text" dangerouslySetInnerHTML={{ __html: this.state.rawText}}></div>
+              {displayImage()}
             </div>
           </div>
         )

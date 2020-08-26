@@ -57,6 +57,13 @@ exports[`set states and displays compare text when showCompare is changed to tru
         }
       }
     />
+    <div>
+      <span
+        onClick={[Function]}
+      >
+        <FaRegImage />
+      </span>
+    </div>
   </div>
 </div>
 `;
@@ -102,6 +109,13 @@ exports[`set states and displays raw text when showCompare is changed to False 1
         }
       }
     />
+    <div>
+      <span
+        onClick={[Function]}
+      >
+        <FaRegImage />
+      </span>
+    </div>
   </div>
 </div>
 `;

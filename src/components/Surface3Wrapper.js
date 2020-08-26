@@ -146,13 +146,15 @@ class Surface3Wrapper extends React.Component {
 
     return (
       <div className={this.props.hidden ? "hidden" : "showing"}>
+        {!this.props.hideSelectionList &&
         <div className="manifestationsList">
           <Form.Control size="sm" as="select" onChange={this.handleChangeManifestation} value={this.state.focusedManifestation}>
             {displayManifestationsList()}
           </Form.Control>
         </div>
+        }
         <div className="surfaceWrapper">
-          {this.state.focusedManifestation &&
+          {!this.props.hideDisplayChoice && this.state.focusedManifestation &&
             <div className="image-display-choice">
               <p><span title="Text Line View" onClick={() => {this.handleToggleTextLinesView("lines")}}><FaList/></span></p>
               <p><span title="Paragraph View" onClick={() => {this.handleToggleTextLinesView("paragraph")}}><FaParagraph/></span></p>

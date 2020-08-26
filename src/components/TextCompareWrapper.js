@@ -149,6 +149,7 @@ class TextCompareWrapper extends React.Component {
               handleChangeBase={this.handleChangeBase}
               baseText={this.state.baseText}
               show={exObject[key].show}
+              surfaceWidth={this.props.surfaceWidth}
               />}
           </div>
         )

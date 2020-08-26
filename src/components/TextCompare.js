@@ -103,9 +103,11 @@ class TextCompare extends React.Component {
             base={this.props.baseText}
             compareTranscription={m.transcription}
             manifestationTitle={m.manifestationTitle}
+            manifestation={m.manifestation}
             handleChangeBase={this.props.handleChangeBase}
             show={this.state.show}
             showCompare={this.props.isMainText ? true : false}
+            surfaceWidth={this.props.surfaceWidth}
             />
           )
         })
