@@ -19,16 +19,21 @@ const Search3Parameters = (props) => {
   const [searchEType, setSearchEType] = useState(props.searchEType)
   const [searchWorkGroup, setSearchWorkGroup] = useState(props.searchWorkGroup)
 
+  const [resultsFilter, setResultsFilter] = useState("")
+
   const [searchExpressionTypesList, searchExpressionTypesListDispatch] = useReducer(searchExpressionTypesListReducer, [])
   const [searchExpressionsList, searchExpressionsListDispatch] = useReducer(searchExpressionsListReducer, [])
   const [searchAuthorsList, searchAuthorsListDispatch] = useReducer(searchAuthorsListReducer, [])
   const [searchWorkGroupsList, searchWorkGroupsListDispatch] = useReducer(searchWorkGroupsListReducer, [])
-  const searchParameters = {searchTerm, searchAuthor, searchEid, searchWorkGroup, searchType, searchEType}
+  const searchParameters = {searchTerm, searchAuthor, searchEid, searchWorkGroup, searchType, searchEType, resultsFilter}
 
   const [displayAllParameters, setDisplayAllParameters] = useState(false)
 
   const handleSetSearchParameters = () => {
     props.handleSetSearchParameters(searchParameters)
+  }
+  const handleSetResultsFilter = (content) => {
+    setResultsFilter(content)
   }
 
   //begin effects to update hooks when props change
@@ -50,7 +55,7 @@ const Search3Parameters = (props) => {
   }, [props.searchTerm])
   //end effects to update hooks when props change
   //begin other effects
-  useEffect(handleSetSearchParameters, [searchTerm, searchAuthor, searchEid, searchWorkGroup, searchType, searchEType])
+  useEffect(handleSetSearchParameters, [searchTerm, searchAuthor, searchEid, searchWorkGroup, searchType, searchEType, resultsFilter])
   useEffect(() => {
     searchExpressionsListDispatch(searchExpressionsListActions.fetchExpressionsList(searchParameters, searchExpressionsListDispatch))
     searchAuthorsListDispatch(searchAuthorsListActions.fetchAuthorsList(searchParameters, searchAuthorsListDispatch))
@@ -75,6 +80,10 @@ const Search3Parameters = (props) => {
       <Form.Group>
         {props.showLabels && <Form.Label>Search Term</Form.Label>}
         <Form.Control as="input" type="text" placeholder="search term" onChange={(e) => setSearchTerm(e.target.value)} value={searchParameters.searchTerm}/>
+      </Form.Group>
+      <Form.Group>
+        {props.showLabels && <Form.Label>Secondary Results Filter</Form.Label>}
+        <Form.Control as="input" type="secondary results filter" placeholder="secondary results filter" onChange={(e) => handleSetResultsFilter(e.target.value)} value={resultsFilter}/>
       </Form.Group>
       {displayAllParameters &&
         <div>
@@ -127,7 +136,8 @@ const Search3Parameters = (props) => {
           </Form.Group>
         </div>
       }
-      {props.showAdvancedParameters && <Button onClick={() => {setDisplayAllParameters(!displayAllParameters)}}>{displayAllParameters ? "Hide" : "Show"} Filter Options</Button>}
+      {props.showAdvancedParameters && <Button className="btn-sm" onClick={() => {setDisplayAllParameters(!displayAllParameters)}}>{displayAllParameters ? "Hide" : "Show"} More Filter Options</Button>}
+      {props.children}
     </div>
   )
 }

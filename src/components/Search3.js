@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import {runQuery} from './utils'
@@ -11,11 +11,16 @@ import {retrieveAuthorResults, retrieveExpressionResults, retrieveWorkGroupResul
 const Search3 = (props) => {
   const [searchParameters, setSearchParameters] = useState({})
   const [results, setResults] = useState([])
-
-
+  
+  useEffect(() => {
+    displayTextResults(filterResults(results, searchParameters.resultsFilter))
+  }, [searchParameters.resultsFilter])
+  
+  
   const handleSetSearchParameters = (parameters) => {
     setSearchParameters(parameters)
   }
+
   const handleRunSearch = (e) => {
     e.preventDefault()
     if (!searchParameters.searchTerm){
@@ -68,8 +73,31 @@ const Search3 = (props) => {
       return displayQuestionResults(results, searchParameters)
     }
     else if (searchParameters.searchType === "text"){
-      return displayTextResults(results)
+      
+      return displayTextResults(filterResults(results, searchParameters.resultsFilter))
     }
+  }
+  const filterResults = (results, resultsFilter) => {
+    console.log("results", results)
+    let newResults = [] 
+    if (!results || results.length === 0){
+      newResults = [] 
+    }
+    else if (results.length > 1){
+      results.forEach((r) => {
+        const combinedString = [r.previous.toLowerCase(), r.hit.toLowerCase(), r.next.toLowerCase()].join(" ")
+        if (combinedString.includes(resultsFilter.toLowerCase())){
+          newResults.push(r)
+        }
+      })
+    }
+    else if (results){
+      const r = results;
+      const combinedString = [r.previous.toLowerCase(), r.hit.toLowerCase(), r.next.toLowerCase()].join(" ")
+      newResults = combinedString.includes(resultsFilter.toLowerCase()) ? results : "";
+    }
+    console.log("newResults", newResults)
+    return newResults
   }
   return(
     <Container className={props.hidden ? "hidden" : "showing"}>
@@ -84,9 +112,11 @@ const Search3 = (props) => {
           showLabels={props.showLabels}
           searchType={props.searchType}
           searchTerm={props.searchTerm}
-          />
-          <br/>
-      {props.showSubmit && <Button onClick={handleRunSearch}>Submit</Button>}
+          >
+            {props.showSubmit && <Button onClick={handleRunSearch} className="btn-sm" style={{marginLeft: "2px"}}>Submit</Button>}
+            </Search3Parameters>
+          
+      
     </Form>
     {displayResults(results)}
     </Container>

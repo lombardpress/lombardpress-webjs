@@ -27,14 +27,14 @@ export function retrieveWorkGroupResults(searchTerm, searchWorkGroup){
 }
 
 export function displayTextResults(results){
-  if (!results){
+  if (!results || results.length === 0){
     return (<div>
       <p>No results found</p>
     </div>)
   }
-  else if (results.length > 1){
+  else if (results.length > 0){
     const textResults = results.map((r, i) => {
-      const textString = r.previous + " - " + r.hit + " - " + r.next
+      const textString = r.previous + " <span class='highlight'>" + r.hit + "</span> " + r.next
       const range = r.start + "-" + r.end
       return (
         <div key={i}>
@@ -44,16 +44,24 @@ export function displayTextResults(results){
       )
 
     })
-  return textResults
+    return (
+      <div>
+          <p>{results.length + " results"}</p>
+          {textResults}
+      </div>
+    )
   }
   else if (results){
     const r = results
-    const textString = r.previous + " - " + r.hit + " - " + r.next
+    const textString = r.previous + " <span class='highlight'>" + r.hit + "</span> " + r.next
     const range = r.start + "-" + r.end
     return (
+      <div>
+        <p>{results.length + " results"}</p>
       <div key={results.pid}>
       <p><Link to={"/text?resourceid=http://scta.info/resource/" + r.pid + "@" + range}>{r.pid + "@" + range}</Link></p>
       <p dangerouslySetInnerHTML={{ __html: textString}}/>
+      </div>
       </div>
     )
   }
@@ -73,5 +81,10 @@ export function displayQuestionResults(results, searchParameters){
     </div>
     )
   })
-  return displayResults
+  return (
+    <div>
+      <p>{displayResults.length + " results"}</p>
+      {displayResults}
+    </div>
+  )
 }
