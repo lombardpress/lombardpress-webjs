@@ -6,7 +6,8 @@ import Axios from 'axios'
 // if exist db api is improved then a single request should be easier
 export function retrieveExpressionResults(searchTerm, searchEid){
   const expressionShortId = searchEid === "all" ? searchEid : searchEid.split("/resource/")[1]
-  const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-expressionid.xq?query=" + searchTerm + "&expressionid=" + expressionShortId
+  //const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-expressionid.xq?query=" + searchTerm + "&expressionid=" + expressionShortId
+  const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-expressionid-test.xq?query=" + searchTerm + "&expressionid=" + expressionShortId
   const queryPromise = Axios.get(url)
   return queryPromise
 }
@@ -33,10 +34,12 @@ export function displayTextResults(results){
   }
   else if (results.length > 1){
     const textResults = results.map((r, i) => {
+      const textString = r.previous + " - " + r.hit + " - " + r.next
+      const range = r.start + "-" + r.end
       return (
         <div key={i}>
-        <p><Link to={"/text?resourceid=http://scta.info/resource/" + r.pid}>{r.pid}</Link></p>
-        <p dangerouslySetInnerHTML={{ __html: r.text}}/>
+        <p><Link to={"/text?resourceid=http://scta.info/resource/" + r.pid + "@" + range}>{r.pid + "@" + range}</Link></p>
+        <p dangerouslySetInnerHTML={{ __html: textString}}/>
         </div>
       )
 
@@ -44,10 +47,13 @@ export function displayTextResults(results){
   return textResults
   }
   else if (results){
+    const r = results
+    const textString = r.previous + " - " + r.hit + " - " + r.next
+    const range = r.start + "-" + r.end
     return (
       <div key={results.pid}>
-      <p><Link to={"/text?resourceid=http://scta.info/resource/" + results.pid}>{results.pid}</Link></p>
-      <p dangerouslySetInnerHTML={{ __html: results.text}}/>
+      <p><Link to={"/text?resourceid=http://scta.info/resource/" + r.pid + "@" + range}>{r.pid + "@" + range}</Link></p>
+      <p dangerouslySetInnerHTML={{ __html: textString}}/>
       </div>
     )
   }
