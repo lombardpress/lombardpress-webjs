@@ -11,9 +11,15 @@ import {retrieveAuthorResults, retrieveExpressionResults, retrieveWorkGroupResul
 const Search3 = (props) => {
   const [searchParameters, setSearchParameters] = useState({})
   const [results, setResults] = useState([])
+  const [questionResults, setQuestionResults] = useState([])
   
   useEffect(() => {
-    displayTextResults(filterResults(results, searchParameters.resultsFilter))
+    if (searchParameters.searchType === "questionTitles"){
+      displayQuestionResults(filterQuestionResults(questionResults, searchParameters.resultsFilter), searchParameters)
+    }
+    else if (searchParameters.searchType === "text"){
+      displayTextResults(filterResults(results, searchParameters.resultsFilter))
+    }
   }, [searchParameters.resultsFilter])
   
   
@@ -29,6 +35,7 @@ const Search3 = (props) => {
     else{
       if (searchParameters.searchType === "text"){
         setResults("fetching")
+        setQuestionResults([])
         if (searchParameters.searchEid){
           const textResults = retrieveExpressionResults(searchParameters.searchTerm, searchParameters.searchEid)
           textResults.then((d) => {
@@ -58,19 +65,20 @@ const Search3 = (props) => {
       }
       else{
         const questionResults = runQuery(questionTitleQuery(searchParameters))
-        setResults("fetching")
+        setQuestionResults("fetching")
+        setResults([])
         questionResults.then((d) => {
-          setResults(d.data.results.bindings)
+          setQuestionResults(d.data.results.bindings)
         })
       }
     }
   }
   const displayResults = (results) => {
-    if (results === "fetching"){
+    if (results === "fetching" || questionResults === "fetching"){ 
       return <Spinner/>
     }
     else if (searchParameters.searchType === "questionTitles"){
-      return displayQuestionResults(results, searchParameters)
+      return displayQuestionResults(filterQuestionResults(questionResults, searchParameters.resultsFilter), searchParameters)
     }
     else if (searchParameters.searchType === "text"){
       
@@ -78,7 +86,6 @@ const Search3 = (props) => {
     }
   }
   const filterResults = (results, resultsFilter) => {
-    console.log("results", results)
     let newResults = [] 
     if (!results || results.length === 0){
       newResults = [] 
@@ -96,9 +103,24 @@ const Search3 = (props) => {
       const combinedString = [r.previous.toLowerCase(), r.hit.toLowerCase(), r.next.toLowerCase()].join(" ")
       newResults = combinedString.includes(resultsFilter.toLowerCase()) ? results : "";
     }
-    console.log("newResults", newResults)
     return newResults
   }
+  // similar filter to above; but modified to handle question title data structure
+  const filterQuestionResults = (results, resultsFilter) => {
+    let newResults = [] 
+    if (!results || results.length === 0){
+      newResults = [] 
+    }
+    else if (results.length > 0){
+      results.forEach((r) => {
+        if (r.qtitle && r.qtitle.value.toLowerCase().includes(resultsFilter.toLowerCase())){
+          newResults.push(r)
+        }
+      })
+    }
+    return newResults
+  }
+
   return(
     <Container className={props.hidden ? "hidden" : "showing"}>
       <Form onSubmit={handleRunSearch}>
@@ -113,7 +135,7 @@ const Search3 = (props) => {
           searchType={props.searchType}
           searchTerm={props.searchTerm}
           >
-            {props.showSubmit && <Button onClick={handleRunSearch} className="btn-sm" style={{marginLeft: "2px"}}>Submit</Button>}
+            {props.showSubmit && <Button onClick={handleRunSearch} className="btn-sm" style={{marginRight: "5px"}}>Submit</Button>}
             </Search3Parameters>
           
       

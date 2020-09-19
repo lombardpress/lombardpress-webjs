@@ -6,8 +6,7 @@ import Axios from 'axios'
 // if exist db api is improved then a single request should be easier
 export function retrieveExpressionResults(searchTerm, searchEid){
   const expressionShortId = searchEid === "all" ? searchEid : searchEid.split("/resource/")[1]
-  //const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-expressionid.xq?query=" + searchTerm + "&expressionid=" + expressionShortId
-  const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-expressionid-test.xq?query=" + searchTerm + "&expressionid=" + expressionShortId
+  const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-expressionid.xq?query=" + searchTerm + "&expressionid=" + expressionShortId
   const queryPromise = Axios.get(url)
   return queryPromise
 }
@@ -57,7 +56,7 @@ export function displayTextResults(results){
     const range = r.start + "-" + r.end
     return (
       <div>
-        <p>{results.length + " results"}</p>
+        <p>{1 + " results"}</p>
       <div key={results.pid}>
       <p><Link to={"/text?resourceid=http://scta.info/resource/" + r.pid + "@" + range}>{r.pid + "@" + range}</Link></p>
       <p dangerouslySetInnerHTML={{ __html: textString}}/>
@@ -73,18 +72,28 @@ export function displayTextResults(results){
 }
 
 export function displayQuestionResults(results, searchParameters){
-  const displayResults = results.map((r, i) => {
+  if (results.length > 0){
+    const displayResults = results.map((r, i) => {
+      return (
+      <div key={r.resource.value + "-" + i}>
+        <p><Link to={"/text?resourceid=" + r.author.value}>{r.authorTitle.value}</Link>: <Link to={"/text?resourceid=" + r.resource.value}>{r.longTitle.value}</Link></p>
+        <p>{r.qtitle.value.toLowerCase().replace(searchParameters.searchTerm.toLowerCase(), searchParameters.searchTerm.toUpperCase())}</p>
+      </div>
+      )
+    })
     return (
-    <div key={r.resource.value + "-" + i}>
-      <p><Link to={"/text?resourceid=" + r.author.value}>{r.authorTitle.value}</Link>: <Link to={"/text?resourceid=" + r.resource.value}>{r.longTitle.value}</Link></p>
-      <p>{r.qtitle.value.toLowerCase().replace(searchParameters.searchTerm.toLowerCase(), searchParameters.searchTerm.toUpperCase())}</p>
-    </div>
+      <div>
+        <p>{displayResults.length + " results"}</p>
+        {displayResults}
+      </div>
     )
-  })
-  return (
-    <div>
-      <p>{displayResults.length + " results"}</p>
-      {displayResults}
-    </div>
-  )
+  }
+  else{
+    return (
+      <div>
+        <p>No results</p>
+      </div>
+    )
+
+  }
 }

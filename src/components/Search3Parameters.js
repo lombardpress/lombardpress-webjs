@@ -9,7 +9,7 @@ import searchExpressionTypesListReducer from '../reducers/searchExpressionTypesL
 import * as searchExpressionTypesListActions from '../actions/searchExpressionTypesListActions'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-
+import InputGroup from 'react-bootstrap/InputGroup';
 
 const Search3Parameters = (props) => {
   const [searchType, setSearchType] = useState(props.searchType ? props.searchType : "text")
@@ -77,67 +77,93 @@ const Search3Parameters = (props) => {
 
   return(
     <div>
-      <Form.Group>
-        {props.showLabels && <Form.Label>Search Term</Form.Label>}
+      <InputGroup size="sm" className="mb-2">
+        <InputGroup.Prepend>
+            <InputGroup.Text>Search Term</InputGroup.Text>
+        </InputGroup.Prepend>
         <Form.Control as="input" type="text" placeholder="search term" onChange={(e) => setSearchTerm(e.target.value)} value={searchParameters.searchTerm}/>
-      </Form.Group>
-      <Form.Group>
-        {props.showLabels && <Form.Label>Secondary Results Filter</Form.Label>}
+      </InputGroup>
+      {/* {NOTE filter results parameter is useful only when results are of manageable size;
+        when results are big, javascript locks up while filtering
+        if paging is used, then this could prevent performance slow down 
+        but paging makes the tool less than useful, because it will only filter what is on the page
+        TODO: reconsider if you want to keep this; or this is not worth the trouble
+        NOTE: if this parameters is removed, then filterResults() and filterQuestionResults() functions 
+        in Search3 should be removed
+        } */}
+      <InputGroup size="sm" className="mb-2">
+          <InputGroup.Prepend>
+            <InputGroup.Text>Filter Results</InputGroup.Text>
+          </InputGroup.Prepend>
         <Form.Control as="input" type="secondary results filter" placeholder="secondary results filter" onChange={(e) => handleSetResultsFilter(e.target.value)} value={resultsFilter}/>
-      </Form.Group>
+      </InputGroup>
       {displayAllParameters &&
         <div>
-        <Form.Group>
-          <Form.Label>Search Type</Form.Label>
+          <InputGroup size="sm" className="mb-2">
+            <InputGroup.Prepend>
+              <InputGroup.Text>Search Type</InputGroup.Text>
+            </InputGroup.Prepend>
             <Form.Control as="select" onChange={(e) => {setSearchType(e.target.value)}} value={searchParameters.searchType}>
               <option value="questionTitles">Questions Titles</option>
               <option value="text">Text</option>
             </Form.Control>
-        </Form.Group>
-          <Form.Group>
-            <Form.Label>Work Group</Form.Label>
-              <Form.Control as="select" onChange={(e) => {setSearchWorkGroup(e.target.value)}} value={searchParameters.searchWorkGroup}>
+          </InputGroup>
+          <InputGroup size="sm" className="mb-2">
+            <InputGroup.Prepend>
+              <InputGroup.Text>Work Group</InputGroup.Text>
+            </InputGroup.Prepend>
+            <Form.Control as="select" onChange={(e) => {setSearchWorkGroup(e.target.value)}} value={searchParameters.searchWorkGroup}>
                 <option value="">All</option>
                 {searchWorkGroupsList && searchWorkGroupsList.map((e, i) => {
                     return (<option key={e.workGroup + "-" + i} value={e.workGroup}>{e.workGroupTitle}</option>)
                   })
                 }
               </Form.Control>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>ExpressionType</Form.Label>
-              <Form.Control as="select" onChange={(e) => {setSearchEType(e.target.value)}} value={searchParameters.searchEType}>
+          </InputGroup>
+          <InputGroup size="sm" className="mb-2">
+            <InputGroup.Prepend>
+              <InputGroup.Text>Expression Type</InputGroup.Text>
+            </InputGroup.Prepend>
+            <Form.Control as="select" onChange={(e) => {setSearchEType(e.target.value)}} value={searchParameters.searchEType}>
                 <option value="">All</option>
                 {searchExpressionTypesList && searchExpressionTypesList.map((e, i) => {
                     return (<option key={e.expressionType + "-" + i} value={e.expressionType}>{e.expressionTypeTitle}</option>)
                   })
                 }
-              </Form.Control>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Author</Form.Label>
-              <Form.Control as="select" onChange={(e) => {setSearchAuthor(e.target.value)}} value={searchParameters.searchAuthor}>
-                <option value="">All</option>
-                {searchAuthorsList && searchAuthorsList.map((e, i) => {
-                    return (<option key={e.author + "-" + i} value={e.author}>{e.authorTitle}</option>)
-                  })
-                }
-              </Form.Control>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Text</Form.Label>
-              <Form.Control as="select" onChange={(e) => {setSearchEid(e.target.value)}} value={searchParameters.searchEid}>
-                <option value="">All</option>
-                {searchExpressionsList && searchExpressionsList.map((e, i) => {
-                    return (<option key={e.expression + "-" + i} value={e.expression}>{e.authorTitle}: {e.expressionTitle}</option>)
-                  })
-                }
-              </Form.Control>
-          </Form.Group>
+            </Form.Control>
+          </InputGroup>
+          <InputGroup size="sm" className="mb-2">
+            <InputGroup.Prepend>
+              <InputGroup.Text>Author</InputGroup.Text>
+            </InputGroup.Prepend>
+            <Form.Control as="select" onChange={(e) => {setSearchAuthor(e.target.value)}} value={searchParameters.searchAuthor}>
+              <option value="">All</option>
+              {searchAuthorsList && searchAuthorsList.map((e, i) => {
+                  return (<option key={e.author + "-" + i} value={e.author}>{e.authorTitle}</option>)
+                })
+              }
+            </Form.Control>
+          </InputGroup>
+          <InputGroup size="sm" className="mb-2">
+            <InputGroup.Prepend>
+              <InputGroup.Text>Text</InputGroup.Text>
+            </InputGroup.Prepend>
+            <Form.Control as="select" onChange={(e) => {setSearchEid(e.target.value)}} value={searchParameters.searchEid}>
+              <option value="">All</option>
+              {searchExpressionsList && searchExpressionsList.map((e, i) => {
+                  return (<option key={e.expression + "-" + i} value={e.expression}>{e.authorTitle}: {e.expressionTitle}</option>)
+                })
+              }
+            </Form.Control>
+          </InputGroup>
         </div>
       }
-      {props.showAdvancedParameters && <Button className="btn-sm" onClick={() => {setDisplayAllParameters(!displayAllParameters)}}>{displayAllParameters ? "Hide" : "Show"} More Filter Options</Button>}
-      {props.children}
+      <InputGroup.Prepend size="sm" className="mb-2">
+        {props.children}
+        {props.showAdvancedParameters && <Button className="btn-sm" onClick={() => {setDisplayAllParameters(!displayAllParameters)}}>{displayAllParameters ? "Hide" : "Show"} More Filter Options</Button>}        
+      </InputGroup.Prepend>
+      
+      
     </div>
   )
 }
