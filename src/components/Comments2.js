@@ -37,7 +37,7 @@ function Comments2(props) {
    * @param {string} comment 
    * @public
    */
-  const submitComment = (comment, motivation, editedText, selectionRange) => {
+  const submitComment = (comment, motivation, editedText, selectionRange, orderNumber, noTarget) => {
     const randomid = uuidv4();
     const annoId = "http://inbox.scta.info/notifications/" + randomid
     const dateObject = new Date();
@@ -53,6 +53,9 @@ function Comments2(props) {
         "end": selectionRange.wordRange && selectionRange.wordRange.end
       }
     ]
+    // set order number either with the next in the count; or with specified order number
+    const useOrderNumber = orderNumber || lists[comments].length
+    
     
     const annotation = {
       "@context": "http://www.w3.org/ns/anno.jsonld",
@@ -64,7 +67,7 @@ function Comments2(props) {
         "type": "TextualBody",
         "value": comment
       },
-      "target": { // changing target to object rather than string will break retrieval
+      "target": !noTarget && { // changing target to object rather than string will break retrieval
         source: props.resourceid, 
         selector: selector
       }
@@ -77,8 +80,8 @@ function Comments2(props) {
     else {
       delete annotation.body["editedValue"];
     }
-    lists[comments].push(annotation) 
-    
+    //lists[comments].push(annotation) 
+    lists[comments].splice(orderNumber, 0, annotation);
     setLists({
       ...lists,
     })
@@ -93,12 +96,27 @@ function Comments2(props) {
         ...lists
       })
   }
-  const updateComment = (id, update, editedText, motivation) => {
-    
+  const updateComment = (id, update, editedText, motivation, selectionRange, orderNumber, noTarget) => {
     const targetComment = lists[comments].filter((c) => (c.id === id))[0]
     targetComment.body.value = update
     targetComment.body.editedValue = editedText
     targetComment.motivation = motivation
+    targetComment.orderNumber = orderNumber
+    targetComment.target = noTarget ? false : targetComment.target
+    const old_index = lists[comments].indexOf(targetComment);
+    
+    //reposition comment
+    //see https://stackoverflow.com/questions/5306680/move-an-array-element-from-one-array-position-to-another
+    //todo: this could/should be a utility function
+    if (orderNumber >= lists[comments].length) {
+      var k = orderNumber - lists[comments].length + 1;
+      while (k--) {
+        lists[comments].push(undefined);
+      }
+    }
+    
+    lists[comments].splice(orderNumber, 0, lists[comments].splice(old_index, 1)[0]);
+
     setLists({
       ...lists
     })
@@ -153,6 +171,7 @@ function Comments2(props) {
         submitComment={submitComment} 
         selectionRange={props.selectionRange}
         textEdit={props.textEdit}
+        orderNumber={lists[comments].length}
         />
       <Button size="sm" style={{margin: "2px"}} block onClick={() => setShowFilters(!showFilters)}><FaFilter/> Filters</Button>
       { showFilters &&
@@ -185,14 +204,15 @@ function Comments2(props) {
       </div>
       }
       <div>
-        {lists[comments].length > 0 && lists[comments].slice(0).reverse().map((c,i) => {
+        {lists[comments].length > 0 && lists[comments].slice(0).map((c,i) => {
+          
           const target = typeof(c.target) === 'string' ? c.target : c.target.source;
           if (showFocusComments){
             if (target && target.includes(props.expressionid) && (c.body.value && c.body.value.includes(commentFilter))){
               return (
                 <div key={i}>
                   <Comment2Item comment={c} focused={true} removeComment={removeComment} updateComment={updateComment}
-                  handleOnClickComment={props.handleOnClickComment}/>
+                  handleOnClickComment={props.handleOnClickComment} orderNumber={lists[comments].indexOf(c)}/>
                   {
                   //<button onClick={() => {removeNote(n.title)}}>x</button>
                   }
@@ -207,7 +227,7 @@ function Comments2(props) {
             if (target && target.includes(props.expressionid) && (c.body.value && c.body.value.includes(commentFilter))){
               return (
                 <div key={i} style={{borderLeft: "1px solid black"}}>
-                  <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment}/>
+                  <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment} orderNumber={lists[comments].indexOf(c)}/>
                   {
                   //<button onClick={() => {removeNote(n.title)}}>x</button>
                   }
@@ -217,7 +237,7 @@ function Comments2(props) {
             else if (c.body.value && c.body.value.includes(commentFilter)){
               return (
                 <div key={i}>
-                  <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment}/>
+                  <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment} orderNumber={lists[comments].indexOf(c)}/>
                   {
                   //<button onClick={() => {removeNote(n.title)}}>x</button>
                   }

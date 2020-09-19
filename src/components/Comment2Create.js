@@ -11,11 +11,14 @@ function Comment2Create(props) {
   const [motivation, setMotivation] = useState(props.motivation || "commenting") // "commenting" vs "editing"; default "commenting"
   const editedTextDefault = props.selectionRange && props.selectionRange.text ? props.selectionRange.text : ""
   const [editedText, setEditedText] = useState((props.selectionRange && props.selectionRange.textEdited) ? props.selectionRange.textEdited : editedTextDefault);
+  const [noTarget, setNoTarget] = useState(props.noTarget || false); // if noTarget is set to true, annotation is made without a target
+  const [orderNumber, setOrderNumber] = useState(props.orderNumber);
+  
   
   const handleCommentUpdate = (e) => {
     e.preventDefault()
     const commentType = motivation;
-    props.submitComment(comment, commentType, editedText, props.selectionRange)
+    props.submitComment(comment, commentType, editedText, props.selectionRange, orderNumber, noTarget)
     setComment('')
   }
   useEffect(() => {
@@ -32,6 +35,7 @@ function Comment2Create(props) {
   const wordRange = (props.selectionRange && props.selectionRange.wordRange) ? props.selectionRange.wordRange.start + "-" + props.selectionRange.wordRange.end : ""
   return (
     <Form onSubmit={handleCommentUpdate}>
+      
       {motivation === "editing" && 
       <div>
         <span>Suggest Edit for : 
@@ -59,6 +63,8 @@ function Comment2Create(props) {
         </div>
         }
         <FormControl as="textarea" type="text" id="comment" rows="3" value={comment} placeholder={t("comment")} className="mr-sm-2" onChange={(e) => {setComment(e.target.value)}}/>
+        <span>Position: <Form.Text as="input" inline="true" type="input" id="orderNumber" value={orderNumber} className="mr-sm-2" onChange={(e) => {setOrderNumber(e.target.value)}} style={{border: 0, width: "25px", display: "inline"}}/></span>
+        <span>Has Target: <input type="checkbox" inline="true" label="has target" checked={!noTarget} onChange={(e) => {setNoTarget(!noTarget)}} style={{display: "inline"}}/></span>
       </div>
       <Button size="sm"  type="submit" block style={{margin: "2px"}}>{t("Submit")}</Button>
    </Form>

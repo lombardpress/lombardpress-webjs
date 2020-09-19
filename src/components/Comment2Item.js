@@ -9,8 +9,8 @@ function Comment2Item(props) {
   const {t} = useTranslation();
   const [editable, setEditable] = useState(false);
   
-  const submitUpdate = (update, motivation, editedText) => {
-    props.updateComment(props.comment.id, update, editedText, motivation)
+  const submitUpdate = (update, motivation, editedText, selectionRange, orderNumber, noTarget) => {
+    props.updateComment(props.comment.id, update, editedText, motivation, selectionRange, orderNumber, noTarget)
     setEditable(false)
   }
   const addSCTALinksToValue = (value) => {
@@ -59,13 +59,17 @@ function Comment2Item(props) {
       <div>
         {/* {!props.focused && <p>{t("For")}: <Link to={"/text?resourceid=" + target}>{target}</Link></p>} */}
         {/* <span className="lbp-span-link" onClick={() => props.handleOnClickComment(target.split("/resource/")[1], selectedFragment, props.comment.body.editedValue, selectedFragmentRange, selectedCharacterRange)}>{target} {selectedFragmentRange && <span> ({selectedFragmentRange.start}-{selectedFragmentRange.end})</span>}</span> */}
-        <p>{t("For")}: <Link to={"/text?resourceid=" + target}>{target}</Link></p>
+        
+        <p><span>{props.orderNumber}</span>: {t("For")}: <Link to={"/text?resourceid=" + target}>{target}</Link></p>
         {
           editable ?
           <Comment2Create submitComment={submitUpdate} 
           comment={props.comment.body.value} 
           selectionRange={selectionRange} 
-          motivation={props.comment.motivation}/> :
+          motivation={props.comment.motivation}
+          noTarget={props.comment.target ? false : true}
+          orderNumber={props.orderNumber}
+          /> :
           <p>
           {
           //<span dangerouslySetInnerHTML={{ __html: addSCTALinksToValue(props.comment.body.value)}}/>

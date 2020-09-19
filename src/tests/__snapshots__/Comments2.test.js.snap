@@ -6,6 +6,7 @@ exports[`should render and conform to snapshot  1`] = `
   fluid={false}
 >
   <Comment2Create
+    orderNumber={0}
     submitComment={[Function]}
   />
   <Button
