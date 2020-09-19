@@ -20,6 +20,7 @@ const Search3 = (props) => {
     else if (searchParameters.searchType === "text"){
       displayTextResults(filterResults(results, searchParameters.resultsFilter))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParameters.resultsFilter])
   
   
