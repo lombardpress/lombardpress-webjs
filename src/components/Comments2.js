@@ -53,10 +53,6 @@ function Comments2(props) {
         "end": selectionRange.wordRange && selectionRange.wordRange.end
       }
     ]
-    // set order number either with the next in the count; or with specified order number
-    const useOrderNumber = orderNumber || lists[comments].length
-    
-    
     const annotation = {
       "@context": "http://www.w3.org/ns/anno.jsonld",
       "id": annoId,
