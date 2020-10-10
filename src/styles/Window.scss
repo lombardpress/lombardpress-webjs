@@ -30,7 +30,7 @@
   background-color: $dark;
   z-index: 2;
   width: 100%;
-  overflow: scroll;
+  overflow-y: scroll;
   transition: width 200ms;
   box-shadow: 0px 0px 5px black;
 
