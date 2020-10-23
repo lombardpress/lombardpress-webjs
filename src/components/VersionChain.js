@@ -80,7 +80,7 @@ class VersionChain extends React.Component {
       const versions = this.state.versions.map((v) => {
         const currentlyViewing = v.versionTranscription === this.state.currentVersion ? "currentlyViewing" : ""
         const gitHubEdit = v.versionDoc.includes("github.com") && v.versionDoc.replace("/raw/", "/edit/")
-        return (<p key={v.versionTranscription} className={currentlyViewing}>
+        return (<p key={v.versionTranscription} className={currentlyViewing} className="small">
           {currentlyViewing ? <span>{v.versionLabel} {t("(Currently Viewing)")}</span> : <span className="lbp-span-link" onClick={()=>{this.props.handleFocusChange(v.versionTranscription)}}>{v.versionLabel}</span>}
           {v.versionReviewInfo.html_link && <span> {t("Peer Reviewed")}: <a href={v.versionReviewInfo.html_link}><img alt="review" src={v.versionReviewInfo.img_url}/></a> </span>}
           <span className="small"> {t("Data Source")}: <a href={v.versionDoc}>{v.versionDoc}</a> </span>
@@ -94,7 +94,7 @@ class VersionChain extends React.Component {
         if (this.state.versions.length > 1){
           return (
             <Alert variant="info">
-              <p onClick={this.handleToggleShowVersions}>{t("This Text Has Multiple Indexed Versions")}</p>
+              <p onClick={this.handleToggleShowVersions} className="small">{t("This Text Has Multiple Indexed Versions")}</p>
               {this.state.showVersions && displayVersions()}
             </Alert>
           )
@@ -103,7 +103,7 @@ class VersionChain extends React.Component {
           const version = this.state.versions[0]
           const gitHubEdit = version.versionDoc.includes("github.com") && version.versionDoc.replace("/raw/", "/edit/")
           return (<Alert variant="info">
-            <span>{t("Version")}: {version.versionLabel} 
+            <span className="small">{t("Version")}: {version.versionLabel} 
             | 
             {t("Data Source")}: <a href={version.versionDoc}>{version.versionDoc}</a> 
             </span>
