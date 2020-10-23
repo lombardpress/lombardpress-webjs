@@ -43,7 +43,7 @@ class Print extends React.Component {
   render(){
 
     return (
-      <div style={{"width": "100vh", "height": "100vh", "margin": "auto"}}>
+      <div style={{"width": "100%", "height": "77vh", "margin": "auto"}}>
       {this.state.pdf ?
         <object data={this.state.pdf} type="application/pdf" width="100%" height="100%">
             alt : <a href={this.state.pdf}>{this.state.pdf}</a>

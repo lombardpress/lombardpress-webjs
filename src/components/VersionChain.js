@@ -79,10 +79,12 @@ class VersionChain extends React.Component {
     const displayVersions = () => {
       const versions = this.state.versions.map((v) => {
         const currentlyViewing = v.versionTranscription === this.state.currentVersion ? "currentlyViewing" : ""
+        const gitHubEdit = v.versionDoc.includes("github.com") && v.versionDoc.replace("/raw/", "/edit/")
         return (<p key={v.versionTranscription} className={currentlyViewing}>
           {currentlyViewing ? <span>{v.versionLabel} {t("(Currently Viewing)")}</span> : <span className="lbp-span-link" onClick={()=>{this.props.handleFocusChange(v.versionTranscription)}}>{v.versionLabel}</span>}
           {v.versionReviewInfo.html_link && <span> {t("Peer Reviewed")}: <a href={v.versionReviewInfo.html_link}><img alt="review" src={v.versionReviewInfo.img_url}/></a> </span>}
           <span className="small"> {t("Data Source")}: <a href={v.versionDoc}>{v.versionDoc}</a> </span>
+          {gitHubEdit && <span className="small"> | <a href={gitHubEdit} target="_blank" rel="noopener noreferrer"> Edit on <img src="github-octocat-logo.png" alt="github" height="25px"/> Github</a></span>}
           </p>)
       })
       return versions
@@ -99,8 +101,13 @@ class VersionChain extends React.Component {
         }
         else if (this.state.versions.length === 1){
           const version = this.state.versions[0]
+          const gitHubEdit = version.versionDoc.includes("github.com") && version.versionDoc.replace("/raw/", "/edit/")
           return (<Alert variant="info">
-            <span>{t("Version")}: {version.versionLabel} | {t("Data Source")}: <a href={version.versionDoc}>{version.versionDoc}</a> </span>
+            <span>{t("Version")}: {version.versionLabel} 
+            | 
+            {t("Data Source")}: <a href={version.versionDoc}>{version.versionDoc}</a> 
+            </span>
+            {gitHubEdit && <span className="small"> | <a href={gitHubEdit} target="_blank" rel="noopener noreferrer"> Edit on <img src="github-octocat-logo.png" alt="github" height="25px"/> Github</a></span>}
           </Alert>
           )
         }
