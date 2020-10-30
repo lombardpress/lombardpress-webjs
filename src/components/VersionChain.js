@@ -80,7 +80,7 @@ class VersionChain extends React.Component {
       const versions = this.state.versions.map((v) => {
         const currentlyViewing = v.versionTranscription === this.state.currentVersion ? "currentlyViewing" : ""
         const gitHubEdit = v.versionDoc.includes("github.com") && v.versionDoc.replace("/raw/", "/edit/")
-        return (<p key={v.versionTranscription} className={currentlyViewing} className="small">
+        return (<p key={v.versionTranscription} className={currentlyViewing + " small"}>
           {currentlyViewing ? <span>{v.versionLabel} {t("(Currently Viewing)")}</span> : <span className="lbp-span-link" onClick={()=>{this.props.handleFocusChange(v.versionTranscription)}}>{v.versionLabel}</span>}
           {v.versionReviewInfo.html_link && <span> {t("Peer Reviewed")}: <a href={v.versionReviewInfo.html_link}><img alt="review" src={v.versionReviewInfo.img_url}/></a> </span>}
           <span className="small"> {t("Data Source")}: <a href={v.versionDoc}>{v.versionDoc}</a> </span>
