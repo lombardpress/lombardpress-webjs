@@ -331,3 +331,45 @@ export function getContainingP(node) {
     node = node.parentElement;
   }
 }
+
+/**
+ * @description retrieves plain text and counts line breaks based on input
+ */
+export function getLineNumber(url, selectedText, selectedElementTargetId){
+  //https://github.com/scta-texts/plaoulcommentary/edit/master/lectio1/lectio1.xml#L117
+  //https://raw.githubusercontent.com/scta-texts/plaoulcommentary/master/lectio1/lectio1.xml
+  //https://raw.githubusercontent.com/scta-texts/plaoulcommentarymaster/lectio1/lectio1.xml
+  const newRawUrl = url.replace("https://github.com", "https://raw.githubusercontent.com").replace("/raw/", '/')
+  const file = Axios.get(newRawUrl)
+  const data = file.then((d) => {
+    const findElement = "xml:id=\"" + selectedElementTargetId + "\""
+    const splitText = d.data.split(findElement);
+    const beforeText = splitText[0]
+    const splitBeforeText = beforeText.split('\n');
+    const newLineCount = splitBeforeText.length
+    
+    const afterText = splitText[1]
+    const regexp = new RegExp(`\\W${selectedText}\\W`, 'gi')
+    const elementBeforeText = afterText.split(regexp)[0] // this is flawed, first instance of the same text will be used
+    const splitElementBeforeText = elementBeforeText.split('\n');
+    const newElementLineCount = splitElementBeforeText.length
+    return newLineCount + newElementLineCount - 1
+  })
+  return data
+}
+
+export function goToGitHubEdit(url, selectedText, selectedElementTargetId){
+  console.log(url, selectedText, selectedElementTargetId)
+  const data = getLineNumber(url, selectedText, selectedElementTargetId)
+  //https://github.com/scta-texts/plaoulcommentary/raw/master/lectio1/lectio1.xml
+  data.then((d) => {
+    console.log(d)
+    const editUrl = url.replace("raw", "edit") + "#L" + d
+    window.open(editUrl,"gitHubEditWindow",'height=750,width=750');
+    //window.open(editUrl, "_blank"); 
+
+  })
+  
+  //window.location = 
+  
+}

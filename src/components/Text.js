@@ -2,10 +2,10 @@
 import React from 'react';
 import Spinner from './Spinner';
 import $ from 'jquery';
-import {convertXMLDoc, scrollToParagraph, loadHtmlResultDocFromExist, toRange, cleanText, getContainingP, getRangeWordCount, createRange} from './utils'
+import {convertXMLDoc, scrollToParagraph, loadHtmlResultDocFromExist, toRange, cleanText, getContainingP, getRangeWordCount, createRange, goToGitHubEdit} from './utils'
 import ReactTooltip from 'react-tooltip';
 import Nav from 'react-bootstrap/Nav';
-import {FaComments, FaInfo, FaBook, FaSearch} from 'react-icons/fa';
+import {FaComments, FaEdit, FaInfo, FaBook, FaSearch} from 'react-icons/fa';
 
 class Text extends React.Component {
   constructor(props){
@@ -380,10 +380,14 @@ class Text extends React.Component {
             <Nav>
               <Nav.Link title={this.state.selectionRange.wordRange.start + "-" +this.state.selectionRange.wordRange.end} onClick={() => {this.handleOnToolTipClick("citation")}}><FaInfo/></Nav.Link>
               <Nav.Link onClick={() => {this.handleOnToolTipClick("comments")}}><FaComments/></Nav.Link>
+              {(this.state.selectionRange.text && this.state.selectionRange.text.split(" ").length === 1) && 
+              <Nav.Link onClick={() => {goToGitHubEdit(this.props.doc, this.state.selectionRange.text, this.state.selectionRange.selectedElementTargetId)}}><FaEdit/></Nav.Link>
+              }
               <Nav.Link onClick={() => {this.handleOnToolTipClick("search")}}><FaSearch/></Nav.Link>
               {(this.state.selectionRange.text && this.state.selectionRange.text.split(" ").length === 1) && 
               <Nav.Link title="look up word" onClick={()=>this.handleOnToolTipClick("dictionary", "window2")}><FaBook/></Nav.Link>
               }
+              
             </Nav>
             }
         </ReactTooltip>
