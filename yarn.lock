@@ -4812,10 +4812,9 @@ detect-port-alt@1.1.6:
     address "^1.0.1"
     debug "^2.6.0"
 
-diff-match-patch@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/diff-match-patch/-/diff-match-patch-1.0.4.tgz#6ac4b55237463761c4daf0dc603eb869124744b1"
-  integrity sha512-Uv3SW8bmH9nAtHKaKSanOQmj2DnlH65fUpcrMdfdaOxUG02QQ4YGZ8AE7kKOMisF7UqvOlGKVYWRvezdncW9lg==
+diff-match-patch@jeffreycwitt/diff-match-patch.git#master:
+  version "1.0.5"
+  resolved "https://codeload.github.com/jeffreycwitt/diff-match-patch/tar.gz/004e18d49b8a6d3dce761bf0cd28b64691a6c6f9"
 
 diff-sequences@^24.9.0:
   version "24.9.0"

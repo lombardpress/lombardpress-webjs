@@ -50,8 +50,26 @@ class TextCompareItem extends React.Component {
     console.log("text compare item async sent for", transcription)
     Axios.get("https://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + transcription)
           .then((text) => {
+
+            //function needed for word level comparison
+            //see https://github.com/google/diff-match-patch/wiki/Line-or-Word-Diffs
+            // also required for of npm google-diff-patch and then added function wordsToChars_()
+            const diff_wordMode = (text1, text2, dmp) => {
+              //var dmp = new Diff.diff_match_patch();
+              var a = dmp.diff_wordsToChars_(text1, text2);
+              var lineText1 = a.chars1;
+              var lineText2 = a.chars2;
+              var lineArray = a.lineArray;
+              var diffs = dmp.diff_main(lineText1, lineText2, false);
+              dmp.diff_charsToLines_(diffs, lineArray);
+              return diffs;
+            }
+
             const dmp = new Diff.diff_match_patch();
-            const diff = dmp.diff_main(this.textClean(base), this.textClean(text.data));
+
+            //NOTE: uncomment below if you want to switch back to character level diff
+            //const diff = dmp.diff_main(this.textClean(base), this.textClean(text.data)); //character level diff
+            const diff = diff_wordMode(this.textClean(base), this.textClean(text.data), dmp) // word level diff
             // Result: [(-1, "Hell"), (1, "G"), (0, "o"), (1, "odbye"), (0, " World.")]
             dmp.diff_cleanupSemantic(diff);
             const levenshteinDistance = dmp.diff_levenshtein(diff)
