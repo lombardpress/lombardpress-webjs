@@ -89,18 +89,16 @@ class AuthorCollection extends React.Component {
     /// add items to state
     this.arrangeItems(authorCollectionInfo, resourceid)
   }
-  componentDidUpdate(prevProps, prevState){
-
+  componentDidUpdate(prevProps){
+    if (this.props.resourceid !== prevProps.resourceid){
+      this.refs.itemFilter ? this.refs.itemFilter.value = "" :
+      this.retrieveAuthorCollectionInfo(this.props.resourceid)
+    }
   }
   componentDidMount(){
     this.mount = true
     this.retrieveAuthorCollectionInfo(this.props.resourceid)
 
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    this.refs.itemFilter ? this.refs.itemFilter.value = "" :
-    this.retrieveAuthorCollectionInfo(nextProps.resourceid)
   }
   componentWillUnmount(){
     this.mount = false

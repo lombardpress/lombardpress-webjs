@@ -5,16 +5,19 @@ import Axios from 'axios'
 const ImageLogo = (props) => {
   const [logoUrl, setLogoUrl] = useState("")
   useEffect(() => {
-    Axios.get(props.imageurl + "/info.json").then((d) => {
-      const logo = d.data.logo["@id"]
-      setLogoUrl(logo)
-    }).catch((error) => {
-      console.log("no logo found")
-      setLogoUrl("")
-    })
+    // conditional set in order prevent ajax request if props.imagurl does not exist
+    if (props.imageurl){
+      Axios.get(props.imageurl + "/info.json").then((d) => {
+        const logo = d.data.logo["@id"]
+        setLogoUrl(logo)
+      }).catch((error) => {
+        console.log("no logo found", error)
+        setLogoUrl("")
+      })
+    }
   }, [props.imageurl])
   return (
-    <>{logoUrl && <img src={logoUrl} style={{margin: props.margin, height: props.height}}/>}</>
+    <>{logoUrl && <img src={logoUrl} style={{margin: props.margin, height: props.height}} alt="imagelogo"/>}</>
   )
 }
 

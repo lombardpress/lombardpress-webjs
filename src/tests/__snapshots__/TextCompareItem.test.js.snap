@@ -1,0 +1,121 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`set states and displays compare text when showCompare is changed to true 1`] = `
+<div
+  style={
+    Object {
+      "borderLeft": "5px solid rgba(NaN, 0, 255, 1)",
+      "paddingLeft": "5px",
+    }
+  }
+>
+  <span>
+    <Link
+      to="/text?resourceid=http://scta.info/resource/l1-cpspfs/reims/transcription"
+    >
+      Paragraph l1-cpspfs/reims
+    </Link>
+     
+  </span>
+  <span
+    className="lbp-span-link"
+    onClick={[Function]}
+    title="show/hide"
+  >
+    <FaEyeSlash />
+  </span>
+  <span
+    className="lbp-span-link"
+    onClick={[Function]}
+    title="toggle comparison off"
+  >
+    <FaToggleOn />
+  </span>
+  <span
+    className="lbp-span-link"
+    onClick={[Function]}
+    title="set as base"
+  >
+    <FaStar />
+  </span>
+  <span
+    style={
+      Object {
+        "fontSize": "14px",
+        "paddingLeft": "4px",
+      }
+    }
+    title="levenshtein distance"
+  />
+  <div
+    className="unhidden"
+  >
+    <div
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": "circa prologum sententiarum in quo magister dicit quod intentionis suae est munire davidicam turrim vel potius munitam ostendere clypeis etc quaero istam quaestionem utrum in causa iudiciali fidei contra traditionem pure humanitus adinventam iudex idoneus ferret pro fide sententiam",
+        }
+      }
+    />
+    <div>
+      <span
+        onClick={[Function]}
+      >
+        <FaRegImage />
+      </span>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`set states and displays raw text when showCompare is changed to False 1`] = `
+<div>
+  <span>
+    <Link
+      to="/text?resourceid=http://scta.info/resource/l1-cpspfs/reims/transcription"
+    >
+      Paragraph l1-cpspfs/reims
+    </Link>
+  </span>
+   |
+  <span
+    className="lbp-span-link"
+    onClick={[Function]}
+    title="show/hide"
+  >
+    <FaEyeSlash />
+  </span>
+  <span
+    className="lbp-span-link"
+    onClick={[Function]}
+    title="toggle comparison on"
+  >
+    <FaToggleOff />
+  </span>
+  <span
+    className="lbp-span-link"
+    onClick={[Function]}
+    title="set as base"
+  >
+    <FaStar />
+  </span>
+  <div
+    className="unhidden"
+  >
+    <div
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": "TEST Circa prologum sententiarum in quo magister dicit quod intentionis suae est munire davidicam turrim vel potius munitam ostendere clypeis etc quaero istam quaestionem utrum in causa iudiciali fidei contra traditionem pure humanitus adinventam iudex idoneus ferret pro fide sententiam",
+        }
+      }
+    />
+    <div>
+      <span
+        onClick={[Function]}
+      >
+        <FaRegImage />
+      </span>
+    </div>
+  </div>
+</div>
+`;

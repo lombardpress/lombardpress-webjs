@@ -16,8 +16,6 @@
 }
 #lbp-pub-info{
 	font-size: 12px;
-	max-height: 300px;
-	overflow: scroll;
 	margin-bottom: 20px;
 	p {
 		margin: 0
@@ -81,7 +79,7 @@ h1, h2, h3, h4, h5, h6 {font-size: 20px; text-align: center;
 	overflow: visible;
 }
 .skinnyText{
-	margin: 45%;
+	margin-left:45%;
 	width: 50%;
 
 }
@@ -155,4 +153,13 @@ sub, sup{
 .lbp-del{
 	color: red;
 	text-decoration: line-through;
+}
+
+.lbp-quote-clickable, .lbp-ref-clickable{
+	cursor: pointer;
+	border-bottom: 2px solid $light
+}
+.lbp-quote-clickable:hover, .lbp-ref-clickable:hover{
+	cursor: pointer;
+	border-bottom: 3px solid $dark
 }

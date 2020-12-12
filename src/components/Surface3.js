@@ -48,7 +48,7 @@ class Surface3 extends React.Component {
           // only preceed if sparql query returns results
           if (b){
             //second nested async call for annotation list
-            const alUrl = "https://exist.scta.info/exist/apps/scta-app/folio-annotaiton-list-from-simpleXmlCoordinates.xq?surfaceid=" + surfaceid.split("/resource/")[1]
+            const alUrl = "https://exist.scta.info/exist/apps/scta-app/folio-annotaiton-list-from-simpleXmlCoordinates.xq?surfaceid=" + surfaceid.split("/resource/")[1] + "&coords=loose"
             Axios.get(alUrl).then((d2) => {
               //const resources = d2.data.resources
               if (this.mounted){
@@ -77,7 +77,6 @@ class Surface3 extends React.Component {
                 })
               }
             }).catch((error) => {
-              console.log("failed retrieving annotationlist: ", error)
               if (this.mounted){
                 this.setState((prevState) => {
                   const newSurface = {
@@ -121,15 +120,15 @@ componentDidMount(){
     )
     }
   }
-  UNSAFE_componentWillReceiveProps(nextProps){
-    if (nextProps.manifestationid !== this.props.manifestationid){
+  componentDidUpdate(prevProps){
+    if (this.props.manifestationid !== prevProps.manifestationid){
       this.setState((prevState) => {
         return {
           surfaces: []
         }
 
       },
-    this.retrieveSurfaceInfo(nextProps.manifestationid))
+    this.retrieveSurfaceInfo(this.props.manifestationid))
     }
   }
   componentWillUnmount(){
@@ -203,6 +202,16 @@ componentDidMount(){
         const imageUrl = h ? h.imageUrl : ""
         // check to see if an Image Url has been found.
         // if not show "error message"
+        
+        // get line coordinates for focused line
+        let lineFocusCoords = ""
+        if (this.props.lineFocusId){
+          surface.annotations.forEach((h, i) => {
+            if (parseInt(this.props.lineFocusId.split("/")[this.props.lineFocusId.split("/").length - 1]) === (i + 1) ){
+              lineFocusCoords = h.on.split("#xywh=")[1];
+            }
+          })
+        }
         if (imageUrl){
 
           return (
@@ -217,6 +226,7 @@ componentDidMount(){
               targetLabel={""}
               surfaceButton={false}
               displayWidth={this.props.width}
+              lineFocusCoords={lineFocusCoords}
               />
             )
           }

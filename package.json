@@ -4,10 +4,10 @@
   "private": true,
   "homepage": "http://sctalab.lombardpress.org",
   "dependencies": {
-    "@bit/jeffreycwitt.lbp.text-preview": "^0.0.4",
+    "@bit/jeffreycwitt.lbp.text-preview": "^0.0.6",
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
-    "diff-match-patch": "^1.0.4",
+    "diff-match-patch": "jeffreycwitt/diff-match-patch.git#master",
     "gh-pages": "^2.0.1",
     "i18next": "^19.0.2",
     "i18next-browser-languagedetector": "^4.0.1",
@@ -15,17 +15,20 @@
     "jquery": "^3.4.1",
     "mirador": "^3.0.0-alpha.7",
     "node-sass": "^4.12.0",
+    "openseadragon": "^2.4.1",
     "prop-types": "^15.7.2",
     "query-string": "^6.5.0",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.8",
     "react-dom": "^16.8.6",
+    "react-helmet": "^6.0.0",
     "react-i18next": "^11.2.6",
     "react-icons": "^3.7.0",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "^3.0.1",
+    "react-scripts": "3.4.1",
     "react-styleguidist": "^9.1.11",
     "react-syntax-highlighter": "^10.3.0",
+    "react-tooltip": "^4.2.7",
     "uuidv4": "^4.0.0"
   },
   "scripts": {
@@ -66,5 +69,14 @@
         }
       }
     }
+  },
+  "devDependencies": {
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
+    "enzyme-to-json": "^3.4.4",
+    "jest-canvas-mock": "^2.2.0",
+    "raf": "^3.4.1",
+    "react-test-renderer": "^16.13.1",
+    "sinon": "^9.0.2"
   }
 }

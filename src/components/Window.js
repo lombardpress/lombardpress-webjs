@@ -10,6 +10,7 @@ import Comments2 from "./Comments2"
 import CitationWrapper from "./CitationWrapper"
 import TextOutlineWrapper from "./TextOutlineWrapper"
 import TextPreviewWrapper from "./TextPreviewWrapper"
+import Dictionary from "./Dictionary"
 
 
 
@@ -52,11 +53,43 @@ class Window extends React.Component {
 
 
   }
-  UNSAFE_componentWillReceiveProps(newProps){
+  //TODO: delete; after newly added replacement componentDidUpdate continues to work reliablys
+  // UNSAFE_componentWillReceiveProps(newProps){
+  //   //when receiving props we check first to see if a new resource id is present,
+  //   // if so, mounting status for all window child components is set back to false
+  //   let newMountStatus = {}
+  //   if (newProps.info.resourceid !== this.props.info.resourceid){
+  //     newMountStatus = {
+  //       textCompare: false,
+  //       surface3: false,
+  //       comments: false,
+  //       xml: false,
+  //       search:  false,
+  //       textOutline: false,
+  //       citation: false
+  //     }
+  //     // then, the mount status of the opening window load is changed to true
+  //     newMountStatus[newProps.windowLoad] = true
+  //   }
+  //   else if (newProps.windowLoad !== this.props.windowLoad){
+  //     const tempNewMount = this.state.mountStatus
+  //     tempNewMount[newProps.windowLoad] = true
+  //     newMountStatus = tempNewMount
+  //   }
+  //   else{
+  //     newMountStatus = this.state.mountStatus
+  //   }
+  //   this.setState(
+  //     {windowLoad: newProps.windowLoad,
+  //     mountStatus: newMountStatus}
+  //   )
+  // }
+
+  componentDidUpdate(prevProps){
     //when receiving props we check first to see if a new resource id is present,
     // if so, mounting status for all window child components is set back to false
     let newMountStatus = {}
-    if (newProps.info.resourceid !== this.props.info.resourceid){
+    if (this.props.info.resourceid !== prevProps.info.resourceid){
       newMountStatus = {
         textCompare: false,
         surface3: false,
@@ -67,20 +100,25 @@ class Window extends React.Component {
         citation: false
       }
       // then, the mount status of the opening window load is changed to true
-      newMountStatus[newProps.windowLoad] = true
+      newMountStatus[this.props.windowLoad] = true
+      this.setState(
+        {windowLoad: this.props.windowLoad,
+        mountStatus: newMountStatus}
+      )
     }
-    else if (newProps.windowLoad !== this.props.windowLoad){
+    else if (this.props.windowLoad !== prevProps.windowLoad){
       const tempNewMount = this.state.mountStatus
-      tempNewMount[newProps.windowLoad] = true
+      tempNewMount[this.props.windowLoad] = true
       newMountStatus = tempNewMount
+      this.setState(
+        {windowLoad: this.props.windowLoad,
+        mountStatus: newMountStatus}
+      )
     }
     else{
       newMountStatus = this.state.mountStatus
     }
-    this.setState(
-      {windowLoad: newProps.windowLoad,
-      mountStatus: newMountStatus}
-    )
+    
   }
 
 
@@ -99,7 +137,10 @@ class Window extends React.Component {
             // for this reason search is always loaded, so that search results remain when moving between tabs.
             // a compromise approach could be made for similar resources, where some components are dismounted and some are hiddden
           }
-            {(this.state.windowLoad === "textCompare" || this.state.mountStatus.textCompare) && <TextCompareWrapper info={this.props.info} relatedExpressions={this.props.relatedExpressions} hidden={this.state.windowLoad !== "textCompare"}/>}
+            {(this.state.windowLoad === "textCompare" || this.state.mountStatus.textCompare) && 
+            <TextCompareWrapper info={this.props.info}  
+            surfaceWidth={this.props.windowType === 'bottomWindow' ? "1000" : "501"}
+            hidden={this.state.windowLoad !== "textCompare"}/>}
             {
               //this.state.windowLoad === "info" &&  <Info info={this.props.info} relatedExpressions={this.props.relatedExpressions} topLevel={this.props.topLevel} hidden={this.state.windowLoad !== "info"}/>
             }
@@ -107,7 +148,13 @@ class Window extends React.Component {
               //always load search to keep search results present even when navigating two diffferent tabs
               // uncomment to prevent auto mounting this.state.windowLoad === "citation" &&
             }
-            {(this.state.windowLoad === "citation" || this.state.mountStatus.citation) && <CitationWrapper tresourceid={this.props.info.resourceid + this.props.mtFocus} manifestations={this.props.info.manifestations} handleFocusChange={this.props.handleFocusChange} hidden={this.state.windowLoad !== "citation"}/>}
+            {(this.state.windowLoad === "citation" || this.state.mountStatus.citation) &&
+            <CitationWrapper tresourceid={this.props.info.resourceid + this.props.mtFocus} 
+            manifestations={this.props.info.manifestations} 
+            handleFocusChange={this.props.handleFocusChange} 
+            hidden={this.state.windowLoad !== "citation"}
+            selectionRange={this.props.selectionRange}
+            />}
             {this.state.windowLoad === "surface2" &&  <Surface2 surfaceid={this.props.surfaceid} lineFocusId={this.props.lineFocusId} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} handleLineFocusChange={this.props.handleLineFocusChange} hidden={this.state.windowLoad !== "surface2"}/>}
             {(this.state.windowLoad === "surface3" || this.state.mountStatus.surface3) &&  <Surface3Wrapper
             manifestations={this.props.info.manifestations}
@@ -116,20 +163,28 @@ class Window extends React.Component {
             handleToggleTextLinesView={this.handleToggleTextLinesView}
             handleChangeManifestation={this.handleChangeManifestation}
             width={this.props.windowType === 'bottomWindow' ? "1000" : "501"}
+            lineFocusId={this.props.lineFocusId}
             hidden={this.state.windowLoad !== "surface3"}/>}
 
             {
               //(this.state.windowLoad === "comments" || this.state.mountStatus.comments) &&  <Comments resourceid={this.props.info.resourceid} inbox={this.props.info.inbox} hidden={this.state.windowLoad !== "comments"}/>
             }
             {
-              (this.state.windowLoad === "comments" || this.state.mountStatus.comments) &&  <Comments2 resourceid={this.props.info.resourceid} hidden={this.state.windowLoad !== "comments"}/>
+              ((this.state.windowLoad === "comments") 
+              || this.state.mountStatus.comments) &&  
+              <Comments2 
+              resourceid={this.props.info.resourceid + this.props.mtFocus}
+              expressionid={this.props.info.resourceid} 
+              hidden={this.state.windowLoad !== "comments"}
+              selectionRange={this.props.selectionRange}
+              />
             }
           </div>
           }
           {
             //TODO: use of info, topLevel, itemFocus, focusResearceid, resourceid, needs to be better organized and clarified
           }
-          {(this.state.windowLoad === "xml" || this.state.mountStatus.xmls) &&  <XmlView tresourceid={this.props.info ? this.props.info.resourceid + this.props.mtFocus : this.props.itemFocus.expression + this.props.mtFocus} hidden={this.state.windowLoad !== "xml"}/>}
+          {(this.state.windowLoad === "xml" || this.state.mountStatus.xml) &&  <XmlView tresourceid={this.props.info ? this.props.info.resourceid + this.props.mtFocus : this.props.itemFocus.expression + this.props.mtFocus} hidden={this.state.windowLoad !== "xml"}/>}
           {
             //always load outline since it reduces number of calls, as most info is the same for all paragraphs
           }
@@ -147,14 +202,30 @@ class Window extends React.Component {
             searchType="text"
             showSubmit={true}
             showAdvancedParameters={true}
-            showLabels={false}/>
+            showLabels={false}
+            searchTerm={(this.props.selectionRange && this.props.selectionRange.text) ? '"' + this.props.selectionRange.text + '"' : ""}
+            />
           {
             //<Surface surfaceid={this.props.surfaceid} topLevel={this.props.topLevel}/>
           }
           {
             // text preview wrapper -- loads a text preview from expression resource id
-            this.state.windowLoad === "textPreview" &&  <TextPreviewWrapper textPreviewResourceId={this.props.textPreviewResourceId} handleFocusChange={this.props.handleFocusChange} hidden={this.state.windowLoad !== "textPreview"}/>
+            this.state.windowLoad === "textPreview" &&  <TextPreviewWrapper 
+              textPreviewResourceId={this.props.textPreviewResourceId} 
+              textPreviewStart={this.props.textPreviewStart} 
+              textPreviewEnd={this.props.textPreviewEnd} 
+              handleFocusChange={this.props.handleFocusChange} 
+              hidden={this.state.windowLoad !== "textPreview"}
+              handleTextPreviewFocusChange={this.props.handleTextPreviewFocusChange}
+              referringResource={this.props.info.ctranscription}
+              referringSelectionRange={this.props.selectionRange}
+              />
           }
+          {
+            (this.state.windowLoad === "dictionary" && this.props.selectionRange.text) &&
+            <Dictionary text={this.props.selectionRange.text} hidden={this.state.windowLoad !== "dictionary"}/>}
+
+          
         </div>
       )
 
@@ -177,7 +248,8 @@ class Window extends React.Component {
       altWindowState={this.props.altWindowState}
       focusSet={!!this.props.info}
       />
-      {(this.state.windowLoad !== "surface2") && <NextPrevBar info={this.props.info} handleBlockFocusChange={this.props.handleBlockFocusChange}/>}
+      {(this.state.windowLoad !== "surface2" && this.state.windowLoad !== "dictionary" ) 
+      && <NextPrevBar info={this.props.info} handleBlockFocusChange={this.props.handleBlockFocusChange}/>}
 
       {displayChild()}
 

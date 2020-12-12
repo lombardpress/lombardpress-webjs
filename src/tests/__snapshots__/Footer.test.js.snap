@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render and conform to snapshot  1`] = `
+<Navbar
+  bg="light"
+  collapseOnSelect={false}
+  expand="lg"
+  fixed="bottom"
+  style={
+    Object {
+      "zIndex": "0",
+    }
+  }
+  variant="light"
+>
+  <NavbarToggle
+    aria-controls="basic-navbar-nav"
+    label="Toggle navigation"
+  />
+  <NavbarCollapse
+    id="basic-navbar-nav"
+  >
+    <Nav
+      fill={false}
+      justify={false}
+      style={
+        Object {
+          "display": "flex",
+          "justifyContent": "space-around",
+          "width": "100%",
+        }
+      }
+    >
+      <NavLink
+        as={
+          Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "displayName": "SafeAnchor",
+            "render": [Function],
+          }
+        }
+        disabled={false}
+        href="http://github.com/lombardpress/lombardpress-webjs"
+      >
+        Lbp-Web.js
+      </NavLink>
+      <NavLink
+        as={
+          Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "displayName": "SafeAnchor",
+            "render": [Function],
+          }
+        }
+        disabled={false}
+        href="http://lombardpress.org"
+      >
+        A LombardPress Publication
+      </NavLink>
+      <NavLink
+        as={
+          Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "displayName": "SafeAnchor",
+            "render": [Function],
+          }
+        }
+        disabled={false}
+        href="http://scta.info"
+      >
+        Powered by SCTA Data
+         
+      </NavLink>
+      <NavLink
+        as={
+          Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "displayName": "SafeAnchor",
+            "render": [Function],
+          }
+        }
+        disabled={false}
+        href="http://jeffreycwitt.com"
+      >
+        Designed by Jeffrey C Witt
+      </NavLink>
+    </Nav>
+  </NavbarCollapse>
+</Navbar>
+`;

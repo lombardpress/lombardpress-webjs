@@ -125,9 +125,7 @@ class Collection extends React.Component {
       }
 
   }
-  componentDidUpdate(prevProps, prevState){
-
-  }
+  
   componentDidMount(){
     this.mount = true
     this.setState({resourceid: this.props.resourceid})
@@ -135,16 +133,28 @@ class Collection extends React.Component {
 
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  // UNSAFE_componentWillReceiveProps(nextProps) {
+
+  //   // conditional prevents new information requestion if resource id has not changed
+  //   if (nextProps.resourceid !== this.props.resourceid){
+  //     this.setState({resourceid: nextProps.resourceid, filter: ""})
+  //     // this conditional resets form value if ref is present
+  //     // if (this.filter){
+  //     //   this.filter.current.value = ""
+  //     // }
+  //     this.makeRequests(nextProps.resourceid, nextProps.structureType, nextProps.topLevel, nextProps.type)
+  //   }
+  // }
+  componentDidUpdate(prevProps) {
 
     // conditional prevents new information requestion if resource id has not changed
-    if (nextProps.resourceid !== this.props.resourceid){
-      this.setState({resourceid: nextProps.resourceid, filter: ""})
+    if (this.props.resourceid !== prevProps.resourceid){
+      this.setState({resourceid: this.props.resourceid, filter: ""})
       // this conditional resets form value if ref is present
       // if (this.filter){
       //   this.filter.current.value = ""
       // }
-      this.makeRequests(nextProps.resourceid, nextProps.structureType, nextProps.topLevel, nextProps.type)
+      this.makeRequests(this.props.resourceid, this.props.structureType, this.props.topLevel, this.props.type)
     }
   }
   componentWillUnmount(){

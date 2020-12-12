@@ -1,5 +1,7 @@
+//Vendor Imports
 import React from 'react';
 import Axios from 'axios'
+import PropTypes from 'prop-types';
 
 class Print extends React.Component {
   constructor(props){
@@ -30,9 +32,10 @@ class Print extends React.Component {
     const url = this.props.url
     this.getPdf(url)
   }
-  UNSAFE_componentWillReceiveProps(newProps){
-    const newUrl = newProps.url
-    const oldUrl = this.props.url
+  
+  componentDidUpdate(prevProps){
+    const newUrl = this.props.url
+    const oldUrl = prevProps.url
     if (newUrl !== oldUrl){
       this.getPdf(newUrl)
     }
@@ -40,7 +43,7 @@ class Print extends React.Component {
   render(){
 
     return (
-      <div style={{"width": "100vh", "height": "100vh", "margin": "auto"}}>
+      <div style={{"width": "100%", "height": "77vh", "margin": "auto"}}>
       {this.state.pdf ?
         <object data={this.state.pdf} type="application/pdf" width="100%" height="100%">
             alt : <a href={this.state.pdf}>{this.state.pdf}</a>
@@ -51,6 +54,13 @@ class Print extends React.Component {
     </div>
     );
   }
+}
+
+Print.propTypes = {
+  /**
+  * url to raw xml source file
+  */
+ url: PropTypes.string.isRequired,
 }
 
 export default Print;

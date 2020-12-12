@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 
 import ImageTextWrapper from './ImageTextWrapper';
 import ImageLogo from './ImageLogo';
+import OSDInstance from './OSDInstance';
 
 import {runQuery} from './utils'
 import {getSurfaceInfo} from './Queries'
@@ -69,7 +70,7 @@ class Surface2 extends React.Component {
       // only preceed if sparql query returns results
       if (b){
         //second nested async call for annotation list
-        const alUrl = "https://exist.scta.info/exist/apps/scta-app/folio-annotaiton-list-from-simpleXmlCoordinates.xq?surfaceid=" + surfaceid.split("/resource/")[1]
+        const alUrl = "https://exist.scta.info/exist/apps/scta-app/folio-annotaiton-list-from-simpleXmlCoordinates.xq?surfaceid=" + surfaceid.split("/resource/")[1] + "&coords=loose"
         Axios.get(alUrl).then((d2) => {
           if (this.mount){
               this.setState({
@@ -147,9 +148,9 @@ componentDidMount(){
     }
     this.setState({annotationsDisplay: this.props.annotationsDisplay})
   }
-  UNSAFE_componentWillReceiveProps(nextProps){
-    if (nextProps.surfaceid !== this.props.surfaceid){
-    this.retrieveSurfaceInfo(nextProps.surfaceid)
+  componentDidUpdate(prevProps){
+    if (this.props.surfaceid !== prevProps.surfaceid){
+    this.retrieveSurfaceInfo(this.props.surfaceid)
     }
   }
   componentWillUnmount(){
@@ -190,8 +191,10 @@ componentDidMount(){
         return imageTextWrappers
       }
       else{
-        const width = this.props.width ? this.props.width : this.state.width
-        return <img alt="manuscript" src={this.state.imageurl + "/" + this.state.region + "/" + width + ",/0/default.jpg"}/>
+        //TODO uncommnent when ready to make a switch between using OSD or Image
+        //const width = this.props.width ? this.props.width : this.state.width
+        //return <img alt="manuscript" src={this.state.imageurl + "/" + this.state.region + "/" + width + ",/0/default.jpg"}/>
+        return <OSDInstance imageurl={this.state.imageurl}/>
       }
     }
     return (

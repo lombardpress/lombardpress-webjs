@@ -32,9 +32,9 @@ class TextOutlineWrapper extends React.Component {
     this.mounted = true;
     this.retrieveMembersOf(this.props.focusResourceid)
   }
-  UNSAFE_componentWillReceiveProps(newProps){
-    if (newProps.focusResourceid !== this.props.focusResourceid){
-      this.retrieveMembersOf(newProps.focusResourceid)
+  componentDidUpdate(prevProps){
+    if (this.props.focusResourceid !== prevProps.focusResourceid){
+      this.retrieveMembersOf(this.props.focusResourceid)
     }
   }
   componentWillUnmount(){

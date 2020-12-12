@@ -13,13 +13,14 @@ export var completeExpressionTypesListFetch = (expressionTypes) => {
   };
 };
 export var fetchExpressionTypesList = (searchParameters, dispatch) =>{
-  let authorQuery = "";
-    if (searchParameters.searchAuthor){
-      authorQuery = [
-      "?workGroup <http://scta.info/property/hasExpression> ?expression .",
-      "?expression <http://www.loc.gov/loc.terms/relators/AUT> <" + searchParameters.searchAuthor + "> ."
-      ].join('');
-    }
+  //TODO: delete this or uncomment if authorQuery should be included in expressionTypeList Fetch
+  // let authorQuery = "";
+  //   if (searchParameters.searchAuthor){
+  //     authorQuery = [
+  //     "?workGroup <http://scta.info/property/hasExpression> ?expression .",
+  //     "?expression <http://www.loc.gov/loc.terms/relators/AUT> <" + searchParameters.searchAuthor + "> ."
+  //     ].join('');
+  //   }
 
     var query = [
         "SELECT DISTINCT ?expressionType ?expressionTypeTitle ",
@@ -30,7 +31,6 @@ export var fetchExpressionTypesList = (searchParameters, dispatch) =>{
         "ORDER BY ?expressionTypeTitle"].join(' ');
   dispatch(startExpressionTypesListFetch());
   Axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
-    console.log("async firing expressionTypes", res)
     const results = res.data.results.bindings;
     const expressionTypes = results.map((result) => {
         return {

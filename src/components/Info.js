@@ -20,9 +20,6 @@ class Info extends React.Component {
 
 
   }
-  UNSAFE_componentWillReceiveProps(newProps){
-
-  }
 
   render(){
     const displayRelatedExpressions = () => {

@@ -34,9 +34,9 @@ class XmlView extends React.Component {
     }
 
   }
-  UNSAFE_componentWillReceiveProps(nextProps){
-    if (nextProps.tresourceid !== this.props.tresourceid){
-      this.retrieveXML(nextProps.tresourceid)
+  componentDidUpdate(prevProps){
+    if (this.props.tresourceid !== prevProps.tresourceid){
+      this.retrieveXML(this.props.tresourceid)
     }
   }
   componentWillUnmount(){

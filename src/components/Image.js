@@ -1,22 +1,25 @@
 import React from 'react';
+import OSDInstance from './OSDInstance';
 import PropTypes from 'prop-types';
 
+// TODO: osd component makes this component fairly obsolete or a least exchangeable
 function Image(props) {
-  let newCoords = ""
-  if (props.coords){
-    const coordsSplitArray = props.coords.split(",")
-    //const x = parseInt(coordsSplitArray[0]) - 20
-    const x = parseInt(coordsSplitArray[0])
-    const y = coordsSplitArray[1]
-    //const w = parseInt(coordsSplitArray[2]) + 40
-    const w = parseInt(coordsSplitArray[2])
-    const h = coordsSplitArray[3]
-    newCoords = x + "," + y + "," + w + "," + h
-  }
-
-  const imageLink = props.imageUrl + "/" + newCoords + "/" + props.displayWidth + ",/0/default.jpg"
+  //TODO comment when ready to build a conditional based on prop to allow switch between using static image or OSDInstance
+    // let newCoords = ""
+    // if (props.coords){
+    //   const coordsSplitArray = props.coords.split(",")
+    //   //const x = parseInt(coordsSplitArray[0]) - 20
+    //   const x = parseInt(coordsSplitArray[0])
+    //   const y = coordsSplitArray[1]
+    //   //const w = parseInt(coordsSplitArray[2]) + 40
+    //   const w = parseInt(coordsSplitArray[2])
+    //   const h = coordsSplitArray[3]
+    //   newCoords = x + "," + y + "," + w + "," + h
+    // }
+    //const imageLink = props.imageUrl + "/" + newCoords + "/" + props.displayWidth + ",/0/default.jpg"
   return (
-    <img alt="manuscript" src={imageLink}/>
+      //<img alt="manuscript" src={imageLink}/>
+      <OSDInstance imageurl={props.imageUrl} coords={props.coords} displayWidth={props.displayWidth} lineFocusCoords={props.lineFocusCoords}/>
   );
 }
 

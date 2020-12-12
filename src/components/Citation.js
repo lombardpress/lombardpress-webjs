@@ -16,6 +16,7 @@ import {getManifestationCitationInfo} from './Queries'
 class Citation extends React.Component{
   constructor(props){
     super(props)
+    this.mounted = ""
     this.state = {
       eurl: "",
       etitle: "",
@@ -26,8 +27,6 @@ class Citation extends React.Component{
       fetching: false
     }
   }
-
-
 
   retrieveCitation(tresourceid){
     if (tresourceid){
@@ -41,41 +40,53 @@ class Citation extends React.Component{
           const manifestationid = bindings.manifestation ? bindings.manifestation.value : ""
           const eLongTitle = bindings.eLongTitle ? bindings.eLongTitle.value : ""
           const authorTitle = bindings.authorTitle ? bindings.authorTitle.value : ""
-          const author = bindings.authorTitle ? bindings.author.value : ""
+          const author = bindings.author ? bindings.author.value : ""
+          const editorTitle = bindings.editorTitle ? bindings.editorTitle.value : ""
+          const editor = bindings.editor ? bindings.editor.value : ""
           const datasource = bindings.datasource ? bindings.datasource.value : ""
           const title = bindings.codexTitle ? bindings.codexTitle.value : ""
           const start = bindings.surfaceTitle ? bindings.surfaceTitle.value : ""
           const end = allBindings[allBindings.length - 1].surfaceTitle ? allBindings[allBindings.length - 1].surfaceTitle.value : ""
-
-          this.setState(
-            {
-              author: author,
-              authorTitle: authorTitle,
-              eurl: expressionid,
-              etitle: eLongTitle,
-              murl: manifestationid,
-              mtitle: start !== end ? title + ", " + start + "-" + end : title + ", " + start,
-              turl: tresourceid,
-              datasource: datasource,
-              fetching: false
-            }
-          )
+          if (this.mounted){
+            this.setState(
+              {
+                author: author,
+                authorTitle: authorTitle,
+                editor: editor,
+                editorTitle: editorTitle,
+                eurl: expressionid,
+                etitle: eLongTitle,
+                murl: manifestationid,
+                mtitle: start !== end ? title + ", " + start + "-" + end : title + ", " + start,
+                turl: tresourceid,
+                datasource: datasource,
+                fetching: false
+              }
+            )
+          }
         }
       })
     }
   }
   componentDidMount(){
+    this.mounted = true
     this.retrieveCitation(this.props.tresourceid)
 
   }
-  UNSAFE_componentWillReceiveProps(newProps){
-    if (newProps.tresourceid !== this.props.tresourceid){
-      this.retrieveCitation(newProps.tresourceid)
+  
+  componentDidUpdate(prevProps){
+    if (this.props.tresourceid !== prevProps.tresourceid){
+      this.retrieveCitation(this.props.tresourceid)
     }
+  }
+  componentWillUnmount(){
+    this.mounted = false
   }
   render(){
 
     const fullCitationString = this.state.authorTitle + ", " + this.state.etitle + "(" + this.state.mtitle + ") Data source: " + this.state.datasource + "."
+    const wordRange = this.props.selectionRange.wordRange && 
+      this.props.selectionRange.wordRange.start + "-" + this.props.selectionRange.wordRange.end;
     return (
       <Container>
       <h4>Citation</h4>
@@ -84,10 +95,23 @@ class Citation extends React.Component{
       <div>
         <p className="etitle">{this.state.authorTitle}, {this.state.etitle} (<a href={this.state.eurl} target="_blank" rel="noopener noreferrer">{this.state.eurl}</a> <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(this.state.eurl)}}><FaClipboard /></span>)</p>
 
-        <p className="mtitle">({this.state.mtitle} (<a href={this.state.murl} target="_blank" rel="noopener noreferrer">{this.state.murl}</a> <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(this.state.murl)}}><FaClipboard /></span>))</p>
+        <p className="mtitle">
+          {this.state.editor && <span>Ed. {this.state.editorTitle}, </span>}
+          {this.state.mtitle} {wordRange && <span>, words {wordRange} </span>}
+          (<a href={this.state.murl} target="_blank" rel="noopener noreferrer">{this.state.murl}</a> 
+          
+          <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(this.state.murl)}}><FaClipboard /></span>)
+        </p>
 
-        <p className="ttitle">(Transcription Resource: <a href={this.state.turl} target="_blank" rel="noopener noreferrer">{this.state.turl}</a> <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(this.state.turl)}}><FaClipboard /></span>;
-        (Data source:<a href={this.state.datasource} target="_blank" rel="noopener noreferrer"> {this.state.datasource}</a> <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(this.state.datasource)}}><FaClipboard /></span>)</p>
+        <p className="ttitle">
+          <span>Transcription Resource: </span>
+          <a href={this.state.turl} target="_blank" rel="noopener noreferrer">{this.state.turl}</a>
+          <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(this.state.turl)}}><FaClipboard /></span>
+          <br/>
+          <span>Data source: </span>
+          <a href={this.state.datasource} target="_blank" rel="noopener noreferrer"> {this.state.datasource}</a> 
+          <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(this.state.datasource)}}><FaClipboard /></span>
+          </p>
         <p className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(fullCitationString)}}><FaClipboard /> Copy Full Citation to Clipboard</p>
       </div>
       }

@@ -20,9 +20,7 @@ class SearchWrapper extends React.Component {
   componentDidMount(){
 
   }
-  UNSAFE_componentWillReceiveProps(){
-
-  }
+  
   render(){
     return (
       <Container className={this.props.hidden ? "hidden" : "showing"}>

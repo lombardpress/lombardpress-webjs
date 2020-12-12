@@ -81,13 +81,29 @@ class TextOutline extends React.Component {
     }
 
   }
-  UNSAFE_componentWillReceiveProps(newProps){
-    if (newProps.resourceid !== this.props.resourceid){
+  // UNSAFE_componentWillReceiveProps(newProps){
+  //   if (newProps.resourceid !== this.props.resourceid){
+  //     this.retrieveParts(this.props.resourceid)
+  //   }
+  //   if (newProps.resourceid !== this.props.resourceid || newProps.membersOf !== this.props.membersOf){
+  //     if (newProps.membersOf){
+  //       if (newProps.membersOf.includes(newProps.resourceid)) {
+  //         this.setState({showChildren: true})
+  //       }
+  //       // else{
+  //       //   this.setState({showChildren: false})
+  //       // }
+  //     }
+  //   }
+
+  // }
+  componentDidUpdate(prevProps){
+    if (this.props.resourceid !== prevProps.resourceid){
       this.retrieveParts(this.props.resourceid)
     }
-    if (newProps.resourceid !== this.props.resourceid || newProps.membersOf !== this.props.membersOf){
-      if (newProps.membersOf){
-        if (newProps.membersOf.includes(newProps.resourceid)) {
+    if (this.props.resourceid !== prevProps.resourceid || this.props.membersOf !== prevProps.membersOf){
+      if (this.props.membersOf){
+        if (this.props.membersOf.includes(this.props.resourceid)) {
           this.setState({showChildren: true})
         }
         // else{

@@ -1,5 +1,6 @@
 import React from 'react';
-import Qs from "query-string"
+import Qs from "query-string";
+import {Helmet} from "react-helmet";
 import TextWrapper from "./TextWrapper"
 import TextArticle from "./TextArticle"
 import Collection from "./Collection"
@@ -28,13 +29,24 @@ class TextSwitch extends React.Component {
       blockDivFocus: "",
       resourceTitle: "",
       author: "",
-      authorTitle: ""
+      authorTitle: "",
+      tokenRange: ""
+
     }
   }
   handleUpdateUrlResource(fullid){
     this.props.history.push({search: '?resourceid=' + fullid})
   }
   getInfo(resourceid){
+    let tokenRange;
+    if (resourceid.split("@")[1]){
+      tokenRange = {start: parseInt(resourceid.split("@")[1].split("-")[0]), end: parseInt(resourceid.split("@")[1].split("-")[1])}
+    }
+    
+    resourceid = resourceid.split("@")[0]
+    
+    
+
     const structureTypePromise = runQuery(getStructureType(resourceid))
     structureTypePromise.then((t) => {
       // reduce results to bindings variable
@@ -100,7 +112,13 @@ class TextSwitch extends React.Component {
       }
       else if (structureType === "http://scta.info/resource/structureItem" ){
         if (type === "http://scta.info/resource/transcription"){
-          this.setState({itemTranscriptionId: resourceid, displayType: "item", blockDivFocus: "", resourceTitle: resourceTitle})
+          this.setState({
+            itemTranscriptionId: resourceid, 
+            displayType: "item", 
+            blockDivFocus: resourceid.split("/resource/")[1].split("/")[0], 
+            resourceTitle: resourceTitle, 
+            tokenRange: tokenRange
+          })
         }
         else {
           const structureTypePromise = runQuery(getItemTranscription(resourceid))
@@ -109,23 +127,32 @@ class TextSwitch extends React.Component {
               {
                 itemTranscriptionId: t.data.results.bindings[0] ? t.data.results.bindings[0].ctranscription.value : "", // conditional checks in case the query comes up empty; if empty it sets transcription id to ""
                 displayType: "item",
-                blockDivFocus: "",
-                resourceTitle: resourceTitle})
+                blockDivFocus: resourceid.split("/resource/")[1].split("/")[0], // this string split is a bad way to be getting the expression level id
+                resourceTitle: resourceTitle,
+                tokenRange: tokenRange
+              })
               });
             }
           }
       else if (structureType === "http://scta.info/resource/structureElement" || structureType === "http://scta.info/resource/structureBlock" || structureType === "http://scta.info/resource/structureDivision" ){
         const structureTypePromise = runQuery(getItemTranscriptionFromBlockDiv(resourceid))
         structureTypePromise.then((t) => {
-          console.log(t)
           // if transcription
           if (type === "http://scta.info/resource/transcription"){
-            this.setState({itemTranscriptionId: itemParent, blockDivFocus: t.data.results.bindings[0].blockDivExpression.value, displayType: "item", resourceTitle: resourceTitle})
+            this.setState({itemTranscriptionId: itemParent, 
+              blockDivFocus: t.data.results.bindings[0].blockDivExpression.value, 
+              displayType: "item", resourceTitle: resourceTitle, 
+              tokenRange: tokenRange
+            })
           }
           // if expression
           else if (type === "http://scta.info/resource/expression"){
             if (t.data.results.bindings[0].ctranscription){
-              this.setState({itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, blockDivFocus: resourceid, displayType: "item", resourceTitle: resourceTitle})
+              this.setState({
+                itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, 
+                blockDivFocus: resourceid, displayType: "item", 
+                resourceTitle: resourceTitle, 
+                tokenRange: tokenRange})
             }
             else{
               this.setState({displayType: "notFound"})
@@ -133,7 +160,12 @@ class TextSwitch extends React.Component {
           }
           // if manifestation
           else {
-            this.setState({itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, blockDivFocus: t.data.results.bindings[0].blockDivExpression.value, displayType: "item", resourceTitle: resourceTitle})
+            this.setState(
+              {itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, 
+              blockDivFocus: t.data.results.bindings[0].blockDivExpression.value, 
+              displayType: "item", 
+              resourceTitle: resourceTitle, 
+              tokenRange: tokenRange})
           }
         });
       }
@@ -155,13 +187,25 @@ class TextSwitch extends React.Component {
       }
     }
   }
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const newResourceId = Qs.parse(nextProps.location.search, { ignoreQueryPrefix: true }).resourceid
-    if (newResourceId.includes("https://scta.info/")){
-      this.handleUpdateUrlResource(newResourceId.replace("https://scta.info/", "http://scta.info/"))
-    }
-    else{
-      this.getInfo(newResourceId)
+  // UNSAFE_componentWillReceiveProps(nextProps) {
+  //   const newResourceId = Qs.parse(nextProps.location.search, { ignoreQueryPrefix: true }).resourceid
+  //   if (newResourceId.includes("https://scta.info/")){
+  //     this.handleUpdateUrlResource(newResourceId.replace("https://scta.info/", "http://scta.info/"))
+  //   }
+  //   else{
+  //     this.getInfo(newResourceId)
+  //   }
+  // }
+  componentDidUpdate(prevProps) {
+    const newResourceId = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).resourceid
+    const oldResourceId = Qs.parse(prevProps.location.search, { ignoreQueryPrefix: true }).resourceid
+    if (newResourceId !== oldResourceId){
+      if (newResourceId.includes("https://scta.info/")){
+        this.handleUpdateUrlResource(newResourceId.replace("https://scta.info/", "http://scta.info/"))
+      }
+      else{
+        this.getInfo(newResourceId)
+      }
     }
   }
 
@@ -197,7 +241,7 @@ class TextSwitch extends React.Component {
         //TODO: now that workGroup is using TextOutlineWrapper i'm not sure there is any need for separation
         // the above conditional and this one should be combined
         return (
-          <Container className="collectionBody">
+          <Container className="collectionBody">   
           <h1>{this.state.resourceTitle}</h1>
           <p style={{"textAlign": "center"}}>By <Link to={"/text?resourceid=" + this.state.author}>{this.state.authorTitle}</Link></p>
           <Row>
@@ -232,7 +276,9 @@ class TextSwitch extends React.Component {
             <TextWrapper itemid={this.state.itemTranscriptionId.split("/resource/")[1].split("/")[0]}
             transcriptionid={this.state.itemTranscriptionId}
             blockDivFocus={this.state.blockDivFocus}
-            handleUpdateUrlResource={this.handleUpdateUrlResource}/>
+            handleUpdateUrlResource={this.handleUpdateUrlResource}
+            tokenRange={this.state.tokenRange}
+            />
           )
         }
         // if no transcription resource id, exists return message
@@ -264,8 +310,34 @@ class TextSwitch extends React.Component {
         return null
       }
     }
+  const dctype = () => {
+    if (this.state.displayType === "codex"){
+      return <meta name="BIB.type" content="Manuscript"/>
+    }
+    else{
+      return <meta name="DC.type" content="document"/>
+    }
+  }
   return (
-    display()
+    <div>
+      <Helmet>
+        <title>{this.state.resourceTitle}</title>
+        <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" ></link>
+        <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/"/>
+        <link rel="schema.BIB" href="http://purl.org/net/biblio#"/>
+        {dctype()}
+        <meta name="DC.identifier" content={this.state.resourceid}/>
+        {//<meta name="DC.description" content="test description"/>
+        }
+        <meta name="DC.title" content={this.state.resourceTitle}/>
+        <meta name="DC.creator" content={this.state.authorTitle}/>
+        <meta name="DC.Language" content="la"/>
+        <meta name="DC.Publisher" content="SCTA"/>
+        
+      </Helmet>
+      {display()}
+    </div>
+    
     );
   }
 
