@@ -287,6 +287,7 @@ class TextWrapper extends React.Component {
                 inbox: bindings.inbox.value,
                 next: bindings.next ? bindings.next.value : "",
                 previous: bindings.previous ? bindings.previous.value : "",
+                parent: bindings.parent ? bindings.parent.value : "",
                 cdoc: bindings.cdoc ? bindings.cdoc.value : "",
                 cxml: bindings.cxml ? bindings.cxml.value : "",
                 topLevel: bindings.topLevelExpression.value,
