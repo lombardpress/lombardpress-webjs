@@ -132,7 +132,7 @@
 // query info block, division, or item (possible also collection)
 export function basicInfoQuery(itemExpressionUri){
   const query = [
-    "SELECT DISTINCT ?title ?structureType ?cmanifestation ?cmanifestationTitle ?manifestation ?manifestationTitle ?ctranscription ?manifestationCTranscription ?cdoc ?cxml ?expressionShortId ?longTitle ?topLevelExpression ?next ?previous ?inbox ?author ?authorTitle ",
+    "SELECT DISTINCT ?title ?structureType ?cmanifestation ?cmanifestationTitle ?manifestation ?manifestationTitle ?ctranscription ?manifestationCTranscription ?cdoc ?cxml ?expressionShortId ?longTitle ?topLevelExpression ?next ?previous ?inbox ?author ?authorTitle ?parent ",
     "WHERE { ",
     "<" + itemExpressionUri + "> <http://purl.org/dc/elements/1.1/title> ?title .",
     "<" + itemExpressionUri + "> <http://scta.info/property/structureType> ?structureType .",
@@ -160,6 +160,9 @@ export function basicInfoQuery(itemExpressionUri){
     "}",
     "OPTIONAL {",
     "<" + itemExpressionUri + "> <http://scta.info/property/previous> ?previous .",
+    "}",
+    "OPTIONAL {",
+    "<" + itemExpressionUri + "> <http://purl.org/dc/terms/isPartOf> ?parent .",
     "}",
     "<" + itemExpressionUri + "> <http://www.w3.org/ns/ldp#inbox> ?inbox . ",
     "}",

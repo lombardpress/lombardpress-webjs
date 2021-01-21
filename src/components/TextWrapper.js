@@ -287,6 +287,7 @@ class TextWrapper extends React.Component {
                 inbox: bindings.inbox.value,
                 next: bindings.next ? bindings.next.value : "",
                 previous: bindings.previous ? bindings.previous.value : "",
+                parent: bindings.parent ? bindings.parent.value : "",
                 cdoc: bindings.cdoc ? bindings.cdoc.value : "",
                 cxml: bindings.cxml ? bindings.cxml.value : "",
                 topLevel: bindings.topLevelExpression.value,
@@ -505,18 +506,12 @@ class TextWrapper extends React.Component {
         })
         return windows
       }
-    const textClass = () => {
-      let aSideWindowOpen = false;
-      if (this.state.windows.window1.open && this.state.windows.window1.position === "sideWindow" && this.state.windows.window1.openWidthHeight === "middle"){
-        aSideWindowOpen = true
-      }
-      else if (this.state.windows.window2.open && this.state.windows.window2.position === "sideWindow"){
-        aSideWindowOpen = true
-      }
-      return aSideWindowOpen
-    }
-
-    const textHide = this.state.pdfView ? "hidden" : "showing"
+    
+    const textClassNames = ["lbp-text"]
+    this.state.windows.window1.open && this.state.windows.window1.openWidthHeight === "middle" ? textClassNames.push("skinnyText") : textClassNames.push("fullText");
+    this.state.windows.window2.open && textClassNames.push("longText");
+    this.state.pdfView ? textClassNames.push("hidden"): textClassNames.push("showing");
+    
 
     return (
       <div>
@@ -528,7 +523,7 @@ class TextWrapper extends React.Component {
           // Text Container and Text are always loaded to avoid unnecessary re-mounting
           // textHide variable is used to hide or show textContainer depending on whether this.statePdfView is true or false
         }
-        <Container className={textClass() ? "lbp-text skinnyText " + textHide : "lbp-text fullText " + textHide}>
+        <Container className={textClassNames.join(" ")}>
 
         {this.state.itemFocus &&
           <Text
