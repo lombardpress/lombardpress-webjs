@@ -123,6 +123,25 @@ class Window extends React.Component {
 
 
   render(){
+    const displayTextPreviewWrappers = () => {
+      //TODO: start and end numbers are not yet arrays
+      // so the same start and end numbers will get sent to each item
+      const items = this.props.textPreviewObjects.map((i, index) => {
+        return (
+          <TextPreviewWrapper key={index}
+        textPreviewResourceId={i.id} 
+        textPreviewStart={i.range ? i.range.split("-")[0] : null} 
+        textPreviewEnd={i.range ? i.range.split("-")[1] : null} 
+        handleFocusChange={this.props.handleFocusChange} 
+        hidden={this.state.windowLoad !== "textPreview"}
+        handleTextPreviewFocusChange={this.props.handleTextPreviewFocusChange}
+        referringResource={this.props.info.ctranscription}
+        referringSelectionRange={this.props.selectionRange}
+        />
+        )
+      })
+      return items
+    }
     const displayChild = () => {
       return(
         <div>
@@ -208,18 +227,10 @@ class Window extends React.Component {
           {
             //<Surface surfaceid={this.props.surfaceid} topLevel={this.props.topLevel}/>
           }
+          
           {
             // text preview wrapper -- loads a text preview from expression resource id
-            this.state.windowLoad === "textPreview" &&  <TextPreviewWrapper 
-              textPreviewResourceId={this.props.textPreviewResourceId} 
-              textPreviewStart={this.props.textPreviewStart} 
-              textPreviewEnd={this.props.textPreviewEnd} 
-              handleFocusChange={this.props.handleFocusChange} 
-              hidden={this.state.windowLoad !== "textPreview"}
-              handleTextPreviewFocusChange={this.props.handleTextPreviewFocusChange}
-              referringResource={this.props.info.ctranscription}
-              referringSelectionRange={this.props.selectionRange}
-              />
+            this.state.windowLoad === "textPreview" &&  displayTextPreviewWrappers()
           }
           {
             (this.state.windowLoad === "dictionary" && this.props.selectionRange.text) &&

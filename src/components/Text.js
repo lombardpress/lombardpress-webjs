@@ -161,13 +161,26 @@ class Text extends React.Component {
 
       $(document).on("click", '.js-show-reference-paragraph', function(e){
        e.preventDefault();
-       const target = $(this).attr('data-url')
+       /** @type {string} */
        const targetParagraph = $(this).attr('data-target-resource')
-       const start = $(this).attr('data-start')
-       const end = $(this).attr('data-end')
-
+       /** @type {string} */
+       const targetIds = $(this).attr('data-url')
+       /** @type {Array} */
+       const splitTargetId = targetIds.split(" ")
+       /** @type {string} */
+       const targetRange = $(this).attr('data-target-range')
+       /** @type {Array} */
+       const splitTargetRange = targetRange ? targetRange.split(" ") : null
+       /** @type {Array} */
+       const targetObjects = splitTargetId.map((i, index) => {
+         return {
+           id: i,
+           range: splitTargetRange ? splitTargetRange[index] : null
+         }
+       })
+      
        // set the desired text preview focus to the target of the reference
-       _this.props.handleTextPreviewFocusChange(target, start, end)
+       _this.props.handleTextPreviewFocusChange(targetObjects)
        //opening bottomw window 2 to textPreview
        _this.props.openWindow("window2", "textPreview")
 
