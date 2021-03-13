@@ -41,9 +41,7 @@ class TextWrapper extends React.Component {
       itemFocus: "",
       surfaceid: "",
       lineFocusId: "",
-      textPreviewResourceId: "",
-      textPreviewStart: "",
-      textPreviewEnd: "",
+      textPreviewObjects: [],
       pdfView: false,
       selectionRange: undefined, // should be undefined or object
       windows: {
@@ -213,8 +211,17 @@ class TextWrapper extends React.Component {
   handleLineFocusChange(lineFocusId){
     this.setState({lineFocusId: lineFocusId})
   }
-  handleTextPreviewFocusChange(textPreviewResourceId, start, end){
-    this.setState({textPreviewResourceId: textPreviewResourceId, textPreviewStart: start, textPreviewEnd: end})
+  /**
+   * @description a function that handle events on main text and passes relevant information to TextPreviewWrapper Component
+   * 
+   * @param {Object[]} targetObjects - an array of objects 
+   * @param {string} id - the target id
+   * @param {string} range - the word range (e.g. 1-4), delimited by a dash, corresponding to the target
+   */
+  handleTextPreviewFocusChange(targetObjects){
+    //check to see if textPreviewResourceId carries more than one id
+    //if so split by white space 
+    this.setState({textPreviewObjects: targetObjects})
   }
   //TODO
   //These two function should be refactored into one
@@ -491,9 +498,7 @@ class TextWrapper extends React.Component {
               annotationsDisplay={this.state.windows[key].annotationsDisplay}
               handleChangeManifestation={this.handleChangeManifestation}
               defaultManifestationSlug={this.state.windows[key].defaultManifestationSlug}
-              textPreviewResourceId={this.state.textPreviewResourceId}
-              textPreviewStart={this.state.textPreviewStart}
-              textPreviewEnd={this.state.textPreviewEnd}
+              textPreviewObjects={this.state.textPreviewObjects}
               handleTextPreviewFocusChange={this.handleTextPreviewFocusChange}
               handleLineFocusChange={this.handleLineFocusChange}
               selectionRange={this.state.selectionRange}
