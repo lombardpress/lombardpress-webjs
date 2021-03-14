@@ -1,6 +1,6 @@
  export function getCanonicalTranscription(resourceid){
    const query = [
-      "SELECT DISTINCT ?ctranscription ",
+      "SELECT DISTINCT ?ctranscription ?longTitle ",
       "WHERE { ",
         "{",
           "<" + resourceid + "> <http://scta.info/property/hasCanonicalManifestation> ?manifestation .",
@@ -15,7 +15,10 @@
         "{",
           "<" + resourceid + "> <http://scta.info/property/hasCanonicalTranscription> ?ctranscription .",
         "}",
+        "?ctranscription <http://scta.info/property/isTranscriptionOf> ?m .",
+        "?m <http://scta.info/property/isManifestationOf> ?e .",
+        "?e <http://scta.info/property/longTitle> ?longTitle .",
       "}"
-      ].join('');
+      ].join(' ');
   return query
  }
