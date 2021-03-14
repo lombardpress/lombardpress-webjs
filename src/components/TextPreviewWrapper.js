@@ -13,6 +13,7 @@ class TextPreviewWrapper extends React.Component {
     this.mounted = false
     this.state = {
       tresourceid: "",
+      longTitle: null,
       showTokenPosition: false
     }
   }
@@ -26,7 +27,11 @@ class TextPreviewWrapper extends React.Component {
 
     info.then((d) => {
       if (this.mounted){
-        this.setState({tresourceid: d.data.results.bindings[0].ctranscription.value})
+        this.setState(
+          {
+            tresourceid: d.data.results.bindings[0].ctranscription.value,
+            longTitle: d.data.results.bindings[0].longTitle.value 
+        })
       }
     })
     .catch((e) => {
@@ -61,7 +66,7 @@ class TextPreviewWrapper extends React.Component {
     return (
       <Container className={this.props.hidden ? "hidden" : "showing"}>
       {/* <p>Go to: <span className="lbp-span-link" onClick={() => this.props.handleFocusChange(this.state.tresourceid)}>{this.state.tresourceid}</span></p> */}
-      <p>Go to: <Link onClick={() => {this.props.handleTextPreviewFocusChange([{id: this.props.referringResource, range: referringRange}])}} to={"/text?resourceid=" + link}>{link}</Link></p>
+      <p>Go to: <Link onClick={() => {this.props.handleTextPreviewFocusChange([{id: this.props.referringResource, range: referringRange}])}} to={"/text?resourceid=" + link}>{this.state.longTitle}</Link></p>
       {
        this.state.tresourceid && 
        <div>
