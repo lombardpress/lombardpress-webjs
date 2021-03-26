@@ -106,6 +106,7 @@ const Search3Parameters = (props) => {
             <Form.Control as="select" onChange={(e) => {setSearchType(e.target.value)}} value={searchParameters.searchType}>
               <option value="questionTitles">Questions Titles</option>
               <option value="text">Text</option>
+              <option value="figure">Figure</option>
             </Form.Control>
           </InputGroup>
           <InputGroup size="sm" className="mb-2">
