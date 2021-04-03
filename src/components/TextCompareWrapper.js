@@ -6,9 +6,11 @@ import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
 import TextCompare from './TextCompare'
 
+import { runQuery } from './utils'
+import { getRelatedExpressions } from './Queries'
 
 class TextCompareWrapper extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.handleToggleCompare = this.handleToggleCompare.bind(this)
     this.handleChangeBase = this.handleChangeBase.bind(this)
@@ -18,123 +20,135 @@ class TextCompareWrapper extends React.Component {
     this.mounted = ""
     this.state = {
       expressions: {},
+      page: 1,
+      intendedPage: 1,
+      pagesize: 10,
+      nextPage: 2,
+      previousPage: undefined,
+      offset: 0,
+      rangeStart: 1,
+      rangeEnd: 20,
       baseText: "",
-      customExpressionId: "", 
+      customExpressionId: "",
       customExpressionObject: {}
     }
 
   }
-  handleSetCustomExpressionId(customExpressionId){
-    this.setState({customExpressionId: customExpressionId})
+  handleSetCustomExpressionId(customExpressionId) {
+    this.setState({ customExpressionId: customExpressionId })
   }
-  handleCustomUpdateRelatedExpressions(e){
+  handleCustomUpdateRelatedExpressions(e) {
     e.preventDefault()
     const expressionObject = {
       resourceid: this.state.customExpressionId,
       relationLabel: "user added comparison"
     }
-    this.setState({customExpressionObject: expressionObject})
+    this.setState({ customExpressionObject: expressionObject })
   }
-  handleChangeBase(rawText){
-    this.setState({baseText: rawText})
+  handleChangeBase(rawText) {
+    this.setState({ baseText: rawText })
   }
   //TODO: Doesn't seem to be called; should be deleted
-  handleToggleCompare(expressionid){
+  handleToggleCompare(expressionid) {
     this.setState((prevState) => {
-      const newExpressions = {...prevState.expressions}
+      const newExpressions = { ...prevState.expressions }
       newExpressions[expressionid].show = !newExpressions[expressionid].show
       return {
         expressions: newExpressions
       }
     })
   }
-  getText(ctranscription){
+  getText(ctranscription) {
     const _this = this;
     Axios.get("https://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + ctranscription)
       .then((text) => {
-        if (this.mounted){
-          _this.setState({baseText: text.data})
+        if (this.mounted) {
+          _this.setState({ baseText: text.data })
         }
       })
-    }
-
-  componentDidMount(){
-    this.mounted = true
-    // prevents check when prop.info is not set
-    if (this.props.info){
-      // prevents check when prop.info.relatedExpressions is not set
-      if (this.props.info.relatedExpressions){
-        this.getText(this.props.info.ctranscription)
-        //create empty expressions object
-        const expressions = {}
-        // add first object which should be compare item for first/target resource
-        expressions[this.props.info.resourceid] = {
-          id: this.props.info.resourceid, 
-          authorTitle: this.props.info.authorTitle, 
-          longTitle: this.props.info.longTitle, 
-          show: false
-        }
-        this.props.info.relatedExpressions.forEach((r) => {
-          expressions[r.resourceid] = {
-            id: r.resourceid, 
-            relationLabel: r.relationLabel, 
-            referringResource: r.referringResource, 
-            author: r.author,
-            authorTitle: r.authorTitle, 
-            longTitle: r.longTitle,
-            show: false}
-        })
-        this.setState({expressions: expressions})
-      }
-    }
   }
-  componentDidUpdate(prevProps, prevState){
-    // only fire reload if "info resource" has changed"
-    if ((prevProps.info.resourceid !== this.props.info.resourceid) || (prevState.customExpressionObject !== this.state.customExpressionObject)){
-    // this conditional is needed, because props are waiting on multiple async calls.
-    // when an async call finishes it will up; and the related Expression query last,
-    // it will use the old ctranscription prop overriding the the update from the prop update from the other async call
-    // TODO: above message is unclear; but this conditional seems important. Needs better explanation of why it is necessary
-    if (prevProps.info.relatedExpressions){
-      // this conditional may no longer be necessary based on first conditional check
-      if (prevProps.info.ctranscription !== this.props.info.ctranscription){
-        this.getText(this.props.info.ctranscription)
-      }
-      //create empty expressions object
+  /**
+   * @description initiates sparql requests and parses initial results.
+   * @param {string} resourceid - scta url for expression object
+   * @param {integer} page - page to start on in paging results
+   * @param {integer} pagesize - length of page results
+   */
+  getRelatedExpressions(resourceid, page, pagesize) {
+    const offset = (page - 1) * pagesize
+    const relatedExpressions = runQuery(getRelatedExpressions(resourceid, offset, pagesize))
+    relatedExpressions.then((d) => {
+      const bindings2 = d.data.results.bindings
       const expressions = {}
       // add first object which should be compare item for first/target resource
       expressions[this.props.info.resourceid] = {
-        id: this.props.info.resourceid, 
-          authorTitle: this.props.info.authorTitle, 
-          longTitle: this.props.info.longTitle, 
-          show: false,
+        id: this.props.info.resourceid,
+        authorTitle: this.props.info.authorTitle,
+        longTitle: this.props.info.longTitle,
+        show: false
       }
-      //combine info.relatedExpressions with customExpression
-      const newRelatedExpressions = this.props.info.relatedExpressions.concat(this.state.customExpressionObject)
-      newRelatedExpressions.forEach((r) => {
-        expressions[r.resourceid] = {
-          id: r.resourceid, 
-          relationLabel: r.relationLabel, 
-          referringResource: r.referringResource, 
-          author: r.author,
-          authorTitle: r.authorTitle, 
-          longTitle: r.longTitle,
-          show: false}
+      //arrange sparql results into an object with resourceids as keys
+      bindings2.forEach((r) => {
+        expressions[r.isRelatedTo.value] = {
+          id: r.isRelatedTo.value,
+          relationLabel: r.label.value,
+          referringResource: r.element ? r.element.value : "",
+          author: r.author ? r.author.value : "",
+          authorTitle: r.authorTitle ? r.authorTitle.value : "",
+          longTitle: r.longTitle ? r.longTitle.value : "",
+          show: false
+        }
       })
-      this.setState({expressions: expressions})
+      // set state with new related expressions results and updates to paging information
+      this.setState({
+        expressions: expressions,
+        intendedPage: page,
+        nextPage: page + 1,
+        previousPage: page > 1 ? page - 1 : undefined,
+        offset: (page - 1) * pagesize,
+        rangeStart: ((page - 1) * pagesize) + 1,
+        rangeEnd: pagesize * page
+      })
+    })
+  }
+  componentDidMount() {
+    this.mounted = true
+    if (this.props.info) {
+      this.getRelatedExpressions(this.props.info.resourceid, this.state.page, this.state.pagesize)
+      this.getText(this.props.info.ctranscription)
     }
   }
+  componentDidUpdate(prevProps, prevState) {
+    // if resource id changes or results paging, then perform new query
+    if (prevProps.info.resourceid !== this.props.info.resourceid || prevState.page !== this.state.page) {
+      const startPage = prevProps.info.resourceid !== this.props.info.resourceid ? 1 : this.state.page
+      this.getRelatedExpressions(this.props.info.resourceid, startPage, this.state.pagesize)
+      this.getText(this.props.info.ctranscription)
+    }
+    // if a custom object has been added; add custom object to state.expressions
+    if (prevState.customExpressionObject !== this.state.customExpressionObject) {
+      const r = this.state.customExpressionObject
+      const newExpression = {
+        id: r.resourceid,
+        relationLabel: r.relationLabel,
+      }
+      this.setState((prevState) => {
+        return {
+          expressions: { ...prevState.expressions, newExpression }
+        }
+      })
+    }
   }
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.mounted = false
   }
-
-
-  render(){
+  render() {
     const displayExpressions = () => {
       const exObject = this.state.expressions
       const expressions = Object.keys(exObject).map((key) => {
         const isMainText = this.props.info.resourceid === exObject[key].id ? true : false
+        console.log("isMainText", this.props.info.resourceid)
+        console.log("isMainText", exObject[key].id)
+        console.log("isMainText", isMainText)
         return (
           <div key={this.state.expressions[key].id}>
             {<TextCompare
@@ -150,35 +164,68 @@ class TextCompareWrapper extends React.Component {
               baseText={this.state.baseText}
               show={exObject[key].show}
               surfaceWidth={this.props.surfaceWidth}
-              />}
+            />}
           </div>
         )
       })
       return expressions
     }
+    const displayPagination = () => {
+      return (
+        <div>
+        {
+          (Object.keys(this.state.expressions).length > this.state.pagesize || this.state.rangeEnd > this.state.pagesize) &&
+        <p className="small">
+          {this.state.previousPage &&
+            <span>
+              <span className="lbp-span-link" onClick={() => this.setState({ page: this.state.previousPage })}>Previous {this.state.previousPage}</span>  
+              <span> | </span>
+            </span>
+              }
+          <span>Current Page: </span>
+          <FormControl style={{width: "40px", display: "inline"}} inline="true" size="sm" id="text" type="text" onChange={(e) => this.setState({ intendedPage: e.target.value })} value={this.state.intendedPage}></FormControl>
+          <Button style={{display: "inline"}}inline="true" size="sm" onClick={(e) => this.setState({ page: parseInt(this.state.intendedPage) })}>Go</Button>
+          
+          <span>({this.state.rangeStart} - {this.state.rangeEnd})</span>
+          {Object.keys(this.state.expressions).length > this.state.pagesize && 
+            <span>
+              <span> | </span> 
+              <span className="lbp-span-link" onClick={() => this.setState({ page: this.state.nextPage })}>Next: {this.state.nextPage}</span>
+            </span>
+          }
+        </p>
+          }
+        </div>
+      )
+    }
 
-  return (
-    <Container className={this.props.hidden ? "hidden" : "showing"}>
-    <h4>Text Comparisons</h4>
-    {displayExpressions()}
-    <div style={{"borderBottom": "1px solid rgba(0, 0, 0, 0.1)", padding: "5px"}}>
-      <p style={{fontSize: "12px"}}>Create custom user compare</p>
-      <Form onSubmit={this.handleCustomUpdateRelatedExpressions} inline="true" > 
-      <FormControl inline="true" size="sm" id="text" type="text" value={this.state.customExpressionId} placeholder="expression id" className="mr-sm-2" onChange={(e) => {this.handleSetCustomExpressionId(e.target.value)}}/>
-      <Button inline="true" size="sm"  type="submit" style={{margin: "2px"}}>Submit</Button>
-    </Form>
-   </div>
+    return (
+      <Container className={this.props.hidden ? "hidden" : "showing"}>
+        <h4>Text Comparisons</h4>
+        {displayPagination()}
+        <p className="small"><a href="https://lombardpress.org/adfontes/" target="_blank" rel="noopener noreferrer">Advanced Index and Filtering</a></p>
+        <hr />
+        {displayExpressions()}
+        <hr />
+        {displayPagination()}
+        <div style={{ "borderBottom": "1px solid rgba(0, 0, 0, 0.1)", padding: "5px" }}>
+          <p style={{ fontSize: "12px" }}>Create custom user compare</p>
+          <Form onSubmit={this.handleCustomUpdateRelatedExpressions} inline="true" >
+            <FormControl inline="true" size="sm" id="text" type="text" value={this.state.customExpressionId} placeholder="expression id" className="mr-sm-2" onChange={(e) => { this.handleSetCustomExpressionId(e.target.value) }} />
+            <Button inline="true" size="sm" type="submit" style={{ margin: "2px" }}>Submit</Button>
+          </Form>
+        </div>
 
-    <hr/>
-    <div>
-      <p>Other Comparison/Connection Visualizations</p>
-      <p><a target="_blank" rel="noopener noreferrer" href={"http://lombardpress.org/collation-vizualizer/index.html?id=" + this.props.info.resourceid}>Collation Overlay</a></p>
-      <p><a target="_blank" rel="noopener noreferrer" href={"https://scta.github.io/networks-explorer/?resourceid=" + this.props.info.resourceid}>View Reference Connections</a></p>
-      <p><a target="_blank" rel="noopener noreferrer" href={"https://scta.github.io/networks-explorer/topicconnections.html?resourceid=" + this.props.info.resourceid}>View Topic Connections</a></p>
-    </div>
-    </Container>
+        <hr />
+        <div>
+          <p>Other Comparison/Connection Visualizations</p>
+          <p><a target="_blank" rel="noopener noreferrer" href={"http://lombardpress.org/collation-vizualizer/index.html?id=" + this.props.info.resourceid}>Collation Overlay</a></p>
+          <p><a target="_blank" rel="noopener noreferrer" href={"https://scta.github.io/networks-explorer/?resourceid=" + this.props.info.resourceid}>View Reference Connections</a></p>
+          <p><a target="_blank" rel="noopener noreferrer" href={"https://scta.github.io/networks-explorer/topicconnections.html?resourceid=" + this.props.info.resourceid}>View Topic Connections</a></p>
+        </div>
+      </Container>
 
-  );
+    );
   }
 }
 

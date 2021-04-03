@@ -9,7 +9,7 @@ import Text from "./Text"
 import VersionChain from "./VersionChain"
 import {runQuery, scrollToParagraph} from './utils'
 
-import {getRelatedExpressions, basicInfoQuery, itemTranscriptionInfoQuery} from './Queries'
+import {basicInfoQuery, itemTranscriptionInfoQuery} from './Queries'
 
 
 class TextWrapper extends React.Component {
@@ -268,19 +268,19 @@ class TextWrapper extends React.Component {
         // TODO the need for this 2nd query and async call might
         // be able to be removed using a construct query
         // see example pattern in articles collection
-        const relatedExpressions = runQuery(getRelatedExpressions(resourceid))
-        relatedExpressions.then((d) => {
-          const bindings2 = d.data.results.bindings
-          const relatedExpressions = bindings2.map((r) => {
-              return {
-                resourceid: r.isRelatedTo.value,
-                relationLabel: r.label.value,
-                referringResource: r.element ? r.element.value : "",
-                author: r.author ? r.author.value : "",
-                authorTitle: r.authorTitle ? r.authorTitle.value : "",
-                longTitle: r.longTitle ? r.longTitle.value : ""
-              }
-            });
+        //const relatedExpressions = runQuery(getRelatedExpressions(resourceid))
+        // relatedExpressions.then((d) => {
+        //   const bindings2 = d.data.results.bindings
+        //   const relatedExpressions = bindings2.map((r) => {
+        //       return {
+        //         resourceid: r.isRelatedTo.value,
+        //         relationLabel: r.label.value,
+        //         referringResource: r.element ? r.element.value : "",
+        //         author: r.author ? r.author.value : "",
+        //         authorTitle: r.authorTitle ? r.authorTitle.value : "",
+        //         longTitle: r.longTitle ? r.longTitle.value : ""
+        //       }
+        //     });
 
           if (this.mount && bindings){
             this.setState({
@@ -301,11 +301,11 @@ class TextWrapper extends React.Component {
                 cmanifestation: bindings.cmanifestation.value,
                 ctranscription: bindings.ctranscription ? bindings.ctranscription.value : "",
                 manifestations: manifestations,
-                relatedExpressions: relatedExpressions
+                //relatedExpressions: relatedExpressions
               }
             });
           }
-        })
+        //})
       });
     }
   // embeded this within arrang focus info, so that information remains in sync

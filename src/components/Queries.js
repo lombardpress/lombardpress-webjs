@@ -3,7 +3,7 @@
 
 //NOTE: this query does not work as expected when using Fuseking version 3 it only works as expected using version 2.0
 // with version 3, it seems to get all quotes from the entire corpus, suggested something may not be working with the "bind" method
- export function getRelatedExpressions(itemExpressionUri){
+ export function getRelatedExpressions(itemExpressionUri, offset, pagesize){
    const query = [
     "SELECT DISTINCT ?isRelatedTo ?label ?element ?longTitle ?author ?authorTitle ",
     "WHERE",
@@ -71,8 +71,10 @@
         "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle",
       "}",
     "}",
-    "ORDER BY ?authorTitle"
-   ].join('');
+    "ORDER BY ?authorTitle",
+    "LIMIT " + pagesize,
+    "OFFSET " + offset
+   ].join(' ');
      return query
  }
 //get Related Expressions
