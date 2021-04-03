@@ -6,6 +6,8 @@ import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
 import TextCompare from './TextCompare'
 
+import {runQuery} from './utils'
+import {getRelatedExpressions} from './Queries'
 
 class TextCompareWrapper extends React.Component {
   constructor(props){
@@ -14,6 +16,7 @@ class TextCompareWrapper extends React.Component {
     this.handleChangeBase = this.handleChangeBase.bind(this)
     this.handleCustomUpdateRelatedExpressions = this.handleCustomUpdateRelatedExpressions.bind(this)
     this.handleSetCustomExpressionId = this.handleSetCustomExpressionId.bind(this)
+    this.arrangeRelatedExpressions = this.arrangeRelatedExpressions.bind(this)
     this.getText = this.getText.bind(this)
     this.mounted = ""
     this.state = {
@@ -57,61 +60,35 @@ class TextCompareWrapper extends React.Component {
         }
       })
     }
-
-  componentDidMount(){
-    this.mounted = true
-    // prevents check when prop.info is not set
-    if (this.props.info){
-      // prevents check when prop.info.relatedExpressions is not set
-      if (this.props.info.relatedExpressions){
-        this.getText(this.props.info.ctranscription)
-        //create empty expressions object
-        const expressions = {}
-        // add first object which should be compare item for first/target resource
-        expressions[this.props.info.resourceid] = {
-          id: this.props.info.resourceid, 
-          authorTitle: this.props.info.authorTitle, 
-          longTitle: this.props.info.longTitle, 
-          show: false
-        }
-        this.props.info.relatedExpressions.forEach((r) => {
-          expressions[r.resourceid] = {
-            id: r.resourceid, 
-            relationLabel: r.relationLabel, 
-            referringResource: r.referringResource, 
-            author: r.author,
-            authorTitle: r.authorTitle, 
-            longTitle: r.longTitle,
-            show: false}
-        })
-        this.setState({expressions: expressions})
-      }
+  
+    getRelatedExpressions(resourceid, offset, pagesize){
+      const relatedExpressions = runQuery(getRelatedExpressions(resourceid, offset, pagesize))
+      relatedExpressions.then((d) => {
+      const bindings2 = d.data.results.bindings
+      const relatedExpressions = bindings2.map((r) => {
+          return {
+            resourceid: r.isRelatedTo.value,
+            relationLabel: r.label.value,
+            referringResource: r.element ? r.element.value : "",
+            author: r.author ? r.author.value : "",
+            authorTitle: r.authorTitle ? r.authorTitle.value : "",
+            longTitle: r.longTitle ? r.longTitle.value : ""
+          }
+        });
+      this.arrangeRelatedExpressions(relatedExpressions);
+      })
     }
-  }
-  componentDidUpdate(prevProps, prevState){
-    // only fire reload if "info resource" has changed"
-    if ((prevProps.info.resourceid !== this.props.info.resourceid) || (prevState.customExpressionObject !== this.state.customExpressionObject)){
-    // this conditional is needed, because props are waiting on multiple async calls.
-    // when an async call finishes it will up; and the related Expression query last,
-    // it will use the old ctranscription prop overriding the the update from the prop update from the other async call
-    // TODO: above message is unclear; but this conditional seems important. Needs better explanation of why it is necessary
-    if (prevProps.info.relatedExpressions){
-      // this conditional may no longer be necessary based on first conditional check
-      if (prevProps.info.ctranscription !== this.props.info.ctranscription){
-        this.getText(this.props.info.ctranscription)
-      }
+    arrangeRelatedExpressions(relatedExpressions){
       //create empty expressions object
       const expressions = {}
       // add first object which should be compare item for first/target resource
       expressions[this.props.info.resourceid] = {
         id: this.props.info.resourceid, 
-          authorTitle: this.props.info.authorTitle, 
-          longTitle: this.props.info.longTitle, 
-          show: false,
+        authorTitle: this.props.info.authorTitle, 
+        longTitle: this.props.info.longTitle, 
+        show: false
       }
-      //combine info.relatedExpressions with customExpression
-      const newRelatedExpressions = this.props.info.relatedExpressions.concat(this.state.customExpressionObject)
-      newRelatedExpressions.forEach((r) => {
+      relatedExpressions.forEach((r) => {
         expressions[r.resourceid] = {
           id: r.resourceid, 
           relationLabel: r.relationLabel, 
@@ -123,7 +100,33 @@ class TextCompareWrapper extends React.Component {
       })
       this.setState({expressions: expressions})
     }
+  componentDidMount(){
+    this.mounted = true
+    if (this.props.info){
+      this.getRelatedExpressions(this.props.info.resourceid, 0, 20)
+    }
   }
+  componentDidUpdate(prevProps, prevState){
+    /// TODO ADD STATE FOR OFFSET
+    /// and click handler for page select
+    // adjust update to respond to state changes
+
+
+    // only fire reload if "info resource" has changed"
+    if (prevProps.info.resourceid !== this.props.info.resourceid){
+      this.getRelatedExpressions(this.props.info.resourceid, 0, 20)
+    }
+    if (prevState.customExpressionObject !== this.state.customExpressionObject){
+      const r = this.state.customExpressionObject
+      const newExpression = {
+        id: r.resourceid, 
+        relationLabel: r.relationLabel, 
+      }
+      
+      this.setState((prevState) => {
+        return {expressions: {...prevState.expressions, newExpression}}
+      })
+    }
   }
   componentWillUnmount(){
     this.mounted = false
