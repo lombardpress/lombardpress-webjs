@@ -9,7 +9,7 @@ import Text from "./Text"
 import VersionChain from "./VersionChain"
 import {runQuery, scrollToParagraph} from './utils'
 
-import {getRelatedExpressions, basicInfoQuery, itemTranscriptionInfoQuery} from './Queries'
+import {basicInfoQuery, itemTranscriptionInfoQuery} from './Queries'
 
 
 class TextWrapper extends React.Component {

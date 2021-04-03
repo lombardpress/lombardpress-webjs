@@ -3,10 +3,7 @@
 
 //NOTE: this query does not work as expected when using Fuseking version 3 it only works as expected using version 2.0
 // with version 3, it seems to get all quotes from the entire corpus, suggested something may not be working with the "bind" method
- export function getRelatedExpressions(itemExpressionUri, offset=500, pagesize=20){
-   console.log("offset", offset)
-   console.log("pagesize", pagesize)
-   console.log("pagenumber", Math.floor(offset/pagesize + 1))
+ export function getRelatedExpressions(itemExpressionUri, offset, pagesize){
    const query = [
     "SELECT DISTINCT ?isRelatedTo ?label ?element ?longTitle ?author ?authorTitle ",
     "WHERE",
