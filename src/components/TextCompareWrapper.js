@@ -19,7 +19,7 @@ class TextCompareWrapper extends React.Component {
     this.getText = this.getText.bind(this)
     this.mounted = ""
     this.state = {
-      expressions: {},
+      expressions: [],
       page: 1,
       intendedPage: 1,
       pagesize: 10,
@@ -78,17 +78,18 @@ class TextCompareWrapper extends React.Component {
     const relatedExpressions = runQuery(getRelatedExpressions(resourceid, offset, pagesize))
     relatedExpressions.then((d) => {
       const bindings2 = d.data.results.bindings
-      const expressions = {}
+      const expressions = []
       // add first object which should be compare item for first/target resource
-      expressions[this.props.info.resourceid] = {
+      expressions.push({
         id: this.props.info.resourceid,
         authorTitle: this.props.info.authorTitle,
         longTitle: this.props.info.longTitle,
         show: false
-      }
+      });
       //arrange sparql results into an object with resourceids as keys
+      
       bindings2.forEach((r) => {
-        expressions[r.isRelatedTo.value] = {
+        expressions.push({
           id: r.isRelatedTo.value,
           relationLabel: r.label.value,
           referringResource: r.element ? r.element.value : "",
@@ -96,7 +97,7 @@ class TextCompareWrapper extends React.Component {
           authorTitle: r.authorTitle ? r.authorTitle.value : "",
           longTitle: r.longTitle ? r.longTitle.value : "",
           show: false
-        }
+        })
       })
       // set state with new related expressions results and updates to paging information
       this.setState({
@@ -143,26 +144,23 @@ class TextCompareWrapper extends React.Component {
   }
   render() {
     const displayExpressions = () => {
-      const exObject = this.state.expressions
-      const expressions = Object.keys(exObject).map((key) => {
-        const isMainText = this.props.info.resourceid === exObject[key].id ? true : false
-        console.log("isMainText", this.props.info.resourceid)
-        console.log("isMainText", exObject[key].id)
-        console.log("isMainText", isMainText)
+      
+      const expressions = this.state.expressions.map((i, index) => {
+        const isMainText = this.props.info.resourceid === i.id ? true : false
         return (
-          <div key={this.state.expressions[key].id}>
+          <div key={index + "-" + i.id}>
             {<TextCompare
               info={this.props.info}
-              expressionid={exObject[key].id}
-              relationLabel={exObject[key].relationLabel}
-              referringResource={exObject[key].referringResource}
-              author={exObject[key].author}
-              authorTitle={exObject[key].authorTitle}
-              longTitle={exObject[key].longTitle}
+              expressionid={i.id}
+              relationLabel={i.relationLabel}
+              referringResource={i.referringResource}
+              author={i.author}
+              authorTitle={i.authorTitle}
+              longTitle={i.longTitle}
               isMainText={isMainText}
               handleChangeBase={this.handleChangeBase}
               baseText={this.state.baseText}
-              show={exObject[key].show}
+              show={i.show}
               surfaceWidth={this.props.surfaceWidth}
             />}
           </div>
