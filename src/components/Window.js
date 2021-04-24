@@ -207,7 +207,14 @@ class Window extends React.Component {
           {
             //always load outline since it reduces number of calls, as most info is the same for all paragraphs
           }
-          <TextOutlineWrapper focusResourceid={this.props.info ? this.props.info.resourceid : this.props.itemFocus.expression} resourceid={this.props.topLevel} title={this.props.topLevel} hidden={this.state.windowLoad !== "textOutlineWrapper"} mtFocus={this.props.mtFocus}/>
+          <TextOutlineWrapper 
+            focusResourceid={this.props.info ? this.props.info.resourceid : this.props.itemFocus.expression} 
+            resourceid={this.props.topLevel} 
+            title={this.props.topLevel} 
+            hidden={this.state.windowLoad !== "textOutlineWrapper"} 
+            mtFocus={this.props.mtFocus}
+            collectionLink={true}/>
+            
           {
             //always load search to keep search results present even when navigating two diffferent tabs
           }
