@@ -99,7 +99,6 @@ class TextCompareWrapper extends React.Component {
           show: false
         })
       })
-      console.log("espressions", expressions);
       // set state with new related expressions results and updates to paging information
       this.setState({
         expressions: expressions,
