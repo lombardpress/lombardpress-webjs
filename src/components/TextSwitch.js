@@ -6,14 +6,8 @@ import TextArticle from "./TextArticle"
 import Collection from "./Collection"
 import AuthorCollection from "./AuthorCollection"
 import Codex from "./Codex"
-import TextOutlineWrapper from "./TextOutlineWrapper"
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Search3 from './Search3';
 import ExpressionType from './ExpressionType';
 import ResourceTypeList from './ResourceTypeList';
-import {Link} from 'react-router-dom';
 
 import {runQuery} from './utils'
 import {getArticleTranscriptionDoc, getItemTranscription, getItemTranscriptionFromBlockDiv, getStructureType} from './Queries'
@@ -60,6 +54,7 @@ class TextSwitch extends React.Component {
       const resourceTitle = bindings.resourceTitle ? bindings.resourceTitle.value : ""
       const author = bindings.author ? bindings.author.value : ""
       const authorTitle = bindings.authorTitle ? bindings.authorTitle.value : ""
+      const ctranscription = bindings.ctranscription ? bindings.ctranscription.value : ""
 
       //const itemTranscriptionId = t.data.results.bindings[0].ctranscription ? t.data.results.bindings[0].ctranscription.value : null
       if (resourceid === "http://scta.info/resource/person"){
@@ -108,7 +103,9 @@ class TextSwitch extends React.Component {
           this.setState({displayType: "workGroup", resourceid: resourceid, structureType: structureType, topLevel: topLevel, type: type, resourceTitle: resourceTitle})
       }
       else if (structureType === "http://scta.info/resource/structureCollection"){
-          this.setState({displayType: "collection", resourceid: resourceid, structureType: structureType, topLevel: topLevel, type: type, resourceTitle: resourceTitle, author: author, authorTitle: authorTitle})
+          this.setState({displayType: "collection", 
+          itemTranscriptionId: ctranscription,
+          resourceid: resourceid, structureType: structureType, topLevel: topLevel, type: type, resourceTitle: resourceTitle, author: author, authorTitle: authorTitle})
       }
       else if (structureType === "http://scta.info/resource/structureItem" ){
         if (type === "http://scta.info/resource/transcription"){
@@ -117,7 +114,7 @@ class TextSwitch extends React.Component {
             displayType: "item", 
             blockDivFocus: resourceid.split("/resource/")[1].split("/")[0], 
             resourceTitle: resourceTitle, 
-            tokenRange: tokenRange
+            tokenRange: tokenRange,
           })
         }
         else {
@@ -240,32 +237,15 @@ class TextSwitch extends React.Component {
         //TODO: this should be moved out to its own component
         //TODO: now that workGroup is using TextOutlineWrapper i'm not sure there is any need for separation
         // the above conditional and this one should be combined
+        console.log("this.state.itemTranscriptionId", this.state.itemTranscriptionId)
         return (
-          <Container className="collectionBody">   
-          <h1>{this.state.resourceTitle}</h1>
-          <p style={{"textAlign": "center"}}>By <Link to={"/text?resourceid=" + this.state.author}>{this.state.authorTitle}</Link></p>
-          <Row>
-            <Col xs={9}>
-              <TextOutlineWrapper
-                focusResourceid={this.state.resourceid}
-                resourceid={this.state.resourceid}
-                title={this.state.resourceTitle}
-                hidden={false}
-                mtFocus={""}
-                collectionLink={true}
-                showParentLink={true}/>
-            </Col>
-            <Col>
-              <Search3 searchEid={this.state.topLevel}
-              showSubmit={true}
-              showAdvancedParameters={true}
-              showLabels={false}/>
-            </Col>
-          </Row>
-        </Container>
-        )
-
-
+          <TextWrapper 
+          resourceid={this.state.resourceid}
+          resourceType="collection"
+          handleUpdateUrlResource={this.handleUpdateUrlResource}
+          transcriptionid={this.state.itemTranscriptionId}
+          />
+          )
       }
       else if (this.state.displayType === "item"){
         // check to see if a transcription for this text has been found

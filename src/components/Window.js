@@ -12,6 +12,7 @@ import TextOutlineWrapper from "./TextOutlineWrapper"
 import TextPreviewWrapper from "./TextPreviewWrapper"
 import Dictionary from "./Dictionary"
 
+import {FaSearch, FaGripVertical, FaCode, FaInfo, FaRegImage, FaComments, FaAlignLeft} from 'react-icons/fa';
 
 
 
@@ -143,6 +144,9 @@ class Window extends React.Component {
       return items
     }
     const displayChild = () => {
+      const structureType = this.props.info.structureType
+      const isCollection = structureType === "http://scta.info/resource/structureCollection" || false
+      console.log("structureType", isCollection)
       return(
         <div>
 
@@ -175,7 +179,8 @@ class Window extends React.Component {
             selectionRange={this.props.selectionRange}
             />}
             {this.state.windowLoad === "surface2" &&  <Surface2 surfaceid={this.props.surfaceid} lineFocusId={this.props.lineFocusId} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} handleLineFocusChange={this.props.handleLineFocusChange} hidden={this.state.windowLoad !== "surface2"}/>}
-            {(this.state.windowLoad === "surface3" || this.state.mountStatus.surface3) &&  <Surface3Wrapper
+            
+            {!isCollection && (this.state.windowLoad === "surface3" || this.state.mountStatus.surface3) &&  <Surface3Wrapper
             manifestations={this.props.info.manifestations}
             focusedManifestation={this.props.defaultManifestationSlug ? this.props.resourceid + "/" + this.props.defaultManifestationSlug : this.props.resourceid + "/" + this.props.mtFocus.split("/")[1]}
             annotationsDisplay={this.props.annotationsDisplay}
@@ -203,7 +208,7 @@ class Window extends React.Component {
           {
             //TODO: use of info, topLevel, itemFocus, focusResearceid, resourceid, needs to be better organized and clarified
           }
-          {(this.state.windowLoad === "xml" || this.state.mountStatus.xml) &&  <XmlView tresourceid={this.props.info ? this.props.info.resourceid + this.props.mtFocus : this.props.itemFocus.expression + this.props.mtFocus} hidden={this.state.windowLoad !== "xml"}/>}
+          {!isCollection && (this.state.windowLoad === "xml" || this.state.mountStatus.xml) &&  <XmlView tresourceid={this.props.info ? this.props.info.resourceid + this.props.mtFocus : this.props.itemFocus.expression + this.props.mtFocus} hidden={this.state.windowLoad !== "xml"}/>}
           {
             //always load outline since it reduces number of calls, as most info is the same for all paragraphs
           }
@@ -248,7 +253,57 @@ class Window extends React.Component {
       )
 
     }
-
+  
+    // TODO/NOTE: perhaps tabs should be pushed to array with component above; the same logic should apply to component as 
+    // to its corresponding tab. So this should really be done once instead of twice.
+    const getAvailableTabs = () => {
+      const structureType = this.props.info.structureType
+      const isCollection = structureType === "http://scta.info/resource/structureCollection" || false
+      return [
+      {
+        name: "citation",
+        desc: "Text Citation",
+        show: true,
+        icon: <FaInfo/>
+      },
+      {
+        name: "surface3",
+        desc: "Images",
+        show: isCollection ? false : true,
+        icon: <FaRegImage/>
+      },
+      {
+        name: "xml",
+        desc: "Text XML Source",
+        show: isCollection ? false : true,
+        icon: <FaCode/>
+      },
+      {
+        name: "textCompare",
+        desc: "Text Comparisons",
+        show: true,
+        icon: <FaGripVertical/>
+      },
+      {
+        name: "comments",
+        desc: "Comments",
+        show: true,
+        icon: <FaComments/>
+      },
+      {
+        name: "textOutlineWrapper",
+        desc: "Text Outline",
+        show: isCollection ? false : true,
+        icon: <FaAlignLeft/>
+      },
+      {
+        name: "search",
+        desc: "Text Search",
+        show: true,
+        icon: <FaSearch/>
+      }
+    ]
+  }
   return (
     <div className={this.props.windowType + " " + this.props.windowType + this.props.openWidthHeight}>
       <WindowNavBar handleTabChange={this.props.handleTabChange}
@@ -265,6 +320,7 @@ class Window extends React.Component {
       handleDuplicateWindow={this.props.handleDuplicateWindow}
       altWindowState={this.props.altWindowState}
       focusSet={!!this.props.info}
+      availableTabs={getAvailableTabs()}
       />
       {(this.state.windowLoad !== "surface2" && this.state.windowLoad !== "dictionary" ) 
       && <NextPrevBar info={this.props.info} handleBlockFocusChange={this.props.handleBlockFocusChange}/>}

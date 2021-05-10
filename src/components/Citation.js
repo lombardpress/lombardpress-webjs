@@ -31,9 +31,11 @@ class Citation extends React.Component{
   retrieveCitation(tresourceid){
     if (tresourceid){
       this.setState({fetching: true})
+      console.log("tresourceid in citation", tresourceid)
       const manifestationCitationInfo = runQuery(getManifestationCitationInfo(tresourceid))
       manifestationCitationInfo.then((data) => {
         const allBindings = data.data.results.bindings
+        console.log("allBindings", allBindings)
         if (allBindings.length > 0){
           const bindings = allBindings[0]
           const expressionid = bindings.expression ? bindings.expression.value : ""
@@ -85,7 +87,7 @@ class Citation extends React.Component{
   render(){
 
     const fullCitationString = this.state.authorTitle + ", " + this.state.etitle + "(" + this.state.mtitle + ") Data source: " + this.state.datasource + "."
-    const wordRange = this.props.selectionRange.wordRange && 
+    const wordRange = this.props.selectionRange && this.props.selectionRange.wordRange && 
       this.props.selectionRange.wordRange.start + "-" + this.props.selectionRange.wordRange.end;
     return (
       <Container>
