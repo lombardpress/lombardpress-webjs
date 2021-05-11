@@ -81,13 +81,13 @@ class TextCompareWrapper extends React.Component {
       const expressions = []
       // if target resource is NOT structureCollect, 
       // then add first object which should be compare item for first/target resource
-      if (this.props.info.structureType !== "http://scta.info/resource/structureCollection")
-      expressions.push({
-        id: this.props.info.resourceid,
-        authorTitle: this.props.info.authorTitle,
-        longTitle: this.props.info.longTitle,
-        show: false
-      });
+      
+        expressions.push({
+          id: this.props.info.resourceid,
+          authorTitle: this.props.info.authorTitle,
+          longTitle: this.props.info.longTitle,
+          show: false
+        });
       //arrange sparql results into an object with resourceids as keys
       bindings2.forEach((r) => {
         expressions.push({
@@ -116,7 +116,9 @@ class TextCompareWrapper extends React.Component {
     this.mounted = true
     if (this.props.info) {
       this.getRelatedExpressions(this.props.info.resourceid, this.state.page, this.state.pagesize)
-      this.getText(this.props.info.ctranscription)
+      if (this.props.info.structureType !== "http://scta.info/resource/structureCollection"){
+        this.getText(this.props.info.ctranscription)
+      }
     }
   }
   componentDidUpdate(prevProps, prevState) {
@@ -124,7 +126,9 @@ class TextCompareWrapper extends React.Component {
     if (prevProps.info.resourceid !== this.props.info.resourceid || prevState.page !== this.state.page) {
       const startPage = prevProps.info.resourceid !== this.props.info.resourceid ? 1 : this.state.page
       this.getRelatedExpressions(this.props.info.resourceid, startPage, this.state.pagesize)
-      this.getText(this.props.info.ctranscription)
+      if (this.props.info.structureType !== "http://scta.info/resource/structureCollection"){
+        this.getText(this.props.info.ctranscription)
+      }
     }
     // if a custom object has been added; add custom object to state.expressions
     if (prevState.customExpressionObject !== this.state.customExpressionObject) {

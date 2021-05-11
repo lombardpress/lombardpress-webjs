@@ -95,7 +95,12 @@ class TextCompare extends React.Component {
   }
   render(){
     const displayComparisons = () => {
-      if (this.state.info.manifestations){
+      // NOTE: this conditional here to stop attempt to display text manifestation texts at the collection level
+      // collection level is usually just too big to be useful. 
+      if (this.props.info.structureType === "http://scta.info/resource/structureCollection"){
+        return <p>Text too big to display; move down the text hierarchy to focus on a smaller section</p>
+      }
+      else if (this.state.info.manifestations){
         const texts = this.state.info.manifestations.map((m) => {
           return (
             <TextCompareItem

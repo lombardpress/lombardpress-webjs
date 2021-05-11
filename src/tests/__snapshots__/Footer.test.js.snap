@@ -8,7 +8,7 @@ exports[`should render and conform to snapshot  1`] = `
   fixed="bottom"
   style={
     Object {
-      "zIndex": "0",
+      "zIndex": "1",
     }
   }
   variant="light"

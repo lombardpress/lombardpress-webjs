@@ -1,6 +1,7 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Print from "./Print"
+import PropTypes from 'prop-types';
 
 import TextOutlineWrapper from "./TextOutlineWrapper"
 import {Link} from 'react-router-dom';
@@ -331,7 +332,8 @@ class TextWrapper extends React.Component {
     //transcriptionid should be required Prop
     //conditional here to reinfurce that rule
     if (this.props.resourceType === "collection"){
-      this.retrieveFocusInfo(this.props.resourceid)
+      //TODO props.expressionid is doing something very similar to blockDivFocus
+      this.retrieveFocusInfo(this.props.expressionid)
       //TODO: splitting strings for this information is not ideal.
         //info should be part of original query
         const mFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[1]
@@ -371,7 +373,7 @@ class TextWrapper extends React.Component {
       // not when other props changes.
       if (this.props.resourceType === "collection"){
         if (this.props.resourceid !== prevProps.resourceid){
-          this.retrieveFocusInfo(this.props.resourceid)
+          this.retrieveFocusInfo(this.props.expressionid)
           //TODO: splitting strings for this information is not ideal.
           //info should be part of original query
           const mFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[1]
@@ -516,11 +518,11 @@ class TextWrapper extends React.Component {
           <h1>{this.state.resourceTitle}</h1>
             <p style={{"textAlign": "center"}}>By <Link to={"/text?resourceid=" + this.state.focus.author}>{this.state.focus.authorTitle}</Link></p>
             <TextOutlineWrapper
-              focusResourceid={this.props.resourceid}
-              resourceid={this.props.resourceid}
+              focusResourceid={this.props.expressionid}
+              resourceid={this.props.expressionid}
               title={this.state.focus.title}
               hidden={false}
-              mtFocus={""}
+              mtFocus={this.state.mtFocus}
               collectionLink={true}
               showParentLink={true}
               />
@@ -566,5 +568,21 @@ class TextWrapper extends React.Component {
       </div>
     );
   }
+}
+
+TextWrapper.propTypes = {
+  /**
+  * Text Wrapper Component
+  * 
+  * 
+  **/
+  handleUpdateUrlResource: PropTypes.func, // inherited function to send up resource focus change
+  resourceid: PropTypes.string, // id of focused resource (this can be a resource at any structure level and FRBR level)
+  blockDivFocus: PropTypes.string, // shortid that seems to be identical in function to resourceid (but currently expects shortId; TODO; this should be changed)
+  expressionid: PropTypes.string, // corresponding expression id of the focused resource'
+  transcriptionid: PropTypes.string, // corresponding transcription id of the focused resource'
+  itemid: PropTypes.string, // corresponding item expression parent (or self) corresponding to focused resource; (currently requires shortId, but (TODO) this would be good to change)
+  tokenRange: PropTypes.object // an object containing word token range (tokenRange.start.int tokenRange.end.int)
+  
 }
 export default TextWrapper;

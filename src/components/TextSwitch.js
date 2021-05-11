@@ -137,7 +137,8 @@ class TextSwitch extends React.Component {
             if (t.data.results.bindings[0].ctranscription){
               this.setState({
                 itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, 
-                blockDivFocus: resourceid, displayType: "item", 
+                blockDivFocus: resourceid, 
+                displayType: "item", 
                 resourceTitle: resourceTitle, 
                 tokenRange: tokenRange})
             }
@@ -219,6 +220,11 @@ class TextSwitch extends React.Component {
         return (
           <TextWrapper 
           resourceid={this.state.resourceid}
+          //NOTE: it implicitly expected that resource id is an expression level id
+          //this is hacky way to ensure that focus info is being set for the expression level id only
+          //NOTE: props.resourceid and props.itemId and props.blockDivFocus are doing similar things/
+          //TODO: need to rigorously define props from TextWrapper and reduce redundancy and confusion
+          expressionid={"http://scta.info/resource/" + this.state.resourceid.split("/resource/")[1].split("/")[0]}
           resourceType="collection"
           handleUpdateUrlResource={this.handleUpdateUrlResource}
           transcriptionid={this.state.itemTranscriptionId}
@@ -231,7 +237,8 @@ class TextSwitch extends React.Component {
           //TODO: item id is shortItemId pull from transcription id.
           // it would be better to be getting this from query rather than string deconstruction
           return (
-            <TextWrapper itemid={this.state.itemTranscriptionId.split("/resource/")[1].split("/")[0]}
+            <TextWrapper 
+            itemid={this.state.itemTranscriptionId.split("/resource/")[1].split("/")[0]}
             transcriptionid={this.state.itemTranscriptionId}
             blockDivFocus={this.state.blockDivFocus}
             handleUpdateUrlResource={this.handleUpdateUrlResource}
