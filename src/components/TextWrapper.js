@@ -583,7 +583,9 @@ TextWrapper.propTypes = {
   //itemid: PropTypes.string, // corresponding item expression parent (or self) corresponding to focused resource; (currently requires shortId, but (TODO) this would be good to change; seems like it would be better to call this ItemExpressionId to match ItemTranscriptionId)
   itemTranscriptionId: PropTypes.string, //corresponding item transcription parent (or self corresponding to focused resource) 
   tokenRange: PropTypes.object, // an object containing word token range (tokenRange.start.int tokenRange.end.int)
-  handleUpdateUrlResource: PropTypes.func // inherited function to send up resource focus change
+  handleUpdateUrlResource: PropTypes.func, // inherited function to send up resource focus change
+  
+  resourceType: PropTypes.string // currently only being used to switch between collection and non-collection levels.
 
 }
 export default TextWrapper;
