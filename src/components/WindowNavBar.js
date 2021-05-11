@@ -2,7 +2,7 @@ import React from 'react';
 import Nav from 'react-bootstrap/Nav';
 
 import {FaRegWindowRestore, FaRegWindowMaximize, FaRegWindowMinimize, FaRegWindowClose, FaClone} from 'react-icons/fa';
-// reimport these if you want to use the chnage window location functions: FaAngleDoubleDown, FaAngleDoubleLeft,
+// reimport these if you want to use the change window location functions: FaAngleDoubleDown, FaAngleDoubleLeft,
 
 function WindowNavBar(props) {
   const displayTabs = () => {

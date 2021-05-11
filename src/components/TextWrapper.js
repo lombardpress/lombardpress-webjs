@@ -268,22 +268,6 @@ class TextWrapper extends React.Component {
             transcription: b.manifestationCTranscription ? b.manifestationCTranscription.value : ""
           }
         })
-        // TODO the need for this 2nd query and async call might
-        // be able to be removed using a construct query
-        // see example pattern in articles collection
-        //const relatedExpressions = runQuery(getRelatedExpressions(resourceid))
-        // relatedExpressions.then((d) => {
-        //   const bindings2 = d.data.results.bindings
-        //   const relatedExpressions = bindings2.map((r) => {
-        //       return {
-        //         resourceid: r.isRelatedTo.value,
-        //         relationLabel: r.label.value,
-        //         referringResource: r.element ? r.element.value : "",
-        //         author: r.author ? r.author.value : "",
-        //         authorTitle: r.authorTitle ? r.authorTitle.value : "",
-        //         longTitle: r.longTitle ? r.longTitle.value : ""
-        //       }
-        //     });
 
           if (this.mount && bindings){
             this.setState({
@@ -303,35 +287,17 @@ class TextWrapper extends React.Component {
                 topLevel: bindings.topLevelExpression ? bindings.topLevelExpression.value : "",
                 cmanifestation: bindings.cmanifestation.value,
                 ctranscription: bindings.ctranscription ? bindings.ctranscription.value : "",
-                manifestations: manifestations,
-                
-
-                //relatedExpressions: relatedExpressions
+                manifestations: manifestations
               }
             });
           }
-        //})
       });
     }
-  // embeded this within arrang focus info, so that information remains in sync
-  // TODO remove this
-    // arrangeFocusRelatedInfo(relatedInfo){
-    //     relatedInfo.then((d) => {
-    //       console.log("new data", d)
-    //       const bindings = d.data.results.bindings
-    //       const relatedExpressions = bindings.map((r) => {
-    //           return {
-    //             resourceid: r.isRelatedTo.value,
-    //             relationLabel: r.label.value
-    //           }
-    //         });
-    //     if (this.mount){
-    //       this.setState({
-    //         focusRelatedExpressions: relatedExpressions
-    //       });
-    //       }
-    //     });
-    //   }
+    /**
+     * sets focus
+     * @param {string} id 
+     * @public
+     */
     setItemFocus(id){
       const fullid = id.includes("http") ? id : "http://scta.info/resource/" + id
       // get info
@@ -371,7 +337,10 @@ class TextWrapper extends React.Component {
         const mFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[1]
         const tFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[2]
         this.setState(
-          {mtFocus: "/" + mFocus + "/" + tFocus}
+          {
+            mtFocus: "/" + mFocus + "/" + tFocus,
+            itemFocus: ""
+          }
         )
       }
     else{
@@ -396,25 +365,7 @@ class TextWrapper extends React.Component {
       }
     }
   }
-  //TODO: delete; after newly added replacement componentDidUpdate continues to work reliably
-  // UNSAFE_componentWillReceiveProps(newProps){
-  //   //Keep testing, but it seems like this look up only needs to fire, when the transcription id prop changes
-  //   // not when other props changes.
-  //   if (newProps.transcriptionid !== this.props.transcriptionid){
-  //     this.setItemFocus(newProps.transcriptionid)
-  //     const mFocus = newProps.transcriptionid.split("/resource/")[1].split("/")[1]
-  //     const tFocus = newProps.transcriptionid.split("/resource/")[1].split("/")[2]
-  //     //clear or set parts of state when new transcription file is loaded
-  //     this.setState((prevState) => {
-  //       const windows = prevState.windows
-  //       windows["window1"].defaultManifestationSlug = ""
-  //       windows["window2"].defaultManifestationSlug = ""
-  //       return {
-  //         mtFocus: "/" + mFocus + "/" + tFocus,
-  //         windows: windows
-  //       }
-  //     })
-  //   }
+
     componentDidUpdate(prevProps){
       //Keep testing, but it seems like this look up only needs to fire, when the transcription id prop changes
       // not when other props changes.
@@ -426,7 +377,10 @@ class TextWrapper extends React.Component {
           const mFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[1]
           const tFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[2]
           this.setState(
-          {mtFocus: "/" + mFocus + "/" + tFocus}
+          {
+            mtFocus: "/" + mFocus + "/" + tFocus,
+            itemFocus: ""
+          }
         )
         }
       }
@@ -589,7 +543,7 @@ class TextWrapper extends React.Component {
           }
         </Container>
 
-        <TextNavBar
+        {this.state.itemFocus && <TextNavBar
           next={this.state.itemFocus && this.state.itemFocus.next}
           previous={this.state.itemFocus && this.state.itemFocus.previous}
           topLevel={this.state.itemFocus && this.state.itemFocus.topLevel}
@@ -597,7 +551,7 @@ class TextWrapper extends React.Component {
           pdfView={this.state.pdfView}
           handleTogglePdfView={this.handleTogglePdfView}
           mtFocus={this.state.mtFocus}
-        />
+        />}
         <div>
         {
         // <TextNavBar

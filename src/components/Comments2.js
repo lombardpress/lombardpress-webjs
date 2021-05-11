@@ -15,8 +15,8 @@ import {copyToClipboard} from './utils'
 
 /**
  * 
- * A comment wrapper for submitting comments to local storage
- * 
+ * A comment wrapper for submitting comments to local storage test
+ * @public
  */
 
 function Comments2(props) {
@@ -33,7 +33,6 @@ function Comments2(props) {
 
   /**
    * submit the comment
-   * 
    * @param {string} comment 
    * @public
    */
@@ -42,15 +41,17 @@ function Comments2(props) {
     const annoId = "http://inbox.scta.info/notifications/" + randomid
     const dateObject = new Date();
 
+    //TODO: I don't love creating the selector when selection range is empty
+    //TODO: it would probably be better to just not have a selector when no text is selected
     const selector = [
       {
         "type": "TextQuoteSelector",
-        "exact": selectionRange.text
+        "exact": selectionRange && selectionRange.text
       },
       {
         "type": "TextPositionSelector",
-        "start": selectionRange.wordRange && selectionRange.wordRange.start,
-        "end": selectionRange.wordRange && selectionRange.wordRange.end
+        "start": selectionRange && selectionRange.wordRange && selectionRange.wordRange.start,
+        "end": selectionRange && selectionRange.wordRange && selectionRange.wordRange.end
       }
     ]
     const annotation = {

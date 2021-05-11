@@ -271,22 +271,6 @@ export function basicInfoQuery(itemExpressionUri){
         "}",
         "ORDER BY ?itemAuthorTitle"].join('');
         return query
-      }
-
-  export function getItemTranscription(resourceurl){
-    const query = [
-      "SELECT DISTINCT ?ctranscription ",
-      "WHERE { ",
-        "{",
-          "<" + resourceurl + "> <http://scta.info/property/hasCanonicalManifestation> ?cmanifestation . ",
-          "?cmanifestation <http://scta.info/property/hasCanonicalTranscription> ?ctranscription . ",
-        "}",
-        "UNION",
-        "{",
-          "<" + resourceurl + "> <http://scta.info/property/hasCanonicalTranscription> ?ctranscription . ",
-        "}",
-      "}"].join('');
-      return query
   }
   export function getArticleTranscriptionDoc(resourceurl){
     const query = [
@@ -341,9 +325,14 @@ export function basicInfoQuery(itemExpressionUri){
       "}"].join('');
       return query
   }
-  //TODO rename to getType
+  /**
+   * @description constructs query needed for initial textSwitch component; captures resource type information and related 
+   * details needed to allow the textSwitch component decide what kind of display is necessary
+   * 
+   * @param {string} resourceurl - resource url should be full scta url id
+   * @returns {string} - returns query as string
+   */
   export function getStructureType(resourceurl){
-    console.log("reosurce url", resourceurl)
     const query = [
       "SELECT DISTINCT ?type ?structureType ?level ?topLevel ?itemParent ?resourceTitle ?author ?authorTitle ?ctranscription ",
       "WHERE { ",
@@ -388,6 +377,11 @@ export function basicInfoQuery(itemExpressionUri){
         "UNION",
         "{",
           "<" + resourceurl + "> <http://scta.info/property/hasCanonicalTranscription> ?ctranscription . ",
+        "}",
+        "UNION",
+        "{",
+          "<" + resourceurl + "> a <http://scta.info/resource/transcription> . ",
+          "BIND(<" + resourceurl + "> AS ?ctranscription) .",
         "}",
       "}",
     "}"].join('');

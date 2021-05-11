@@ -79,7 +79,9 @@ class TextCompareWrapper extends React.Component {
     relatedExpressions.then((d) => {
       const bindings2 = d.data.results.bindings
       const expressions = []
-      // add first object which should be compare item for first/target resource
+      // if target resource is NOT structureCollect, 
+      // then add first object which should be compare item for first/target resource
+      if (this.props.info.structureType !== "http://scta.info/resource/structureCollection")
       expressions.push({
         id: this.props.info.resourceid,
         authorTitle: this.props.info.authorTitle,
@@ -87,7 +89,6 @@ class TextCompareWrapper extends React.Component {
         show: false
       });
       //arrange sparql results into an object with resourceids as keys
-      
       bindings2.forEach((r) => {
         expressions.push({
           id: r.isRelatedTo.value,

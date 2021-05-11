@@ -10,7 +10,7 @@ import ExpressionType from './ExpressionType';
 import ResourceTypeList from './ResourceTypeList';
 
 import {runQuery} from './utils'
-import {getArticleTranscriptionDoc, getItemTranscription, getItemTranscriptionFromBlockDiv, getStructureType} from './Queries'
+import {getArticleTranscriptionDoc, getItemTranscriptionFromBlockDiv, getStructureType} from './Queries'
 
 class TextSwitch extends React.Component {
   constructor(props){
@@ -36,12 +36,10 @@ class TextSwitch extends React.Component {
     if (resourceid.split("@")[1]){
       tokenRange = {start: parseInt(resourceid.split("@")[1].split("-")[0]), end: parseInt(resourceid.split("@")[1].split("-")[1])}
     }
-    
     resourceid = resourceid.split("@")[0]
-    
-    
 
     const structureTypePromise = runQuery(getStructureType(resourceid))
+
     structureTypePromise.then((t) => {
       // reduce results to bindings variable
       const bindings = t.data.results.bindings.length > 0 ? t.data.results.bindings[0] : ""
@@ -105,32 +103,24 @@ class TextSwitch extends React.Component {
       else if (structureType === "http://scta.info/resource/structureCollection"){
           this.setState({displayType: "collection", 
           itemTranscriptionId: ctranscription,
-          resourceid: resourceid, structureType: structureType, topLevel: topLevel, type: type, resourceTitle: resourceTitle, author: author, authorTitle: authorTitle})
+          resourceid: resourceid, 
+          structureType: structureType, 
+          topLevel: topLevel, 
+          type: type, 
+          resourceTitle: resourceTitle, 
+          author: author, 
+          authorTitle: authorTitle})
       }
       else if (structureType === "http://scta.info/resource/structureItem" ){
-        if (type === "http://scta.info/resource/transcription"){
+       // if (type === "http://scta.info/resource/transcription"){
           this.setState({
-            itemTranscriptionId: resourceid, 
+            itemTranscriptionId: ctranscription,
             displayType: "item", 
             blockDivFocus: resourceid.split("/resource/")[1].split("/")[0], 
             resourceTitle: resourceTitle, 
             tokenRange: tokenRange,
           })
         }
-        else {
-          const structureTypePromise = runQuery(getItemTranscription(resourceid))
-          structureTypePromise.then((t) => {
-            this.setState(
-              {
-                itemTranscriptionId: t.data.results.bindings[0] ? t.data.results.bindings[0].ctranscription.value : "", // conditional checks in case the query comes up empty; if empty it sets transcription id to ""
-                displayType: "item",
-                blockDivFocus: resourceid.split("/resource/")[1].split("/")[0], // this string split is a bad way to be getting the expression level id
-                resourceTitle: resourceTitle,
-                tokenRange: tokenRange
-              })
-              });
-            }
-          }
       else if (structureType === "http://scta.info/resource/structureElement" || structureType === "http://scta.info/resource/structureBlock" || structureType === "http://scta.info/resource/structureDivision" ){
         const structureTypePromise = runQuery(getItemTranscriptionFromBlockDiv(resourceid))
         structureTypePromise.then((t) => {
@@ -184,15 +174,7 @@ class TextSwitch extends React.Component {
       }
     }
   }
-  // UNSAFE_componentWillReceiveProps(nextProps) {
-  //   const newResourceId = Qs.parse(nextProps.location.search, { ignoreQueryPrefix: true }).resourceid
-  //   if (newResourceId.includes("https://scta.info/")){
-  //     this.handleUpdateUrlResource(newResourceId.replace("https://scta.info/", "http://scta.info/"))
-  //   }
-  //   else{
-  //     this.getInfo(newResourceId)
-  //   }
-  // }
+  
   componentDidUpdate(prevProps) {
     const newResourceId = Qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).resourceid
     const oldResourceId = Qs.parse(prevProps.location.search, { ignoreQueryPrefix: true }).resourceid
@@ -234,10 +216,6 @@ class TextSwitch extends React.Component {
         )
       }
       else if (this.state.displayType === "collection"){
-        //TODO: this should be moved out to its own component
-        //TODO: now that workGroup is using TextOutlineWrapper i'm not sure there is any need for separation
-        // the above conditional and this one should be combined
-        console.log("this.state.itemTranscriptionId", this.state.itemTranscriptionId)
         return (
           <TextWrapper 
           resourceid={this.state.resourceid}
