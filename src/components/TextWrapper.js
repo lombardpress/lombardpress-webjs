@@ -41,7 +41,7 @@ class TextWrapper extends React.Component {
       //focusRelatedExpressions: "",
       mtFocus: "",
       itemFocus: "",
-      collectionFocus: "",
+      //collectionFocus: "",
       surfaceid: "",
       lineFocusId: "",
       textPreviewObjects: [],
@@ -519,7 +519,6 @@ class TextWrapper extends React.Component {
               lineFocusId={this.state.lineFocusId}
               info={this.state.focus}
               itemFocus={this.state.itemFocus}
-              topLevel={this.state.itemFocus.topLevel}
               altWindowState={this.state.windows[key].windowId === "window1" ? this.state.windows["window2"].open : this.state.windows["window1"].open}
               mtFocus={this.state.mtFocus}
               handleToggleTextLinesView={this.handleToggleTextLinesView}

@@ -5,9 +5,8 @@ import {FaRegWindowRestore, FaRegWindowMaximize, FaRegWindowMinimize, FaRegWindo
 // reimport these if you want to use the chnage window location functions: FaAngleDoubleDown, FaAngleDoubleLeft,
 
 function WindowNavBar(props) {
-  console.log("available tabs", props.availableTabs)
   const displayTabs = () => {
-    const tabs = props.availableTabs.map((t, idx) => {
+    const tabs = props.availableTabs && props.availableTabs.map((t, idx) => {
       if (t.show){
         return (
           <Nav.Item key={"tab-" + t.name}>

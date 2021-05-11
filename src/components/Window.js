@@ -144,13 +144,15 @@ class Window extends React.Component {
       return items
     }
     const displayChild = () => {
+      //NOTE possible state machine pattern based on focus structureType
+      //different options should be available depending on the focus structureType
+
       const structureType = this.props.info.structureType
       const isCollection = structureType === "http://scta.info/resource/structureCollection" || false
-      console.log("structureType", isCollection)
+      
       return(
         <div>
-
-          {// components that are only avialable if blockDiv focus and this.props.info is set
+          {// components that are only available if blockDiv focus and this.props.info is set
             this.props.info &&
           <div>
           {
@@ -178,7 +180,7 @@ class Window extends React.Component {
             hidden={this.state.windowLoad !== "citation"}
             selectionRange={this.props.selectionRange}
             />}
-            {this.state.windowLoad === "surface2" &&  <Surface2 surfaceid={this.props.surfaceid} lineFocusId={this.props.lineFocusId} topLevel={this.props.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} handleLineFocusChange={this.props.handleLineFocusChange} hidden={this.state.windowLoad !== "surface2"}/>}
+            {this.state.windowLoad === "surface2" &&  <Surface2 surfaceid={this.props.surfaceid} lineFocusId={this.props.lineFocusId} topLevel={this.props.info.topLevel} handleSurfaceFocusChange={this.props.handleSurfaceFocusChange} handleLineFocusChange={this.props.handleLineFocusChange} hidden={this.state.windowLoad !== "surface2"}/>}
             
             {!isCollection && (this.state.windowLoad === "surface3" || this.state.mountStatus.surface3) &&  <Surface3Wrapper
             manifestations={this.props.info.manifestations}
@@ -206,29 +208,25 @@ class Window extends React.Component {
           </div>
           }
           {
-            //TODO: use of info, topLevel, itemFocus, focusResearceid, resourceid, needs to be better organized and clarified
+            //TODO: use of info, itemFocus, focusResearceid, resourceid, needs to be better organized and clarified
           }
           {!isCollection && (this.state.windowLoad === "xml" || this.state.mountStatus.xml) &&  <XmlView tresourceid={this.props.info ? this.props.info.resourceid + this.props.mtFocus : this.props.itemFocus.expression + this.props.mtFocus} hidden={this.state.windowLoad !== "xml"}/>}
           {
-            //always load outline since it reduces number of calls, as most info is the same for all paragraphs
+            //NOTE: always load outline since it reduces number of calls, as most info is the same for all paragraphs
           }
           <TextOutlineWrapper 
             focusResourceid={this.props.info ? this.props.info.resourceid : this.props.itemFocus.expression} 
-            resourceid={this.props.topLevel} 
-            title={this.props.topLevel} 
+            resourceid={this.props.info.topLevel} 
+            title={this.props.info.topLevel} 
             hidden={this.state.windowLoad !== "textOutlineWrapper"} 
             mtFocus={this.props.mtFocus}
-            collectionLink={true}/>
-            
+            collectionLink={true}/> 
           {
-            //always load search to keep search results present even when navigating two diffferent tabs
-          }
-          {
-            //<SearchWrapper hidden={this.state.windowLoad !== "search"} topLevel={this.props.topLevel} authorId={this.props.info.author}/>
+            //NOTE: always load search to keep search results present even when navigating two different tabs
           }
           <Search3
             hidden={this.state.windowLoad !== "search"}
-            searchEid={this.props.topLevel}
+            searchEid={this.props.info.topLevel}
             searchAuthor={this.props.info.author}
             searchType="text"
             showSubmit={true}
@@ -237,18 +235,13 @@ class Window extends React.Component {
             searchTerm={(this.props.selectionRange && this.props.selectionRange.text) ? '"' + this.props.selectionRange.text + '"' : ""}
             />
           {
-            //<Surface surfaceid={this.props.surfaceid} topLevel={this.props.topLevel}/>
-          }
-          
-          {
             // text preview wrapper -- loads a text preview from expression resource id
             this.state.windowLoad === "textPreview" &&  displayTextPreviewWrappers()
           }
           {
             (this.state.windowLoad === "dictionary" && this.props.selectionRange.text) &&
-            <Dictionary text={this.props.selectionRange.text} hidden={this.state.windowLoad !== "dictionary"}/>}
-
-          
+            <Dictionary text={this.props.selectionRange.text} hidden={this.state.windowLoad !== "dictionary"}/>
+          }
         </div>
       )
 
