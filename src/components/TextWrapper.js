@@ -346,23 +346,23 @@ class TextWrapper extends React.Component {
         )
       }
     else{
-      if (this.props.transcriptionid){
-        this.setItemFocus(this.props.transcriptionid)
+      if (this.props.itemTranscriptionId){
+        this.setItemFocus(this.props.itemTranscriptionId)
         //TODO: splitting strings for this information is not ideal.
         //info should be part of original query
-        const mFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[1]
-        const tFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[2]
+        const mFocus = this.props.itemTranscriptionId.split("/resource/")[1].split("/")[1]
+        const tFocus = this.props.itemTranscriptionId.split("/resource/")[1].split("/")[2]
         const selectionRange = this.props.tokenRange ? {
           wordRange: this.props.tokenRange,
-          selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1],
+          selectedElementTargetId: this.props.expressionid && this.props.expressionid.split("/resource/")[1],
         } : {}
         this.setState(
           {mtFocus: "/" + mFocus + "/" + tFocus, 
           selectionRange: selectionRange
         })
 
-        if (this.props.blockDivFocus){
-          this.retrieveFocusInfo(this.props.blockDivFocus)
+        if (this.props.expressionid){
+          this.retrieveFocusInfo(this.props.expressionid)
         }
       }
     }
@@ -388,10 +388,10 @@ class TextWrapper extends React.Component {
       }
       else{
   
-        if (this.props.transcriptionid !== prevProps.transcriptionid){
-          this.setItemFocus(this.props.transcriptionid)
-          const mFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[1]
-          const tFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[2]
+        if (this.props.itemTranscriptionId !== prevProps.itemTranscriptionId){
+          this.setItemFocus(this.props.itemTranscriptionId)
+          const mFocus = this.props.itemTranscriptionId.split("/resource/")[1].split("/")[1]
+          const tFocus = this.props.itemTranscriptionId.split("/resource/")[1].split("/")[2]
           //clear or set parts of state when new transcription file is loaded
           this.setState((prevState) => {
             const windows = prevState.windows
@@ -400,7 +400,7 @@ class TextWrapper extends React.Component {
             const selectionRange = this.props.tokenRange ? {
               ...prevState.selectionRange, 
               wordRange: this.props.tokenRange,
-              selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1],
+              selectedElementTargetId: this.props.expressionid && this.props.expressionid.split("/resource/")[1],
             } : {}
             return {
               mtFocus: "/" + mFocus + "/" + tFocus,
@@ -411,8 +411,8 @@ class TextWrapper extends React.Component {
         }
         //TODO: seems a little dangerous to have these two different setState/async calls 
         //if one depends on the other, this is a good place for things to get out of sync
-        if (this.props.blockDivFocus !== prevProps.blockDivFocus){
-          if (!this.props.blockDivFocus){
+        if (this.props.expressionid !== prevProps.expressionid){
+          if (!this.props.expressionid){
             this.setState(
               {
                 focus: "",
@@ -424,13 +424,13 @@ class TextWrapper extends React.Component {
               const selectionRange = this.props.tokenRange ? {
                 ...prevState.selectionRange, 
                 wordRange: this.props.tokenRange,
-                selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1],
+                selectedElementTargetId: this.props.expressionid && this.props.expressionid.split("/resource/")[1],
               } : {}
               return({
               selectionRange: selectionRange
               })  
             })
-            this.retrieveFocusInfo(this.props.blockDivFocus,)
+            this.retrieveFocusInfo(this.props.expressionid)
           }
         }
         if (this.props.tokenRange !== prevProps.tokenRange){
@@ -438,7 +438,7 @@ class TextWrapper extends React.Component {
             const selectionRange = this.props.tokenRange ? {
               ...prevState.selectionRange, 
               wordRange: this.props.tokenRange,
-              selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1],
+              selectedElementTargetId: this.props.expressionid && this.props.expressionid.split("/resource/")[1],
             } : {}
             return({
             selectionRange: selectionRange
@@ -537,7 +537,7 @@ class TextWrapper extends React.Component {
             // NOTE: using props instead of state; seems better, but needs full documentation
             // NOTE: itemid is shortid of item: TODO: needs documentation; or better, refactoring!
             // TODO: when scrollTo id type is consistent, remove id checker in didMount and didUpdate of Text component
-            scrollTo={this.props.blockDivFocus ? this.props.blockDivFocus : this.props.itemid}
+            scrollTo={this.props.expressionid ? this.props.expressionid.split("/resource/")[1] : this.props.itemid}
             handleTextPreviewFocusChange={this.handleTextPreviewFocusChange}
             handleUpdateSelectionRange={this.handleUpdateSelectionRange}
             selectionRange={this.state.selectionRange}
@@ -576,13 +576,14 @@ TextWrapper.propTypes = {
   * 
   * 
   **/
-  handleUpdateUrlResource: PropTypes.func, // inherited function to send up resource focus change
   resourceid: PropTypes.string, // id of focused resource (this can be a resource at any structure level and FRBR level)
-  blockDivFocus: PropTypes.string, // shortid that seems to be identical in function to resourceid (but currently expects shortId; TODO; this should be changed)
   expressionid: PropTypes.string, // corresponding expression id of the focused resource'
-  transcriptionid: PropTypes.string, // corresponding transcription id of the focused resource'
-  itemid: PropTypes.string, // corresponding item expression parent (or self) corresponding to focused resource; (currently requires shortId, but (TODO) this would be good to change)
-  tokenRange: PropTypes.object // an object containing word token range (tokenRange.start.int tokenRange.end.int)
+  transcriptionid: PropTypes.string, // corresponding transcription id of the focused resource (Note: only really seems necessary at collection level)
   
+  itemid: PropTypes.string, // corresponding item expression parent (or self) corresponding to focused resource; (currently requires shortId, but (TODO) this would be good to change; seems like it would be better to call this ItemExpressionId to match ItemTranscriptionId)
+  itemTranscriptionId: PropTypes.string, //corresponding item transcription parent (or self corresponding to focused resource) 
+  tokenRange: PropTypes.object, // an object containing word token range (tokenRange.start.int tokenRange.end.int)
+  handleUpdateUrlResource: PropTypes.func // inherited function to send up resource focus change
+
 }
 export default TextWrapper;

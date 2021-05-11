@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Surface2 from "./Surface2"
 import Surface3Wrapper from "./Surface3Wrapper"
 import XmlView from "./XmlView"
@@ -323,6 +324,43 @@ class Window extends React.Component {
     </div>
     );
   }
+}
+
+Window.propTypes = {
+  /**
+  * Window Component
+  * 
+  * 
+  **/
+  handleClose: PropTypes.func, //={this.handleClose}
+  handleMinimize: PropTypes.func, //{this.handleMinimize}
+  handleMaximize: PropTypes.func, //{this.handleMaximize}
+  handleMiddlize: PropTypes.func, //{this.handleMiddlize} //TODO these functions could be reduced to window resize object
+  handleTabChange: PropTypes.func, //{this.handleTabChange}
+  handleBlockFocusChange: PropTypes.func, //={this.setFocus} //TODO this should be replaced by handleFocusChange
+  handleFocusChange: PropTypes.func, //={this.setFocus2} //TODO this should replace handleBlockFocusChange
+  handleSurfaceFocusChange: PropTypes.func, //={this.handleSurfaceFocusChange}
+  handleSwitchWindow: PropTypes.func, //={this.handleSwitchWindow}
+  handleDuplicateWindow: PropTypes.func, //{this.handleDuplicateWindow}
+  resourceid: PropTypes.string, //={this.state.focus ? this.state.focus.resourceid : this.props.resourceid}
+  windowType: PropTypes.string, //={this.state.windows[key].position}
+  windowId: PropTypes.string, //={this.state.windows[key].windowId}
+  windowLoad: PropTypes.string, //{this.state.windows[key].windowLoad}
+  openWidthHeight: PropTypes.string, //{this.state.windows[key].openWidthHeight}
+  surfaceid: PropTypes.string, // {this.state.surfaceid}
+  lineFocusId: PropTypes.string, //{this.state.lineFocusId}
+  //info: PropTypes.object, // {this.state.focus} 
+  //itemFocus: PropTypes.string, // ={this.state.itemFocus} //Todo standardize this as scta url id, instead of short id
+  altWindowState: PropTypes.bool, // {this.state.windows[key].windowId === "window1" ? this.state.windows["window2"].open : this.state.windows["window1"].open} TODO could this be combined as part of a windowsParameter Object
+  mtFocus: PropTypes.string, //{this.state.mtFocus}
+  handleToggleTextLinesView: PropTypes.func, //={this.handleToggleTextLinesView}
+  annotationsDisplay: PropTypes.string, //{this.state.windows[key].annotationsDisplay} //TODO; reduce and combine by just passing windows[key]
+  handleChangeManifestation: PropTypes.func, //{this.handleChangeManifestation}
+  defaultManifestationSlug: PropTypes.string, //={this.state.windows[key].defaultManifestationSlug}: TODO as part of windows object pass
+  textPreviewObjects: PropTypes.array, //{this.state.textPreviewObjects}
+  handleTextPreviewFocusChange: PropTypes.func, //{this.handleTextPreviewFocusChange}
+  handleLineFocusChange: PropTypes.func, //{this.handleLineFocusChange}
+  selectionRange: PropTypes.object //{this.state.selectionRange}
 }
 
 export default Window;

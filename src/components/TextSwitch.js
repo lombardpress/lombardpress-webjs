@@ -101,22 +101,30 @@ class TextSwitch extends React.Component {
           this.setState({displayType: "workGroup", resourceid: resourceid, structureType: structureType, topLevel: topLevel, type: type, resourceTitle: resourceTitle})
       }
       else if (structureType === "http://scta.info/resource/structureCollection"){
-          this.setState({displayType: "collection", 
-          itemTranscriptionId: ctranscription,
-          resourceid: resourceid, 
-          structureType: structureType, 
-          topLevel: topLevel, 
-          type: type, 
-          resourceTitle: resourceTitle, 
-          author: author, 
-          authorTitle: authorTitle})
+          this.setState({
+            displayType: "collection", 
+            transcriptionid: ctranscription,
+            resourceid: resourceid, 
+            //TODO: this is a hacky way to get expression id; it should be retrievable from the query itself
+            expressionid: "http://scta.info/resource/" + resourceid.split("/resource/")[1].split("/")[0],
+            structureType: structureType, 
+            topLevel: topLevel, 
+            type: type, 
+            resourceTitle: resourceTitle, 
+            author: author, 
+            authorTitle: authorTitle
+          }
+          )
       }
       else if (structureType === "http://scta.info/resource/structureItem" ){
        // if (type === "http://scta.info/resource/transcription"){
           this.setState({
             itemTranscriptionId: ctranscription,
             displayType: "item", 
-            blockDivFocus: resourceid.split("/resource/")[1].split("/")[0], 
+            resourceid: resourceid, // focused resource introduced via url parameter
+            //TODO: this is a hacky way to get expression id; it should be retrievable from the query itself
+            expressionid: "http://scta.info/resource/" + resourceid.split("/resource/")[1].split("/")[0],
+            transcriptionid: ctranscription,
             resourceTitle: resourceTitle, 
             tokenRange: tokenRange,
           })
@@ -126,9 +134,13 @@ class TextSwitch extends React.Component {
         structureTypePromise.then((t) => {
           // if transcription
           if (type === "http://scta.info/resource/transcription"){
-            this.setState({itemTranscriptionId: itemParent, 
-              blockDivFocus: t.data.results.bindings[0].blockDivExpression.value, 
-              displayType: "item", resourceTitle: resourceTitle, 
+            this.setState({
+              itemTranscriptionId: itemParent, 
+              resourceid: resourceid, // focused resource introduced via url parameter
+              expressionid: t.data.results.bindings[0].blockDivExpression.value,
+              transcriptionid: resourceid,
+              displayType: "item", 
+              resourceTitle: resourceTitle, 
               tokenRange: tokenRange
             })
           }
@@ -137,7 +149,9 @@ class TextSwitch extends React.Component {
             if (t.data.results.bindings[0].ctranscription){
               this.setState({
                 itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, 
-                blockDivFocus: resourceid, 
+                resourceid: resourceid, // focused resource introduced via url parameter
+                expressionid: resourceid,
+                transcriptionid: "this would be the focus transcription id",
                 displayType: "item", 
                 resourceTitle: resourceTitle, 
                 tokenRange: tokenRange})
@@ -150,7 +164,9 @@ class TextSwitch extends React.Component {
           else {
             this.setState(
               {itemTranscriptionId: t.data.results.bindings[0].ctranscription.value, 
-              blockDivFocus: t.data.results.bindings[0].blockDivExpression.value, 
+              resourceid: resourceid, // focused resource introduced via url parameter
+              expressionid: t.data.results.bindings[0].blockDivExpression.value,
+              transcriptionid: "this would be the focus transcription id",
               displayType: "item", 
               resourceTitle: resourceTitle, 
               tokenRange: tokenRange})
@@ -220,29 +236,25 @@ class TextSwitch extends React.Component {
         return (
           <TextWrapper 
           resourceid={this.state.resourceid}
-          //NOTE: it implicitly expected that resource id is an expression level id
-          //this is hacky way to ensure that focus info is being set for the expression level id only
-          //NOTE: props.resourceid and props.itemId and props.blockDivFocus are doing similar things/
-          //TODO: need to rigorously define props from TextWrapper and reduce redundancy and confusion
-          expressionid={"http://scta.info/resource/" + this.state.resourceid.split("/resource/")[1].split("/")[0]}
+          expressionid={this.state.expressionid}
+          transcriptionid={this.state.transcriptionid}
           resourceType="collection"
           handleUpdateUrlResource={this.handleUpdateUrlResource}
-          transcriptionid={this.state.itemTranscriptionId}
           />
           )
       }
       else if (this.state.displayType === "item"){
         // check to see if a transcription for this text has been found
         if (this.state.itemTranscriptionId){
-          //TODO: item id is shortItemId pull from transcription id.
-          // it would be better to be getting this from query rather than string deconstruction
           return (
             <TextWrapper 
-            itemid={this.state.itemTranscriptionId.split("/resource/")[1].split("/")[0]}
-            transcriptionid={this.state.itemTranscriptionId}
-            blockDivFocus={this.state.blockDivFocus}
-            handleUpdateUrlResource={this.handleUpdateUrlResource}
+            resourceid={this.state.resourceid}
+            expressionid={this.state.expressionid}
+            transcriptionid={this.state.transcriptionid}
             tokenRange={this.state.tokenRange}
+            itemid={this.state.itemTranscriptionId.split("/resource/")[1].split("/")[0]}
+            itemTranscriptionId={this.state.itemTranscriptionId}
+            handleUpdateUrlResource={this.handleUpdateUrlResource}
             />
           )
         }

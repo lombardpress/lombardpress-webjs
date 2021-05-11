@@ -298,7 +298,6 @@ function getStringBeforeWord(text, word, instanceNumber, first) {
  */
 
 export function createRange(root, startContainer, startOffset, endContainer, endOffset){
-  console.log("endOffset", endOffset)
   const range = root.ownerDocument.createRange();
   range.setStart(startContainer, startOffset);
   range.setEnd(endContainer, endOffset);
@@ -312,8 +311,6 @@ export function getRangeWordCount(rng){
   var cnt = rng.cloneContents();
   $(cnt).find(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
   const selectionText = cleanText(cnt.textContent)
-  console.log("selectionText", selectionText)
-  console.log("precedingSelectionTextArray", selectionText.split(" ").filter(n=>n))
   const length = selectionText.split(" ").filter(n=>n).length
   return length;
 }
@@ -363,7 +360,6 @@ export function goToGitHubEdit(url, selectedText, selectedElementTargetId){
   const data = getLineNumber(url, selectedText, selectedElementTargetId)
   //https://github.com/scta-texts/plaoulcommentary/raw/master/lectio1/lectio1.xml
   data.then((d) => {
-    console.log(d)
     const editUrl = url.replace("raw", "edit") + "#L" + d
     window.open(editUrl,"gitHubEditWindow",'height=750,width=750');
     //window.open(editUrl, "_blank"); 
