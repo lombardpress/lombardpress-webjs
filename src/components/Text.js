@@ -16,6 +16,7 @@ class Text extends React.Component {
     this.handleHideFootnoteToolTip = this.handleHideFootnoteToolTip.bind(this)
     this.handleShowFootnoteToolTip = this.handleShowFootnoteToolTip.bind(this)
     this.handleOnToolTipClick = this.handleOnToolTipClick.bind(this)
+    this.mounted = "";
     this.state = {
       fetching: false,
       // state.selectionRange is puposevively different than props.selection Range
@@ -292,6 +293,7 @@ class Text extends React.Component {
   }
   handleOnToolTipClick(windowLoad, window = "window1"){
     const selectionRange = this.state.selectionRange
+    console.log("selection range test", selectionRange)
     // send selectionRange up to App State
     this.markWithElement(selectionRange);
     const s = selectionRange;
@@ -315,13 +317,17 @@ class Text extends React.Component {
    * @param {object} - coords object resulting from from current selection
    */
   handleShowToolTip(selectionRange, selectionCoords){
-    this.setState({selectionRange: selectionRange, selectionCoords: selectionCoords})
-    ReactTooltip.show(this.fooRef)
+    if (this.mounted) // NOTE: conditional was added because react was complaining of memory leak
+    {
+      this.setState({selectionRange: selectionRange, selectionCoords: selectionCoords})
+      ReactTooltip.show(this.fooRef)
+    }
   }
   handleShowFootnoteToolTip(){
     ReactTooltip.show(this.foonoteRef)
   }
   componentDidMount(){
+    this.mounted = true;
     // NOTE: ScrollToNew helps ensure that scrollTo id is SCTA ShortID, 
     // since TextWrapper is (at present) sometimes sending the shortid and sometimes the full url id
     // TODO: when TextWrapper is refactored and consistently sending the same ID type. this should be removed
@@ -371,6 +377,9 @@ class Text extends React.Component {
       }
     }
     
+  }
+  componentWillUnmount(){
+    this.mounted = false;
   }
   
   render(){

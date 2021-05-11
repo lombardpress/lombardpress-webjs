@@ -235,7 +235,7 @@ class TextSwitch extends React.Component {
       else if (this.state.displayType === "collection"){
         return (
           <TextWrapper 
-          resourceid={this.state.resourceid}
+          resourceid={this.state.resourceid}g
           expressionid={this.state.expressionid}
           transcriptionid={this.state.transcriptionid}
           resourceType="collection"
@@ -252,7 +252,6 @@ class TextSwitch extends React.Component {
             expressionid={this.state.expressionid}
             transcriptionid={this.state.transcriptionid}
             tokenRange={this.state.tokenRange}
-            itemid={this.state.itemTranscriptionId.split("/resource/")[1].split("/")[0]}
             itemTranscriptionId={this.state.itemTranscriptionId}
             handleUpdateUrlResource={this.handleUpdateUrlResource}
             />

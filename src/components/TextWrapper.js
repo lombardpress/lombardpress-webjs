@@ -537,7 +537,7 @@ class TextWrapper extends React.Component {
             // NOTE: using props instead of state; seems better, but needs full documentation
             // NOTE: itemid is shortid of item: TODO: needs documentation; or better, refactoring!
             // TODO: when scrollTo id type is consistent, remove id checker in didMount and didUpdate of Text component
-            scrollTo={this.props.expressionid ? this.props.expressionid.split("/resource/")[1] : this.props.itemid}
+            scrollTo={this.props.expressionid && this.props.expressionid.split("/resource/")[1]}
             handleTextPreviewFocusChange={this.handleTextPreviewFocusChange}
             handleUpdateSelectionRange={this.handleUpdateSelectionRange}
             selectionRange={this.state.selectionRange}
@@ -580,7 +580,7 @@ TextWrapper.propTypes = {
   expressionid: PropTypes.string, // corresponding expression id of the focused resource'
   transcriptionid: PropTypes.string, // corresponding transcription id of the focused resource (Note: only really seems necessary at collection level)
   
-  itemid: PropTypes.string, // corresponding item expression parent (or self) corresponding to focused resource; (currently requires shortId, but (TODO) this would be good to change; seems like it would be better to call this ItemExpressionId to match ItemTranscriptionId)
+  //itemid: PropTypes.string, // corresponding item expression parent (or self) corresponding to focused resource; (currently requires shortId, but (TODO) this would be good to change; seems like it would be better to call this ItemExpressionId to match ItemTranscriptionId)
   itemTranscriptionId: PropTypes.string, //corresponding item transcription parent (or self corresponding to focused resource) 
   tokenRange: PropTypes.object, // an object containing word token range (tokenRange.start.int tokenRange.end.int)
   handleUpdateUrlResource: PropTypes.func // inherited function to send up resource focus change
