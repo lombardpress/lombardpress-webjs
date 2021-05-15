@@ -600,18 +600,37 @@ export function getAuthorInformation(authorid){
          "?topLevelExpression <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
          "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
        "}",
+       // # TODO isOnSurface should become more uniform across manifestations in order to simplify this
        "OPTIONAL",
          "{",
-         "?manifestation <http://scta.info/property/isOnSurface> ?manifestationSurface .",
-         "?manifestationSurface <http://purl.org/dc/elements/1.1/title> ?surfaceTitle .",
-         "?surface <http://scta.info/property/order> ?surface_order .",
-         "?codex <http://scta.info/property/hasSurface> ?manifestationSurface .",
-         "?codex <http://purl.org/dc/elements/1.1/title> ?codexTitle .",
+         // #option 1 get surfaces for elements and blocks
+          "{",
+            "?manifestation <http://scta.info/property/isOnZone> ?bn . ",
+            "?bn <http://scta.info/property/isOnZone> ?zone .",
+            "?zone <http://scta.info/property/isPartOfSurface> ?manifestationSurface .",
+          "}",
+          "UNION",
+          //#option 2 get surface for divisions and items
+          "{",
+            "?manifestation <http://scta.info/property/hasStructureBlock> ?block .",
+            "?block <http://scta.info/property/isOnSurface> ?manifestationSurface .",
+          "}",
+          "UNION",
+          //#option 3 get surfaces for collections"
+          "{",
+            "?manifestation <http://scta.info/property/hasStructureItem> ?item .",
+            "?item <http://scta.info/property/isOnSurface> ?manifestationSurface .",
+          "}",
+          "?manifestationSurface <http://purl.org/dc/elements/1.1/title> ?surfaceTitle .",
+          "?manifestationSurface <http://scta.info/property/order> ?surface_order .",
+          "?codex <http://scta.info/property/hasSurface> ?manifestationSurface .",
+          "?codex <http://purl.org/dc/elements/1.1/title> ?codexTitle .",
          "}",
        "}",
        "ORDER BY ?surface_order"].join('');
        return query
      }
+    
 
     export function getCodices(){
      const query = [

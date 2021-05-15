@@ -64,6 +64,7 @@ class Citation extends React.Component{
               }
             )
           }
+        //})
         }
       })
     }
