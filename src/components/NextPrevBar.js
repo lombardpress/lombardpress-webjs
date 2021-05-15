@@ -16,7 +16,8 @@ function NextPrevBar(props) {
           {(props.info.next && props.info.next !== "http://scta.info/resource/") && <Nav.Link title="Move Up to Next Sibling Resource" onClick={() => {props.handleBlockFocusChange(props.info.next)}}><FaAngleRight/></Nav.Link>}
         </Nav.Item>
         <Nav.Item>
-          {(props.info.parent && props.info.parent !== "http://scta.info/resource/") && <Nav.Link title="Move Up to Parent Resource" onClick={() => {props.handleBlockFocusChange(props.info.parent)}}><FaAngleUp/></Nav.Link>}
+          {(props.info.resourceid !== props.info.topLevel) && (props.info.parent !== "http://scta.info/resource/") 
+          && <Nav.Link title="Move Up to Parent Resource" onClick={() => {props.handleBlockFocusChange(props.info.parent)}}><FaAngleUp/></Nav.Link>}
         </Nav.Item>
         </Nav>
       )
