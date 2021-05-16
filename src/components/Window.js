@@ -7,6 +7,7 @@ import WindowNavBar from "./WindowNavBar"
 import NextPrevBar from "./NextPrevBar"
 import TextCompareWrapper from "./TextCompareWrapper"
 import Search3 from "./Search3"
+import PersonInfo from "./PersonInfo"
 import Comments2 from "./Comments2"
 import CitationWrapper from "./CitationWrapper"
 import TextOutlineWrapper from "./TextOutlineWrapper"
@@ -208,9 +209,25 @@ class Window extends React.Component {
             }
           </div>
           }
+          
           {
-            //TODO: use of info, itemFocus, focusResearceid, resourceid, needs to be better organized and clarified
+            //TODO: use of info, itemFocus, focusResearceid, resourceid vs info.resourceid needs to be better organized and clarified
           }
+          {
+          // BEGIN component mount when in authorView (currently detected by the absence of props.info)
+          // TODO change so that author detection is based on some less fragile than absence of props.info
+          // TODO: window component is probably a "state machine" and should be refactored based on that design pattern
+          }
+          {this.props.personView && (this.state.windowLoad === "citation" || this.state.mountStatus.citation) && <PersonInfo resourceid={this.props.resourceid} hidden={this.state.windowLoad !== "citation"}/>
+          }
+          {this.props.personView && (this.state.windowLoad === "citation" || this.state.mountStatus.comments) && 
+          <Comments2 
+              resourceid={this.props.resourceid }
+              expressionid={this.props.resourceid} 
+              hidden={this.state.windowLoad !== "comments"}/>
+              }
+            
+
           {!isCollection && (this.state.windowLoad === "xml" || this.state.mountStatus.xml) &&  <XmlView tresourceid={this.props.info ? this.props.info.resourceid + this.props.mtFocus : this.props.itemFocus.expression + this.props.mtFocus} hidden={this.state.windowLoad !== "xml"}/>}
           {
             //NOTE: always load outline since it reduces number of calls, as most info is the same for all paragraphs
@@ -228,7 +245,7 @@ class Window extends React.Component {
           <Search3
             hidden={this.state.windowLoad !== "search"}
             searchEid={this.props.info.topLevel}
-            searchAuthor={this.props.info.author}
+            searchAuthor={this.props.info ? this.props.info.author : this.props.resourceid} // TODO temp way to do this; currently author view is the only time props.info is not set
             searchType="text"
             showSubmit={true}
             showAdvancedParameters={true}
@@ -253,6 +270,7 @@ class Window extends React.Component {
     const getAvailableTabs = () => {
       const structureType = this.props.info.structureType
       const isCollection = structureType === "http://scta.info/resource/structureCollection" || false
+      const isInfo = this.props.info || false
       return [
       {
         name: "citation",
@@ -263,19 +281,19 @@ class Window extends React.Component {
       {
         name: "surface3",
         desc: "Images",
-        show: isCollection ? false : true,
+        show: !isInfo || isCollection ? false : true,
         icon: <FaRegImage/>
       },
       {
         name: "xml",
         desc: "Text XML Source",
-        show: isCollection ? false : true,
+        show: !isInfo || isCollection ? false : true,
         icon: <FaCode/>
       },
       {
         name: "textCompare",
         desc: "Text Comparisons",
-        show: true,
+        show: isInfo ? true : false,
         icon: <FaGripVertical/>
       },
       {
@@ -287,7 +305,7 @@ class Window extends React.Component {
       {
         name: "textOutlineWrapper",
         desc: "Text Outline",
-        show: isCollection ? false : true,
+        show: !isInfo || isCollection ? false : true,
         icon: <FaAlignLeft/>
       },
       {

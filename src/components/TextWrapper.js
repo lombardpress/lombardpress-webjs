@@ -9,6 +9,7 @@ import {Link} from 'react-router-dom';
 import Window from "./Window"
 import TextNavBar from "./TextNavBar"
 import Text from "./Text"
+import AuthorCollection from "./AuthorCollection"
 import VersionChain from "./VersionChain"
 import {runQuery, scrollToParagraph} from './utils'
 
@@ -329,9 +330,11 @@ class TextWrapper extends React.Component {
 
   componentDidMount(){
     this.mount = true
+    if (this.props.resourceType === "person"){
+    }
     //transcriptionid should be required Prop
     //conditional here to reinfurce that rule
-    if (this.props.resourceType === "collection"){
+    else if (this.props.resourceType === "collection"){
       //TODO props.expressionid is doing something very similar to blockDivFocus
       this.retrieveFocusInfo(this.props.expressionid)
       //TODO: splitting strings for this information is not ideal.
@@ -371,7 +374,14 @@ class TextWrapper extends React.Component {
     componentDidUpdate(prevProps){
       //Keep testing, but it seems like this look up only needs to fire, when the transcription id prop changes
       // not when other props changes.
-      if (this.props.resourceType === "collection"){
+      
+      if (this.props.resourceType === "person"){
+        if (this.props.resourceid !== prevProps.resourceid){
+          this.setState({focus: ""});
+        }
+      }
+      else if (this.props.resourceType === "collection"){
+        
         if (this.props.resourceid !== prevProps.resourceid){
           this.retrieveFocusInfo(this.props.expressionid)
           //TODO: splitting strings for this information is not ideal.
@@ -485,6 +495,7 @@ class TextWrapper extends React.Component {
               handleTextPreviewFocusChange={this.handleTextPreviewFocusChange}
               handleLineFocusChange={this.handleLineFocusChange}
               selectionRange={this.state.selectionRange}
+              personView={this.props.resourceType === "person" ? true : false}
               />
             )
           }
@@ -500,21 +511,12 @@ class TextWrapper extends React.Component {
     this.state.windows.window2.open && textClassNames.push("longText");
     this.state.pdfView ? textClassNames.push("hidden"): textClassNames.push("showing");
     
-
-    return (
-      <div>
-        {(this.state.itemFocus && this.props.resourceType !== "collection") &&
-          <VersionChain transcriptionid={this.state.itemFocus.transcriptionid} handleFocusChange={this.setFocus2}/>
-        }
-        { this.state.pdfView && <Print url={this.state.itemFocus.doc}/>}
-        {
-          // Text Container and Text are always loaded to avoid unnecessary re-mounting
-          // textHide variable is used to hide or show textContainer depending on whether this.statePdfView is true or false
-        }
-        <Container className={textClassNames.join(" ")}>
-
-        {(this.props.resourceType === "collection") ? 
-          <div>
+    const displayMain = () => {
+      if (this.props.resourceType === "person"){
+        return (<AuthorCollection resourceid={this.props.resourceid}/>)
+      }
+      else if (this.props.resourceType === "collection"){
+        return (<div>
           <h1>{this.state.resourceTitle}</h1>
             <p style={{"textAlign": "center"}}>By <Link to={"/text?resourceid=" + this.state.focus.author}>{this.state.focus.authorTitle}</Link></p>
             <TextOutlineWrapper
@@ -526,8 +528,11 @@ class TextWrapper extends React.Component {
               collectionLink={true}
               showParentLink={true}
               />
-          </div>  
-          : this.state.itemFocus &&  <Text
+          </div>)  
+      }
+      else{
+        return (
+          this.state.itemFocus &&  <Text
             doc={this.state.itemFocus.doc}
             topLevel={this.state.itemFocus.topLevel}
             setFocus={this.setFocus}
@@ -542,7 +547,24 @@ class TextWrapper extends React.Component {
             handleUpdateSelectionRange={this.handleUpdateSelectionRange}
             selectionRange={this.state.selectionRange}
             />
-          }
+        )
+
+      }
+    }
+
+    return (
+      <div>
+        {(this.state.itemFocus && (this.props.resourceType !== "collection" || this.props.resourceType !== "person")) &&
+          <VersionChain transcriptionid={this.state.itemFocus.transcriptionid} handleFocusChange={this.setFocus2}/>
+        }
+        { this.state.pdfView && <Print url={this.state.itemFocus.doc}/>}
+        {
+          // Text Container and Text are always loaded to avoid unnecessary re-mounting
+          // textHide variable is used to hide or show textContainer depending on whether this.statePdfView is true or false
+        }
+        <Container className={textClassNames.join(" ")}>
+
+        {displayMain()}
         </Container>
 
         {this.state.itemFocus && <TextNavBar

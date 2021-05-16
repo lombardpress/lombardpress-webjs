@@ -4,7 +4,7 @@ import {Helmet} from "react-helmet";
 import TextWrapper from "./TextWrapper"
 import TextArticle from "./TextArticle"
 import Collection from "./Collection"
-import AuthorCollection from "./AuthorCollection"
+
 import Codex from "./Codex"
 import ExpressionType from './ExpressionType';
 import ResourceTypeList from './ResourceTypeList';
@@ -219,7 +219,14 @@ class TextSwitch extends React.Component {
         return (<ResourceTypeList resourceTypeId="http://scta.info/resource/expressionType"/>)
       }
       else if (this.state.displayType === "person"){
-        return (<AuthorCollection resourceid={this.state.resourceid}/>)
+        return (
+        // <AuthorCollection resourceid={this.state.resourceid}/>
+        <TextWrapper 
+          resourceid={this.state.resourceid}
+          resourceType="person"
+          handleUpdateUrlResource={this.handleUpdateUrlResource}
+          />
+        )
 
       }
       else if (this.state.displayType === "article"){
@@ -235,7 +242,7 @@ class TextSwitch extends React.Component {
       else if (this.state.displayType === "collection"){
         return (
           <TextWrapper 
-          resourceid={this.state.resourceid}g
+          resourceid={this.state.resourceid}
           expressionid={this.state.expressionid}
           transcriptionid={this.state.transcriptionid}
           resourceType="collection"

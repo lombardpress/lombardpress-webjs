@@ -164,10 +164,10 @@ class AuthorCollection extends React.Component {
       <Col>
       <br/>
       <br/>
-      <Search3 searchAuthor={this.props.resourceid}
+      {/* <Search3 searchAuthor={this.props.resourceid}
         showSubmit={true}
         showAdvancedParameters={true}
-        showLabels={false}/>
+        showLabels={false}/> */}
       </Col>
       </Row>
       </Container>
