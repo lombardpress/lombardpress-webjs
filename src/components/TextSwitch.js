@@ -236,8 +236,13 @@ class TextSwitch extends React.Component {
       else if (this.state.displayType === "workGroup"){
         //TODO: this conditional should be comined with the conditional below
         return (
-          <Collection resourceid={this.state.resourceid} structureType={this.state.structureType} topLevel={this.state.topLevel} type={this.state.type}/>
-        )
+          // <Collection resourceid={this.state.resourceid} structureType={this.state.structureType} topLevel={this.state.topLevel} type={this.state.type}/>
+        <TextWrapper 
+        resourceid={this.state.resourceid}
+        resourceType="workGroup"
+        handleUpdateUrlResource={this.handleUpdateUrlResource}
+        />
+      )
       }
       else if (this.state.displayType === "collection"){
         return (

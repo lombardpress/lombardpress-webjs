@@ -11,6 +11,7 @@ import TextNavBar from "./TextNavBar"
 import Text from "./Text"
 import AuthorCollection from "./AuthorCollection"
 import VersionChain from "./VersionChain"
+import Collection from "./Collection"
 import {runQuery, scrollToParagraph} from './utils'
 
 import {basicInfoQuery, itemTranscriptionInfoQuery} from './Queries'
@@ -330,7 +331,7 @@ class TextWrapper extends React.Component {
 
   componentDidMount(){
     this.mount = true
-    if (this.props.resourceType === "person"){
+    if (this.props.resourceType === "person" || this.props.resourceType === "workGroup"){
     }
     //transcriptionid should be required Prop
     //conditional here to reinfurce that rule
@@ -375,7 +376,7 @@ class TextWrapper extends React.Component {
       //Keep testing, but it seems like this look up only needs to fire, when the transcription id prop changes
       // not when other props changes.
       
-      if (this.props.resourceType === "person"){
+      if (this.props.resourceType === "person" || this.props.resourceType === "workGroup"){
         if (this.props.resourceid !== prevProps.resourceid){
           this.setState({focus: ""});
         }
@@ -514,6 +515,11 @@ class TextWrapper extends React.Component {
     const displayMain = () => {
       if (this.props.resourceType === "person"){
         return (<AuthorCollection resourceid={this.props.resourceid}/>)
+      }
+      if (this.props.resourceType === "workGroup"){
+        return ( <Collection resourceid={this.props.resourceid} 
+           type="http://scta.info/resource/workGroup"
+          />)
       }
       else if (this.props.resourceType === "collection"){
         return (<div>

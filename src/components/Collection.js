@@ -247,14 +247,14 @@ class Collection extends React.Component {
           }
           </Container>
         </Col>
-        <Col>
+        {/* <Col>
           <Container>
           <Search3 searchWorkGroup={this.props.resourceid}
           showSubmit={true}
           showAdvancedParameters={true}
           showLabels={false}/>
           </Container>
-        </Col>
+        </Col> */}
       </Row>
       </Container>
 
