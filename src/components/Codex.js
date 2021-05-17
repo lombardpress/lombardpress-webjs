@@ -101,32 +101,12 @@ class Codex extends React.Component {
     })
   }
   componentDidMount(){
-    if (this.props.surfaceid){
-      this.retrieveCodexInfo(this.props.surfaceid, "surface")
-    }
-    else if (this.props.canvasid){
-      this.retrieveCodexInfo(this.props.canvasid, "canvas")
-    }
-    else if (this.props.manifestid){
-      this.retrieveCodexInfo(this.props.manifestid, "manifest")
-    }
-    else{
-      this.retrieveCodexInfo(this.props.codexid, "codex")
-    }
+    this.retrieveCodexInfo(this.props.resourceid, this.props.codexResourceType)
   }
-  UNSAFE_componentWillReceiveProps(newProps){
-    if (newProps.surfaceid && newProps.surfaceid !== this.props.surfaceid){
-      this.retrieveCodexInfo(newProps.surfaceid, "surface")
-    }
-    else if (newProps.canvasid && newProps.canvasid !== this.props.canvasid){
-      this.retrieveCodexInfo(newProps.canvasid, "canvas")
-    }
-    else if (newProps.manifestid && newProps.manifestid !== this.props.manifestid){
-      this.retrieveCodexInfo(newProps.manifest, "manifest")
-    }
-    else if (newProps.codexid !== this.props.codexid){
-      this.retrieveCodexInfo(newProps.codexid, "codex")
-    }
+  componentDidUpdate(prevProps){
+    if (this.props.resourceid && this.props.resourceid !== prevProps.resourceid){
+      this.retrieveCodexInfo(this.props.resourceid, this.props.codexResourceType)
+  }
   }
 
   render(){
@@ -162,31 +142,35 @@ class Codex extends React.Component {
 
     }
     return (
-      <Container fluid={true} className="Codex">
-      <h1>{this.props.codexid}</h1>
-      <div className="codexWrapper">
-        <div className="codexContentsWrapper">
-          <div className="codexContents">
-          {
-            // uncomment if show hide contents toggle is desired
-            //<h2 onClick={this.handleToggleShowContents}>{this.state.showContents ? "Hide Contents" : "View Contents"}</h2>
-          }
-          <h2>Codex Contents</h2>
-          {this.state.showContents && this.state.items && displayItems()}
-          </div>
-        </div>
-        <div className="codexImage">
+      // <Container fluid={true} className="Codex">
+      // <h1>{this.props.codexid}</h1>
+      // <div className="codexWrapper">
+      //   <div className="codexContentsWrapper">
+      //     <div className="codexContents">
+      //     {
+      //       // uncomment if show hide contents toggle is desired
+      //       //<h2 onClick={this.handleToggleShowContents}>{this.state.showContents ? "Hide Contents" : "View Contents"}</h2>
+      //     }
+      //     <h2>Codex Contents</h2>
+      //     {this.state.showContents && this.state.items && displayItems()}
+      //     </div>
+      //   </div>
+      //   <div className="codexImage">
+      //     <h1>Codex Pages</h1>
+      //     {displayImages()}
+      //    </div>
+      //    <div className="surfaceInfo">
+      //    {this.state.focusedSurface &&
+      //     <SurfaceInfo surfaceid={this.state.focusedSurface} handleSurface3Manifestations={this.handleSurface3Manifestations}/>
+      //    }
+      //   </div>
+      // </div>
+
+      // </Container>
+      <div className="codexImage">
           <h1>Codex Pages</h1>
           {displayImages()}
          </div>
-         <div className="surfaceInfo">
-         {this.state.focusedSurface &&
-          <SurfaceInfo surfaceid={this.state.focusedSurface} handleSurface3Manifestations={this.handleSurface3Manifestations}/>
-         }
-        </div>
-      </div>
-
-      </Container>
     );
   }
 }

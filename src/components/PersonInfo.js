@@ -114,7 +114,7 @@ function PersonInfo(props) {
 
   }
   return (
-    <div className="Personinfo">
+    <div className={props.hidden ? "hidden" : "showing"}>
       <Container>
     <h1>PersonInfo for {authorTitle}</h1>
     <img src={authorImageUrl} width="100px"/>

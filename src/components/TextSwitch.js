@@ -276,18 +276,30 @@ class TextSwitch extends React.Component {
 
         }
       }
-      else if (this.state.displayType === "codex"){
-        return (<Codex codexid={this.state.resourceid}/>)
+      else if (this.state.displayType === "codex" 
+      || this.state.displayType === "surface" 
+      || this.state.displayType === "canvas" 
+      || this.state.displayType === "manifest"){
+        return (
+        // <Codex codexid={this.state.resourceid}/>
+        <TextWrapper 
+        resourceid={this.state.resourceid}
+        resourceType="codex"
+        codexResourceType={this.state.displayType}
+        handleUpdateUrlResource={this.handleUpdateUrlResource}
+        />
+        
+        )
       }
-      else if (this.state.displayType === "surface"){
-        return (<Codex surfaceid={this.state.resourceid}/>)
-      }
-      else if (this.state.displayType === "canvas"){
-        return (<Codex canvasid={this.state.resourceid}/>)
-      }
-      else if (this.state.displayType === "manifest"){
-        return (<Codex manifestid={this.state.resourceid}/>)
-      }
+      // else if (this.state.displayType === "surface"){
+      //   return (<Codex surfaceid={this.state.resourceid}/>)
+      // }
+      // else if (this.state.displayType === "canvas"){
+      //   return (<Codex canvasid={this.state.resourceid}/>)
+      // }
+      // else if (this.state.displayType === "manifest"){
+      //   return (<Codex manifestid={this.state.resourceid}/>)
+      // }
       else if (this.state.displayType === "expressionType"){
         return (<ExpressionType expressionTypeId={this.state.resourceid}/>)
       }

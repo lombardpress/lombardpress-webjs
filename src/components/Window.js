@@ -12,6 +12,7 @@ import Comments2 from "./Comments2"
 import CitationWrapper from "./CitationWrapper"
 import TextOutlineWrapper from "./TextOutlineWrapper"
 import TextPreviewWrapper from "./TextPreviewWrapper"
+import SurfaceInfo from "./SurfaceInfo"
 import Dictionary from "./Dictionary"
 
 import {FaSearch, FaGripVertical, FaCode, FaInfo, FaRegImage, FaComments, FaAlignLeft} from 'react-icons/fa';
@@ -218,9 +219,13 @@ class Window extends React.Component {
           // TODO change so that author detection is based on some less fragile than absence of props.info
           // TODO: window component is probably a "state machine" and should be refactored based on that design pattern
           }
-          {this.props.personView && (this.state.windowLoad === "citation" || this.state.mountStatus.citation) && <PersonInfo resourceid={this.props.resourceid} hidden={this.state.windowLoad !== "citation"}/>
+          {this.props.resourceType === "person" && (this.state.windowLoad === "citation" || this.state.mountStatus.citation) && <PersonInfo resourceid={this.props.resourceid} hidden={this.state.windowLoad !== "citation"}/>}
+          {
+          //this.props.resourceType === "workGroup" && (this.state.windowLoad === "citation" || this.state.mountStatus.citation) && <WorkGroupInfo resourceid={this.props.resourceid} hidden={this.state.windowLoad !== "citation"}/>
           }
-          {this.props.personView && (this.state.windowLoad === "citation" || this.state.mountStatus.comments) && 
+          {this.props.resourceType === "codex" && (this.state.windowLoad === "citation" || this.state.mountStatus.citation) && <SurfaceInfo surfaceid="http://scta.info/resource/sorb/2r" resourceid={this.props.resourceid} hidden={this.state.windowLoad !== "citation"}/>
+          }
+          {this.props.resourceType !== "text" && (this.state.windowLoad === "citation" || this.state.mountStatus.comments) && 
           <Comments2 
               resourceid={this.props.resourceid }
               expressionid={this.props.resourceid} 

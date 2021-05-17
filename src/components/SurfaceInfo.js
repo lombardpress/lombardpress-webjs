@@ -157,7 +157,7 @@ class SurfaceInfo extends React.Component {
                 manifestations = []
               }
           return (
-            <div key={e["@id"]}>
+            <div key={e["@id"]} className={this.props.hidden ? "hidden" : "showing"}>
             <hr/>
             <p>{e["@id"]} <Link to={"/text?resourceid=" + e["@id"]}><FaExternalLinkAlt/></Link></p>
             {e.showRelatedSurfaces ?

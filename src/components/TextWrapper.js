@@ -12,6 +12,7 @@ import Text from "./Text"
 import AuthorCollection from "./AuthorCollection"
 import VersionChain from "./VersionChain"
 import Collection from "./Collection"
+import Codex from "./Codex"
 import {runQuery, scrollToParagraph} from './utils'
 
 import {basicInfoQuery, itemTranscriptionInfoQuery} from './Queries'
@@ -331,7 +332,7 @@ class TextWrapper extends React.Component {
 
   componentDidMount(){
     this.mount = true
-    if (this.props.resourceType === "person" || this.props.resourceType === "workGroup"){
+    if (this.props.resourceType === "person" || this.props.resourceType === "workGroup" || this.props.resourceType === "codex"){
     }
     //transcriptionid should be required Prop
     //conditional here to reinfurce that rule
@@ -376,7 +377,7 @@ class TextWrapper extends React.Component {
       //Keep testing, but it seems like this look up only needs to fire, when the transcription id prop changes
       // not when other props changes.
       
-      if (this.props.resourceType === "person" || this.props.resourceType === "workGroup"){
+      if (this.props.resourceType === "person" || this.props.resourceType === "workGroup" || this.props.resourceType === "codex"){
         if (this.props.resourceid !== prevProps.resourceid){
           this.setState({focus: ""});
         }
@@ -478,6 +479,7 @@ class TextWrapper extends React.Component {
               handleSwitchWindow={this.handleSwitchWindow}
               handleDuplicateWindow={this.handleDuplicateWindow}
               resourceid={this.state.focus ? this.state.focus.resourceid : this.props.resourceid}
+              resourceType={this.props.resourceType ? this.props.resourceType : "text" }
               windowType={this.state.windows[key].position}
               windowId={this.state.windows[key].windowId}
               windowLoad={this.state.windows[key].windowLoad}
@@ -496,7 +498,6 @@ class TextWrapper extends React.Component {
               handleTextPreviewFocusChange={this.handleTextPreviewFocusChange}
               handleLineFocusChange={this.handleLineFocusChange}
               selectionRange={this.state.selectionRange}
-              personView={this.props.resourceType === "person" ? true : false}
               />
             )
           }
@@ -513,10 +514,15 @@ class TextWrapper extends React.Component {
     this.state.pdfView ? textClassNames.push("hidden"): textClassNames.push("showing");
     
     const displayMain = () => {
-      if (this.props.resourceType === "person"){
+      if (this.props.resourceType === "codex"){
+        return (
+          <Codex resourceid={this.props.resourceid} codexResourceType={this.props.codexResourceType}/>
+        )
+      }
+      else if (this.props.resourceType === "person"){
         return (<AuthorCollection resourceid={this.props.resourceid}/>)
       }
-      if (this.props.resourceType === "workGroup"){
+      else if (this.props.resourceType === "workGroup"){
         return ( <Collection resourceid={this.props.resourceid} 
            type="http://scta.info/resource/workGroup"
           />)
@@ -538,7 +544,10 @@ class TextWrapper extends React.Component {
       }
       else{
         return (
-          this.state.itemFocus &&  <Text
+          this.state.itemFocus &&  
+          <>
+          <VersionChain transcriptionid={this.state.itemFocus.transcriptionid} handleFocusChange={this.setFocus2}/>
+          <Text
             doc={this.state.itemFocus.doc}
             topLevel={this.state.itemFocus.topLevel}
             setFocus={this.setFocus}
@@ -553,6 +562,7 @@ class TextWrapper extends React.Component {
             handleUpdateSelectionRange={this.handleUpdateSelectionRange}
             selectionRange={this.state.selectionRange}
             />
+          </>
         )
 
       }
@@ -560,17 +570,11 @@ class TextWrapper extends React.Component {
 
     return (
       <div>
-        {(this.state.itemFocus && (this.props.resourceType !== "collection" || this.props.resourceType !== "person")) &&
-          <VersionChain transcriptionid={this.state.itemFocus.transcriptionid} handleFocusChange={this.setFocus2}/>
-        }
+        
         { this.state.pdfView && <Print url={this.state.itemFocus.doc}/>}
-        {
-          // Text Container and Text are always loaded to avoid unnecessary re-mounting
-          // textHide variable is used to hide or show textContainer depending on whether this.statePdfView is true or false
-        }
+        
         <Container className={textClassNames.join(" ")}>
-
-        {displayMain()}
+          {displayMain()}
         </Container>
 
         {this.state.itemFocus && <TextNavBar
@@ -583,14 +587,7 @@ class TextWrapper extends React.Component {
           mtFocus={this.state.mtFocus}
         />}
         <div>
-        {
-        // <TextNavBar
-        // next={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].next}
-        // previous={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].previous}
-        // topLevel={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].topLevel}
-        // handleClose={this.handleClose}
-        // />
-        }
+        
         {!this.state.pdfView && displayWindows()}
         </div>
       </div>
