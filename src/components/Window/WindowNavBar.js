@@ -39,9 +39,12 @@ function WindowNavBar(props) {
     <Nav.Link title="Maximize Window" onClick={() => {props.handleMaximize(props.windowId)}}><FaRegWindowMaximize/></Nav.Link>
   </Nav.Item>
   }
+  {props.windowId !== "window1"
+  &&
   <Nav.Item>
     <Nav.Link title="Close Window" onClick={() => {props.handleClose(props.windowId)}}><FaRegWindowClose/></Nav.Link>
   </Nav.Item>
+  }
   {/* commented to prevent window moving; this insures window 1 is always side window and window 2 is bottom window
     uncomment if this behavior is desired
     <Nav.Item>

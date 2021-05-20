@@ -7,7 +7,7 @@ import {Link} from 'react-router-dom';
 import {FaExternalLinkAlt} from 'react-icons/fa';
 
 //internal imports
-import Comments from './Comments'
+//import Comments from './Comments'
 import {runQuery} from './utils'
 import {getSurfaceInfo} from '../queries/SurfaceInfoQuery'
 
@@ -178,7 +178,7 @@ class SurfaceInfo extends React.Component {
                 <br/>
               </div>
             }
-            {e.showComments ?
+            {/* {e.showComments ?
               <div>
               <Button variant="outline-primary" size="sm" block onClick={() => {this.handleToggleRelatedDiscussion(e["@id"])}}>Hide Related Discussions</Button>
               <br/>
@@ -188,7 +188,7 @@ class SurfaceInfo extends React.Component {
                 <Button variant="outline-primary" size="sm" block onClick={() => {this.handleToggleRelatedDiscussion(e["@id"])}}>Show Related Discussions</Button>
                 <br/>
               </div>
-            }
+            } */}
             </div>
           )
         })
@@ -200,7 +200,7 @@ class SurfaceInfo extends React.Component {
     }
 
     return (
-      <div className="SurfaceInfo">
+      <div className="SurfaceInfo" className={this.props.hidden ? "hidden" : "showing"}>
       <h1>Page Info</h1>
         <div style={{"fontSize": "16px"}}>
         <h1>Text objects on this page <Button size="sm" className="lbp-span-link" onClick={this.handleToggleShowQuery}>{this.state.showQuery ? "Hide Proof" : "Prove It!"}</Button></h1>

@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import TextOutlineWrapper from "./TextOutlineWrapper"
 import {Link} from 'react-router-dom';
 
-import Window from "./Window"
+import Window from "./Window/Window2"
 import TextNavBar from "./TextNavBar"
 import Text from "./Text"
 import AuthorCollection from "./AuthorCollection"
@@ -498,6 +498,7 @@ class TextWrapper extends React.Component {
               handleTextPreviewFocusChange={this.handleTextPreviewFocusChange}
               handleLineFocusChange={this.handleLineFocusChange}
               selectionRange={this.state.selectionRange}
+              codexResourceType={this.props.codexResourceType}
               />
             )
           }
@@ -516,7 +517,11 @@ class TextWrapper extends React.Component {
     const displayMain = () => {
       if (this.props.resourceType === "codex"){
         return (
-          <Codex resourceid={this.props.resourceid} codexResourceType={this.props.codexResourceType}/>
+          <Codex 
+          resourceid={this.props.resourceid} 
+          codexResourceType={this.props.codexResourceType}
+          handleSetFocus={this.setFocus}
+          />
         )
       }
       else if (this.props.resourceType === "person"){

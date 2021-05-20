@@ -1,19 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Surface2 from "./Surface2"
-import Surface3Wrapper from "./Surface3Wrapper"
-import XmlView from "./XmlView"
+import Surface2 from "../Surface2"
+import Surface3Wrapper from "../Surface3Wrapper"
+import XmlView from "../XmlView"
 import WindowNavBar from "./WindowNavBar"
-import NextPrevBar from "./NextPrevBar"
-import TextCompareWrapper from "./TextCompareWrapper"
-import Search3 from "./Search3"
-import PersonInfo from "./PersonInfo"
-import Comments2 from "./Comments2"
-import CitationWrapper from "./CitationWrapper"
-import TextOutlineWrapper from "./TextOutlineWrapper"
-import TextPreviewWrapper from "./TextPreviewWrapper"
-import SurfaceInfo from "./SurfaceInfo"
-import Dictionary from "./Dictionary"
+import NextPrevBar from "../NextPrevBar"
+import TextCompareWrapper from "../TextCompareWrapper"
+import Search3 from "../Search3"
+import PersonInfo from "../PersonInfo"
+import Comments2 from "../Comments2"
+import CitationWrapper from "../CitationWrapper"
+import TextOutlineWrapper from "../TextOutlineWrapper"
+import TextPreviewWrapper from "../TextPreviewWrapper"
+import SurfaceInfo from "../SurfaceInfo"
+import Dictionary from "../Dictionary"
 
 import {FaSearch, FaGripVertical, FaCode, FaInfo, FaRegImage, FaComments, FaAlignLeft} from 'react-icons/fa';
 
@@ -149,7 +149,7 @@ class Window extends React.Component {
     const displayChild = () => {
       //NOTE possible state machine pattern based on focus structureType
       //different options should be available depending on the focus structureType
-
+      
       const structureType = this.props.info.structureType
       const isCollection = structureType === "http://scta.info/resource/structureCollection" || false
       

@@ -48,6 +48,7 @@ class Codex extends React.Component {
   }
   handleSurfaceFocusChange(surfaceid){
     this.setState({focusedSurface: surfaceid})
+    this.props.handleSetFocus(surfaceid)
   }
   retrieveCodexInfo(id, type){
     let codexInfo = undefined
