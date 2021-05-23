@@ -1,9 +1,7 @@
 import React from 'react';
-import Container from 'react-bootstrap/Container';
 import Surface2 from './Surface2'
 import Surface3Wrapper from './Surface3Wrapper'
-import SurfaceInfo from './SurfaceInfo'
-import {Link} from 'react-router-dom';
+//import {Link} from 'react-router-dom';
 
 import {runQuery} from './utils'
 import {getCodexInfo, getCodexInfoFromSurface, getCodexInfoFromCanvas, getCodexInfoFromManifest} from './Queries'
@@ -111,25 +109,25 @@ class Codex extends React.Component {
   }
 
   render(){
-    const displayItems = () => {
-      const items = Object.keys(this.state.items).map((key) => {
-        return (
-          <p key={this.state.items[key][0].expression}>
-          <span>
-              <span className="codexLink" onClick={() => {this.handleSurfaceFocusChange(this.state.items[key][0].surface)}}>
-                {this.state.items[key][0].surfaceTitle}</span>{" - "}
-              <span className="codexLink" onClick={() => {this.handleSurfaceFocusChange(this.state.items[key][this.state.items[key].length - 1].surface)}}>
-                {this.state.items[key][this.state.items[key].length - 1].surfaceTitle}
-              </span>
-            </span>{": "}
-            <Link to={"/text?resourceid=" + this.state.items[key][0].manifestation}>{this.state.items[key][0].expressionTitle}</Link>{": "}
-            {this.state.items[key][0].questionTitle && this.state.items[key][0].questionTitle}
-          </p>
+    // const displayItems = () => {
+    //   const items = Object.keys(this.state.items).map((key) => {
+    //     return (
+    //       <p key={this.state.items[key][0].expression}>
+    //       <span>
+    //           <span className="codexLink" onClick={() => {this.handleSurfaceFocusChange(this.state.items[key][0].surface)}}>
+    //             {this.state.items[key][0].surfaceTitle}</span>{" - "}
+    //           <span className="codexLink" onClick={() => {this.handleSurfaceFocusChange(this.state.items[key][this.state.items[key].length - 1].surface)}}>
+    //             {this.state.items[key][this.state.items[key].length - 1].surfaceTitle}
+    //           </span>
+    //         </span>{": "}
+    //         <Link to={"/text?resourceid=" + this.state.items[key][0].manifestation}>{this.state.items[key][0].expressionTitle}</Link>{": "}
+    //         {this.state.items[key][0].questionTitle && this.state.items[key][0].questionTitle}
+    //       </p>
 
-        )
-      })
-      return items
-    }
+    //     )
+    //   })
+    //   return items
+    // }
     const displayImages = () => {
       if (this.state.surface3Manifestations.length > 0){
         return <Surface3Wrapper manifestations={this.state.surface3Manifestations} focusedManifestation={this.state.surface3FocusedManifestation} annotationsDisplay="paragraph" width="501" hidden={false}/>

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
-import Axios from 'axios'
+//import Axios from 'axios'
 import {runQuery} from './utils';
 import Container from 'react-bootstrap/Container';
 
@@ -9,7 +9,7 @@ import {getPersonMentionedByFrequency, getPersonMentionsFrequency} from '../quer
 
 function PersonInfo(props) {
   const [authorTitle, setAuthorTitle] = useState()
-  const [authorImageUrl, setAuthorImageUrl] = useState()
+  //const [authorImageUrl, setAuthorImageUrl] = useState()
   const [mentionedByFrequency, setMentionedByFrequency] = useState([])
   const [mentionsFrequency, setMentionsFrequency] = useState([])
   console.log("test", props.resourceid)
@@ -97,27 +97,27 @@ function PersonInfo(props) {
       // getWikiData()
     }, [props.resourceid]);
 
-  const getWikiDataInfo = (wikidataid) => {
-    Axios.get("https://www.wikidata.org/w/api.php?action=wbgetentities&ids=" + wikidataid + "&format=json").then((wd)=> {
-        console.log(wd);
-        const imageslug = wd.data.entities[wikidataid].claims.P18[0].mainsnak.datavalue.value;
-        Axios.get("https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=url&redirects&format=json&titles=File:" + imageslug).then((d3) => {
-          const pages = d3.data.query.pages
-          const page = Object.keys(pages)[0];
-          const imageurl = d3.data.query.pages[page].imageinfo[0].url
+  // const getWikiDataInfo = (wikidataid) => {
+  //   Axios.get("https://www.wikidata.org/w/api.php?action=wbgetentities&ids=" + wikidataid + "&format=json").then((wd)=> {
+  //       console.log(wd);
+  //       const imageslug = wd.data.entities[wikidataid].claims.P18[0].mainsnak.datavalue.value;
+  //       Axios.get("https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=url&redirects&format=json&titles=File:" + imageslug).then((d3) => {
+  //         const pages = d3.data.query.pages
+  //         const page = Object.keys(pages)[0];
+  //         const imageurl = d3.data.query.pages[page].imageinfo[0].url
           
-        setAuthorImageUrl(imageurl)
-        })
+  //       setAuthorImageUrl(imageurl)
+  //       })
         
         
-      });
+  //     });
 
-  }
+  // }
   return (
     <div className={props.hidden ? "hidden" : "showing"}>
       <Container>
     <h1>PersonInfo for {authorTitle}</h1>
-    <img src={authorImageUrl} width="100px"/>
+    {/* <img src={authorImageUrl} width="100px"/> */}
     <div>
       <h1>Discussed/Mentioned By Frequency</h1>
         {mentionedByFrequency}

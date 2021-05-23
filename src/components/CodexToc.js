@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import Container from 'react-bootstrap/Container';
 import {getCodexInfo, getCodexInfoFromSurface, getCodexInfoFromCanvas, getCodexInfoFromManifest} from './Queries'
 import {Link} from 'react-router-dom';
 import {runQuery} from './utils'
@@ -44,16 +43,16 @@ function CodexToc(props) {
             }
           expressionList[d.expression.value].push(info)
         })
-        let focusedSurface = ""
-        if (type === "surface"){
-           focusedSurface = id
-         }
-         else if (type === "canvas"){
-           focusedSurface = data[0].surfaceFocus.value
-         }
-         else{
-           focusedSurface = data[0].surface.value
-         }
+        // let focusedSurface = "";
+        // if (type === "surface"){
+        //    focusedSurface = id
+        //  }
+        //  else if (type === "canvas"){
+        //    focusedSurface = data[0].surfaceFocus.value
+        //  }
+        //  else{
+        //    focusedSurface = data[0].surface.value
+        //  }
          setItems(expressionList)
         ///this.setState({items: expressionList, focusedSurface: focusedSurface})
 
@@ -62,6 +61,7 @@ function CodexToc(props) {
   }
   useEffect(() => {
     retrieveCodexInfo(props.resourceid, props.codexResourceType)
+    // eslint-disable-next-line
   }, [props.resourceid])
     
   const displayItems = () => {

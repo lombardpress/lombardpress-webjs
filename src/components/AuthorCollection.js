@@ -4,7 +4,6 @@ import Table from 'react-bootstrap/Table';
 import {runQuery} from './utils'
 import {getAuthorInformation} from './Queries'
 import Item from "./Item"
-import Search3 from "./Search3"
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 

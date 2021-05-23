@@ -4,7 +4,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import {runQuery} from './utils'
 import {basicStructureAllItemsInfoQuery, partsInfoQuery,workGroupExpressionQuery} from './Queries'
-import Search3 from "./Search3"
 import TextOutlineWrapper from "./TextOutlineWrapper"
 //import Lbp from "lbp.js/lib"
 

@@ -183,17 +183,17 @@ class Window2 extends React.Component {
             {
             displayComponents.includes("codex") 
             && 
-            (this.state.windowLoad === "citation" || this.state.mountStatus.citation) 
+            (this.state.windowLoad === "textCompare" || this.state.mountStatus.textCompare) 
             && 
             <SurfaceInfo 
               surfaceid={this.props.resourceid} 
               resourceid={this.props.resourceid} 
               codexResourceType={this.props.codexResourceType}
-              hidden={this.state.windowLoad !== "citation"}
+              hidden={this.state.windowLoad !== "textCompare"}
             />
             }
             {
-            displayComponents.includes("codex")  
+            displayComponents.includes("surface3")  
             && 
             (this.state.windowLoad === "surface3" || this.state.mountStatus.surface3) 
             &&  
@@ -247,7 +247,7 @@ class Window2 extends React.Component {
           <CodexToc 
             resourceid={this.props.resourceid}
             codexResourceType={this.props.codexResourceType}
-            hidden={this.state.windowLoad !== "textOutlineWrapper"} 
+            hidden={this.state.windowLoad !== "citation"} 
           />
           }
           {
@@ -303,7 +303,7 @@ class Window2 extends React.Component {
         show: displayComponents.includes("textCitation") 
         || displayComponents.includes("textCitation")
         || displayComponents.includes("personInfo")
-        || displayComponents.includes("codex")
+        || displayComponents.includes("codexToc")
         || displayComponents.includes("workGroupInfo"),
         icon: <FaInfo/>
       },
@@ -322,7 +322,8 @@ class Window2 extends React.Component {
       {
         name: "textCompare",
         desc: "Text Comparisons",
-        show: displayComponents.includes("textCompare"),
+        show: displayComponents.includes("textCompare")
+        || displayComponents.includes("codex"),
         icon: <FaGripVertical/>
       },
       {
@@ -334,8 +335,7 @@ class Window2 extends React.Component {
       {
         name: "textOutlineWrapper",
         desc: "Text Outline",
-        show: displayComponents.includes("textOutlineWrapper")
-        || displayComponents.includes("codexToc"),
+        show: displayComponents.includes("textOutlineWrapper"),
         icon: <FaAlignLeft/>
       },
       {

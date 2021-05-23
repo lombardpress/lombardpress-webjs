@@ -157,7 +157,7 @@ class SurfaceInfo extends React.Component {
                 manifestations = []
               }
           return (
-            <div key={e["@id"]} className={this.props.hidden ? "hidden" : "showing"}>
+            <div key={e["@id"]}>
             <hr/>
             <p>{e["@id"]} <Link to={"/text?resourceid=" + e["@id"]}><FaExternalLinkAlt/></Link></p>
             {e.showRelatedSurfaces ?
@@ -200,7 +200,7 @@ class SurfaceInfo extends React.Component {
     }
 
     return (
-      <div className="SurfaceInfo" className={this.props.hidden ? "hidden" : "showing"}>
+      <div className={this.props.hidden ? "hidden" : "showing"}>
       <h1>Page Info</h1>
         <div style={{"fontSize": "16px"}}>
         <h1>Text objects on this page <Button size="sm" className="lbp-span-link" onClick={this.handleToggleShowQuery}>{this.state.showQuery ? "Hide Proof" : "Prove It!"}</Button></h1>

@@ -341,8 +341,8 @@ class TextWrapper extends React.Component {
       this.retrieveFocusInfo(this.props.expressionid)
       //TODO: splitting strings for this information is not ideal.
         //info should be part of original query
-        const mFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[1]
-        const tFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[2]
+        const mFocus = this.props.transcriptionid ? this.props.transcriptionid.split("/resource/")[1].split("/")[1] : ""
+        const tFocus = this.props.transcriptionid ? this.props.transcriptionid.split("/resource/")[1].split("/")[2] : ""
         this.setState(
           {
             mtFocus: "/" + mFocus + "/" + tFocus,
@@ -388,8 +388,8 @@ class TextWrapper extends React.Component {
           this.retrieveFocusInfo(this.props.expressionid)
           //TODO: splitting strings for this information is not ideal.
           //info should be part of original query
-          const mFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[1]
-          const tFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[2]
+          const mFocus = this.props.transcriptionid ? this.props.transcriptionid.split("/resource/")[1].split("/")[1] : ""
+          const tFocus = this.props.transcriptionid ? this.props.transcriptionid.split("/resource/")[1].split("/")[2] : ""
           this.setState(
           {
             mtFocus: "/" + mFocus + "/" + tFocus,

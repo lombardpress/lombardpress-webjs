@@ -3,9 +3,6 @@ import Qs from "query-string";
 import {Helmet} from "react-helmet";
 import TextWrapper from "./TextWrapper"
 import TextArticle from "./TextArticle"
-import Collection from "./Collection"
-
-import Codex from "./Codex"
 import ExpressionType from './ExpressionType';
 import ResourceTypeList from './ResourceTypeList';
 
