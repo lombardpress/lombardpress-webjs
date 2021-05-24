@@ -6,7 +6,9 @@ import Button from 'react-bootstrap/Button';
 import {Link} from 'react-router-dom';
 import {FaExternalLinkAlt} from 'react-icons/fa';
 
+
 //internal imports
+import Surface3Wrapper from './Surface3Wrapper'
 //import Comments from './Comments'
 import {runQuery} from './utils'
 import {getSurfaceInfo} from '../queries/SurfaceInfoQuery'
@@ -17,6 +19,7 @@ class SurfaceInfo extends React.Component {
     this.handleToggleRelatedDiscussion = this.handleToggleRelatedDiscussion.bind(this)
     this.handleSurface3Manifestations = this.handleSurface3Manifestations.bind(this)
     this.handleToggleShowQuery = this.handleToggleShowQuery.bind(this)
+    this.handleToggleShowImages = this.handleToggleShowImages.bind(this)
     this.state = {
       expressions: [],
       surfaceMap: {},
@@ -33,6 +36,7 @@ class SurfaceInfo extends React.Component {
     })
   }
   handleSurface3Manifestations(manifestations, eid){
+    console.log("test", manifestations, eid)
     let newManifestations = ""
     if (typeof manifestations === "object"){
       newManifestations = manifestations.map((m) =>{
@@ -51,16 +55,19 @@ class SurfaceInfo extends React.Component {
         transcription: ""
       }]
     }
-    this.setState((prevState) => {
-      return {
-        showTextRegion: eid
-      }
-    })
-    this.props.handleSurface3Manifestations(newManifestations)
+    const split1 = this.props.surfaceid.split("/resource/")[1]
+    const codexSlug = split1.split("/")[0]
+    const surface3FocusedManifestation = newManifestations ? newManifestations.filter((m) => m.manifestation.includes(codexSlug))[0].manifestation : ""
+
+    return {
+      surface3Manifestations: newManifestations,
+      surface3FocusedManifestation: surface3FocusedManifestation
+    } 
   }
+  
   handleToggleRelatedDiscussion(eid){
     this.setState((prevState) => {
-      const target = prevState.expressions.find((e) => e["@id"] === eid )
+      const target = prevState.expressions.find((e) => e.expressionid === eid )
       target.showComments = !target.showComments
       const newExpressions = [...prevState.expressions]
       return {
@@ -71,7 +78,7 @@ class SurfaceInfo extends React.Component {
   }
   handleToggleRelatedSurfaces(eid){
     this.setState((prevState) => {
-      const target = prevState.expressions.find((e) => e["@id"] === eid )
+      const target = prevState.expressions.find((e) => e.expressionid === eid )
       target.showRelatedSurfaces = !target.showRelatedSurfaces
       const newExpressions = [...prevState.expressions]
       return {
@@ -80,20 +87,39 @@ class SurfaceInfo extends React.Component {
     })
 
   }
+  handleToggleShowImages(eid){
+    this.setState((prevState) => {
+      const target = prevState.expressions.find((e) => e.expressionid === eid )
+      target.showImages = !target.showImages
+      const newExpressions = [...prevState.expressions]
+      return {
+        expressions: newExpressions
+      }
+    })
+
+  }
+
+  
   retrieveSurfaceInfo(surfaceid){
     const query = getSurfaceInfo(surfaceid)
     const surfaceInfo = runQuery(query)
     surfaceInfo.then((d) => {
       if (d.data["@graph"]){
         const data = d.data["@graph"]
-        const expressions = data.filter((e) => {
+        const expressions = [] 
+        data.forEach((e) => {
+          console.log("e", e)
           if (e.hasManifestation){
-            return {
+            const surface3Manifestations = this.handleSurface3Manifestations(e.hasManifestation, e["@id"])
+            console.log("test", surface3Manifestations)
+            expressions.push({
               expressionid: e["@id"],
               manifestations: e.hasManifestation,
+              surface3Manifestations: surface3Manifestations,
               showComments: false,
               showRelatedSurfaces: false,
-            }
+              showImages: false,
+            })
           }
           else{
             return null
@@ -105,6 +131,7 @@ class SurfaceInfo extends React.Component {
             surfaceMap[e["@id"]] = e.isOnSurface
           }
         })
+        console.log("expressions", expressions)
         this.setState({
           expressions: expressions,
           surfaceMap: surfaceMap,
@@ -157,38 +184,25 @@ class SurfaceInfo extends React.Component {
                 manifestations = []
               }
           return (
-            <div key={e["@id"]}>
+            <div key={e.expressionid}>
             <hr/>
-            <p>{e["@id"]} <Link to={"/text?resourceid=" + e["@id"]}><FaExternalLinkAlt/></Link></p>
+            <p>{e.expressionid} <Link to={"/text?resourceid=" + e.expressionid}><FaExternalLinkAlt/></Link></p>
+            <Button variant="outline-primary" size="sm" block onClick={() => this.handleToggleShowImages(e.expressionid)}>{e.showImages ? "Hide Images" : "Show Images"}</Button>
+              <br/>
+              {(e.showImages && (e.surface3Manifestations && e.surface3Manifestations.surface3Manifestations.length > 0)) &&
+              <Surface3Wrapper key={e.expressionid} manifestations={e.surface3Manifestations.surface3Manifestations} focusedManifestation={e.surface3Manifestations.surface3FocusedManifestation} annotationsDisplay="paragraph" width="501" hidden={false}/>
+              }
             {e.showRelatedSurfaces ?
               <div>
-
-              <Button variant="outline-primary" size="sm" block onClick={() => {this.handleToggleRelatedSurfaces(e["@id"])}}>Hide Related Codices</Button>
-              <br/>
-              {this.state.showTextRegion !== e["@id"] ?
-                <Button variant="outline-primary" size="sm" block onClick={() => this.handleSurface3Manifestations(e.hasManifestation, e["@id"])}>View Focused Text Region</Button>
-                :
-                <Button variant="outline-primary" size="sm" block onClick={() => this.handleSurface3Manifestations("", "")}>Hide Focused Text Region</Button>
-              }
+                <Button variant="outline-primary" size="sm" block onClick={() => {this.handleToggleRelatedSurfaces(e.expressionid)}}>Hide Related Codices</Button>
               <br/>
               {manifestations}
               </div> :
               <div>
-                <Button variant="outline-primary" size="sm" block onClick={() => {this.handleToggleRelatedSurfaces(e["@id"])}}>Show Related Codices</Button>
+                <Button variant="outline-primary" size="sm" block onClick={() => {this.handleToggleRelatedSurfaces(e.expressionid)}}>Show Related Codices</Button>
                 <br/>
               </div>
             }
-            {/* {e.showComments ?
-              <div>
-              <Button variant="outline-primary" size="sm" block onClick={() => {this.handleToggleRelatedDiscussion(e["@id"])}}>Hide Related Discussions</Button>
-              <br/>
-              <Comments resourceid={e["@id"]} inbox={"http://inbox.scta.info/notifications?resourceid=" + e["@id"]}/>
-              </div> :
-              <div>
-                <Button variant="outline-primary" size="sm" block onClick={() => {this.handleToggleRelatedDiscussion(e["@id"])}}>Show Related Discussions</Button>
-                <br/>
-              </div>
-            } */}
             </div>
           )
         })
