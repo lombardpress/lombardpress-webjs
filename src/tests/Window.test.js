@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Window from '../components/Window';
+import Window from '../components/Window/Window';
 import {HashRouter} from 'react-router-dom';
 
 it('renders without crashing', () => {
