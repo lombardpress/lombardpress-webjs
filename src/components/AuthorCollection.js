@@ -4,8 +4,6 @@ import Table from 'react-bootstrap/Table';
 import {runQuery} from './utils'
 import {getAuthorInformation} from './Queries'
 import Item from "./Item"
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 
 //import Lbp from "lbp.js/lib"
 
@@ -124,8 +122,7 @@ class AuthorCollection extends React.Component {
     return (
       <Container className="collectionBody">
       <h1>{this.state.authorTitle}</h1>
-      <Row>
-        <Col xs={9}>
+      
         {this.state.expressions &&
         <Container>
         <h1>Expressions</h1>
@@ -159,16 +156,6 @@ class AuthorCollection extends React.Component {
         </Table>
         </Container>
       }
-      </Col>
-      <Col>
-      <br/>
-      <br/>
-      {/* <Search3 searchAuthor={this.props.resourceid}
-        showSubmit={true}
-        showAdvancedParameters={true}
-        showLabels={false}/> */}
-      </Col>
-      </Row>
       </Container>
     );
   }
