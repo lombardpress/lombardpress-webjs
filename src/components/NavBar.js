@@ -30,7 +30,7 @@ function NavBar() {
         //   <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
         // </NavDropdown>
       }
-      <NavLink className="nav-link" to="/search">{t("Search")}</NavLink>
+      {/* <NavLink className="nav-link" to="/search">{t("Search")}</NavLink> */}
       </Nav>
 
       <Nav>
