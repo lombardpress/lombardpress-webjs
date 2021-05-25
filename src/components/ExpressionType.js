@@ -3,9 +3,6 @@ import {runQuery} from './utils'
 import {getExpressionTypeInfo} from '../queries/expressionTypeQuery'
 import TextOutlineWrapper from "./TextOutlineWrapper"
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Search3 from './Search3';
 
 const ExpressionType = (props) => {
   const [expressions, setExpressions] = useState([])
@@ -19,8 +16,6 @@ const ExpressionType = (props) => {
   return (
     <Container className="collectionBody">
       <h1>{props.expressionTypeId}</h1>
-      <Row>
-        <Col xs={9}>
       {expressions.map((e)=> {
         return (
           <Container>
@@ -35,16 +30,8 @@ const ExpressionType = (props) => {
           </Container>
         )
       })}
-      </Col>
-      <Col>
-        <Search3
-        searchEid={""}
-        searchEType={props.expressionTypeId}
-        showSubmit={true}
-        showAdvancedParameters={true}
-        showLabels={false}/>
-      </Col>
-    </Row>
+      
+      
   </Container>
 
   );

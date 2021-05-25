@@ -257,8 +257,10 @@ class Window2 extends React.Component {
           &&
           <Search3
             hidden={this.state.windowLoad !== "search"}
-            searchEid={this.props.info.topLevel}
-            searchAuthor={this.props.info ? this.props.info.author : this.props.resourceid} // TODO temp way to do this; currently author view is the only time props.info is not set
+            searchEid={this.props.info ? this.props.info.topLevel : this.props.resourceType === "collection" && this.props.resourceid}
+            searchAuthor={this.props.info ? this.props.info.author : this.props.resourceType === "person" && this.props.resourceid} 
+            searchEType={this.props.resourceType === "expressionType" && this.props.resourceid}
+            searchWorkGroup={this.props.resourceType === "workGroup" && this.props.resourceid}
             searchType="text"
             showSubmit={true}
             showAdvancedParameters={true}

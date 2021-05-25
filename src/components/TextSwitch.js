@@ -3,7 +3,6 @@ import Qs from "query-string";
 import {Helmet} from "react-helmet";
 import TextWrapper from "./TextWrapper"
 import TextArticle from "./TextArticle"
-import ExpressionType from './ExpressionType';
 import ResourceTypeList from './ResourceTypeList';
 
 import {runQuery} from './utils'
@@ -298,7 +297,13 @@ class TextSwitch extends React.Component {
       //   return (<Codex manifestid={this.state.resourceid}/>)
       // }
       else if (this.state.displayType === "expressionType"){
-        return (<ExpressionType expressionTypeId={this.state.resourceid}/>)
+        return (
+            <TextWrapper 
+            resourceid={this.state.resourceid}
+            resourceType="expressionType"
+            handleUpdateUrlResource={this.handleUpdateUrlResource}
+            />
+          )
       }
       else if (this.state.displayType === "notFound"){
         return (<p>Apologies, this resource could not be found</p>)

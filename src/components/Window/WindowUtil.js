@@ -23,6 +23,10 @@ export function getAvailableComponents(resourceType) {
         showComponents.push("comments")
         showComponents.push("search")
         break;
+      case "expressionType":
+          showComponents.push("comments")
+          showComponents.push("search")
+          break;
       case "text":
         showComponents.push("textCitation")
         showComponents.push("textCompare")
