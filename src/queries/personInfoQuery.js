@@ -1,9 +1,13 @@
 export function getPersonInfo(resourceid){
   const query = [
-    "SELECT ?author ?authorTitle ",
+    "SELECT ?author ?authorTitle ?wikidataid",
     "{",
         "BIND(<" + resourceid + "> AS ?author) .",
         "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle ." ,
+        "OPTIONAL {",
+          "?author <http://www.w3.org/2002/07/owl#sameAs> ?wikidataid .",
+          "FILTER(regex(str(?wikidataid), 'http://www.wikidata.org' ))",
+        "}",
      "}",
     "ORDER BY ?authorTitle"].join(' ')
  return query
@@ -12,7 +16,7 @@ export function getPersonInfo(resourceid){
 export function getPersonMentionedByFrequency(personid){
 
       var query = [
-        "select ?personTitle ?author ?authorTitle (count(?ref) as ?count)",
+        "select ?personTitle ?author ?authorTitle (count(?ref) as ?count)" ,
         "where {",
 
         "?ref <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementName> .",
@@ -22,7 +26,7 @@ export function getPersonMentionedByFrequency(personid){
         "?refTopLevel <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
         "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
         "}",
-        "GROUP BY ?author ?authorTitle ?personTitle",
+        "GROUP BY ?author ?authorTitle ?personTitle"
       ].join('');
 
     
