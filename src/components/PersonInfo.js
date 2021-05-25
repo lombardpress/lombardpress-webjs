@@ -127,7 +127,7 @@ function PersonInfo(props) {
       <Container>
     <h1>PersonInfo for {authorTitle} {birthDate && "(" + birthDate + "-" + deathDate + ")"}</h1>
     <div style={{display: "flex", justifyContent: "left"}}>
-    { authorImageUrl && <img alt="image of author" src={authorImageUrl} width="100px"/>}
+    { authorImageUrl && <img alt="author" src={authorImageUrl} width="100px"/>}
     <p style={{marginLeft: "10px"}}>{authorDescription} {authorDescription && "(wikidata)"}</p>
     </div>
     <div>
