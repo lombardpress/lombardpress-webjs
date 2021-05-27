@@ -59,13 +59,13 @@ export function displayFigureResults(results){
     }
     else if (results){
       const r = results
-      const imgurl = r.hit.imgurl
+      const imgurl = r.imgurl
       return (
         <div>
           <p>{1 + " results"}</p>
           <div key={results.pid}>
             <p><Link to={"/text?resourceid=http://scta.info/resource/" + r.pid}>{r.pid}</Link></p>
-            <img src={imgurl} alt="figure"></img>
+            <img src={imgurl} alt="figure" style={{"width": "300px"}}></img>
           </div>
         </div>
         )
