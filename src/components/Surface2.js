@@ -158,36 +158,49 @@ componentDidMount(){
   }
 
   render() {
+    const displayImage = (h, i) => {
+      const text = h.resource.chars;
+      const canvas = h.on.split("#xywh=")[0];
+      const canvasShort = canvas.split("/")[canvas.split("/").length - 1];
+      const coords = h.on.split("#xywh=")[1];
+      const imageUrl = h.imageUrl
+      const label = h.label
+      if (this.state.showAllLines || (parseInt(this.props.lineFocusId.split("/")[this.props.lineFocusId.split("/").length - 1]) === (i + 1) ) || !this.props.lineFocusId){
+      return (
+        <ImageTextWrapper key={i}
+          imageUrl={imageUrl}
+          canvas={canvas}
+          coords={coords}
+          canvasShort={canvasShort}
+          text={text}
+          label={label}
+          number={i + 1}
+          targetLabel={this.props.targetLabel}
+          surfaceButton={false}
+          displayWidth={this.props.width ? this.props.width : this.state.width}
+          />
+        )
+      }
+      else{
+        return null
+      }
+
+    }
     const displayImages = () => {
       if (this.state.annotations && this.state.annotationsDisplay){
-        const imageTextWrappers = this.state.annotations.map((h, i) => {
-          const text = h.resource.chars;
-          const canvas = h.on.split("#xywh=")[0];
-          const canvasShort = canvas.split("/")[canvas.split("/").length - 1];
-          const coords = h.on.split("#xywh=")[1];
-          const imageUrl = h.imageUrl
-          const label = h.label
-          if (this.state.showAllLines || (parseInt(this.props.lineFocusId.split("/")[this.props.lineFocusId.split("/").length - 1]) === (i + 1) ) || !this.props.lineFocusId){
-          return (
-            <ImageTextWrapper key={i}
-              imageUrl={imageUrl}
-              canvas={canvas}
-              coords={coords}
-              canvasShort={canvasShort}
-              text={text}
-              label={label}
-              number={i + 1}
-              targetLabel={this.props.targetLabel}
-              surfaceButton={false}
-              displayWidth={this.props.width ? this.props.width : this.state.width}
-              />
-            )
-          }
-          else{
-            return null
-          }
-
-        })
+        console.log("single annotation", this.state.annotations)
+        let imageTextWrappers = []
+        if (!this.state.annotations.length){
+          const imageResult = displayImage(this.state.annotations, 0)
+          console.log(imageResult)
+          imageTextWrappers = imageResult
+        }
+        else{
+          imageTextWrappers = this.state.annotations.map((h, i) => {
+            return displayImage(h, i)
+          });
+        }
+        console.log("test", imageTextWrappers)
         return imageTextWrappers
       }
       else{
