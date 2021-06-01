@@ -387,7 +387,10 @@ class TextWrapper extends React.Component {
       || this.props.resourceType === "expressionType"
       ){
         if (this.props.resourceid !== prevProps.resourceid){
-          this.setState({focus: ""});
+          this.setState({
+            focus: "",
+            mtFocus: ""
+          });
         }
       }
       else if (this.props.resourceType === "collection"){
@@ -550,11 +553,14 @@ class TextWrapper extends React.Component {
           <h1>{this.state.resourceTitle}</h1>
             <p style={{"textAlign": "center"}}>By <Link to={"/text?resourceid=" + this.state.focus.author}>{this.state.focus.authorTitle}</Link></p>
             <TextOutlineWrapper
-              focusResourceid={this.props.expressionid}
-              resourceid={this.props.expressionid}
+              //focusResourceid={this.props.expressionid}
+              //resourceid={this.props.expressionid}
+              focusResourceid={this.props.resourceid}
+              resourceid={this.props.resourceid}
               title={this.state.focus.title}
               hidden={false}
-              mtFocus={this.state.mtFocus}
+              //mtFocus={this.state.mtFocus}
+              mtFocus={""}
               collectionLink={true}
               showParentLink={true}
               />
