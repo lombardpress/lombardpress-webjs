@@ -532,6 +532,7 @@ class TextWrapper extends React.Component {
           resourceid={this.props.resourceid} 
           codexResourceType={this.props.codexResourceType}
           handleSetFocus={this.setFocus}
+          handleSurfaceFocusChange={this.handleSurfaceFocusChange}
           />
         )
       }

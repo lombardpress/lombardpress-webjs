@@ -186,7 +186,7 @@ class Window2 extends React.Component {
             (this.state.windowLoad === "textCompare" || this.state.mountStatus.textCompare) 
             && 
             <SurfaceInfo 
-              surfaceid={this.props.resourceid} 
+              surfaceid={this.props.surfaceid} 
               resourceid={this.props.resourceid} 
               codexResourceType={this.props.codexResourceType}
               hidden={this.state.windowLoad !== "textCompare"}
