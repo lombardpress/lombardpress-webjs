@@ -225,16 +225,12 @@ export function toRange(root, start, end) {
     
   }
 
-  if (!startContainer) {
-    throw new Error('invalid start offset');
-  }
-  if (!endContainer) {
-    throw new Error('invalid end offset');
-  }
-
   const range = root.ownerDocument.createRange();
-  range.setStart(startContainer, startOffset);
-  range.setEnd(endContainer, endOffset);
+  //conditional here to if container exists before calling it.
+  //usual reason a end container doesn't exist is the end number in the request does not exist in the paragraph 
+  // for example, asking for end word 40 when there are only 39 words in the paragraph
+  startContainer ? range.setStart(startContainer, startOffset) : console.log("no container or invalid end offset")
+  endContainer ? range.setEnd(endContainer, endOffset) : console.log("no container invalid end offset")
 
   return range;
 }
