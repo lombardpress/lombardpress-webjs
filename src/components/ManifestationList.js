@@ -44,8 +44,13 @@ class ManifestationList extends React.Component {
       <Container className="ManifestationList">
       {this.props.optionalDisplay ?
         <h4 onClick={this.toggleAlternativeManifestations}>{this.state.showAlternativeManifestations ? <span><FaChevronDown/>Hide Alternative Manifestations</span> : <span><FaChevronUp/>View Alternative Manifestations</span>} </h4>
+        
         :
         <h4>Available Manifestations</h4>
+        // <div>
+        //   <h4>Alternative Manifestations</h4>
+        //   <a href={"https://mirador.scta.info?blockid=" + this.props.resourceid} target="_blank" rel="noopener noreferrer">View in Mirador <img alt="view in mirador" style={{width: "12px", height: "12px"}} src="https://projectmirador.org/img/mirador-logo.svg"></img></a>
+        // </div>
       }
 
         {this.state.showAlternativeManifestations && displayManifestations()}
