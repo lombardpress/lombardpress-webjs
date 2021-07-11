@@ -1,5 +1,5 @@
 import React, {Suspense} from 'react';
-import {HashRouter, BrowserRouter, Route, Switch} from 'react-router-dom';
+import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import Home from "./Home"
 import Search3 from "./Search3"
 import TextSwitch from "./TextSwitch"
