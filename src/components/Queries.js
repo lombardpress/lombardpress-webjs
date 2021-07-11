@@ -3,9 +3,58 @@
 
 //NOTE: this query does not work as expected when using Fuseking version 3 it only works as expected using version 2.0
 // with version 3, it seems to get all quotes from the entire corpus, suggested something may not be working with the "bind" method
- export function getRelatedExpressions(itemExpressionUri, offset, pagesize){
+ export function getRelatedExpressions(itemExpressionUri, offset, pagesize, rangeStart, rangeEnd){
+
+   let rangeFilter;
+   if (rangeStart && rangeEnd){
+    rangeFilter = ["FILTER (?isRelatedToRangeEnd <=" + rangeEnd + ")",
+                  "FILTER (?isRelatedToRangeStart >=" + rangeStart + ")"].join(" ")
+   }
+   let activeSource; 
+   if (!rangeStart && !rangeEnd){
+    activeSource = [ 
+      "{",
+        "?element <http://scta.info/property/source> ?isRelatedTo .",
+      "}",
+      "UNION",
+      "{",
+      "?element <http://scta.info/property/source> ?bn .",
+      "?bn <http://scta.info/property/source> ?isRelatedTo .",
+      "?bn <http://scta.info/property/canonicalRangeStart> ?isRelatedToRangeStart .",
+      "?bn <http://scta.info/property/canonicalRangeEnd> ?isRelatedToRangeEnd .",
+      "}"].join(" ")
+    }
+    else{
+      activeSource = ["?element <http://scta.info/property/source> ?bn .",
+      "?bn <http://scta.info/property/source> ?isRelatedTo .",
+      "?bn <http://scta.info/property/canonicalRangeStart> ?isRelatedToRangeStart .",
+      "?bn <http://scta.info/property/canonicalRangeEnd> ?isRelatedToRangeEnd .",
+      rangeFilter].join(" ")
+    }
+   
+    let inverseSource;
+   if (!rangeStart && !rangeEnd){
+    inverseSource = ["{",
+            "?isRelatedTo <http://scta.info/property/source> ?element .",
+          "}",
+            "UNION",
+          "{",
+            "?isRelatedTo <http://scta.info/property/source> ?bn .",
+            "?bn <http://scta.info/property/source> ?element .",
+            "?bn <http://scta.info/property/canonicalRangeStart> ?isRelatedToRangeStart .",
+            "?bn <http://scta.info/property/canonicalRangeEnd> ?isRelatedToRangeEnd .",
+          "}"].join(" ")
+   }
+   else{
+    inverseSource = ["?isRelatedTo <http://scta.info/property/source> ?bn .",
+    "?bn <http://scta.info/property/source> ?element .",
+    "?bn <http://scta.info/property/canonicalRangeStart> ?isRelatedToRangeStart .",
+    "?bn <http://scta.info/property/canonicalRangeEnd> ?isRelatedToRangeEnd .",
+    rangeFilter].join(" ")
+   }
+   
    const query = [
-    "SELECT DISTINCT ?isRelatedTo ?label ?element ?longTitle ?author ?authorTitle ",
+    "SELECT DISTINCT ?isRelatedTo ?label ?element ?longTitle ?author ?authorTitle ?isRelatedToRangeStart ?isRelatedToRangeEnd ",
     "WHERE",
     "{ ",
     "BIND (<" + itemExpressionUri + "> as ?resource)",
@@ -30,14 +79,14 @@
           "?element <http://scta.info/property/isMemberOf> ?resource .",
         "}",
         "{",
-          "?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
-          "?element <http://scta.info/property/source> ?isRelatedTo .",
-          "BIND ('quotes' as ?label) .",
-        "}",
+            activeSource,
+            "?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
+            "BIND ('quotes' as ?label) .",
+          "}",
         "UNION",
         "{",
+          activeSource,
           "?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementRef> .",
-          "?element <http://scta.info/property/source> ?isRelatedTo .",
           "BIND ('refs' as ?label) .",
         "}",
       "}",
@@ -51,13 +100,14 @@
           "?element <http://scta.info/property/isMemberOf> ?resource .",
         "}",
         "{",
-          "?isRelatedTo <http://scta.info/property/source> ?element.",
+          inverseSource,
           "?isRelatedTo <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
           "BIND ('isQuotedBy' as ?label) .",
         "}",
         "UNION",
         "{",
-          "?isRelatedTo <http://scta.info/property/source> ?element.",
+          inverseSource,
+          //"?isRelatedTo <http://scta.info/property/source> ?element.",
           "?isRelatedTo <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementRef> .",
           "BIND ('isReferencedBy' as ?label) .",
         "}",

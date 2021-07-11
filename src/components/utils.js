@@ -365,3 +365,24 @@ export function goToGitHubEdit(url, selectedText, selectedElementTargetId){
   //window.location = 
   
 }
+
+export function textReduce(text, wordRange){
+  const wordTokenStart = wordRange.split("-")[0]
+  const wordTokenEnd = wordRange.split("-")[1]
+  const wordTokens = text.split(" ")
+  // NOTE: I'm not sure what this .filter(Boolean) is doing??
+  const wordTokensClean = wordTokens.filter(Boolean)
+  //const wordTokensBefore = wordTokensClean.slice(0, wordTokenStart - 1);
+  //const wordTokensAfter = wordTokensClean.slice(wordTokenEnd)
+  const wordTokensFocus = wordTokensClean.slice(wordTokenStart - 1, wordTokenEnd)
+  const reducedText = wordTokensFocus.join(" ")
+  return reducedText
+  // let textElement = ""
+  //     if (context){
+  //       textElement = "<p class='text'><span>" + wordTokensBefore.join(" ") + "</span> <span style='font-weight: bold'>" + wordTokensFocus.join(" ") + "</span> <span>" + wordTokensAfter.join(" ") +"</span></p>"
+  //     }
+  //     else{
+  //       textElement = "<p class='text'>" + wordTokensFocus.join(" ") + "</p>"
+  //     }
+  //   return textElement
+}

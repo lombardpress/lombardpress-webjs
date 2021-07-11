@@ -146,6 +146,7 @@ class Window2 extends React.Component {
               info={this.props.info}  
               surfaceWidth={this.props.windowType === 'bottomWindow' ? "1000" : "501"}
               hidden={this.state.windowLoad !== "textCompare"}
+              selectionRange={this.props.selectionRange}
             />
             }
             {

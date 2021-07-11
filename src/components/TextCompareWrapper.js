@@ -8,6 +8,7 @@ import TextCompare from './TextCompare'
 
 import { runQuery } from './utils'
 import { getRelatedExpressions } from './Queries'
+import {textReduce} from './utils'
 
 class TextCompareWrapper extends React.Component {
   constructor(props) {
@@ -63,7 +64,12 @@ class TextCompareWrapper extends React.Component {
     Axios.get("https://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + ctranscription)
       .then((text) => {
         if (this.mounted) {
-          _this.setState({ baseText: text.data })
+          let reducedText = text.data;
+            if (this.props.selectionRange.wordRange){
+              const wordRange = _this.props.selectionRange.wordRange.start + "-" + _this.props.selectionRange.wordRange.end
+              reducedText = textReduce(text.data, wordRange)
+            }
+          _this.setState({ baseText: reducedText })
         }
       })
   }
@@ -75,7 +81,9 @@ class TextCompareWrapper extends React.Component {
    */
   getRelatedExpressions(resourceid, page, pagesize) {
     const offset = (page - 1) * pagesize
-    const relatedExpressions = runQuery(getRelatedExpressions(resourceid, offset, pagesize))
+    const rangeStart = this.props.selectionRange.wordRange ? this.props.selectionRange.wordRange.start : "" ;
+    const rangeEnd = this.props.selectionRange.wordRange ? this.props.selectionRange.wordRange.end : "";
+    const relatedExpressions = runQuery(getRelatedExpressions(resourceid, offset, pagesize, rangeStart, rangeEnd))
     relatedExpressions.then((d) => {
       const bindings2 = d.data.results.bindings
       const expressions = []
@@ -97,10 +105,12 @@ class TextCompareWrapper extends React.Component {
           author: r.author ? r.author.value : "",
           authorTitle: r.authorTitle ? r.authorTitle.value : "",
           longTitle: r.longTitle ? r.longTitle.value : "",
-          show: false
+          show: false,
+          isRelatedToRange: r.isRelatedToRangeStart && r.isRelatedToRangeEnd ? r.isRelatedToRangeStart.value + '-' + r.isRelatedToRangeEnd.value : ""
         })
       })
       // set state with new related expressions results and updates to paging information
+      if (this.mounted) {
       this.setState({
         expressions: expressions,
         intendedPage: page,
@@ -110,6 +120,7 @@ class TextCompareWrapper extends React.Component {
         rangeStart: ((page - 1) * pagesize) + 1,
         rangeEnd: pagesize * page
       })
+      }
     })
   }
   componentDidMount() {
@@ -123,7 +134,7 @@ class TextCompareWrapper extends React.Component {
   }
   componentDidUpdate(prevProps, prevState) {
     // if resource id changes or results paging, then perform new query
-    if (prevProps.info.resourceid !== this.props.info.resourceid || prevState.page !== this.state.page) {
+    if (prevProps.info.resourceid !== this.props.info.resourceid || prevState.page !== this.state.page || prevProps.selectionRange !== this.props.selectionRange) {
       const startPage = prevProps.info.resourceid !== this.props.info.resourceid ? 1 : this.state.page
       this.getRelatedExpressions(this.props.info.resourceid, startPage, this.state.pagesize)
       if (this.props.info.structureType !== "http://scta.info/resource/structureCollection"){
@@ -167,6 +178,8 @@ class TextCompareWrapper extends React.Component {
               baseText={this.state.baseText}
               show={i.show}
               surfaceWidth={this.props.surfaceWidth}
+              isRelatedToRange={i.isRelatedToRange}
+              targetRange={this.props.selectionRange.wordRange ? this.props.selectionRange.wordRange.start + "-" + this.props.selectionRange.wordRange.end : ""}
             />}
           </div>
         )

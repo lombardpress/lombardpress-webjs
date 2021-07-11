@@ -113,6 +113,10 @@ class TextCompare extends React.Component {
             show={this.state.show}
             showCompare={this.props.isMainText ? true : false}
             surfaceWidth={this.props.surfaceWidth}
+            isRelatedToRange={this.props.isRelatedToRange}
+            targetRange={this.props.targetRange}
+            isMainText={this.props.isMainText}
+            relationLabel={this.props.relationLabel}
             />
           )
         })
@@ -133,7 +137,7 @@ class TextCompare extends React.Component {
       </div>
       <div>
         {this.state.info.resourceid ?
-        <Link to={"/text?resourceid=" + this.state.info.resourceid}>
+        <Link to={"/text?resourceid=" + this.state.info.resourceid + ((this.props.relationLabel !== "isQuotedBy" && this.props.relationLabel !== "isReferencedBy" && this.props.isRelatedToRange) ? "@" + this.props.isRelatedToRange : "")}>
           {this.props.authorTitle || this.props.longTitle ? <span> {this.props.authorTitle} {this.props.longTitle}</span> : this.state.info.resourceid}
         </Link> :
         this.props.authorTitle || this.props.longTitle ? <span> {this.props.authorTitle} {this.props.longTitle}</span> : this.state.info.resourceid
