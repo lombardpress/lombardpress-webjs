@@ -81,8 +81,8 @@ class TextCompareWrapper extends React.Component {
    */
   getRelatedExpressions(resourceid, page, pagesize) {
     const offset = (page - 1) * pagesize
-    const rangeStart = this.props.selectionRange.wordRange ? this.props.selectionRange.wordRange.start : "" ;
-    const rangeEnd = this.props.selectionRange.wordRange ? this.props.selectionRange.wordRange.end : "";
+    const rangeStart = (this.props.selectionRange && this.props.selectionRange.wordRange) ? this.props.selectionRange.wordRange.start : "" ;
+    const rangeEnd = (this.props.selectionRange && this.props.selectionRange.wordRange) ? this.props.selectionRange.wordRange.end : "";
     const relatedExpressions = runQuery(getRelatedExpressions(resourceid, offset, pagesize, rangeStart, rangeEnd))
     relatedExpressions.then((d) => {
       const bindings2 = d.data.results.bindings
