@@ -368,7 +368,11 @@ class Window2 extends React.Component {
       availableTabs={getAvailableTabs()}
       />
       {(this.state.windowLoad !== "surface2" && this.state.windowLoad !== "dictionary" ) 
-      && <NextPrevBar info={this.props.info} handleBlockFocusChange={this.props.handleBlockFocusChange}/>}
+      && <NextPrevBar 
+      info={this.props.info} 
+      handleBlockFocusChange={this.props.handleBlockFocusChange}
+      selectionRange={this.props.selectionRange}
+      />}
 
       {displayChild()}
 

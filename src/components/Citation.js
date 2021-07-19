@@ -94,20 +94,22 @@ class Citation extends React.Component{
       {this.state.fetching ?
         <Spinner/> :
       <div>
-        <p className="etitle">{this.state.authorTitle}, {this.state.etitle} (<a href={this.state.eurl} target="_blank" rel="noopener noreferrer">{this.state.eurl}</a> <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(this.state.eurl)}}><FaClipboard /></span>)</p>
+        <p className="etitle">{this.state.authorTitle}, {this.state.etitle} {wordRange && wordRange && "@ " + wordRange} (<a href={this.state.eurl} target="_blank" rel="noopener noreferrer">{this.state.eurl}{wordRange && "@" + wordRange}</a> <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(wordRange ? this.state.eurl + "@" + wordRange : this.state.eurl)}}><FaClipboard /></span>)</p>
 
         <p className="mtitle">
           {this.state.editor && <span>Ed. {this.state.editorTitle}, </span>}
-          {this.state.mtitle} {wordRange && <span>, words {wordRange} </span>}
-          (<a href={this.state.murl} target="_blank" rel="noopener noreferrer">{this.state.murl}</a> 
           
-          <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(this.state.murl)}}><FaClipboard /></span>)
+          {this.state.mtitle && this.state.mtitle + " "}
+          
+          (<a href={this.state.murl} target="_blank" rel="noopener noreferrer">{this.state.murl}{wordRange && "@" + wordRange}</a> 
+          
+          <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(wordRange ? this.state.murl + "@" + wordRange : this.state.murl)}}><FaClipboard /></span>)
         </p>
 
         <p className="ttitle">
           <span>Transcription Resource: </span>
-          <a href={this.state.turl} target="_blank" rel="noopener noreferrer">{this.state.turl}</a>
-          <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(this.state.turl)}}><FaClipboard /></span>
+          <a href={this.state.turl} target="_blank" rel="noopener noreferrer">{this.state.turl}{wordRange && "@" + wordRange}</a>
+          <span className="lbp-span-link" title="Copy Citation to Clipboard" onClick={(e) => {e.preventDefault(); copyToClipboard(wordRange ? this.state.turl + "@" + wordRange : this.state.turl)}}><FaClipboard /></span>
           <br/>
           <span>Data source: </span>
           <a href={this.state.datasource} target="_blank" rel="noopener noreferrer"> {this.state.datasource}</a> 
