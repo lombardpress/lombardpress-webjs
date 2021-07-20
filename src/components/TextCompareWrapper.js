@@ -150,7 +150,7 @@ class TextCompareWrapper extends React.Component {
       }
       this.setState((prevState) => {
         return {
-          expressions: { ...prevState.expressions, newExpression }
+          expressions: [ ...prevState.expressions, newExpression ]
         }
       })
     }
