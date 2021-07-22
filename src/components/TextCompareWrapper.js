@@ -179,7 +179,7 @@ class TextCompareWrapper extends React.Component {
               show={i.show}
               surfaceWidth={this.props.surfaceWidth}
               isRelatedToRange={i.isRelatedToRange}
-              targetRange={this.props.selectionRange.wordRange ? this.props.selectionRange.wordRange.start + "-" + this.props.selectionRange.wordRange.end : ""}
+              targetRange={(this.props.selectionRange && this.props.selectionRange.wordRange) ? this.props.selectionRange.wordRange.start + "-" + this.props.selectionRange.wordRange.end : ""}
             />}
           </div>
         )
