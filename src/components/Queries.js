@@ -15,6 +15,7 @@
     activeSource = [ 
       "{",
         "?element <http://scta.info/property/source> ?isRelatedTo .",
+        "FILTER (!isBlank(?isRelatedTo)) .",
       "}",
       "UNION",
       "{",

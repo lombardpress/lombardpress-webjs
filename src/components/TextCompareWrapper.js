@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
 import TextCompare from './TextCompare'
+import NgramDisplay from './NgramDisplay'
 
 import { runQuery } from './utils'
 import { getRelatedExpressions } from './Queries'
@@ -239,6 +240,17 @@ class TextCompareWrapper extends React.Component {
           <p><a target="_blank" rel="noopener noreferrer" href={"https://scta.github.io/networks-explorer/?resourceid=" + this.props.info.resourceid}>View Reference Connections</a></p>
           <p><a target="_blank" rel="noopener noreferrer" href={"https://scta.github.io/networks-explorer/topicconnections.html?resourceid=" + this.props.info.resourceid}>View Topic Connections</a></p>
         </div>
+        <div>
+        <NgramDisplay info={this.props.info}
+          handleChangeBase={this.handleChangeBase}
+          baseText={this.state.baseText}
+          surfaceWidth={this.props.surfaceWidth}
+          resourceid={this.props.info.resourceid}>
+        </NgramDisplay>
+        </div>
+
+        
+        
       </Container>
 
     );
