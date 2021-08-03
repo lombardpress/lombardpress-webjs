@@ -7,6 +7,8 @@ import Spinner from './Spinner';
 import {Link} from 'react-router-dom';
 import { FaEyeSlash, FaEye, FaStar, FaToggleOn, FaToggleOff, FaRegImage} from 'react-icons/fa';
 
+import {textReduce} from './utils'
+
 import Surface3Wrapper from './Surface3Wrapper'
 
 class TextCompareItem extends React.Component {
@@ -46,11 +48,22 @@ class TextCompareItem extends React.Component {
     return finalFinalString
 
   }
+
+  
   createCompare(base, transcription){
-    console.log("text compare item async sent for", transcription)
     Axios.get("https://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + transcription)
           .then((text) => {
-
+            let reducedText = text.data;
+            if (this.props.isMainText && this.props.targetRange){
+              reducedText = textReduce(text.data, this.props.targetRange)
+            }
+            // this conditional should exclude most relations (or relations initated by a structureElement type)
+            else if (this.props.relationLabel === 'isQuotedBy' || this.props.relationLabel === 'isReferencedBy'){
+              reducedText = text.data
+            }
+            else if (this.props.isRelatedToRange){
+              reducedText = textReduce(text.data, this.props.isRelatedToRange)
+            }
             //function needed for word level comparison
             //see https://github.com/google/diff-match-patch/wiki/Line-or-Word-Diffs
             // also required for of npm google-diff-patch and then added function wordsToChars_()
@@ -69,7 +82,7 @@ class TextCompareItem extends React.Component {
 
             //NOTE: uncomment below if you want to switch back to character level diff
             //const diff = dmp.diff_main(this.textClean(base), this.textClean(text.data)); //character level diff
-            const diff = diff_wordMode(this.textClean(base), this.textClean(text.data), dmp) // word level diff
+            const diff = diff_wordMode(this.textClean(base), this.textClean(reducedText), dmp) // word level diff
             // Result: [(-1, "Hell"), (1, "G"), (0, "o"), (1, "odbye"), (0, " World.")]
             dmp.diff_cleanupSemantic(diff);
             const levenshteinDistance = dmp.diff_levenshtein(diff)
@@ -78,14 +91,14 @@ class TextCompareItem extends React.Component {
               // TODO: setting showCompare to "derivedState" is an ANTI-PATTERN. Better would be to let it be entirely controlled by parent. 
               // NOTE: usedBase and usedCompare transcription are used to record data used to make compare 
               // so that componentDidUpdate can efficiently decide if a new comparison is or is not needed
-              this.setState({compareText: ds, rawText: text.data, levenshteinDistance: levenshteinDistance, showCompare: this.props.showCompare, 
+              this.setState({compareText: ds, rawText: reducedText, levenshteinDistance: levenshteinDistance, showCompare: this.props.showCompare, 
                 usedBase: this.props.base, usedCompareTranscription: this.props.compareTranscription})
             }
             else if(this.mounted){
               // TODO: setting showCompare to "derivedState" is an ANTI-PATTERN. Better would be to let it be entirely controlled by parent.
               // NOTE: usedBase and usedCompare transcription are used to record data used to make compare 
               // so that componentDidUpdate can efficiently decide if a new comparison is or is not needed
-              this.setState({rawText: text.data, showCompare: this.props.showCompare, 
+              this.setState({rawText: reducedText, showCompare: this.props.showCompare, 
                 usedBase: this.props.base, usedCompareTranscription: this.props.compareTranscription})
             }
           }).catch((error) => {
@@ -164,7 +177,7 @@ class TextCompareItem extends React.Component {
         const heatColor = levenNum * 5
         return (
           <div style={{borderLeft: "5px solid rgba(" + heatColor + ", 0, 255, 1)", paddingLeft: "5px"}}>
-            <span><Link to={"/text?resourceid=" + this.props.compareTranscription}>{this.props.manifestationTitle}</Link> </span>
+            <span><Link to={"/text?resourceid=" + this.props.compareTranscription + ((this.props.relationLabel !== "isQuotedBy" && this.props.relationLabel !== "isReferencedBy" && this.props.isRelatedToRange) ? "@" + this.props.isRelatedToRange : "")}>{this.props.manifestationTitle}</Link> </span>
             <span className="lbp-span-link" title="show/hide" onClick={() => this.handleToggleShow()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>
             <span className="lbp-span-link" title="toggle comparison off" onClick={() => this.handleToggleCompare()}><FaToggleOn/></span>
             {!isBase && <span className="lbp-span-link" title="set as base" onClick={() => this.props.handleChangeBase(this.state.rawText)}><FaStar/></span>}
@@ -181,7 +194,7 @@ class TextCompareItem extends React.Component {
         
         return (
           <div>
-            <span><Link to={"/text?resourceid=" + this.props.compareTranscription}>{this.props.manifestationTitle}</Link></span> |
+            <span><Link to={"/text?resourceid=" + this.props.compareTranscription + ((this.props.relationLabel !== "isQuotedBy" && this.props.relationLabel !== "isReferencedBy" && this.props.isRelatedToRange) ? "@" + this.props.isRelatedToRange : "")}>{this.props.manifestationTitle}</Link></span> |
             <span className="lbp-span-link" title="show/hide" onClick={() => this.handleToggleShow()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>
             <span className="lbp-span-link" title="toggle comparison on" onClick={() => this.handleToggleCompare()}><FaToggleOff/></span>
             {!isBase && <span className="lbp-span-link" title="set as base" onClick={() => this.props.handleChangeBase(this.state.rawText)}><FaStar/></span>}

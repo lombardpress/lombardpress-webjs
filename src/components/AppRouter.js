@@ -1,5 +1,5 @@
 import React, {Suspense} from 'react';
-import {HashRouter, Route, Switch} from 'react-router-dom';
+import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import Home from "./Home"
 import Search3 from "./Search3"
 import TextSwitch from "./TextSwitch"
@@ -16,7 +16,7 @@ import '../styles/App.scss';
 const AppRouter = () => {
   return (
   <Suspense fallback={<Spinner/>}>
-    <HashRouter forceRefresh={false}>
+    <BrowserRouter forceRefresh={false}>
       <div>
         <NavBar/>
         <Switch>
@@ -34,7 +34,7 @@ const AppRouter = () => {
         </Switch>
         <Footer/>
       </div>
-    </HashRouter>
+    </BrowserRouter>
   </Suspense>
 )
 }

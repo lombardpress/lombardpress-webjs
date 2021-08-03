@@ -225,16 +225,12 @@ export function toRange(root, start, end) {
     
   }
 
-  if (!startContainer) {
-    throw new Error('invalid start offset');
-  }
-  if (!endContainer) {
-    throw new Error('invalid end offset');
-  }
-
   const range = root.ownerDocument.createRange();
-  range.setStart(startContainer, startOffset);
-  range.setEnd(endContainer, endOffset);
+  //conditional here to if container exists before calling it.
+  //usual reason a end container doesn't exist is the end number in the request does not exist in the paragraph 
+  // for example, asking for end word 40 when there are only 39 words in the paragraph
+  startContainer ? range.setStart(startContainer, startOffset) : console.log("no container or invalid end offset")
+  endContainer ? range.setEnd(endContainer, endOffset) : console.log("no container invalid end offset")
 
   return range;
 }
@@ -298,7 +294,6 @@ function getStringBeforeWord(text, word, instanceNumber, first) {
  */
 
 export function createRange(root, startContainer, startOffset, endContainer, endOffset){
-  console.log("endOffset", endOffset)
   const range = root.ownerDocument.createRange();
   range.setStart(startContainer, startOffset);
   range.setEnd(endContainer, endOffset);
@@ -312,8 +307,6 @@ export function getRangeWordCount(rng){
   var cnt = rng.cloneContents();
   $(cnt).find(".lbp-line-number, .paragraphnumber, br, .lbp-folionumber, .appnote, .footnote, .lbp-reg").remove();
   const selectionText = cleanText(cnt.textContent)
-  console.log("selectionText", selectionText)
-  console.log("precedingSelectionTextArray", selectionText.split(" ").filter(n=>n))
   const length = selectionText.split(" ").filter(n=>n).length
   return length;
 }
@@ -363,7 +356,6 @@ export function goToGitHubEdit(url, selectedText, selectedElementTargetId){
   const data = getLineNumber(url, selectedText, selectedElementTargetId)
   //https://github.com/scta-texts/plaoulcommentary/raw/master/lectio1/lectio1.xml
   data.then((d) => {
-    console.log(d)
     const editUrl = url.replace("raw", "edit") + "#L" + d
     window.open(editUrl,"gitHubEditWindow",'height=750,width=750');
     //window.open(editUrl, "_blank"); 
@@ -372,4 +364,25 @@ export function goToGitHubEdit(url, selectedText, selectedElementTargetId){
   
   //window.location = 
   
+}
+
+export function textReduce(text, wordRange){
+  const wordTokenStart = wordRange.split("-")[0]
+  const wordTokenEnd = wordRange.split("-")[1]
+  const wordTokens = text.split(" ")
+  // NOTE: I'm not sure what this .filter(Boolean) is doing??
+  const wordTokensClean = wordTokens.filter(Boolean)
+  //const wordTokensBefore = wordTokensClean.slice(0, wordTokenStart - 1);
+  //const wordTokensAfter = wordTokensClean.slice(wordTokenEnd)
+  const wordTokensFocus = wordTokensClean.slice(wordTokenStart - 1, wordTokenEnd)
+  const reducedText = wordTokensFocus.join(" ")
+  return reducedText
+  // let textElement = ""
+  //     if (context){
+  //       textElement = "<p class='text'><span>" + wordTokensBefore.join(" ") + "</span> <span style='font-weight: bold'>" + wordTokensFocus.join(" ") + "</span> <span>" + wordTokensAfter.join(" ") +"</span></p>"
+  //     }
+  //     else{
+  //       textElement = "<p class='text'>" + wordTokensFocus.join(" ") + "</p>"
+  //     }
+  //   return textElement
 }

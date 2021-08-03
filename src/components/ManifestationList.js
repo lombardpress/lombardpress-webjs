@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Container from 'react-bootstrap/Container';
 import {FaChevronDown, FaChevronUp} from 'react-icons/fa';
+import {Link} from 'react-router-dom';
 
 class ManifestationList extends React.Component {
   constructor(props){
@@ -17,10 +18,24 @@ class ManifestationList extends React.Component {
     })
   }
   render(){
-    const displayManifestations = () => {
+    const wordRange = this.props.selectionRange && this.props.selectionRange.wordRange && 
+      this.props.selectionRange.wordRange.start + "-" + this.props.selectionRange.wordRange.end;
+    
+      const displayManifestations = () => {
       if (this.props.manifestations){
         const manifestations = this.props.manifestations.map((i) => {
-          return <p key={i.manifestation}>{i.manifestationTitle} : <span className="lbp-span-link" onClick={() => {this.props.handleFocusChange(i.manifestation)}}>{i.manifestation}</span></p>
+          if (this.props.tresourceid.includes(i.manifestation)){
+            return (<p key={i.manifestation}>
+              {i.manifestationTitle}{wordRange && "@" + wordRange} (Currrent Focus)
+            </p>)
+          }
+          else{
+            return (<p key={i.manifestation}>
+              <Link to={wordRange ? "/text?resourceid=" + i.manifestation + "@" + wordRange : "/text?resourceid=" + i.manifestation}>
+              {i.manifestationTitle}{wordRange && "@" + wordRange}</Link>
+            </p>
+            )
+          }
         })
         return manifestations
       }
@@ -30,7 +45,7 @@ class ManifestationList extends React.Component {
       {this.props.optionalDisplay ?
         <h4 onClick={this.toggleAlternativeManifestations}>{this.state.showAlternativeManifestations ? <span><FaChevronDown/>Hide Alternative Manifestations</span> : <span><FaChevronUp/>View Alternative Manifestations</span>} </h4>
         :
-        <h4>Alternative Manifestations</h4>
+        <h4>Available Manifestations</h4>
       }
 
         {this.state.showAlternativeManifestations && displayManifestations()}
@@ -49,14 +64,6 @@ ManifestationList.propTypes = {
   * a second look up by the component would be needless
   */
   manifestations: PropTypes.array,
-  /**
-  * function to handle response when new manifestaiton is picked.
-  *
-  */
-  handleFocusChange: PropTypes.func,
-  /**
-  * boolean; if true; turns manifestation header into trigger to hide and display manifestation list
-  */
   optionalDisplay: PropTypes.bool
 }
 export default ManifestationList;

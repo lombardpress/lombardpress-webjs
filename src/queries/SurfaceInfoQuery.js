@@ -14,6 +14,7 @@
      "?manifestation <http://scta.info/property/isOnSurface> <" + surfaceid + "> .",
      "?manifestation <http://scta.info/property/structureType> <http://scta.info/resource/structureBlock> .",
      "?manifestation <http://scta.info/property/isManifestationOf> ?expression .",
+     "?expression <http://scta.info/property/totalOrderNumber> ?order .",
      "?expression <http://scta.info/property/hasManifestation> ?manifestation2 .",
      "?manifestation2 <http://scta.info/property/isOnSurface> ?surface2 .",
      "?codex <http://scta.info/property/hasSurface> ?surface2 .",

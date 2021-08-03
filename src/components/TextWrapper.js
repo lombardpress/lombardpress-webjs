@@ -1,12 +1,19 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Print from "./Print"
+import PropTypes from 'prop-types';
 
+import TextOutlineWrapper from "./TextOutlineWrapper"
+import {Link} from 'react-router-dom';
 
-import Window from "./Window"
+import Window from "./Window/Window2"
 import TextNavBar from "./TextNavBar"
 import Text from "./Text"
+import AuthorCollection from "./AuthorCollection"
 import VersionChain from "./VersionChain"
+import Collection from "./Collection"
+import Codex from "./Codex"
+import ExpressionType from "./ExpressionType"
 import {runQuery, scrollToParagraph} from './utils'
 
 import {basicInfoQuery, itemTranscriptionInfoQuery} from './Queries'
@@ -39,6 +46,7 @@ class TextWrapper extends React.Component {
       //focusRelatedExpressions: "",
       mtFocus: "",
       itemFocus: "",
+      //collectionFocus: "",
       surfaceid: "",
       lineFocusId: "",
       textPreviewObjects: [],
@@ -265,22 +273,6 @@ class TextWrapper extends React.Component {
             transcription: b.manifestationCTranscription ? b.manifestationCTranscription.value : ""
           }
         })
-        // TODO the need for this 2nd query and async call might
-        // be able to be removed using a construct query
-        // see example pattern in articles collection
-        //const relatedExpressions = runQuery(getRelatedExpressions(resourceid))
-        // relatedExpressions.then((d) => {
-        //   const bindings2 = d.data.results.bindings
-        //   const relatedExpressions = bindings2.map((r) => {
-        //       return {
-        //         resourceid: r.isRelatedTo.value,
-        //         relationLabel: r.label.value,
-        //         referringResource: r.element ? r.element.value : "",
-        //         author: r.author ? r.author.value : "",
-        //         authorTitle: r.authorTitle ? r.authorTitle.value : "",
-        //         longTitle: r.longTitle ? r.longTitle.value : ""
-        //       }
-        //     });
 
           if (this.mount && bindings){
             this.setState({
@@ -297,36 +289,20 @@ class TextWrapper extends React.Component {
                 parent: bindings.parent ? bindings.parent.value : "",
                 cdoc: bindings.cdoc ? bindings.cdoc.value : "",
                 cxml: bindings.cxml ? bindings.cxml.value : "",
-                topLevel: bindings.topLevelExpression.value,
+                topLevel: bindings.topLevelExpression ? bindings.topLevelExpression.value : "",
                 cmanifestation: bindings.cmanifestation.value,
                 ctranscription: bindings.ctranscription ? bindings.ctranscription.value : "",
-                manifestations: manifestations,
-                //relatedExpressions: relatedExpressions
+                manifestations: manifestations
               }
             });
           }
-        //})
       });
     }
-  // embeded this within arrang focus info, so that information remains in sync
-  // TODO remove this
-    // arrangeFocusRelatedInfo(relatedInfo){
-    //     relatedInfo.then((d) => {
-    //       console.log("new data", d)
-    //       const bindings = d.data.results.bindings
-    //       const relatedExpressions = bindings.map((r) => {
-    //           return {
-    //             resourceid: r.isRelatedTo.value,
-    //             relationLabel: r.label.value
-    //           }
-    //         });
-    //     if (this.mount){
-    //       this.setState({
-    //         focusRelatedExpressions: relatedExpressions
-    //       });
-    //       }
-    //     });
-    //   }
+    /**
+     * sets focus
+     * @param {string} id 
+     * @public
+     */
     setItemFocus(id){
       const fullid = id.includes("http") ? id : "http://scta.info/resource/" + id
       // get info
@@ -357,112 +333,143 @@ class TextWrapper extends React.Component {
 
   componentDidMount(){
     this.mount = true
+    if (this.props.resourceType === "person" 
+    || this.props.resourceType === "workGroup" 
+    || this.props.resourceType === "codex"
+    || this.props.resourceType === "expressionType"){
+    }
     //transcriptionid should be required Prop
     //conditional here to reinfurce that rule
-    if (this.props.transcriptionid){
-      this.setItemFocus(this.props.transcriptionid)
+    else if (this.props.resourceType === "collection"){
+      //TODO props.expressionid is doing something very similar to blockDivFocus
+      this.retrieveFocusInfo(this.props.expressionid)
       //TODO: splitting strings for this information is not ideal.
-      //info should be part of original query
-      const mFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[1]
-      const tFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[2]
-      const selectionRange = this.props.tokenRange ? {
-        wordRange: this.props.tokenRange,
-        selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1],
-      } : {}
-      this.setState(
-        {mtFocus: "/" + mFocus + "/" + tFocus, 
-        selectionRange: selectionRange
-      })
+        //info should be part of original query
+        const mFocus = this.props.transcriptionid ? this.props.transcriptionid.split("/resource/")[1].split("/")[1] : ""
+        const tFocus = this.props.transcriptionid ? this.props.transcriptionid.split("/resource/")[1].split("/")[2] : ""
+        this.setState(
+          {
+            mtFocus: "/" + mFocus + "/" + tFocus,
+            itemFocus: ""
+          }
+        )
+      }
+    else{
+      if (this.props.itemTranscriptionId){
+        this.setItemFocus(this.props.itemTranscriptionId)
+        //TODO: splitting strings for this information is not ideal.
+        //info should be part of original query
+        const mFocus = this.props.itemTranscriptionId.split("/resource/")[1].split("/")[1]
+        const tFocus = this.props.itemTranscriptionId.split("/resource/")[1].split("/")[2]
+        const selectionRange = this.props.tokenRange ? {
+          wordRange: this.props.tokenRange,
+          selectedElementTargetId: this.props.expressionid && this.props.expressionid.split("/resource/")[1],
+        } : {}
+        this.setState(
+          {mtFocus: "/" + mFocus + "/" + tFocus, 
+          selectionRange: selectionRange
+        })
 
-      if (this.props.blockDivFocus){
-        this.retrieveFocusInfo(this.props.blockDivFocus)
+        if (this.props.expressionid){
+          this.retrieveFocusInfo(this.props.expressionid)
+        }
       }
     }
   }
-  //TODO: delete; after newly added replacement componentDidUpdate continues to work reliably
-  // UNSAFE_componentWillReceiveProps(newProps){
-  //   //Keep testing, but it seems like this look up only needs to fire, when the transcription id prop changes
-  //   // not when other props changes.
-  //   if (newProps.transcriptionid !== this.props.transcriptionid){
-  //     this.setItemFocus(newProps.transcriptionid)
-  //     const mFocus = newProps.transcriptionid.split("/resource/")[1].split("/")[1]
-  //     const tFocus = newProps.transcriptionid.split("/resource/")[1].split("/")[2]
-  //     //clear or set parts of state when new transcription file is loaded
-  //     this.setState((prevState) => {
-  //       const windows = prevState.windows
-  //       windows["window1"].defaultManifestationSlug = ""
-  //       windows["window2"].defaultManifestationSlug = ""
-  //       return {
-  //         mtFocus: "/" + mFocus + "/" + tFocus,
-  //         windows: windows
-  //       }
-  //     })
-  //   }
+
     componentDidUpdate(prevProps){
       //Keep testing, but it seems like this look up only needs to fire, when the transcription id prop changes
       // not when other props changes.
-      if (this.props.transcriptionid !== prevProps.transcriptionid){
-        this.setItemFocus(this.props.transcriptionid)
-        const mFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[1]
-        const tFocus = this.props.transcriptionid.split("/resource/")[1].split("/")[2]
-        //clear or set parts of state when new transcription file is loaded
-        this.setState((prevState) => {
-          const windows = prevState.windows
-          windows["window1"].defaultManifestationSlug = ""
-          windows["window2"].defaultManifestationSlug = ""
-          const selectionRange = this.props.tokenRange ? {
-            ...prevState.selectionRange, 
-            wordRange: this.props.tokenRange,
-            selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1],
-          } : {}
-          return {
-            mtFocus: "/" + mFocus + "/" + tFocus,
-            selectionRange: selectionRange,
-            windows: windows
-          }
-        })
-      }
-      //TODO: seems a little dangerous to have these two different setState/async calls 
-      //if one depends on the other, this is a good place for things to get out of sync
-      if (this.props.blockDivFocus !== prevProps.blockDivFocus){
-        if (!this.props.blockDivFocus){
-          this.setState(
-            {
-              focus: "",
-              selectionRange: ""
+      
+      if (this.props.resourceType === "person" 
+      || this.props.resourceType === "workGroup" 
+      || this.props.resourceType === "codex"
+      || this.props.resourceType === "expressionType"
+      ){
+        if (this.props.resourceid !== prevProps.resourceid){
+          this.setState({
+            focus: "",
+            mtFocus: ""
           });
         }
-        else {
+      }
+      else if (this.props.resourceType === "collection"){
+        
+        if (this.props.resourceid !== prevProps.resourceid){
+          this.retrieveFocusInfo(this.props.expressionid)
+          //TODO: splitting strings for this information is not ideal.
+          //info should be part of original query
+          const mFocus = this.props.transcriptionid ? this.props.transcriptionid.split("/resource/")[1].split("/")[1] : ""
+          const tFocus = this.props.transcriptionid ? this.props.transcriptionid.split("/resource/")[1].split("/")[2] : ""
+          this.setState(
+          {
+            mtFocus: "/" + mFocus + "/" + tFocus,
+            itemFocus: ""
+          }
+        )
+        }
+      }
+      else{
+  
+        if (this.props.itemTranscriptionId !== prevProps.itemTranscriptionId){
+          this.setItemFocus(this.props.itemTranscriptionId)
+          const mFocus = this.props.itemTranscriptionId.split("/resource/")[1].split("/")[1]
+          const tFocus = this.props.itemTranscriptionId.split("/resource/")[1].split("/")[2]
+          //clear or set parts of state when new transcription file is loaded
           this.setState((prevState) => {
+            const windows = prevState.windows
+            windows["window1"].defaultManifestationSlug = ""
+            windows["window2"].defaultManifestationSlug = ""
             const selectionRange = this.props.tokenRange ? {
               ...prevState.selectionRange, 
               wordRange: this.props.tokenRange,
-              selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1],
+              selectedElementTargetId: this.props.expressionid && this.props.expressionid.split("/resource/")[1],
+            } : {}
+            return {
+              mtFocus: "/" + mFocus + "/" + tFocus,
+              selectionRange: selectionRange,
+              windows: windows
+            }
+          })
+        }
+        //TODO: seems a little dangerous to have these two different setState/async calls 
+        //if one depends on the other, this is a good place for things to get out of sync
+        if (this.props.expressionid !== prevProps.expressionid){
+          if (!this.props.expressionid){
+            this.setState(
+              {
+                focus: "",
+                selectionRange: ""
+            });
+          }
+          else {
+            this.setState((prevState) => {
+              const selectionRange = this.props.tokenRange ? {
+                ...prevState.selectionRange, 
+                wordRange: this.props.tokenRange,
+                selectedElementTargetId: this.props.expressionid && this.props.expressionid.split("/resource/")[1],
+              } : {}
+              return({
+              selectionRange: selectionRange
+              })  
+            })
+            this.retrieveFocusInfo(this.props.expressionid)
+          }
+        }
+        if (this.props.tokenRange !== prevProps.tokenRange){
+          this.setState((prevState)=>{
+            const selectionRange = this.props.tokenRange ? {
+              ...prevState.selectionRange, 
+              wordRange: this.props.tokenRange,
+              selectedElementTargetId: this.props.expressionid && this.props.expressionid.split("/resource/")[1],
             } : {}
             return({
             selectionRange: selectionRange
-            })  
           })
-          this.retrieveFocusInfo(this.props.blockDivFocus,)
+          })
         }
       }
-      if (this.props.tokenRange !== prevProps.tokenRange){
-        this.setState((prevState)=>{
-          const selectionRange = this.props.tokenRange ? {
-            ...prevState.selectionRange, 
-            wordRange: this.props.tokenRange,
-            selectedElementTargetId: this.props.blockDivFocus && this.props.blockDivFocus.split("/resource/")[1],
-          } : {}
-          return({
-          selectionRange: selectionRange
-        })
-        })
-      }
-
-
-
-
-  }
+}
   componentWillUnmount(){
     this.mount = false
   }
@@ -483,6 +490,7 @@ class TextWrapper extends React.Component {
               handleSwitchWindow={this.handleSwitchWindow}
               handleDuplicateWindow={this.handleDuplicateWindow}
               resourceid={this.state.focus ? this.state.focus.resourceid : this.props.resourceid}
+              resourceType={this.props.resourceType ? this.props.resourceType : "text" }
               windowType={this.state.windows[key].position}
               windowId={this.state.windows[key].windowId}
               windowLoad={this.state.windows[key].windowLoad}
@@ -491,7 +499,6 @@ class TextWrapper extends React.Component {
               lineFocusId={this.state.lineFocusId}
               info={this.state.focus}
               itemFocus={this.state.itemFocus}
-              topLevel={this.state.itemFocus.topLevel}
               altWindowState={this.state.windows[key].windowId === "window1" ? this.state.windows["window2"].open : this.state.windows["window1"].open}
               mtFocus={this.state.mtFocus}
               handleToggleTextLinesView={this.handleToggleTextLinesView}
@@ -502,6 +509,7 @@ class TextWrapper extends React.Component {
               handleTextPreviewFocusChange={this.handleTextPreviewFocusChange}
               handleLineFocusChange={this.handleLineFocusChange}
               selectionRange={this.state.selectionRange}
+              codexResourceType={this.props.codexResourceType}
               />
             )
           }
@@ -517,20 +525,53 @@ class TextWrapper extends React.Component {
     this.state.windows.window2.open && textClassNames.push("longText");
     this.state.pdfView ? textClassNames.push("hidden"): textClassNames.push("showing");
     
-
-    return (
-      <div>
-        {this.state.itemFocus &&
+    const displayMain = () => {
+      if (this.props.resourceType === "codex"){
+        return (
+          <Codex 
+          resourceid={this.props.resourceid} 
+          codexResourceType={this.props.codexResourceType}
+          handleSetFocus={this.setFocus}
+          handleSurfaceFocusChange={this.handleSurfaceFocusChange}
+          />
+        )
+      }
+      else if (this.props.resourceType === "person"){
+        return (<AuthorCollection resourceid={this.props.resourceid}/>)
+      }
+      else if (this.props.resourceType === "workGroup"){
+        return ( <Collection resourceid={this.props.resourceid} 
+           type="http://scta.info/resource/workGroup"
+          />)
+      }
+      else if (this.props.resourceType === "expressionType"){
+        return (
+        <ExpressionType expressionTypeId={this.props.resourceid}/>
+        )
+      }
+      else if (this.props.resourceType === "collection"){
+        return (<div>
+          <h1>{this.state.resourceTitle}</h1>
+            <p style={{"textAlign": "center"}}>By <Link to={"/text?resourceid=" + this.state.focus.author}>{this.state.focus.authorTitle}</Link></p>
+            <TextOutlineWrapper
+              //focusResourceid={this.props.expressionid}
+              //resourceid={this.props.expressionid}
+              focusResourceid={this.props.resourceid}
+              resourceid={this.props.resourceid}
+              title={this.state.focus.title}
+              hidden={false}
+              //mtFocus={this.state.mtFocus}
+              mtFocus={""}
+              collectionLink={true}
+              showParentLink={true}
+              />
+          </div>)  
+      }
+      else{
+        return (
+          this.state.itemFocus &&  
+          <>
           <VersionChain transcriptionid={this.state.itemFocus.transcriptionid} handleFocusChange={this.setFocus2}/>
-        }
-        { this.state.pdfView && <Print url={this.state.itemFocus.doc}/>}
-        {
-          // Text Container and Text are always loaded to avoid unnecessary re-mounting
-          // textHide variable is used to hide or show textContainer depending on whether this.statePdfView is true or false
-        }
-        <Container className={textClassNames.join(" ")}>
-
-        {this.state.itemFocus &&
           <Text
             doc={this.state.itemFocus.doc}
             topLevel={this.state.itemFocus.topLevel}
@@ -541,15 +582,27 @@ class TextWrapper extends React.Component {
             // NOTE: using props instead of state; seems better, but needs full documentation
             // NOTE: itemid is shortid of item: TODO: needs documentation; or better, refactoring!
             // TODO: when scrollTo id type is consistent, remove id checker in didMount and didUpdate of Text component
-            scrollTo={this.props.blockDivFocus ? this.props.blockDivFocus : this.props.itemid}
+            scrollTo={this.props.expressionid && this.props.expressionid.split("/resource/")[1]}
             handleTextPreviewFocusChange={this.handleTextPreviewFocusChange}
             handleUpdateSelectionRange={this.handleUpdateSelectionRange}
             selectionRange={this.state.selectionRange}
             />
-          }
+          </>
+        )
+
+      }
+    }
+
+    return (
+      <div>
+        
+        { this.state.pdfView && <Print url={this.state.itemFocus.doc}/>}
+        
+        <Container className={textClassNames.join(" ")}>
+          {displayMain()}
         </Container>
 
-        <TextNavBar
+        {this.state.itemFocus && <TextNavBar
           next={this.state.itemFocus && this.state.itemFocus.next}
           previous={this.state.itemFocus && this.state.itemFocus.previous}
           topLevel={this.state.itemFocus && this.state.itemFocus.topLevel}
@@ -557,20 +610,32 @@ class TextWrapper extends React.Component {
           pdfView={this.state.pdfView}
           handleTogglePdfView={this.handleTogglePdfView}
           mtFocus={this.state.mtFocus}
-        />
+        />}
         <div>
-        {
-        // <TextNavBar
-        // next={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].next}
-        // previous={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].previous}
-        // topLevel={this.state.items[this.state.itemFocus] && this.state.items[this.state.itemFocus].topLevel}
-        // handleClose={this.handleClose}
-        // />
-        }
+        
         {!this.state.pdfView && displayWindows()}
         </div>
       </div>
     );
   }
+}
+
+TextWrapper.propTypes = {
+  /**
+  * Text Wrapper Component
+  * 
+  * 
+  **/
+  resourceid: PropTypes.string, // id of focused resource (this can be a resource at any structure level and FRBR level)
+  expressionid: PropTypes.string, // corresponding expression id of the focused resource'
+  transcriptionid: PropTypes.string, // corresponding transcription id of the focused resource (Note: only really seems necessary at collection level)
+  
+  //itemid: PropTypes.string, // corresponding item expression parent (or self) corresponding to focused resource; (currently requires shortId, but (TODO) this would be good to change; seems like it would be better to call this ItemExpressionId to match ItemTranscriptionId)
+  itemTranscriptionId: PropTypes.string, //corresponding item transcription parent (or self corresponding to focused resource) 
+  tokenRange: PropTypes.object, // an object containing word token range (tokenRange.start.int tokenRange.end.int)
+  handleUpdateUrlResource: PropTypes.func, // inherited function to send up resource focus change
+  
+  resourceType: PropTypes.string // currently only being used to switch between collection and non-collection levels.
+
 }
 export default TextWrapper;

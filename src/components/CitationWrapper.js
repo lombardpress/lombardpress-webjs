@@ -11,7 +11,10 @@ function CitationWrapper(props) {
       <Citation tresourceid={props.tresourceid} selectionRange={props.selectionRange}/>
       <CitationExplanation/>
       <hr/>
-      <ManifestationList manifestations={props.manifestations} handleFocusChange={props.handleFocusChange}/>
+      <ManifestationList 
+      tresourceid={props.tresourceid}
+      manifestations={props.manifestations} 
+      selectionRange={props.selectionRange}/>
     </Container>
   );
 }

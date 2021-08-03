@@ -12,7 +12,7 @@ function Footer() {
   const {t} = useTranslation();
   return (
 
-    <Navbar bg="light" variant="light" expand="lg" fixed="bottom" style={{"zIndex": "0"}}>
+    <Navbar bg="light" variant="light" expand="lg" fixed="bottom" style={{"zIndex": "1"}}>
     <Navbar.Toggle aria-controls="basic-navbar-nav" />
     <Navbar.Collapse id="basic-navbar-nav">
 

@@ -182,13 +182,14 @@ componentDidMount(){
       }
       // handle paragraph display
       else if (surface.annotations && this.props.annotationsDisplay === "paragraph"){
-        const h = surface.annotations[surface.firstLine - 1]
-        const fl = surface.annotations[surface.firstLine - 1]
+        // sometimes surface annotations is an array (tested with surface.annotations.length) sometimes (when there is only one result) it is an object
+        const h = surface.annotations.length ? surface.annotations[surface.firstLine - 1] : surface.annotations;
+        const fl = surface.annotations.length ? surface.annotations[surface.firstLine - 1] : surface.annotations;
         const flcanvas = fl ? fl.on.split("#xywh=")[0] : ""
         const flcanvasShort = flcanvas.split("/")[flcanvas.split("/").length - 1];
         const flcoords = fl ? fl.on.split("#xywh=")[1] : ""
         const y = flcoords.split(",")[1]
-        const ll = surface.annotations[surface.lastLine - 1]
+        const ll = surface.annotations.length ? surface.annotations[surface.lastLine - 1] : surface.annotations
         //const llcanvas = ll ? ll.on.split("#xywh=")[0] : ""
         //const llcanvasShort = llcanvas.split("/")[llcanvas.split("/").length - 1];
         const llcoords = ll ? ll.on.split("#xywh=")[1] : ""
@@ -206,11 +207,20 @@ componentDidMount(){
         // get line coordinates for focused line
         let lineFocusCoords = ""
         if (this.props.lineFocusId){
-          surface.annotations.forEach((h, i) => {
+          if (!surface.annotations.length){
+            const h = surface.annotations;
+            const i = 0;
             if (parseInt(this.props.lineFocusId.split("/")[this.props.lineFocusId.split("/").length - 1]) === (i + 1) ){
               lineFocusCoords = h.on.split("#xywh=")[1];
-            }
-          })
+              }
+          }
+          else{
+            surface.annotations.forEach((h, i) => {
+            if (parseInt(this.props.lineFocusId.split("/")[this.props.lineFocusId.split("/").length - 1]) === (i + 1) ){
+              lineFocusCoords = h.on.split("#xywh=")[1];
+              }
+            })
+          }
         }
         if (imageUrl){
 

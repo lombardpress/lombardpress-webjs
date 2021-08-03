@@ -5,9 +5,11 @@ import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
 import TextCompare from './TextCompare'
+import NgramDisplay from './NgramDisplay'
 
 import { runQuery } from './utils'
 import { getRelatedExpressions } from './Queries'
+import {textReduce} from './utils'
 
 class TextCompareWrapper extends React.Component {
   constructor(props) {
@@ -63,7 +65,12 @@ class TextCompareWrapper extends React.Component {
     Axios.get("https://exist.scta.info/exist/apps/scta-app/csv-pct.xq?resourceid=" + ctranscription)
       .then((text) => {
         if (this.mounted) {
-          _this.setState({ baseText: text.data })
+          let reducedText = text.data;
+            if (this.props.selectionRange.wordRange){
+              const wordRange = _this.props.selectionRange.wordRange.start + "-" + _this.props.selectionRange.wordRange.end
+              reducedText = textReduce(text.data, wordRange)
+            }
+          _this.setState({ baseText: reducedText })
         }
       })
   }
@@ -75,19 +82,22 @@ class TextCompareWrapper extends React.Component {
    */
   getRelatedExpressions(resourceid, page, pagesize) {
     const offset = (page - 1) * pagesize
-    const relatedExpressions = runQuery(getRelatedExpressions(resourceid, offset, pagesize))
+    const rangeStart = (this.props.selectionRange && this.props.selectionRange.wordRange) ? this.props.selectionRange.wordRange.start : "" ;
+    const rangeEnd = (this.props.selectionRange && this.props.selectionRange.wordRange) ? this.props.selectionRange.wordRange.end : "";
+    const relatedExpressions = runQuery(getRelatedExpressions(resourceid, offset, pagesize, rangeStart, rangeEnd))
     relatedExpressions.then((d) => {
       const bindings2 = d.data.results.bindings
       const expressions = []
-      // add first object which should be compare item for first/target resource
-      expressions.push({
-        id: this.props.info.resourceid,
-        authorTitle: this.props.info.authorTitle,
-        longTitle: this.props.info.longTitle,
-        show: false
-      });
-      //arrange sparql results into an object with resourceids as keys
+      // if target resource is NOT structureCollect, 
+      // then add first object which should be compare item for first/target resource
       
+        expressions.push({
+          id: this.props.info.resourceid,
+          authorTitle: this.props.info.authorTitle,
+          longTitle: this.props.info.longTitle,
+          show: false
+        });
+      //arrange sparql results into an object with resourceids as keys
       bindings2.forEach((r) => {
         expressions.push({
           id: r.isRelatedTo.value,
@@ -96,10 +106,12 @@ class TextCompareWrapper extends React.Component {
           author: r.author ? r.author.value : "",
           authorTitle: r.authorTitle ? r.authorTitle.value : "",
           longTitle: r.longTitle ? r.longTitle.value : "",
-          show: false
+          show: false,
+          isRelatedToRange: r.isRelatedToRangeStart && r.isRelatedToRangeEnd ? r.isRelatedToRangeStart.value + '-' + r.isRelatedToRangeEnd.value : ""
         })
       })
       // set state with new related expressions results and updates to paging information
+      if (this.mounted) {
       this.setState({
         expressions: expressions,
         intendedPage: page,
@@ -109,21 +121,26 @@ class TextCompareWrapper extends React.Component {
         rangeStart: ((page - 1) * pagesize) + 1,
         rangeEnd: pagesize * page
       })
+      }
     })
   }
   componentDidMount() {
     this.mounted = true
     if (this.props.info) {
       this.getRelatedExpressions(this.props.info.resourceid, this.state.page, this.state.pagesize)
-      this.getText(this.props.info.ctranscription)
+      if (this.props.info.structureType !== "http://scta.info/resource/structureCollection"){
+        this.getText(this.props.info.ctranscription)
+      }
     }
   }
   componentDidUpdate(prevProps, prevState) {
     // if resource id changes or results paging, then perform new query
-    if (prevProps.info.resourceid !== this.props.info.resourceid || prevState.page !== this.state.page) {
+    if (prevProps.info.resourceid !== this.props.info.resourceid || prevState.page !== this.state.page || prevProps.selectionRange !== this.props.selectionRange) {
       const startPage = prevProps.info.resourceid !== this.props.info.resourceid ? 1 : this.state.page
       this.getRelatedExpressions(this.props.info.resourceid, startPage, this.state.pagesize)
-      this.getText(this.props.info.ctranscription)
+      if (this.props.info.structureType !== "http://scta.info/resource/structureCollection"){
+        this.getText(this.props.info.ctranscription)
+      }
     }
     // if a custom object has been added; add custom object to state.expressions
     if (prevState.customExpressionObject !== this.state.customExpressionObject) {
@@ -134,7 +151,7 @@ class TextCompareWrapper extends React.Component {
       }
       this.setState((prevState) => {
         return {
-          expressions: { ...prevState.expressions, newExpression }
+          expressions: [ ...prevState.expressions, newExpression ]
         }
       })
     }
@@ -162,6 +179,8 @@ class TextCompareWrapper extends React.Component {
               baseText={this.state.baseText}
               show={i.show}
               surfaceWidth={this.props.surfaceWidth}
+              isRelatedToRange={i.isRelatedToRange}
+              targetRange={(this.props.selectionRange && this.props.selectionRange.wordRange) ? this.props.selectionRange.wordRange.start + "-" + this.props.selectionRange.wordRange.end : ""}
             />}
           </div>
         )
@@ -221,6 +240,17 @@ class TextCompareWrapper extends React.Component {
           <p><a target="_blank" rel="noopener noreferrer" href={"https://scta.github.io/networks-explorer/?resourceid=" + this.props.info.resourceid}>View Reference Connections</a></p>
           <p><a target="_blank" rel="noopener noreferrer" href={"https://scta.github.io/networks-explorer/topicconnections.html?resourceid=" + this.props.info.resourceid}>View Topic Connections</a></p>
         </div>
+        <div>
+        <NgramDisplay info={this.props.info}
+          handleChangeBase={this.handleChangeBase}
+          baseText={this.state.baseText}
+          surfaceWidth={this.props.surfaceWidth}
+          resourceid={this.props.info.resourceid}>
+        </NgramDisplay>
+        </div>
+
+        
+        
       </Container>
 
     );

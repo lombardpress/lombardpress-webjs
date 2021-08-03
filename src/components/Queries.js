@@ -3,9 +3,59 @@
 
 //NOTE: this query does not work as expected when using Fuseking version 3 it only works as expected using version 2.0
 // with version 3, it seems to get all quotes from the entire corpus, suggested something may not be working with the "bind" method
- export function getRelatedExpressions(itemExpressionUri, offset, pagesize){
+ export function getRelatedExpressions(itemExpressionUri, offset, pagesize, rangeStart, rangeEnd){
+
+   let rangeFilter;
+   if (rangeStart && rangeEnd){
+    rangeFilter = ["FILTER (?isRelatedToRangeEnd <=" + rangeEnd + ")",
+                  "FILTER (?isRelatedToRangeStart >=" + rangeStart + ")"].join(" ")
+   }
+   let activeSource; 
+   if (!rangeStart && !rangeEnd){
+    activeSource = [ 
+      "{",
+        "?element <http://scta.info/property/source> ?isRelatedTo .",
+        "FILTER (!isBlank(?isRelatedTo)) .",
+      "}",
+      "UNION",
+      "{",
+      "?element <http://scta.info/property/source> ?bn .",
+      "?bn <http://scta.info/property/source> ?isRelatedTo .",
+      "?bn <http://scta.info/property/canonicalRangeStart> ?isRelatedToRangeStart .",
+      "?bn <http://scta.info/property/canonicalRangeEnd> ?isRelatedToRangeEnd .",
+      "}"].join(" ")
+    }
+    else{
+      activeSource = ["?element <http://scta.info/property/source> ?bn .",
+      "?bn <http://scta.info/property/source> ?isRelatedTo .",
+      "?bn <http://scta.info/property/canonicalRangeStart> ?isRelatedToRangeStart .",
+      "?bn <http://scta.info/property/canonicalRangeEnd> ?isRelatedToRangeEnd .",
+      rangeFilter].join(" ")
+    }
+   
+    let inverseSource;
+   if (!rangeStart && !rangeEnd){
+    inverseSource = ["{",
+            "?isRelatedTo <http://scta.info/property/source> ?element .",
+          "}",
+            "UNION",
+          "{",
+            "?isRelatedTo <http://scta.info/property/source> ?bn .",
+            "?bn <http://scta.info/property/source> ?element .",
+            "?bn <http://scta.info/property/canonicalRangeStart> ?isRelatedToRangeStart .",
+            "?bn <http://scta.info/property/canonicalRangeEnd> ?isRelatedToRangeEnd .",
+          "}"].join(" ")
+   }
+   else{
+    inverseSource = ["?isRelatedTo <http://scta.info/property/source> ?bn .",
+    "?bn <http://scta.info/property/source> ?element .",
+    "?bn <http://scta.info/property/canonicalRangeStart> ?isRelatedToRangeStart .",
+    "?bn <http://scta.info/property/canonicalRangeEnd> ?isRelatedToRangeEnd .",
+    rangeFilter].join(" ")
+   }
+   
    const query = [
-    "SELECT DISTINCT ?isRelatedTo ?label ?element ?longTitle ?author ?authorTitle ",
+    "SELECT DISTINCT ?isRelatedTo ?label ?element ?longTitle ?author ?authorTitle ?isRelatedToRangeStart ?isRelatedToRangeEnd ",
     "WHERE",
     "{ ",
     "BIND (<" + itemExpressionUri + "> as ?resource)",
@@ -30,14 +80,14 @@
           "?element <http://scta.info/property/isMemberOf> ?resource .",
         "}",
         "{",
-          "?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
-          "?element <http://scta.info/property/source> ?isRelatedTo .",
-          "BIND ('quotes' as ?label) .",
-        "}",
+            activeSource,
+            "?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
+            "BIND ('quotes' as ?label) .",
+          "}",
         "UNION",
         "{",
+          activeSource,
           "?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementRef> .",
-          "?element <http://scta.info/property/source> ?isRelatedTo .",
           "BIND ('refs' as ?label) .",
         "}",
       "}",
@@ -51,13 +101,14 @@
           "?element <http://scta.info/property/isMemberOf> ?resource .",
         "}",
         "{",
-          "?isRelatedTo <http://scta.info/property/source> ?element.",
+          inverseSource,
           "?isRelatedTo <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
           "BIND ('isQuotedBy' as ?label) .",
         "}",
         "UNION",
         "{",
-          "?isRelatedTo <http://scta.info/property/source> ?element.",
+          inverseSource,
+          //"?isRelatedTo <http://scta.info/property/source> ?element.",
           "?isRelatedTo <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementRef> .",
           "BIND ('isReferencedBy' as ?label) .",
         "}",
@@ -149,7 +200,14 @@ export function basicInfoQuery(itemExpressionUri){
     "?ctranscription <http://scta.info/property/hasXML> ?cxml . ",
     "}",
     "<" + itemExpressionUri + "> <http://scta.info/property/shortId> ?expressionShortId .",
-    "<" + itemExpressionUri + "> <http://scta.info/property/isPartOfTopLevelExpression> ?topLevelExpression .",
+    "{",
+      "<" + itemExpressionUri + "> <http://scta.info/property/isPartOfTopLevelExpression> ?topLevelExpression .",
+    "}",
+    "UNION",
+    "{",
+      "<" + itemExpressionUri + "> <http://scta.info/property/level> '1' .",
+      "BIND(<" + itemExpressionUri + "> AS ?topLevelExpression) .", 
+    "}",
     "OPTIONAL {",
     "<" + itemExpressionUri + "> <http://scta.info/property/longTitle> ?longTitle .",
     "}",
@@ -264,22 +322,6 @@ export function basicInfoQuery(itemExpressionUri){
         "}",
         "ORDER BY ?itemAuthorTitle"].join('');
         return query
-      }
-
-  export function getItemTranscription(resourceurl){
-    const query = [
-      "SELECT DISTINCT ?ctranscription ",
-      "WHERE { ",
-        "{",
-          "<" + resourceurl + "> <http://scta.info/property/hasCanonicalManifestation> ?cmanifestation . ",
-          "?cmanifestation <http://scta.info/property/hasCanonicalTranscription> ?ctranscription . ",
-        "}",
-        "UNION",
-        "{",
-          "<" + resourceurl + "> <http://scta.info/property/hasCanonicalTranscription> ?ctranscription . ",
-        "}",
-      "}"].join('');
-      return query
   }
   export function getArticleTranscriptionDoc(resourceurl){
     const query = [
@@ -322,7 +364,6 @@ export function basicInfoQuery(itemExpressionUri){
         "}",
         "OPTIONAL",
         "{",
-        "{",
           "{",
             "<" + resourceurl + "> <http://scta.info/property/isManifestationOf> ?blockDivExpression . ",
           "}",
@@ -332,14 +373,19 @@ export function basicInfoQuery(itemExpressionUri){
             "?blockDivManifestation <http://scta.info/property/isManifestationOf> ?blockDivExpression . ",
           "}",
         "}",
-        "}",
       "}"].join('');
       return query
   }
-  //TODO rename to getType
+  /**
+   * @description constructs query needed for initial textSwitch component; captures resource type information and related 
+   * details needed to allow the textSwitch component decide what kind of display is necessary
+   * 
+   * @param {string} resourceurl - resource url should be full scta url id
+   * @returns {string} - returns query as string
+   */
   export function getStructureType(resourceurl){
     const query = [
-      "SELECT DISTINCT ?type ?structureType ?level ?topLevel ?itemParent ?resourceTitle ?author ?authorTitle ",
+      "SELECT DISTINCT ?type ?structureType ?level ?topLevel ?itemParent ?resourceTitle ?author ?authorTitle ?ctranscription ",
       "WHERE { ",
       "<" + resourceurl + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type . ",
       "OPTIONAL {",
@@ -364,17 +410,32 @@ export function basicInfoQuery(itemExpressionUri){
       "OPTIONAL {",
       "<" + resourceurl + "> <http://scta.info/property/isPartOfTopLevelTransription> ?topLevel . ",
       "}",
-        "OPTIONAL {",
-          "{",
+      "OPTIONAL {",
+        "{",
           "<" + resourceurl + "> <http://scta.info/property/isPartOfStructureItem> ?itemParent . ",
-          "}",
+        "}",
         "UNION",
-          "{",
+        "{",
           "<" + resourceurl + "> <http://scta.info/property/isPartOfStructureBlock> ?blockParent . ",
           "?blockParent  <http://scta.info/property/isPartOfStructureItem> ?itemParent .",
-          "}",
         "}",
-      "}"].join('');
+      "}",
+      "OPTIONAL {",
+        "{",
+          "<" + resourceurl + "> <http://scta.info/property/hasCanonicalManifestation> ?cmanifestation . ",
+          "?cmanifestation <http://scta.info/property/hasCanonicalTranscription> ?ctranscription . ",
+        "}",
+        "UNION",
+        "{",
+          "<" + resourceurl + "> <http://scta.info/property/hasCanonicalTranscription> ?ctranscription . ",
+        "}",
+        "UNION",
+        "{",
+          "<" + resourceurl + "> a <http://scta.info/resource/transcription> . ",
+          "BIND(<" + resourceurl + "> AS ?ctranscription) .",
+        "}",
+      "}",
+    "}"].join('');
       return query
     }
   //surface id query, gets canvas and manifestation
@@ -535,7 +596,20 @@ export function getAuthorInformation(authorid){
           "}",
           "OPTIONAL",
           "{",
-          "?part <http://scta.info/property/sectionOrderNumber> ?order .",
+            "{",
+              "?part <http://scta.info/property/sectionOrderNumber> ?order .",
+            "}",
+            "UNION",
+            "{",
+              "?part <http://scta.info/property/isTranscriptionOf> ?mpart . ",
+              "?mpart <http://scta.info/property/isManifestationOf> ?epart . ",
+              "?epart <http://scta.info/property/sectionOrderNumber> ?order .",
+            "}",
+            "UNION",
+            "{",
+              "?part <http://scta.info/property/isManifestationOf> ?epart . ",
+              "?epart <http://scta.info/property/sectionOrderNumber> ?order .",
+            "}",
           "}",
           "OPTIONAL",
           "{",
@@ -560,15 +634,29 @@ export function getAuthorInformation(authorid){
        "SELECT DISTINCT ?manifestation ?manifestationTitle ?manifestationSurface ?surfaceTitle ?codexTitle ?datasource ?eLongTitle ?author ?authorTitle ?expression ?editor ?editorTitle",
        "{",
        "<" + transcriptionid + "> <http://scta.info/property/isTranscriptionOf> ?manifestation .",
-       "<" + transcriptionid + "> <http://scta.info/property/hasDocument> ?datasource . ",
+       "<" + transcriptionid + "> <http://scta.info/property/hasXML> ?datasource . ",
        "?manifestation <http://purl.org/dc/elements/1.1/title> ?manifestationTitle .",
-       "?manifestation <http://scta.info/property/isPartOfTopLevelManifestation> ?topLevelManifestation .",
+       "{",
+        "?manifestation <http://scta.info/property/isPartOfTopLevelManifestation> ?topLevelManifestation .",
+       "}",
+       "UNION",
+       "{",
+        "?manifestation <http://scta.info/property/level> '1' .",
+        "BIND (?manifestation AS ?topLevelManifestation) .",
+       "}",
        "OPTIONAL {",
          "?topLevelManifestation <http://scta.info/property/editor> ?editor .",
          "?editor <http://purl.org/dc/elements/1.1/title> ?editorTitle .",
        "}",
        "?manifestation <http://scta.info/property/isManifestationOf> ?expression .",
+       "{",
        "?expression <http://scta.info/property/isPartOfTopLevelExpression> ?topLevelExpression .",
+       "}",
+       "UNION",
+       "{",
+        "?expression <http://scta.info/property/level> '1' .",
+        "BIND (?expression AS ?topLevelExpression) .",
+       "}",
        "OPTIONAL {",
         "?expression <http://scta.info/property/longTitle> ?eLongTitle",
       "}",
@@ -576,18 +664,37 @@ export function getAuthorInformation(authorid){
          "?topLevelExpression <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
          "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
        "}",
+       // # TODO isOnSurface should become more uniform across manifestations in order to simplify this
        "OPTIONAL",
          "{",
-         "?manifestation <http://scta.info/property/isOnSurface> ?manifestationSurface .",
-         "?manifestationSurface <http://purl.org/dc/elements/1.1/title> ?surfaceTitle .",
-         "?surface <http://scta.info/property/order> ?surface_order .",
-         "?codex <http://scta.info/property/hasSurface> ?manifestationSurface .",
-         "?codex <http://purl.org/dc/elements/1.1/title> ?codexTitle .",
+         // #option 1 get surfaces for elements and blocks
+          "{",
+            "?manifestation <http://scta.info/property/isOnZone> ?bn . ",
+            "?bn <http://scta.info/property/isOnZone> ?zone .",
+            "?zone <http://scta.info/property/isPartOfSurface> ?manifestationSurface .",
+          "}",
+          "UNION",
+          //#option 2 get surface for divisions and items
+          "{",
+            "?manifestation <http://scta.info/property/hasStructureBlock> ?block .",
+            "?block <http://scta.info/property/isOnSurface> ?manifestationSurface .",
+          "}",
+          "UNION",
+          //#option 3 get surfaces for collections"
+          "{",
+            "?manifestation <http://scta.info/property/hasStructureItem> ?item .",
+            "?item <http://scta.info/property/isOnSurface> ?manifestationSurface .",
+          "}",
+          "?manifestationSurface <http://purl.org/dc/elements/1.1/title> ?surfaceTitle .",
+          "?manifestationSurface <http://scta.info/property/order> ?surface_order .",
+          "?codex <http://scta.info/property/hasSurface> ?manifestationSurface .",
+          "?codex <http://purl.org/dc/elements/1.1/title> ?codexTitle .",
          "}",
        "}",
        "ORDER BY ?surface_order"].join('');
        return query
      }
+    
 
     export function getCodices(){
      const query = [

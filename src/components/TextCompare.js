@@ -95,7 +95,12 @@ class TextCompare extends React.Component {
   }
   render(){
     const displayComparisons = () => {
-      if (this.state.info.manifestations){
+      // NOTE: this conditional here to stop attempt to display text manifestation texts at the collection level
+      // collection level is usually just too big to be useful. 
+      if (this.props.isMainText && this.props.info.structureType === "http://scta.info/resource/structureCollection"){
+        return <p>Text too big to display; move down the text hierarchy to focus on a smaller section</p>
+      }
+      else if (this.state.info.manifestations){
         const texts = this.state.info.manifestations.map((m) => {
           return (
             <TextCompareItem
@@ -108,6 +113,10 @@ class TextCompare extends React.Component {
             show={this.state.show}
             showCompare={this.props.isMainText ? true : false}
             surfaceWidth={this.props.surfaceWidth}
+            isRelatedToRange={this.props.isRelatedToRange}
+            targetRange={this.props.targetRange}
+            isMainText={this.props.isMainText}
+            relationLabel={this.props.relationLabel}
             />
           )
         })
@@ -128,7 +137,7 @@ class TextCompare extends React.Component {
       </div>
       <div>
         {this.state.info.resourceid ?
-        <Link to={"/text?resourceid=" + this.state.info.resourceid}>
+        <Link to={"/text?resourceid=" + this.state.info.resourceid + ((this.props.relationLabel !== "isQuotedBy" && this.props.relationLabel !== "isReferencedBy" && this.props.isRelatedToRange) ? "@" + this.props.isRelatedToRange : "")}>
           {this.props.authorTitle || this.props.longTitle ? <span> {this.props.authorTitle} {this.props.longTitle}</span> : this.state.info.resourceid}
         </Link> :
         this.props.authorTitle || this.props.longTitle ? <span> {this.props.authorTitle} {this.props.longTitle}</span> : this.state.info.resourceid
