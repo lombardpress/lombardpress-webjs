@@ -53,7 +53,6 @@ class TextCompareItem extends React.Component {
     punctuationless = punctuationless.replace(/\s{2,}/g," ");
     //lowercase
     const finalFinalString = punctuationless.toLowerCase()
-    console.log('final string', finalFinalString)
     return finalFinalString
 
   }
