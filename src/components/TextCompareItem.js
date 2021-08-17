@@ -49,6 +49,7 @@ class TextCompareItem extends React.Component {
     punctuationless = punctuationless.replace(/ae/g, "e");
     punctuationless = punctuationless.replace(/oe/g, "e");
     punctuationless = punctuationless.replace(/oe/g, "e");
+    punctuationless = punctuationless.replace(/y/g, "i");
     //remove space
     punctuationless = punctuationless.replace(/\s{2,}/g," ");
     //lowercase
@@ -89,8 +90,8 @@ class TextCompareItem extends React.Component {
             const dmp = new Diff.diff_match_patch();
 
             //NOTE: uncomment below if you want to switch back to character level diff
-              //const diff = dmp.diff_main(this.textClean(base), this.textClean(reducedText)); //character level diff
-              const diff = diff_wordMode(this.textClean(base), this.textClean(reducedText), dmp) // word level diff
+              const diff = dmp.diff_main(this.textClean(base), this.textClean(reducedText)); //character level diff
+              //const diff = diff_wordMode(this.textClean(base), this.textClean(reducedText), dmp) // word level diff
             // Result: [(-1, "Hell"), (1, "G"), (0, "o"), (1, "odbye"), (0, " World.")]
             dmp.diff_cleanupSemantic(diff);
             const levenshteinDistance = dmp.diff_levenshtein(diff)
