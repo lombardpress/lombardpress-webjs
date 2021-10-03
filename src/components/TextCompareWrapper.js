@@ -18,10 +18,13 @@ class TextCompareWrapper extends React.Component {
     this.handleChangeBase = this.handleChangeBase.bind(this)
     this.handleCustomUpdateRelatedExpressions = this.handleCustomUpdateRelatedExpressions.bind(this)
     this.handleSetCustomExpressionId = this.handleSetCustomExpressionId.bind(this)
+    this.handleToggleAllChildren = this.handleToggleAllChildren.bind(this)
+    this.handleToggleAllChildrenImages = this.handleToggleAllChildrenImages.bind(this)
     this.getText = this.getText.bind(this)
     this.mounted = ""
     this.state = {
       expressions: [],
+      expressionsCumulative: [],
       page: 1,
       intendedPage: 1,
       pagesize: 10,
@@ -32,9 +35,25 @@ class TextCompareWrapper extends React.Component {
       rangeEnd: 20,
       baseText: "",
       customExpressionId: "",
-      customExpressionObject: {}
+      customExpressionObject: {},
+      showAllChildren: false,
+      showAllChildrenImages: false
     }
 
+  }
+  handleToggleAllChildren(){
+    this.setState((prevState) => {
+      return{
+        showAllChildren: !prevState.showAllChildren
+      }
+    })
+  }
+  handleToggleAllChildrenImages(){
+    this.setState((prevState) => {
+      return{
+        showAllChildrenImages: !prevState.showAllChildrenImages
+      }
+    })
   }
   handleSetCustomExpressionId(customExpressionId) {
     this.setState({ customExpressionId: customExpressionId })
@@ -107,19 +126,26 @@ class TextCompareWrapper extends React.Component {
           authorTitle: r.authorTitle ? r.authorTitle.value : "",
           longTitle: r.longTitle ? r.longTitle.value : "",
           show: false,
-          isRelatedToRange: r.isRelatedToRangeStart && r.isRelatedToRangeEnd ? r.isRelatedToRangeStart.value + '-' + r.isRelatedToRangeEnd.value : ""
+          isRelatedToRange: r.isRelatedToRangeStart && r.isRelatedToRangeEnd ? r.isRelatedToRangeStart.value + '-' + r.isRelatedToRangeEnd.value : "",
+          parentBlock: r.parentBlock ? r.parentBlock.value : "",
+
         })
       })
       // set state with new related expressions results and updates to paging information
       if (this.mounted) {
-      this.setState({
-        expressions: expressions,
-        intendedPage: page,
-        nextPage: page + 1,
-        previousPage: page > 1 ? page - 1 : undefined,
-        offset: (page - 1) * pagesize,
-        rangeStart: ((page - 1) * pagesize) + 1,
-        rangeEnd: pagesize * page
+      this.setState((prevState) => {
+        return {
+          expressions: expressions,
+          // expressionCumulative is dangerous, because the array will continue to fill up everytime paging is changed 
+          // even the page contents have already been added
+          expressionsCumulative: prevState.expressionsCumulative.concat(expressions),
+          intendedPage: page,
+          nextPage: page + 1,
+          previousPage: page > 1 ? page - 1 : undefined,
+          offset: (page - 1) * pagesize,
+          rangeStart: ((page - 1) * pagesize) + 1,
+          rangeEnd: pagesize * page
+        }
       })
       }
     })
@@ -177,7 +203,8 @@ class TextCompareWrapper extends React.Component {
               isMainText={isMainText}
               handleChangeBase={this.handleChangeBase}
               baseText={this.state.baseText}
-              show={i.show}
+              show={this.state.showAllChildren ? true : i.show}
+              showImages={this.state.showAllChildrenImages ? true : i.show}
               surfaceWidth={this.props.surfaceWidth}
               isRelatedToRange={i.isRelatedToRange}
               targetRange={(this.props.selectionRange && this.props.selectionRange.wordRange) ? this.props.selectionRange.wordRange.start + "-" + this.props.selectionRange.wordRange.end : ""}
@@ -221,6 +248,8 @@ class TextCompareWrapper extends React.Component {
         <h4>Text Comparisons</h4>
         {displayPagination()}
         <p className="small"><a href="https://lombardpress.org/adfontes/" target="_blank" rel="noopener noreferrer">Advanced Index and Filtering</a></p>
+        <p className="small lbp-span-link" onClick={this.handleToggleAllChildren}>Toggle All Children</p>
+        {this.state.showAllChildren && <p className="small lbp-span-link" onClick={this.handleToggleAllChildrenImages}>Toggle All Children Images</p>}
         <hr />
         {displayExpressions()}
         <hr />
@@ -237,6 +266,7 @@ class TextCompareWrapper extends React.Component {
         <div>
           <p>Other Comparison/Connection Visualizations</p>
           <p><a target="_blank" rel="noopener noreferrer" href={"http://lombardpress.org/collation-vizualizer/index.html?id=" + this.props.info.resourceid}>Collation Overlay</a></p>
+          <p><a target="_blank" rel="noopener noreferrer" href={"https://lombardpress.org/collation-vizualizer/collatexView.html?id=" + this.props.info.resourceid}>Collation Table Overlay</a></p>
           <p><a target="_blank" rel="noopener noreferrer" href={"https://scta.github.io/networks-explorer/?resourceid=" + this.props.info.resourceid}>View Reference Connections</a></p>
           <p><a target="_blank" rel="noopener noreferrer" href={"https://scta.github.io/networks-explorer/topicconnections.html?resourceid=" + this.props.info.resourceid}>View Topic Connections</a></p>
         </div>
@@ -245,7 +275,8 @@ class TextCompareWrapper extends React.Component {
           handleChangeBase={this.handleChangeBase}
           baseText={this.state.baseText}
           surfaceWidth={this.props.surfaceWidth}
-          resourceid={this.props.info.resourceid}>
+          resourceid={this.props.info.resourceid}
+          markedExpressions={this.state.expressionsCumulative}>
         </NgramDisplay>
         </div>
 

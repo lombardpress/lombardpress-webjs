@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react';
 
+import {Link} from 'react-router-dom';
+
 import TextCompare from './TextCompare'
 import Spinner from './Spinner'
 import {ngramRelatedQuery} from '../queries/ngramRelatedQuery'
@@ -39,8 +41,14 @@ function NgramDisplay(props) {
   
   const displayExpressions = () => {
     const displayExpressions = relatedExpressions.map((i, index) => {
+      console.log("marked expressions", props.markedExpressions)
+      console.log("i.id", i.id)
+      const marked = props.markedExpressions.find((e) => e.parentBlock === i.id)
+      console.log("marked", marked)
       return (
+      
       <div key={index + "-ngram-" + i.id}>
+        {marked && <span style={{fontSize: "12px", paddingLeft: "2px", marginLeft: "3px", borderLeft: "3px solid purple"}}>Already Marked via <Link to={"/text?resourceid=" + marked.id}>{marked.id}</Link></span>}
             {<TextCompare
               info={props.info}
               expressionid={i.id}

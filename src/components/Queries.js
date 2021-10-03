@@ -55,7 +55,7 @@
    }
    
    const query = [
-    "SELECT DISTINCT ?isRelatedTo ?label ?element ?longTitle ?author ?authorTitle ?isRelatedToRangeStart ?isRelatedToRangeEnd ",
+    "SELECT DISTINCT ?isRelatedTo ?label ?element ?longTitle ?author ?authorTitle ?isRelatedToRangeStart ?isRelatedToRangeEnd ?parentBlock ",
     "WHERE",
     "{ ",
     "BIND (<" + itemExpressionUri + "> as ?resource)",
@@ -120,6 +120,12 @@
       "{",
         "?mem <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
         "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle",
+      "}",
+      "OPTIONAL",
+      "{",
+        "?isRelatedTo <http://scta.info/property/isPartOfStructureBlock> ?parentBlock .",
+        //"?isRelatedTo <http://scta.info/property/isMemberOf> ?parentBlock .",
+        //"?parentBlock <http://scta.info/property/structureType> <http://scta.info/resource/stuctureBlock> .",
       "}",
     "}",
     "ORDER BY ?authorTitle",

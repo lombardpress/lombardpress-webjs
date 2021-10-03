@@ -24,7 +24,8 @@ class TextCompareItem extends React.Component {
       show: true,
       levenshteinDistance: undefined, 
       usedBase: undefined,
-      usedCompareTranscription: undefined
+      usedCompareTranscription: undefined,
+      showImage: false
     }
   }
   handleToggleShow(){
@@ -121,7 +122,7 @@ class TextCompareItem extends React.Component {
   componentDidMount(){
     this.mounted = true;
     // TODO: setting showCompare to "derivedState" is an ANTI-PATTERN. Better would be to let it be entirely controlled by parent.
-    this.setState({rawText: "", compareText: "", showCompare: this.props.showCompare})  
+    this.setState({rawText: "", compareText: "", showCompare: this.props.showCompare, showImage: this.props.showImages})  
     //conditional attempts to restrict async call to only those components who are intended to be visible at mount
     // NOTE: this conditional will important when scaling. (i.e. when there hundres of references and hundreds of transcriptons)
     if (this.props.show){
@@ -143,6 +144,11 @@ class TextCompareItem extends React.Component {
       )
       {
         this.createCompare(this.props.base, this.props.compareTranscription)
+      }
+      //NOTE: setting state from props here is an anti pattern
+      //view either needs to be controlled by props or state, but not both
+      if (this.props.showImages !== prevProps.showImages){
+        this.setState({showImage: this.props.showImages})
       }
 
   }
