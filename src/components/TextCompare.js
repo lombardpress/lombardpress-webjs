@@ -164,6 +164,7 @@ class TextCompare extends React.Component {
         this.props.authorTitle || this.props.longTitle ? <span> {this.props.authorTitle} {this.props.longTitle}</span> : this.state.info.resourceid
         }
         {this.state.info.resourceid && <span onClick={() => this.handleToggleShowAll()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>}
+        <a href={"https://mirador.scta.info?blockid=" + this.state.info.resourceid} target="_blank" rel="noopener noreferrer"><img alt="view in mirador" style={{width: "12px", height: "12px"}} src="https://projectmirador.org/img/mirador-logo.svg"></img></a>
       </div>
       <div className={this.state.show ? "unhidden" : "hidden"} style={{"paddingLeft": "10px"}}>
         {displayComparisons()}
