@@ -24,10 +24,16 @@ const ResourceTypeList = (props) => {
       <Form.Control as="input" type="text" placeholder="filter" onChange={(e) => setFilter(e.target.value)} value={filter}/>
       {resources === "fetching" ? <Spinner/> :
       resources.map((r) => {
-        if (r.resourceTitle.value.includes(filter)){
-          return <p key={r.resource.value}><Link to={"/text?resourceid=" + r.resource.value}>{r.resourceTitle.value}</Link></p>
+        //check against error resources with ids
+        if (r.resource.value !== "http://scta.info/resource/"){
+          if (r.resourceTitle.value.includes(filter)){
+            return <p key={r.resource.value}><Link to={"/text?resourceid=" + r.resource.value}>{r.resourceTitle.value}</Link></p>
+          }
+          else{
+            return null
+          }
         }
-        else{
+        else{ 
           return null
         }
       })
