@@ -198,7 +198,6 @@
   "LIMIT " + pagesize,
   "OFFSET " + offset
 ].join(' ');
-   console.log(query)
      return query
  }
 //get Related Expressions
@@ -585,7 +584,6 @@ export function getAuthorInformation(authorid){
       "?authorArticle <http://purl.org/dc/elements/1.1/title> ?authorArticleTitle",
       "}",
       "}"].join('');
-      console.log(query)
       return query
       }
 
