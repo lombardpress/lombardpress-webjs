@@ -6,7 +6,7 @@ import {questionTitleQuery} from '../queries/questionTitleQuery'
 import Spinner from './Spinner';
 import Container from 'react-bootstrap/Container';
 import Search3Parameters from './Search3Parameters';
-import {retrieveAuthorResults, retrieveExpressionResults, retrieveWorkGroupResults, displayTextResults, displayQuestionResults} from './searchUtils'
+import {retrieveAuthorResults, retrieveExpressionResults, retrieveWorkGroupResults, retrieveFigureResults, displayTextResults, displayFigureResults, displayQuestionResults} from './searchUtils'
 
 const Search3 = (props) => {
   const [searchParameters, setSearchParameters] = useState({})
@@ -16,6 +16,9 @@ const Search3 = (props) => {
   useEffect(() => {
     if (searchParameters.searchType === "questionTitles"){
       displayQuestionResults(filterQuestionResults(questionResults, searchParameters.resultsFilter), searchParameters)
+    }
+    if (searchParameters.searchType === "figure"){
+      displayQuestionResults(filterQuestionResults(results, searchParameters.resultsFilter), searchParameters.resultsFilter)
     }
     else if (searchParameters.searchType === "text"){
       displayTextResults(filterResults(results, searchParameters.resultsFilter))
@@ -43,12 +46,12 @@ const Search3 = (props) => {
             setResults(d.data.results)
           })
         }
-        else if (searchParameters.searchAuthor){
-          const textResults = retrieveAuthorResults(searchParameters.searchTerm, searchParameters.searchAuthor)
-          textResults.then((d) => {
-            setResults(d.data.results)
-          })
-        }
+        if (searchParameters.searchAuthor){
+            const textResults = retrieveAuthorResults(searchParameters.searchTerm, searchParameters.searchAuthor)
+            textResults.then((d) => {
+              setResults(d.data.results)
+            })
+          }
         else if (searchParameters.searchWorkGroup){
           const textResults = retrieveWorkGroupResults(searchParameters.searchTerm, searchParameters.searchWorkGroup)
           textResults.then((d) => {
@@ -61,16 +64,31 @@ const Search3 = (props) => {
             setResults(d.data.results)
           })
         }
-
-
       }
-      else{
+      else if (searchParameters.searchType === "questionTitles"){
         const questionResults = runQuery(questionTitleQuery(searchParameters))
         setQuestionResults("fetching")
         setResults([])
         questionResults.then((d) => {
           setQuestionResults(d.data.results.bindings)
         })
+      }
+      else if (searchParameters.searchType === "figure"){
+        if (searchParameters.searchEid){
+          const figureResults = retrieveFigureResults(searchParameters.searchTerm, searchParameters.searchEid)
+            figureResults.then((d) => {
+              console.log("data", d)
+              setResults(d.data.results)
+          })
+        }
+        else
+        {
+          const figureResults = retrieveFigureResults(searchParameters.searchTerm, "all")
+            figureResults.then((d) => {
+              console.log("data", d)
+              setResults(d.data.results)
+          })
+        }
       }
     }
   }
@@ -81,8 +99,10 @@ const Search3 = (props) => {
     else if (searchParameters.searchType === "questionTitles"){
       return displayQuestionResults(filterQuestionResults(questionResults, searchParameters.resultsFilter), searchParameters)
     }
+    else if (searchParameters.searchType === "figure"){
+      return displayFigureResults(results);
+    }
     else if (searchParameters.searchType === "text"){
-      
       return displayTextResults(filterResults(results, searchParameters.resultsFilter))
     }
   }

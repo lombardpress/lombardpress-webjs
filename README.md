@@ -42,3 +42,14 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
+# Developer Notes
+
+This app was initially generated with create react app. (CRA). CRA indicates node-sass as a dependency, but node-sass is depreciated and it seems like the library to use is dart-sass, which seems to be install with simply sass. 
+
+Following this suggestion https://stackoverflow.com/a/64012493/731085 there seems to be a way to create an alias, so that CRA can still refer to node-sass, while really using dart-sass.
+
+The alias can be created as follows: 
+
+`yarn add node-sass@yarn:sass` 
+
+If there is a way to change the configuration and just use sass directly, one likely just needs to delete the node_modules folder and the yarn.lock file and upgrade the CRA related scripts, which would presumably have updated there dependency to sass (dart-sass)

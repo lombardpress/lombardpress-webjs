@@ -42,9 +42,18 @@ class TextCompareItem extends React.Component {
     })
   }
   textClean(text){
-    const punctuationless = text.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"");
-    const finalString = punctuationless.replace(/\s{2,}/g," ");
-    const finalFinalString = finalString.toLowerCase()
+    // remove most punctuation
+    let punctuationless = text.replace(/[.,/#!$%^&*;:{}=\-_`~()/\u00B6/|/\u204B/]/g,"");
+    //convert v->u, ae->e, oe-e>
+    punctuationless = punctuationless.replace(/v/g, "u");
+    punctuationless = punctuationless.replace(/ae/g, "e");
+    punctuationless = punctuationless.replace(/oe/g, "e");
+    punctuationless = punctuationless.replace(/oe/g, "e");
+    punctuationless = punctuationless.replace(/y/g, "i");
+    //remove space
+    punctuationless = punctuationless.replace(/\s{2,}/g," ");
+    //lowercase
+    const finalFinalString = punctuationless.toLowerCase()
     return finalFinalString
 
   }
@@ -67,6 +76,9 @@ class TextCompareItem extends React.Component {
             //function needed for word level comparison
             //see https://github.com/google/diff-match-patch/wiki/Line-or-Word-Diffs
             // also required for of npm google-diff-patch and then added function wordsToChars_()
+            
+            // eslint disable to avoid error when not using this function
+            // eslint-disable-next-line
             const diff_wordMode = (text1, text2, dmp) => {
               //var dmp = new Diff.diff_match_patch();
               var a = dmp.diff_wordsToChars_(text1, text2);
@@ -81,8 +93,8 @@ class TextCompareItem extends React.Component {
             const dmp = new Diff.diff_match_patch();
 
             //NOTE: uncomment below if you want to switch back to character level diff
-            //const diff = dmp.diff_main(this.textClean(base), this.textClean(text.data)); //character level diff
-            const diff = diff_wordMode(this.textClean(base), this.textClean(reducedText), dmp) // word level diff
+              const diff = dmp.diff_main(this.textClean(base), this.textClean(reducedText)); //character level diff
+              //const diff = diff_wordMode(this.textClean(base), this.textClean(reducedText), dmp) // word level diff
             // Result: [(-1, "Hell"), (1, "G"), (0, "o"), (1, "odbye"), (0, " World.")]
             dmp.diff_cleanupSemantic(diff);
             const levenshteinDistance = dmp.diff_levenshtein(diff)

@@ -154,7 +154,9 @@ class Window2 extends React.Component {
             && 
             (this.state.windowLoad === "citation" || this.state.mountStatus.citation) 
             &&
-            <CitationWrapper tresourceid={this.props.info.resourceid + this.props.mtFocus} 
+            <CitationWrapper 
+            tresourceid={this.props.info.resourceid + this.props.mtFocus}
+            resourceid={this.props.info.resourceid}
             manifestations={this.props.info.manifestations} 
             handleFocusChange={this.props.handleFocusChange} 
             hidden={this.state.windowLoad !== "citation"}

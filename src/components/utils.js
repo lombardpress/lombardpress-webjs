@@ -241,7 +241,7 @@ export function cleanText(selectedText){
     // remove all punctuation with escape slashes; escape slashes don't seem needed as the line below with slashes seems to work.
     // this line with extra slashes produces lint errors
     // selectedText = selectedText.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()"]/g,"") //remove all punctuation
-  selectedText = selectedText.replace(/[.,/#!$%^&*;:{}=\-_`~()"]/g,"") //remove all punctuation
+  selectedText = selectedText.replace(/[.,/#!$%^&*;:{}=\-_`~()"/\u00B6/|/\u204B/]/g,"") //remove all punctuation including pilcrows
   
   selectedText = selectedText.replace(/\s+/gi, ' ' ) // condences 1 or more space to single space
   return selectedText

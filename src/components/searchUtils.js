@@ -24,6 +24,59 @@ export function retrieveWorkGroupResults(searchTerm, searchWorkGroup){
   return queryPromise
 
 }
+export function retrieveFigureResults(searchTerm, searchEid){
+  console.log("running retrieve")
+  const expressionShortId = searchEid === "all" ? searchEid : searchEid.split("/resource/")[1]
+  const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-figure.xq?query=" + searchTerm + "&expressionid=" + expressionShortId
+  const queryPromise = Axios.get(url)
+  return queryPromise
+
+}
+
+export function displayFigureResults(results){
+    if (!results || results.length === 0){
+      return (<div>
+        <p>No results found</p>
+      </div>)
+    }
+    else if (results.length > 0){
+      const figureResults = results.map((r, i) => {
+        const imgurl = r.imgurl
+        console.log("imgurl", imgurl)
+        return (
+          <div key={i}>
+          <p><Link to={"/text?resourceid=http://scta.info/resource/" + r.pid}>{r.pid}</Link></p>
+          <img src={imgurl} alt="figure" style={{"width": "300px"}}></img>
+          </div>
+        )
+      })
+      return (
+        <div>
+            <p>{results.length + " results"}</p>
+            {figureResults}
+        </div>
+      )
+    }
+    else if (results){
+      const r = results
+      const imgurl = r.imgurl
+      return (
+        <div>
+          <p>{1 + " results"}</p>
+          <div key={results.pid}>
+            <p><Link to={"/text?resourceid=http://scta.info/resource/" + r.pid}>{r.pid}</Link></p>
+            <img src={imgurl} alt="figure" style={{"width": "300px"}}></img>
+          </div>
+        </div>
+        )
+      }
+    else {
+      return (
+        <div><p>No results</p></div>
+      )
+    }
+  }  
+
 
 export function displayTextResults(results){
   if (!results || results.length === 0){
