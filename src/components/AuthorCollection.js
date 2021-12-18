@@ -33,45 +33,60 @@ class AuthorCollection extends React.Component {
   }
   arrangeItems(itemsPromise, resourceid){
     itemsPromise.then((d) => {
-      const author = d.data["@graph"].filter((i) => i["@id"] === resourceid)[0]
+      const authorShortId = resourceid.split("/resource/")[1]
+      //change due to fuseki 4.3.1 update 
+      //const author = d.data["@graph"].filter((i) => i["@id"] === "sctar:peter-plaoulresourceid)[0]
+      const author = d.data["@graph"].filter((i) => i["@id"] === "sctar:" + authorShortId)[0]
       //const authorExpressions = d.data["@graph"].filter((i) => {i["@id"] === author.hasTopLevelExpression})
-      const authorTitle = author["http://purl.org/dc/elements/1.1/title"]
+      const authorTitle = author["title"]
       let authorArticles = null
       if(Array.isArray(author.authorArticle)){
         authorArticles =  author.authorArticle.map((a) => {
           return {
-            id: a,
-            title: d.data["@graph"].filter((i) => i["@id"] === a)[0]["http://purl.org/dc/elements/1.1/title"]
+            id: a.replace("sctar:", "http://scta.info/resource/"),
+            //change due to fuseki 4.3.1 update 
+            //title: d.data["@graph"].filter((i) => i["@id"] === a)[0]["http://purl.org/dc/elements/1.1/title"]
+            title: d.data["@graph"].filter((i) => i["@id"] === a)[0]["title"]
           }
         })
       }
       else if (author.authorArticle){
-        authorArticles = [{id: author.authorArticle, title: d.data["@graph"].filter((i) => i["@id"] === author.authorArticle)[0]["http://purl.org/dc/elements/1.1/title"]}]
+        //change due to fuseki 4.3.1 update 
+        //authorArticles = [{id: author.authorArticle, title: d.data["@graph"].filter((i) => i["@id"] === author.authorArticle)[0]["http://purl.org/dc/elements/1.1/title"]}]
+        authorArticles = [{id: author.authorArticle.replace("sctar:", "http://scta.info/resource/"), title: d.data["@graph"].filter((i) => i["@id"] === author.authorArticle)[0]["http://purl.org/dc/elements/1.1/title"]}]
       }
       let textArticles = null
       if(Array.isArray(author.textArticle)){
           textArticles =  author.textArticle.map((a) => {
           return {
-            id: a,
-            title: d.data["@graph"].filter((i) => i["@id"] === a)[0]["http://purl.org/dc/elements/1.1/title"]
+            id: a.replace("sctar:", "http://scta.info/resource/"),
+            //change due to fuseki 4.3.1 update
+            //title: d.data["@graph"].filter((i) => i["@id"] === a)[0]["http://purl.org/dc/elements/1.1/title"]
+            title: d.data["@graph"].filter((i) => i["@id"] === a)[0]["title"]
           }
         })
       }
       else if (author.textArticle){
-        textArticles = [{id: author.textArticle, title: d.data["@graph"].filter((i) => i["@id"] === author.textArticle)[0]["http://purl.org/dc/elements/1.1/title"]}]
+        //change due to fuseki 4.3.1 update
+        //textArticles = [{id: author.textArticle, title: d.data["@graph"].filter((i) => i["@id"] === author.textArticle)[0]["http://purl.org/dc/elements/1.1/title"]}]
+        textArticles = [{id: author.textArticle.replace("sctar:", "http://scta.info/resource/"), title: d.data["@graph"].filter((i) => i["@id"] === author.textArticle)[0]["title"]}]
       }
 
       let expressions = null
       if(Array.isArray(author.hasTopLevelExpression)){
         expressions =  author.hasTopLevelExpression.map((a) => {
           return {
-            id: a,
-            title: d.data["@graph"].filter((i) => i["@id"] === a)[0]["http://purl.org/dc/elements/1.1/title"]
+            id: a.replace("sctar:", "http://scta.info/resource/"),
+            //change due to fuseki 4.3.1 update
+            //title: d.data["@graph"].filter((i) => i["@id"] === a)[0]["http://purl.org/dc/elements/1.1/title"]
+            title: d.data["@graph"].filter((i) => i["@id"] === a)[0]["title"]
           }
         })
       }
       else if (author.hasTopLevelExpression){
-        expressions = [{id: author.hasTopLevelExpression, title: d.data["@graph"].filter((i) => i["@id"] === author.hasTopLevelExpression)[0]["http://purl.org/dc/elements/1.1/title"]}]
+        //change due to fuseki 4.3.1 update
+        //expressions = [{id: author.hasTopLevelExpression, title: d.data["@graph"].filter((i) => i["@id"] === author.hasTopLevelExpression)[0]["http://purl.org/dc/elements/1.1/title"]}]
+        expressions = [{id: author.hasTopLevelExpression.replace("sctar:", "http://scta.info/resource/"), title: d.data["@graph"].filter((i) => i["@id"] === author.hasTopLevelExpression)[0]["title"]}]
       }
       if (this.mount){
         this.setState({authorArticles: authorArticles, textArticles: textArticles, expressions: expressions, authorTitle: authorTitle })
