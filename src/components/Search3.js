@@ -46,7 +46,7 @@ const Search3 = (props) => {
             setResults(d.data.results)
           })
         }
-        if (searchParameters.searchAuthor){
+        else if (searchParameters.searchAuthor){
             const textResults = retrieveAuthorResults(searchParameters.searchTerm, searchParameters.searchAuthor)
             textResults.then((d) => {
               setResults(d.data.results)
