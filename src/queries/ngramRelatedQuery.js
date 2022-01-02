@@ -27,7 +27,7 @@ export function ngramRelatedQuery(id, cosineScoreLimit = ".05"){
 }
 
 export function runNgramQuery(query){
-  const sparqlEndpoint = "http://localhost:3030/ds/query"
+  const sparqlEndpoint = "https://ngram.scta.info/ds/query"
   const queryPromise = Axios.get(sparqlEndpoint, { params: { "query": query, "output": "json" } })
   return queryPromise
 }
