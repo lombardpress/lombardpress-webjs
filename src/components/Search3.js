@@ -6,7 +6,7 @@ import {questionTitleQuery} from '../queries/questionTitleQuery'
 import Spinner from './Spinner';
 import Container from 'react-bootstrap/Container';
 import Search3Parameters from './Search3Parameters';
-import {retrieveAuthorResults, retrieveExpressionResults, retrieveWorkGroupResults, retrieveFigureResults, displayTextResults, displayFigureResults, displayQuestionResults} from './searchUtils'
+import {retrieveSearchResults, retrieveFigureResults, displayTextResults, displayFigureResults, displayQuestionResults} from './searchUtils'
 
 const Search3 = (props) => {
   const [searchParameters, setSearchParameters] = useState({})
@@ -40,30 +40,37 @@ const Search3 = (props) => {
       if (searchParameters.searchType === "text"){
         setResults("fetching")
         setQuestionResults([])
-        if (searchParameters.searchEid){
-          const textResults = retrieveExpressionResults(searchParameters.searchTerm, searchParameters.searchEid)
-          textResults.then((d) => {
-            setResults(d.data.results)
-          })
-        }
-        else if (searchParameters.searchAuthor){
-            const textResults = retrieveAuthorResults(searchParameters.searchTerm, searchParameters.searchAuthor)
+        if (searchParameters.searchEid || searchParameters.searchAuthor || searchParameters.searchWorkGroup || searchParameters.searchEType){
+            const textResults = retrieveSearchResults(searchParameters.searchTerm, searchParameters.searchEid, searchParameters.searchWorkGroup, searchParameters.searchAuthor, searchParameters.searchEType)
             textResults.then((d) => {
-              setResults(d.data.results)
-            })
-          }
-        else if (searchParameters.searchWorkGroup){
-          const textResults = retrieveWorkGroupResults(searchParameters.searchTerm, searchParameters.searchWorkGroup)
-          textResults.then((d) => {
             setResults(d.data.results)
           })
         }
-        else{
-          const textResults = retrieveExpressionResults(searchParameters.searchTerm, "all")
-          textResults.then((d) => {
-            setResults(d.data.results)
-          })
-        }
+        
+        // if (searchParameters.searchEid){
+        //   const textResults = retrieveExpressionResults(searchParameters.searchTerm, searchParameters.searchEid)
+        //   textResults.then((d) => {
+        //     setResults(d.data.results)
+        //   })
+        // }
+        // else if (searchParameters.searchAuthor){
+        //     const textResults = retrieveAuthorResults(searchParameters.searchTerm, searchParameters.searchAuthor)
+        //     textResults.then((d) => {
+        //       setResults(d.data.results)
+        //     })
+        //   }
+        // else if (searchParameters.searchWorkGroup){
+        //   const textResults = retrieveWorkGroupResults(searchParameters.searchTerm, searchParameters.searchWorkGroup)
+        //   textResults.then((d) => {
+        //     setResults(d.data.results)
+        //   })
+        // }
+        // else{
+        //   const textResults = retrieveExpressionResults(searchParameters.searchTerm, "all")
+        //   textResults.then((d) => {
+        //     setResults(d.data.results)
+        //   })
+        // }
       }
       else if (searchParameters.searchType === "questionTitles"){
         const questionResults = runQuery(questionTitleQuery(searchParameters))
