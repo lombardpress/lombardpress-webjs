@@ -4,33 +4,60 @@ import Axios from 'axios'
 
 //TODO: these retrieves need to be refactored into; 
 // if exist db api is improved then a single request should be easier
-export function retrieveExpressionResults(searchTerm, searchEid){
-  const expressionShortId = searchEid === "all" ? searchEid : searchEid.split("/resource/")[1]
-  const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-expressionid.xq?query=" + searchTerm + "&expressionid=" + expressionShortId
-  const queryPromise = Axios.get(url)
-  return queryPromise
-}
-export function retrieveAuthorResults(searchTerm, searchAuthor){
-  const authorShortId = searchAuthor.split("/resource/")[1]
-  const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-authorid.xq?query=" + searchTerm + "&authorid=" + authorShortId
-  const queryPromise = Axios.get(url)
-  return queryPromise
 
-}
-export function retrieveWorkGroupResults(searchTerm, searchWorkGroup){
-  const workGroupShortId = searchWorkGroup.split("/resource/")[1]
-  const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-workGroupId.xq?query=" + searchTerm + "&workGroupId=" + workGroupShortId
-  const queryPromise = Axios.get(url)
-  return queryPromise
+// // TODO; the following should be deleted; now that new search script has been made
+// export function retrieveExpressionResults(searchTerm, searchEid){
+//   const expressionShortId = searchEid === "all" ? searchEid : searchEid.split("/resource/")[1]
+//   const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-expressionid.xq?query=" + searchTerm + "&expressionid=" + expressionShortId
+//   const queryPromise = Axios.get(url)
+//   return queryPromise
+// }
+// // TODO; the following should be deleted; now that new search script has been made
+// export function retrieveAuthorResults(searchTerm, searchAuthor){
+//   const authorShortId = searchAuthor.split("/resource/")[1]
+//   const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-authorid.xq?query=" + searchTerm + "&authorid=" + authorShortId
+//   const queryPromise = Axios.get(url)
+//   return queryPromise
 
-}
+// }
+// // TODO; the following should be deleted; now that new search script has been made
+// export function retrieveWorkGroupResults(searchTerm, searchWorkGroup){
+//   const workGroupShortId = searchWorkGroup.split("/resource/")[1]
+//   const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-workGroupId.xq?query=" + searchTerm + "&workGroupId=" + workGroupShortId
+//   const queryPromise = Axios.get(url)
+//   return queryPromise
+
+// }
 export function retrieveFigureResults(searchTerm, searchEid){
   console.log("running retrieve")
   const expressionShortId = searchEid === "all" ? searchEid : searchEid.split("/resource/")[1]
   const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-figure.xq?query=" + searchTerm + "&expressionid=" + expressionShortId
   const queryPromise = Axios.get(url)
   return queryPromise
+}
 
+export function retrieveSearchResults(searchTerm, searchEid, searchWorkGroup, searchAuthor, searchETypeId){
+  const workGroupShortId = searchWorkGroup && searchWorkGroup.split("/resource/")[1]
+  const expressionShortId = searchEid && searchEid.split("/resource/")[1]
+  const expressionTypeShortId = searchETypeId && searchETypeId.split("/resource/")[1]
+  const authorShortId = searchAuthor && searchAuthor.split("/resource/")[1]
+  const queryParameters = []
+  if (expressionShortId){
+    queryParameters.push("eid=" + expressionShortId)
+  }
+  if (expressionTypeShortId){
+    queryParameters.push("etid=" + expressionTypeShortId)
+  }
+  if (authorShortId){
+    queryParameters.push("aid=" + authorShortId)
+  }
+  if (workGroupShortId){
+    queryParameters.push("wgid=" + workGroupShortId)
+  }
+  const queryString = "?query=" + searchTerm + "&" + queryParameters.join("&");
+  const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text.xq" + queryString
+  const queryPromise = Axios.get(url)
+  return queryPromise
 }
 
 export function displayFigureResults(results){
