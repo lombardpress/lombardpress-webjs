@@ -26,6 +26,9 @@ const Search3 = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParameters.resultsFilter])
   
+  useEffect(() => {
+    setResults([])
+  }, [searchParameters.searchType])
   
   const handleSetSearchParameters = (parameters) => {
     setSearchParameters(parameters)
@@ -125,16 +128,20 @@ const Search3 = (props) => {
     }
     else if (results.length > 1){
       results.forEach((r) => {
-        const combinedString = [ r.previous.toLowerCase(), r.hit.toLowerCase(), r.next.toLowerCase()].join(" ")
-        if (combinedString.includes(resultsFilter.toLowerCase())){
-          newResults.push(r)
+        if (r.previous && r.hit && r.next){
+          const combinedString = [ r.previous.toLowerCase(), r.hit.toLowerCase(), r.next.toLowerCase()].join(" ")
+          if (combinedString.includes(resultsFilter.toLowerCase())){
+            newResults.push(r)
+          }
         }
       })
     }
     else if (results){
       const r = results;
-      const combinedString = [r.previous.toLowerCase(), r.hit.toLowerCase(), r.next.toLowerCase()].join(" ")
-      newResults = combinedString.includes(resultsFilter.toLowerCase()) ? results : "";
+      if (r.previous && r.hit && r.next){
+        const combinedString = [r.previous.toLowerCase(), r.hit.toLowerCase(), r.next.toLowerCase()].join(" ")
+        newResults = combinedString.includes(resultsFilter.toLowerCase()) ? results : "";
+      }
     }
     return newResults
   }
