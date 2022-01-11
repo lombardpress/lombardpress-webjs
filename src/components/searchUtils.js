@@ -36,7 +36,7 @@ export function retrieveFigureResults(searchTerm, searchEid){
   return queryPromise
 }
 
-export function retrieveSearchResults(searchTerm, searchEid, searchWorkGroup, searchAuthor, searchETypeId){
+export function retrieveSearchResults(searchTerm, searchEid, searchWorkGroup, searchAuthor, searchETypeId, searchType){
   const workGroupShortId = searchWorkGroup && searchWorkGroup.split("/resource/")[1]
   const expressionShortId = searchEid && searchEid.split("/resource/")[1]
   const expressionTypeShortId = searchETypeId && searchETypeId.split("/resource/")[1]
@@ -53,6 +53,9 @@ export function retrieveSearchResults(searchTerm, searchEid, searchWorkGroup, se
   }
   if (workGroupShortId){
     queryParameters.push("wgid=" + workGroupShortId)
+  }
+  if (searchType){
+    queryParameters.push("searchType=" + searchType)
   }
   const queryString = "?query=" + searchTerm + "&" + queryParameters.join("&");
   const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text.xq" + queryString
