@@ -6,7 +6,7 @@ import {questionTitleQuery} from '../queries/questionTitleQuery'
 import Spinner from './Spinner';
 import Container from 'react-bootstrap/Container';
 import Search3Parameters from './Search3Parameters';
-import {retrieveSearchResults, retrieveFigureResults, displayTextResults, displayFigureResults, displayQuestionResults} from './searchUtils'
+import {retrieveSearchResults, displayTextResults, displayFigureResults, displayQuestionResults} from './searchUtils'
 
 const Search3 = (props) => {
   const [searchParameters, setSearchParameters] = useState({})
@@ -37,11 +37,16 @@ const Search3 = (props) => {
       setResults([])
     }
     else{
-      if (searchParameters.searchType === "text"){
+      if (searchParameters.searchType === "text" || searchParameters.searchType === "figure"){
         setResults("fetching")
         setQuestionResults([])
         if (searchParameters.searchEid || searchParameters.searchAuthor || searchParameters.searchWorkGroup || searchParameters.searchEType){
-            const textResults = retrieveSearchResults(searchParameters.searchTerm, searchParameters.searchEid, searchParameters.searchWorkGroup, searchParameters.searchAuthor, searchParameters.searchEType)
+            const textResults = retrieveSearchResults(searchParameters.searchTerm, 
+              searchParameters.searchEid, 
+              searchParameters.searchWorkGroup, 
+              searchParameters.searchAuthor, 
+              searchParameters.searchEType,
+              searchParameters.searchType)
             textResults.then((d) => {
             setResults(d.data.results)
           })
@@ -80,23 +85,23 @@ const Search3 = (props) => {
           setQuestionResults(d.data.results.bindings)
         })
       }
-      else if (searchParameters.searchType === "figure"){
-        if (searchParameters.searchEid){
-          const figureResults = retrieveFigureResults(searchParameters.searchTerm, searchParameters.searchEid)
-            figureResults.then((d) => {
-              console.log("data", d)
-              setResults(d.data.results)
-          })
-        }
-        else
-        {
-          const figureResults = retrieveFigureResults(searchParameters.searchTerm, "all")
-            figureResults.then((d) => {
-              console.log("data", d)
-              setResults(d.data.results)
-          })
-        }
-      }
+      // else if (searchParameters.searchType === "figure"){
+      //   if (searchParameters.searchEid){
+      //     const figureResults = retrieveFigureResults(searchParameters.searchTerm, searchParameters.searchEid)
+      //       figureResults.then((d) => {
+      //         console.log("data", d)
+      //         setResults(d.data.results)
+      //     })
+      //   }
+      //   else
+      //   {
+      //     const figureResults = retrieveFigureResults(searchParameters.searchTerm, "all")
+      //       figureResults.then((d) => {
+      //         console.log("data", d)
+      //         setResults(d.data.results)
+      //     })
+      //   }
+      // }
     }
   }
   const displayResults = (results) => {
@@ -120,7 +125,7 @@ const Search3 = (props) => {
     }
     else if (results.length > 1){
       results.forEach((r) => {
-        const combinedString = [r.previous.toLowerCase(), r.hit.toLowerCase(), r.next.toLowerCase()].join(" ")
+        const combinedString = [ r.previous.toLowerCase(), r.hit.toLowerCase(), r.next.toLowerCase()].join(" ")
         if (combinedString.includes(resultsFilter.toLowerCase())){
           newResults.push(r)
         }
