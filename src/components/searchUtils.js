@@ -31,7 +31,7 @@ import Axios from 'axios'
 export function retrieveFigureResults(searchTerm, searchEid){
   console.log("running retrieve")
   const expressionShortId = searchEid === "all" ? searchEid : searchEid.split("/resource/")[1]
-  const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-figure.xq?query=" + searchTerm + "&expressionid=" + expressionShortId
+  const url = "https://exist2.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-figure.xq?query=" + searchTerm + "&expressionid=" + expressionShortId
   const queryPromise = Axios.get(url)
   return queryPromise
 }
@@ -58,7 +58,7 @@ export function retrieveSearchResults(searchTerm, searchEid, searchWorkGroup, se
     queryParameters.push("searchType=" + searchType)
   }
   const queryString = "?query=" + searchTerm + "&" + queryParameters.join("&");
-  const url = "https://exist.scta.info/exist/apps/scta-app/jsonsearch/json-search-text.xq" + queryString
+  const url = "https://exist2.scta.info/exist/apps/scta-app/jsonsearch/json-search-text.xq" + queryString
   const queryPromise = Axios.get(url)
   return queryPromise
 }
