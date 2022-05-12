@@ -386,3 +386,15 @@ export function textReduce(text, wordRange){
   //     }
   //   return textElement
 }
+
+// a function to remove spaces and punctuation from a string;
+// currently I'm using this in the comments component to create valid key for a annotaiton list
+export function camelCase(str) {
+  // remove punctuation
+  const newStr = str.replace(/[\p{P}$+<=>^`|~]/gu, '')
+  //return string camelCased at spaces
+ return newStr.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index)
+ {
+     return index == 0 ? word.toLowerCase() : word.toUpperCase();
+ }).replace(/\s+/g, '');
+}

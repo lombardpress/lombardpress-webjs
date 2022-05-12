@@ -6,33 +6,51 @@ import PropTypes from 'prop-types';
 import Comment2Create from './Comment2Create.js'
 import Comment2Item from './Comment2Item.js'
 import Comments2ImportExport from './Comments2ImportExport'
+import LoginPage from './LoginPage.js'
 import uuidv4 from 'uuid/v4';
 import Button from 'react-bootstrap/Button';
 import {FaClipboard, FaFilter} from 'react-icons/fa';
 import {useTranslation} from 'react-i18next'
 import {copyToClipboard} from './utils'
+import { firebase, db } from '../firebase/firebase'
+import {camelCase} from './utils'
 
 
 /**
  * 
- * A comment wrapper for submitting comments to local storage test
- * @public
+ * A comment wrapper for submitting comments to local storage
+ * 
  */
 
 function Comments2(props) {
   const {t} = useTranslation();
-  const [lists, setLists] = useState(JSON.parse(localStorage.getItem("sctaCommentsState2"))|| {"local": []})
+  //const [lists, setLists] = useState(JSON.parse(localStorage.getItem("sctaCommentsState2"))|| {"local": []})
+  const [lists, setLists] = useState({"local": []})
   const [comments, setComments] = useState("local");
+  const [showAll, setShowAll] = useState(false);
   const [showFocusComments, setShowFocusComments] = useState(true)
   const [commentFilter, setCommentFilter] = useState("")
   const [mentionedBy, setMentionedBy] = useState([])
   const [showFilters, setShowFilters] = useState(false)
   
   
-  
+// retrieve annotations on mount
+
+useEffect(()=>{
+    db.ref("jeff")
+      .once('value')
+      .then((snapshot) => {
+        const dbResult = snapshot.val()
+        console.log("db result", dbResult)
+        if (dbResult) {
+          setLists(dbResult.lists)
+        }
+      })
+    }, [])
 
   /**
    * submit the comment
+   * 
    * @param {string} comment 
    * @public
    */
@@ -41,17 +59,15 @@ function Comments2(props) {
     const annoId = "http://inbox.scta.info/notifications/" + randomid
     const dateObject = new Date();
 
-    //TODO: I don't love creating the selector when selection range is empty
-    //TODO: it would probably be better to just not have a selector when no text is selected
     const selector = [
       {
         "type": "TextQuoteSelector",
-        "exact": selectionRange && selectionRange.text
+        "exact": selectionRange.text ? selectionRange.text : ""
       },
       {
         "type": "TextPositionSelector",
-        "start": selectionRange && selectionRange.wordRange && selectionRange.wordRange.start,
-        "end": selectionRange && selectionRange.wordRange && selectionRange.wordRange.end
+        "start": selectionRange.wordRange ? selectionRange.wordRange.start : "",
+        "end": selectionRange.wordRange ? selectionRange.wordRange.end : ""
       }
     ]
     const annotation = {
@@ -146,7 +162,7 @@ function Comments2(props) {
     // try to load data from local storage
     try {
       const parsedList = list;
-      const name = listname || uuidv4();
+      const name = camelCase(listname) || uuidv4();
       lists[name] = parsedList
       setLists({
         ...lists
@@ -159,11 +175,81 @@ function Comments2(props) {
   }
 
   useEffect(() => {
-    localStorage.setItem("sctaCommentsState2", JSON.stringify(lists))
-  })
-  
+    //localStorage.setItem("sctaCommentsState2", JSON.stringify(lists))
+    //NOTE/TODO: this conditional lists['local'].length > 0 is temporary and MUST BE changed
+    // its currently there so that database won't be re-written on load, but it is completely acceptable for local to be 0
+    // and this will prevent writing to other lists, when local list is empty
+    // it is temporary to get db synch to work. 
+    if (db && lists['local'].length > 0) {
+      console.log(lists)
+      db.ref("jeff").set({lists: lists})
+    }
+  }, [lists])
+  const displayComments = () => {
+    let fullList = []
+    if (showAll){
+       Object.keys(lists).forEach((k) => {
+         console.log("lists", lists)
+         console.log("k", k)
+        fullList = fullList.concat(lists[k])
+      })
+    }
+    else{
+      
+      fullList = lists[comments]
+    }
+    console.log("fullList", fullList)
+
+    const displayComments = fullList.length > 0 && fullList.slice(0).map((c,i) => {
+          
+      const target = typeof(c.target) === 'string' ? c.target : c.target.source;
+      if (showFocusComments){
+        if (target && target.includes(props.expressionid) && (c.body.value && c.body.value.includes(commentFilter))){
+          return (
+            <div key={i}>
+              <Comment2Item comment={c} focused={true} removeComment={removeComment} updateComment={updateComment}
+              handleOnClickComment={props.handleOnClickComment} orderNumber={lists[comments].indexOf(c)}/>
+              {
+              //<button onClick={() => {removeNote(n.title)}}>x</button>
+              }
+            </div>
+          )
+        }
+        else{
+          return null
+        }
+      }
+      else{
+        if (target && target.includes(props.expressionid) && (c.body.value && c.body.value.includes(commentFilter))){
+          return (
+            <div key={i} style={{borderLeft: "1px solid black"}}>
+              <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment} orderNumber={lists[comments].indexOf(c)}/>
+              {
+              //<button onClick={() => {removeNote(n.title)}}>x</button>
+              }
+            </div>
+            )
+        }
+        else if (c.body.value && c.body.value.includes(commentFilter)){
+          return (
+            <div key={i}>
+              <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment} orderNumber={lists[comments].indexOf(c)}/>
+              {
+              //<button onClick={() => {removeNote(n.title)}}>x</button>
+              }
+            </div>
+          )
+        }
+        else{
+          return null
+        }
+      }
+    })
+    return displayComments
+  }
   return (
     <Container className={props.hidden ? "hidden" : "showing"}>
+      <LoginPage/>
       <Comment2Create 
         submitComment={submitComment} 
         selectionRange={props.selectionRange}
@@ -174,6 +260,7 @@ function Comments2(props) {
       { showFilters &&
       <div>
         <span>Select Annotation List</span>
+      <Button size="sm" style={{margin: "2px", margin: "10px 0"}} block onClick={() => setShowAll(!showAll)}>{showAll ? "Focus List" : "All Lists"}</Button>
       <FormControl size="sm" as="select" onChange={(e) => {setComments(e.target.value)}} value={comments}>
                 {lists && Object.keys(lists).map((e, i) => {
                     return (<option key={e} value={e}>{e}</option>)
@@ -201,51 +288,7 @@ function Comments2(props) {
       </div>
       }
       <div>
-        {lists[comments].length > 0 && lists[comments].slice(0).map((c,i) => {
-          
-          const target = typeof(c.target) === 'string' ? c.target : c.target.source;
-          if (showFocusComments){
-            if (target && target.includes(props.expressionid) && (c.body.value && c.body.value.includes(commentFilter))){
-              return (
-                <div key={i}>
-                  <Comment2Item comment={c} focused={true} removeComment={removeComment} updateComment={updateComment}
-                  handleOnClickComment={props.handleOnClickComment} orderNumber={lists[comments].indexOf(c)}/>
-                  {
-                  //<button onClick={() => {removeNote(n.title)}}>x</button>
-                  }
-                </div>
-              )
-            }
-            else{
-              return null
-            }
-          }
-          else{
-            if (target && target.includes(props.expressionid) && (c.body.value && c.body.value.includes(commentFilter))){
-              return (
-                <div key={i} style={{borderLeft: "1px solid black"}}>
-                  <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment} orderNumber={lists[comments].indexOf(c)}/>
-                  {
-                  //<button onClick={() => {removeNote(n.title)}}>x</button>
-                  }
-                </div>
-                )
-            }
-            else if (c.body.value && c.body.value.includes(commentFilter)){
-              return (
-                <div key={i}>
-                  <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment} orderNumber={lists[comments].indexOf(c)}/>
-                  {
-                  //<button onClick={() => {removeNote(n.title)}}>x</button>
-                  }
-                </div>
-              )
-            }
-            else{
-              return null
-            }
-          }
-        })}
+        {displayComments()}
       </div>
       {
       <Comments2ImportExport currentList={lists[comments]} currentListName={comments} handleImportList={handleImportList} />
