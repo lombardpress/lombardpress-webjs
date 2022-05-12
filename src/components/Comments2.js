@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import FormControl from 'react-bootstrap/FormControl';
-import PropTypes from 'prop-types';
+import PropTypes, { object } from 'prop-types';
 import Comment2Create from './Comment2Create.js'
 import Comment2Item from './Comment2Item.js'
 import Comments2ImportExport from './Comments2ImportExport'
@@ -26,7 +26,9 @@ function Comments2(props) {
   const {t} = useTranslation();
   //const [lists, setLists] = useState(JSON.parse(localStorage.getItem("sctaCommentsState2"))|| {"local": []})
   const [lists, setLists] = useState({"local": []})
-  const [comments, setComments] = useState("local");
+  const [comments, setComments] = useState("print");
+  const [annotations, setAnnotations] = useState({})
+  const [tags, setTags] = useState({"print": {}, "newList": {}, "extra": {}})
   const [showAll, setShowAll] = useState(false);
   const [showFocusComments, setShowFocusComments] = useState(true)
   const [commentFilter, setCommentFilter] = useState("")
@@ -34,7 +36,7 @@ function Comments2(props) {
   const [showFilters, setShowFilters] = useState(false)
   
   
-// retrieve annotations on mount
+//retrieve annotations on mount
 
 useEffect(()=>{
     db.ref("jeff")
@@ -43,7 +45,8 @@ useEffect(()=>{
         const dbResult = snapshot.val()
         console.log("db result", dbResult)
         if (dbResult) {
-          setLists(dbResult.lists)
+          setAnnotations(dbResult.annotations)
+          setTags(dbResult.tags)
         }
       })
     }, [])
@@ -57,7 +60,17 @@ useEffect(()=>{
   const submitComment = (comment, motivation, editedText, selectionRange, orderNumber, noTarget) => {
     const randomid = uuidv4();
     const annoId = "http://inbox.scta.info/notifications/" + randomid
+    const akey = prefixedId(annoId)
     const dateObject = new Date();
+    const userId = "http://scta.info/resource/jeffreycwitt"
+    const tagsPerComment = ["print", "newList"]
+    const tagsBlock = {}
+    const tagsNewList = tags
+    
+    tagsPerComment.forEach((t) => {
+      tagsBlock[t] = true
+      tagsNewList[t][akey] = true
+    })
 
     const selector = [
       {
@@ -75,13 +88,16 @@ useEffect(()=>{
       "id": annoId,
       "type": "Annotation",
       "created": dateObject.toISOString(),
+      "creator": userId,
       "motivation": motivation,
+      "tags": tagsBlock,
       "body": {
         "type": "TextualBody",
         "value": comment
       },
       "target": !noTarget && { // changing target to object rather than string will break retrieval
         source: props.resourceid, 
+        esource: "http://scta.info/resource/" + props.resourceid.split("/resource/")[1].split("/")[0],
         selector: selector
       }
       
@@ -94,45 +110,56 @@ useEffect(()=>{
       delete annotation.body["editedValue"];
     }
     //lists[comments].push(annotation) 
-    lists[comments].splice(orderNumber, 0, annotation);
-    setLists({
-      ...lists,
-    })
+    //lists[comments].splice(orderNumber, 0, annotation);
+    //setLists({
+      //...lists,
+    //})
     setCommentFilter('')
+    
+    const annotationsNewList = annotations
+    annotationsNewList[akey] = annotation
+
+    //console.log("annotations1", annotationsNewList)
+    //console.log("tags1", tagsNewList)
+    setAnnotations(annotationsNewList)
+    setTags(tagsNewList)
+
+  }
+  const prefixedId = (id) => {
+    const prefixedId = "sctan:" + id.split("/notifications/")[1]
+    return prefixedId
   }
   const removeComment = (id) => {
     //filter current list
-    const newLists = lists[comments].filter((c) => (c.id !== id))
+    
+    let clonedAnnotations = { ...annotations};
+    delete clonedAnnotations[prefixedId(id)]
     // replace current list value with filtered list
-    lists[comments] = newLists
-      setLists({
-        ...lists
-      })
+    setAnnotations(clonedAnnotations)
   }
   const updateComment = (id, update, editedText, motivation, selectionRange, orderNumber, noTarget) => {
-    const targetComment = lists[comments].filter((c) => (c.id === id))[0]
+    let clonedAnnotations = { ...annotations};
+    const targetComment = clonedAnnotations[prefixedId(id)]
     targetComment.body.value = update
     targetComment.body.editedValue = editedText
     targetComment.motivation = motivation
     targetComment.orderNumber = orderNumber
     targetComment.target = noTarget ? false : targetComment.target
-    const old_index = lists[comments].indexOf(targetComment);
+    //const old_index = lists[comments].indexOf(targetComment);
     
     //reposition comment
     //see https://stackoverflow.com/questions/5306680/move-an-array-element-from-one-array-position-to-another
     //todo: this could/should be a utility function
-    if (orderNumber >= lists[comments].length) {
-      var k = orderNumber - lists[comments].length + 1;
-      while (k--) {
-        lists[comments].push(undefined);
-      }
-    }
+    // if (orderNumber >= lists[comments].length) {
+    //   var k = orderNumber - lists[comments].length + 1;
+    //   while (k--) {
+    //     lists[comments].push(undefined);
+    //   }
+    // }
     
-    lists[comments].splice(orderNumber, 0, lists[comments].splice(old_index, 1)[0]);
-
-    setLists({
-      ...lists
-    })
+    //lists[comments].splice(orderNumber, 0, lists[comments].splice(old_index, 1)[0]);
+    
+    setAnnotations(clonedAnnotations)
   }
   useEffect(() => {
     setMentionedBy(getMentionedBy())
@@ -140,22 +167,23 @@ useEffect(()=>{
   }, [props.resourceid])
   
   const getMentionedBy = () => {
-    if (lists[comments].length > 0){
-      let mentionedBy = lists[comments].map((c) => {
-        if (c.body.value && c.body.value.includes(props.resourceid)){
-          const target =  typeof(c.target) === 'string' ? c.target : c.target.source;
-          return target
-        }
-        else{
-          return undefined
-        }
-      })
-      mentionedBy = mentionedBy.filter((i) => {return i !== undefined})
-      return mentionedBy
-    }
-    else{
-      return []
-    }
+    // if (lists[comments].length > 0){
+    //   let mentionedBy = lists[comments].map((c) => {
+    //     if (c.body.value && c.body.value.includes(props.resourceid)){
+    //       const target =  typeof(c.target) === 'string' ? c.target : c.target.source;
+    //       return target
+    //     }
+    //     else{
+    //       return undefined
+    //     }
+    //   })
+    //   mentionedBy = mentionedBy.filter((i) => {return i !== undefined})
+    //   return mentionedBy
+    // }
+    // else{
+    //   return []
+    // }
+    return []
   }
   // expect list to be in already parsed JSON
   const handleImportList = (list, listname) => {
@@ -180,35 +208,36 @@ useEffect(()=>{
     // its currently there so that database won't be re-written on load, but it is completely acceptable for local to be 0
     // and this will prevent writing to other lists, when local list is empty
     // it is temporary to get db synch to work. 
-    if (db && lists['local'].length > 0) {
-      console.log(lists)
-      db.ref("jeff").set({lists: lists})
+    if (db && Object.keys(annotations).length > 0) {
+      db.ref("jeff").set({annotations: annotations, tags: tags})
     }
-  }, [lists])
+  }, [annotations, lists, tags])
+  // bug here; lists needs to be included or update won't happen
+  
   const displayComments = () => {
     let fullList = []
     if (showAll){
-       Object.keys(lists).forEach((k) => {
-         console.log("lists", lists)
-         console.log("k", k)
-        fullList = fullList.concat(lists[k])
+       Object.keys(annotations).forEach((k) => {
+         fullList.push(annotations[k])
       })
     }
     else{
-      
-      fullList = lists[comments]
+      Object.keys(annotations).map((a) => {
+        if (Object.keys(tags[comments]).includes(a)) {
+          return fullList.push(annotations[a])
+        }
+     })
     }
     console.log("fullList", fullList)
 
     const displayComments = fullList.length > 0 && fullList.slice(0).map((c,i) => {
-          
       const target = typeof(c.target) === 'string' ? c.target : c.target.source;
       if (showFocusComments){
         if (target && target.includes(props.expressionid) && (c.body.value && c.body.value.includes(commentFilter))){
           return (
             <div key={i}>
               <Comment2Item comment={c} focused={true} removeComment={removeComment} updateComment={updateComment}
-              handleOnClickComment={props.handleOnClickComment} orderNumber={lists[comments].indexOf(c)}/>
+              handleOnClickComment={props.handleOnClickComment} setTagFilter={setComments}/>
               {
               //<button onClick={() => {removeNote(n.title)}}>x</button>
               }
@@ -223,7 +252,7 @@ useEffect(()=>{
         if (target && target.includes(props.expressionid) && (c.body.value && c.body.value.includes(commentFilter))){
           return (
             <div key={i} style={{borderLeft: "1px solid black"}}>
-              <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment} orderNumber={lists[comments].indexOf(c)}/>
+              <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment} setTagFilter={setComments}/>
               {
               //<button onClick={() => {removeNote(n.title)}}>x</button>
               }
@@ -233,7 +262,7 @@ useEffect(()=>{
         else if (c.body.value && c.body.value.includes(commentFilter)){
           return (
             <div key={i}>
-              <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment} orderNumber={lists[comments].indexOf(c)}/>
+              <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment} setTagFilter={setComments}/>
               {
               //<button onClick={() => {removeNote(n.title)}}>x</button>
               }
@@ -254,7 +283,7 @@ useEffect(()=>{
         submitComment={submitComment} 
         selectionRange={props.selectionRange}
         textEdit={props.textEdit}
-        orderNumber={lists[comments].length}
+        orderNumber={Object.keys(annotations).length}
         />
       <Button size="sm" style={{margin: "2px"}} block onClick={() => setShowFilters(!showFilters)}><FaFilter/> Filters</Button>
       { showFilters &&
@@ -262,7 +291,7 @@ useEffect(()=>{
         <span>Select Annotation List</span>
       <Button size="sm" style={{margin: "2px", margin: "10px 0"}} block onClick={() => setShowAll(!showAll)}>{showAll ? "Focus List" : "All Lists"}</Button>
       <FormControl size="sm" as="select" onChange={(e) => {setComments(e.target.value)}} value={comments}>
-                {lists && Object.keys(lists).map((e, i) => {
+                {tags && Object.keys(tags).map((e, i) => {
                     return (<option key={e} value={e}>{e}</option>)
                   })
                 }

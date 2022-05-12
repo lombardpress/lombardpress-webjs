@@ -54,6 +54,13 @@ function Comment2Item(props) {
     textEdited: props.comment.body.editedValue,
     wordRange: selectedFragmentRange
   }
+
+  const displayTags = (tags) => {
+    const displayTags = Object.keys(tags).map((t) => {
+      return (<span className="lbp-span-link" onClick={() => props.setTagFilter(t)}>{t} </span>)
+    })
+    return displayTags
+  }
   
   return (
       <div>
@@ -79,6 +86,7 @@ function Comment2Item(props) {
           {props.comment.motivation === "editing" && <span>Suggested Correction: {props.comment.body.editedValue}<br/></span>}
           
           <span>{addSCTALinksToValue(props.comment.body.value)}</span>
+          <span>Tags: {displayTags(props.comment.tags)}</span>
           <br/>
           <span>Submitted: </span> {props.comment.created && props.comment.created.split("T")[0]} | 
           <span className="lbp-span-link" onClick={() => {props.removeComment(props.comment.id)}}><FaTrash/> </span> | 
