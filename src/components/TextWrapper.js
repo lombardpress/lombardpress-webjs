@@ -74,6 +74,7 @@ class TextWrapper extends React.Component {
       }
     }
   }
+
   handleTogglePdfView(){
     this.setState((prevState) => {
         return {
@@ -510,6 +511,7 @@ class TextWrapper extends React.Component {
               handleLineFocusChange={this.handleLineFocusChange}
               selectionRange={this.state.selectionRange}
               codexResourceType={this.props.codexResourceType}
+              userId={this.props.userId}
               />
             )
           }

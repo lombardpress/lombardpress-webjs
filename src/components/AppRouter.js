@@ -1,4 +1,4 @@
-import React, {Suspense} from 'react';
+import React, {Suspense, useState} from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import Home from "./Home"
 import Search3 from "./Search3"
@@ -14,18 +14,23 @@ import '../styles/App.scss';
 //import '../styles/index.scss';
 
 const AppRouter = () => {
+  const [userId, setUserId] = useState("jeff")
+  const handleUserIdUpdate  = (uid) => {
+    setUserId(uid)
+  }
+  
   return (
   <Suspense fallback={<Spinner/>}>
     <BrowserRouter forceRefresh={false}>
       <div>
-        <NavBar/>
+        <NavBar handleUserIdUpdate={handleUserIdUpdate}/>
         <Switch>
-          <Route path="/" exact={true} component={Home}/>
-          <Route path="/res" exact={true} component={TextSwitch}/>
-          <Route path="/text"  exact={true} component={TextSwitch}/>
-          <Route path="/about" exact={true} component={About}/>
-          <Route path="/search" exact={true} component={Search3}/>
-          <Route path="/osd" exact={true} component={OSDInstance}/>
+          <Route path="/" exact={true} render={(props) => <Home {...props} userId={userId}/>}/>
+          <Route path="/res" exact={true} render={(props) => <TextSwitch {...props} userId={userId}/>}/>
+          <Route path="/text"  exact={true} render={(props) => <TextSwitch {...props} userId={userId}/>}/>
+          <Route path="/about" exact={true} render={(props) => <About {...props} userId={userId}/>}/>
+          <Route path="/search" exact={true} render={(props) => <Search3 {...props} userId={userId}/>}/>
+          <Route path="/osd" exact={true} render={(props) => <TextSwitch {...props} userId={userId}/>}/>
           {
             //<Route path="/edit/:id" exact={true} component={EditExpensePage}/>
           //<Route path="/help" exact={true} component={HelpPage}/>

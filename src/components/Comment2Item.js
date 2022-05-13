@@ -56,9 +56,6 @@ function Comment2Item(props) {
   }
 
   const getTagsWithOrderNumbers = (annoid, tags) => {
-    console.log("annoid", annoid)
-    console.log("tags", tags)
-    console.log("props.tagList", props.tagsList)
     const tagsWithOrder = []
     if (Object.keys(props.tagsList).length > 0){
       tags && Object.keys(tags).map((t) => {
@@ -71,7 +68,7 @@ function Comment2Item(props) {
   }
   const getTagOrderNumber = (annoid, t) => {
     const annoShortId = annoid.replace("http://inbox.scta.info/notifications/", "sctan:")
-    if (props.tagsList[t][annoShortId].order) {
+    if (props.tagsList[t][annoShortId] && props.tagsList[t][annoShortId].order) {
       return props.tagsList[t][annoShortId].order
     }
     else{

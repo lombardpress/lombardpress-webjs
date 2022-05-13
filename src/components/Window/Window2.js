@@ -221,6 +221,7 @@ class Window2 extends React.Component {
                 expressionid={this.props.resourceid} 
                 hidden={this.state.windowLoad !== "comments"}
                 selectionRange={this.props.selectionRange} // this will only apply at resourceType=text level
+                userId={this.props.userId}
               />
             }
             {displayComponents.includes("xml") 

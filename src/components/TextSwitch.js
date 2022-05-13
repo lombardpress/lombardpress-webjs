@@ -221,6 +221,7 @@ class TextSwitch extends React.Component {
           resourceid={this.state.resourceid}
           resourceType="person"
           handleUpdateUrlResource={this.handleUpdateUrlResource}
+          userId={this.props.userId}
           />
         )
 
@@ -237,6 +238,7 @@ class TextSwitch extends React.Component {
         resourceid={this.state.resourceid}
         resourceType="workGroup"
         handleUpdateUrlResource={this.handleUpdateUrlResource}
+        userId={this.props.userId}
         />
       )
       }
@@ -248,6 +250,7 @@ class TextSwitch extends React.Component {
           transcriptionid={this.state.transcriptionid}
           resourceType="collection"
           handleUpdateUrlResource={this.handleUpdateUrlResource}
+          userId={this.props.userId}
           />
           )
       }
@@ -262,6 +265,7 @@ class TextSwitch extends React.Component {
             tokenRange={this.state.tokenRange}
             itemTranscriptionId={this.state.itemTranscriptionId}
             handleUpdateUrlResource={this.handleUpdateUrlResource}
+            userId={this.props.userId}
             />
           )
         }
@@ -283,6 +287,7 @@ class TextSwitch extends React.Component {
         resourceType="codex"
         codexResourceType={this.state.displayType}
         handleUpdateUrlResource={this.handleUpdateUrlResource}
+        userId={this.props.userId}
         />
         
         )
@@ -302,6 +307,7 @@ class TextSwitch extends React.Component {
             resourceid={this.state.resourceid}
             resourceType="expressionType"
             handleUpdateUrlResource={this.handleUpdateUrlResource}
+            userId={this.props.userId}
             />
           )
       }

@@ -6,7 +6,7 @@ import PropTypes, { object } from 'prop-types';
 import Comment2Create from './Comment2Create.js'
 import Comment2Item from './Comment2Item.js'
 import Comments2ImportExport from './Comments2ImportExport'
-import LoginPage from './LoginPage.js'
+
 import uuidv4 from 'uuid/v4';
 import Button from 'react-bootstrap/Button';
 import {FaClipboard, FaFilter} from 'react-icons/fa';
@@ -33,23 +33,30 @@ function Comments2(props) {
   const [commentFilter, setCommentFilter] = useState("")
   const [mentionedBy, setMentionedBy] = useState([])
   const [showFilters, setShowFilters] = useState(false)
+  const [userId, setUserId] = useState("")
+
   
   
 //retrieve annotations on mount
-
 useEffect(()=>{
-    db.ref("jeff")
+  setUserId(props.userId)
+    db.ref(props.userId)
       .once('value')
       .then((snapshot) => {
         const dbResult = snapshot.val()
-        console.log("db result", dbResult)
         if (dbResult) {
           setAnnotations(dbResult.annotations || {})
           setTags(dbResult.tags || {})
         }
+        else {
+          setAnnotations({})
+          setTags({})
+        }
       })
-    }, [])
+    }, [props.userId])
 
+
+  
 
   const generateTagList = (inputTags, akey) => {
     const tagsPerComment = inputTags.map((t) => {
@@ -75,7 +82,6 @@ useEffect(()=>{
            const renumberingCounter = tagsOrderMap[t]
            Object.keys(tagsNewList[t]).forEach((nt) => {
              if (tagsNewList[t][nt].order && tagsNewList[t][nt].order >= tagsOrderMap[t]){
-               console.log("firing inside conditional", tagsNewList[t][nt])
                tagsNewList[t][nt].order = tagsNewList[t][nt].order + 1
              }
            })
@@ -89,8 +95,6 @@ useEffect(()=>{
          tagsNewList[t][akey] =  tagsOrderMap[t] ? {order: tagsOrderMap[t]} : true
        }
      })
- 
-     console.log("tagsNewList", tagsNewList)
      return tagsNewList
 
   }
@@ -118,51 +122,7 @@ useEffect(()=>{
     const annoId = "http://inbox.scta.info/notifications/" + randomid
     const akey = prefixedId(annoId)
     const dateObject = new Date();
-    const userId = "http://scta.info/resource/jeffreycwitt"
-    
-    // // loop through tags and separate tag from an order indicator
-    // const tagsPerComment = inputTags.map((t) => {
-    //   return t.split(":")[0]
-    // })
-    // // loop through tags and create hash of tag to order, so that the tag order can be looked up
-    // const tagsOrderMap = {}
-    // inputTags.forEach((t) => {
-    //   const order = t.split(":")[1]
-    //   const tagid = t.split(":")[0]
-    //   tagsOrderMap[tagid] = order ? parseInt(order) : false
-    // })
-    
-    // console.log("tagsOrderMap", tagsOrderMap)
-
-    // //const tagsBlock = {}
-    // const tagsNewList = {...tags}
-    
-    // tagsPerComment.forEach((t) => {
-    //   //tagsBlock[t] = true
-    //   // if the tag already exists
-    //   if (tagsNewList[t]){
-    //     // if this new entry has an order, then bump the order of all following annos
-    //     if (tagsOrderMap[t]){
-    //       Object.keys(tagsNewList[t]).forEach((nt) => {
-    //         console.log("firing t", t)
-    //         console.log("firing nt", nt)
-    //         if (tagsNewList[t][nt].order && tagsNewList[t][nt].order >= tagsOrderMap[t]){
-    //           console.log("firing inside conditional", tagsNewList[t][nt])
-    //           tagsNewList[t][nt].order = tagsNewList[t][nt].order + 1
-    //         }
-    //       })
-    //     }
-    //     // then add new entry
-    //     tagsNewList[t][akey] = tagsOrderMap[t] ? {order: tagsOrderMap[t]} : true
-        
-    //   }
-    //   else{
-    //     tagsNewList[t] = {}
-    //     tagsNewList[t][akey] =  tagsOrderMap[t] ? {order: tagsOrderMap[t]} : true
-    //   }
-    // })
-
-    // console.log("tagsNewList", tagsNewList)
+    const userId = "http://scta.info/resource/jeffreycwitt" //TODO; needs to adjust to user logged in info
     
     const tagsNewList = generateTagList(inputTags, akey)
     
@@ -203,20 +163,12 @@ useEffect(()=>{
     else {
       delete annotation.body["editedValue"];
     }
-    //lists[comments].push(annotation) 
-    //lists[comments].splice(orderNumber, 0, annotation);
-    //setLists({
-      //...lists,
-    //})
     setCommentFilter('')
     
     const annotationsNewList = {...annotations}
     annotationsNewList[akey] = annotation
 
-    //console.log("annotations1", annotationsNewList)
-    //console.log("tags1", tagsNewList)
     setAnnotations(annotationsNewList)
-    console.log("setTags", tagsNewList)
     setTags(tagsNewList)
 
   }
@@ -314,9 +266,8 @@ useEffect(()=>{
     // it is temporary to get db synch to work. 
 
     if (db && Object.keys(annotations).length > 0) {
-      console.log('firing annotations', annotations)
       try{
-        db.ref("jeff").set({annotations: annotations, tags: tags})
+        db.ref(userId).set({annotations: annotations, tags: tags})
       }
       catch (e){
         console.log("error in db update", e)
@@ -367,7 +318,6 @@ useEffect(()=>{
        }
      })
     }
-    console.log("fullList", fullList)
     return fullList
 
   }
@@ -423,7 +373,7 @@ useEffect(()=>{
   }
   return (
     <Container className={props.hidden ? "hidden" : "showing"}>
-      <LoginPage/>
+      {/* <LoginPage handleUserIdUpdate={handleUserIdUpdate}/> */}
       <Comment2Create 
         submitComment={submitComment} 
         selectionRange={props.selectionRange}
