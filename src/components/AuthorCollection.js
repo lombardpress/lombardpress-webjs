@@ -33,7 +33,7 @@ class AuthorCollection extends React.Component {
   }
   arrangeItems(itemsPromise, resourceid){
     itemsPromise.then((d) => {
-      const authorShortId = resourceid.split("/resource/")[1]
+      //const authorShortId = resourceid.split("/resource/")[1]
       //change due to fuseki 4.3.1 update 
       //const author = d.data["@graph"].filter((i) => i["@id"] === "sctar:peter-plaoulresourceid)[0]
       // const author = d.data["@graph"].filter((i) => i["@id"] === "sctar:" + authorShortId)[0]
