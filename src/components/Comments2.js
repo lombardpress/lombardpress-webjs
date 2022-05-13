@@ -311,7 +311,7 @@ useEffect(()=>{
       <hr/>
       {showFocusComments ? <Button size="sm" disabled>{t("Show Comments For Focused Passage")}</Button> : <Button id="btnAllCommentsToggle" size="sm" onClick={() => setShowFocusComments(true)}>{t("Show Comments For Focused Passage")}</Button>}
       {!showFocusComments ? <Button size="sm" disabled>{t("Show Comments Regardless of Target")}</Button> : <Button id="btnAllCommentsToggle" size="sm" onClick={() => setShowFocusComments(false)}>{t("Show Comments Regardless of Target")}</Button>}
-      {comments && <><br/><span>Filter <span onClick={() => {setComments("")}}>X</span><span>{comments}</span></span></>}
+      {comments && <><br/><span>Filter: <span onClick={() => {setComments("")}}>X</span><span>{comments}</span></span></>}
       <FormControl size="sm" style={{margin: "10px 0"}} type="text" value={commentFilter} placeholder={t("filter comments by text")} className="mr-sm-2" onChange={(e) => {setCommentFilter(e.target.value)}}/>
       
       <hr/>
