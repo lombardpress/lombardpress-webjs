@@ -238,7 +238,7 @@ useEffect(()=>{
     targetComment.body.value = update
     targetComment.body.editedValue = editedText
     targetComment.motivation = motivation
-    targetComment.orderNumber = orderNumber
+    //targetComment.orderNumber = orderNumber
     targetComment.target = noTarget ? false : targetComment.target
     targetComment.tags = generateAnnoTagBlock(inputTags)
 
