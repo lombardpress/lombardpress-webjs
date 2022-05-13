@@ -6,6 +6,24 @@ const ImportExport = (props) =>{
   const [newListName, setNewListName] = useState('');
   const [newListUrl, setNewListUrl] = useState('');
   const [showImport, setShowImport] = useState(false);
+  const [pdfStatus, setPdfStatus] = useState(null)
+
+  const handleGetPdfStatus = () => {
+    Axios.post("http://localhost:5000/api/v1/annolist", props.currentList).then((data) => {
+      if (data.data.url){
+        console.log("first condition passed", data.data.url)
+        const hashWithExtension = data.data.url
+        //setPdfStatus({pdf: "https://print.lombardpress.org/api/v1/" + hashWithExtension})
+        setPdfStatus({pdf: "http://localhost:5000/api/v1/" + hashWithExtension})
+      }
+      else{
+        setPdfStatus({status: data.data.Status + "Please check back in a few minutes", pdf: ""})
+      }
+    })
+
+
+  }
+
 
   const handleFileImport = (e) => {
     var reader = new FileReader();
@@ -47,6 +65,27 @@ const ImportExport = (props) =>{
     const title = props.currentListName.split('.json')[0] + "-" + new Date().toISOString().slice(0, 10)
     return title
   }
+
+  const displayPdfStatus = () => {
+    if (!pdfStatus){
+      return (
+        <p><span className="lbp-span-link" onClick={handleGetPdfStatus}>Generate Pdf Text From List</span> </p>
+      )
+    }
+    else if (pdfStatus.pdf){
+      return (
+      <p><a href={pdfStatus.pdf} target="_blank" rel="noopener noreferrer">View PDF</a></p>
+      )
+    }
+    else{
+      return (
+      <div>
+        <p><span>{pdfStatus.status}</span></p>
+        <p><span className="lbp-span-link" onClick={handleGetPdfStatus}>Click here to update status</span> </p>
+      </div>)
+    }
+  }
+
   return (
     <div>
       <span className="lbp-span-link" onClick={() => setShowImport(!showImport)}>Import <FaUpload/></span> 
@@ -59,12 +98,13 @@ const ImportExport = (props) =>{
           <span className="lbp-span-link"><FaCloudDownloadAlt/> Load from Cloud</span>
           <form onSubmit={handleUrlImport}><input type="text" value={newListUrl} onChange={(e) => {setNewListUrl(e.target.value)}}></input><input type="submit"/></form>
           
-          <span className="lbp-span-link"><FaPlusCircle/> Create New List</span> 
-          <form onSubmit={createNewList}><input type="text" value={newListName} onChange={(e) => {setNewListName(e.target.value)}}></input><input type="submit"/></form>
+          {/* <span className="lbp-span-link"><FaPlusCircle/> Create New List</span> 
+          <form onSubmit={createNewList}><input type="text" value={newListName} onChange={(e) => {setNewListName(e.target.value)}}></input><input type="submit"/></form> */}
         </div>
-      }
+      } 
       <br/> 
       <a href={packageData()} download={downloadTitle()}><span className="lbp-span-link">Export <FaDownload/></span></a>
+      {displayPdfStatus()}
       
     </div>
   );

@@ -288,6 +288,9 @@ useEffect(()=>{
   }
   // expect list to be in already parsed JSON
   const handleImportList = (list, listname) => {
+    //TODO; this would need to take in annotaitonList Array and convert it to object structure 
+    // and then add it to annotationState which would then update db
+
     // try to load data from local storage
     try {
       const parsedList = list;
@@ -335,8 +338,7 @@ useEffect(()=>{
   //   }
   // }, [tags])
   // bug here; lists needs to be included or update won't happen
-  
-  const displayComments = () => {
+  const generateFullList = () => {
     let fullList = []
     if (!comments){
        Object.keys(annotations).forEach((k) => {
@@ -366,6 +368,12 @@ useEffect(()=>{
      })
     }
     console.log("fullList", fullList)
+    return fullList
+
+  }
+  
+  const displayComments = () => {
+    const fullList = generateFullList()
 
     const displayComments = fullList.length > 0 && fullList.slice(0).map((c,i) => {
       const target = typeof(c.target) === 'string' ? c.target : c.target.source;
@@ -448,7 +456,7 @@ useEffect(()=>{
         {displayComments()}
       </div>
       {
-      <Comments2ImportExport currentList={lists[comments]} currentListName={comments} handleImportList={handleImportList} />
+      <Comments2ImportExport currentList={generateFullList()} currentListName={comments || "all"} handleImportList={handleImportList} />
     }
 
     </Container>
