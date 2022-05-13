@@ -50,6 +50,63 @@ useEffect(()=>{
       })
     }, [])
 
+
+  const generateTagList = (inputTags, akey) => {
+    const tagsPerComment = inputTags.map((t) => {
+      return t.split(":")[0]
+    })
+    // loop through tags and create hash of tag to order, so that the tag order can be looked up
+    const tagsOrderMap = {}
+    inputTags.forEach((t) => {
+      const order = t.split(":")[1]
+      const tagid = t.split(":")[0]
+      tagsOrderMap[tagid] = order ? parseInt(order) : false
+    })
+
+     //const tagsBlock = {}
+     const tagsNewList = {...tags}
+    
+     tagsPerComment.forEach((t) => {
+       //tagsBlock[t] = true
+       // if the tag already exists
+       if (tagsNewList[t]){
+         // if this new entry has an order, then bump the order of all following annos
+         if (tagsOrderMap[t]){
+           const renumberingCounter = tagsOrderMap[t]
+           Object.keys(tagsNewList[t]).forEach((nt) => {
+             if (tagsNewList[t][nt].order && tagsNewList[t][nt].order >= tagsOrderMap[t]){
+               console.log("firing inside conditional", tagsNewList[t][nt])
+               tagsNewList[t][nt].order = tagsNewList[t][nt].order + 1
+             }
+           })
+         }
+         // then add new entry
+         tagsNewList[t][akey] = tagsOrderMap[t] ? {order: tagsOrderMap[t]} : true
+         
+       }
+       else{
+         tagsNewList[t] = {}
+         tagsNewList[t][akey] =  tagsOrderMap[t] ? {order: tagsOrderMap[t]} : true
+       }
+     })
+ 
+     console.log("tagsNewList", tagsNewList)
+     return tagsNewList
+
+  }
+  
+  // 
+  const generateAnnoTagBlock = (inputTags) => {
+    const tagsPerComment = inputTags.map((t) => {
+      return t.split(":")[0]
+    })
+    const tagsBlock = {}
+    tagsPerComment.forEach((t) => {
+      tagsBlock[t] = true
+    })
+    return tagsBlock
+  }
+
   /**
    * submit the comment
    * 
@@ -62,23 +119,54 @@ useEffect(()=>{
     const akey = prefixedId(annoId)
     const dateObject = new Date();
     const userId = "http://scta.info/resource/jeffreycwitt"
-    const tagsPerComment = inputTags
-    const tagsBlock = {}
-    const tagsNewList = {...tags}
     
-    tagsPerComment.forEach((t) => {
-      tagsBlock[t] = true
-      if (tagsNewList[t]){
-        tagsNewList[t][akey] = true
-      }
-      else{
-        tagsNewList[t] = {}
-        tagsNewList[t][akey] = true
-      }
-    })
+    // // loop through tags and separate tag from an order indicator
+    // const tagsPerComment = inputTags.map((t) => {
+    //   return t.split(":")[0]
+    // })
+    // // loop through tags and create hash of tag to order, so that the tag order can be looked up
+    // const tagsOrderMap = {}
+    // inputTags.forEach((t) => {
+    //   const order = t.split(":")[1]
+    //   const tagid = t.split(":")[0]
+    //   tagsOrderMap[tagid] = order ? parseInt(order) : false
+    // })
+    
+    // console.log("tagsOrderMap", tagsOrderMap)
 
-    console.log("tagsNewList", tagsNewList)
-    const selector = [
+    // //const tagsBlock = {}
+    // const tagsNewList = {...tags}
+    
+    // tagsPerComment.forEach((t) => {
+    //   //tagsBlock[t] = true
+    //   // if the tag already exists
+    //   if (tagsNewList[t]){
+    //     // if this new entry has an order, then bump the order of all following annos
+    //     if (tagsOrderMap[t]){
+    //       Object.keys(tagsNewList[t]).forEach((nt) => {
+    //         console.log("firing t", t)
+    //         console.log("firing nt", nt)
+    //         if (tagsNewList[t][nt].order && tagsNewList[t][nt].order >= tagsOrderMap[t]){
+    //           console.log("firing inside conditional", tagsNewList[t][nt])
+    //           tagsNewList[t][nt].order = tagsNewList[t][nt].order + 1
+    //         }
+    //       })
+    //     }
+    //     // then add new entry
+    //     tagsNewList[t][akey] = tagsOrderMap[t] ? {order: tagsOrderMap[t]} : true
+        
+    //   }
+    //   else{
+    //     tagsNewList[t] = {}
+    //     tagsNewList[t][akey] =  tagsOrderMap[t] ? {order: tagsOrderMap[t]} : true
+    //   }
+    // })
+
+    // console.log("tagsNewList", tagsNewList)
+    
+    const tagsNewList = generateTagList(inputTags, akey)
+    
+      const selector = [
       {
         "type": "TextQuoteSelector",
         "exact": selectionRange.text ? selectionRange.text : ""
@@ -96,7 +184,7 @@ useEffect(()=>{
       "created": dateObject.toISOString(),
       "creator": userId,
       "motivation": motivation,
-      "tags": tagsBlock,
+      "tags": generateAnnoTagBlock(inputTags),
       "body": {
         "type": "TextualBody",
         "value": comment
@@ -144,7 +232,7 @@ useEffect(()=>{
     // replace current list value with filtered list
     setAnnotations(clonedAnnotations)
   }
-  const updateComment = (id, update, editedText, motivation, selectionRange, orderNumber, noTarget, tags) => {
+  const updateComment = (id, update, editedText, motivation, selectionRange, orderNumber, noTarget, inputTags) => {
     let clonedAnnotations = { ...annotations};
     const targetComment = clonedAnnotations[prefixedId(id)]
     targetComment.body.value = update
@@ -152,6 +240,11 @@ useEffect(()=>{
     targetComment.motivation = motivation
     targetComment.orderNumber = orderNumber
     targetComment.target = noTarget ? false : targetComment.target
+    targetComment.tags = generateAnnoTagBlock(inputTags)
+
+    const akey = prefixedId(id)
+    const tagsNewList = generateTagList(inputTags, akey)
+    
     //const old_index = lists[comments].indexOf(targetComment);
     
     //reposition comment
@@ -167,6 +260,7 @@ useEffect(()=>{
     //lists[comments].splice(orderNumber, 0, lists[comments].splice(old_index, 1)[0]);
     
     setAnnotations(clonedAnnotations)
+    setTags(tagsNewList)
   }
   useEffect(() => {
     setMentionedBy(getMentionedBy())
@@ -218,7 +312,12 @@ useEffect(()=>{
 
     if (db && Object.keys(annotations).length > 0) {
       console.log('firing annotations', annotations)
-      db.ref("jeff").set({annotations: annotations, tags: tags})
+      try{
+        db.ref("jeff").set({annotations: annotations, tags: tags})
+      }
+      catch (e){
+        console.log("error in db update", e)
+      }
     }
   }, [annotations, lists, tags])
   // bug here; lists needs to be included or update won't happen
@@ -245,10 +344,25 @@ useEffect(()=>{
       })
     }
     else{
-      Object.keys(annotations).map((a) => {
+      const newAnnotations = {...annotations}
+      Object.keys(newAnnotations).map((a) => {
         if (tags && tags[comments] && Object.keys(tags[comments]).includes(a)) {
-          return fullList.push(annotations[a])
+          if (tags[comments][a].order){
+            newAnnotations[a]["order"] = tags[comments][a].order
+          }
+          return fullList.push(newAnnotations[a])
         }
+     })
+     fullList.sort((a,b) => {
+       if (a.order > b.order){
+         return 1
+       }
+       else if (a.order < b.order){
+         return -1
+       }
+       else {
+         return
+       }
      })
     }
     console.log("fullList", fullList)
@@ -260,7 +374,7 @@ useEffect(()=>{
           return (
             <div key={i}>
               <Comment2Item comment={c} focused={true} removeComment={removeComment} updateComment={updateComment}
-              handleOnClickComment={props.handleOnClickComment} setTagFilter={setComments}/>
+              handleOnClickComment={props.handleOnClickComment} setTagFilter={setComments} tagsList={tags}/>
               {
               //<button onClick={() => {removeNote(n.title)}}>x</button>
               }
@@ -275,7 +389,7 @@ useEffect(()=>{
         if (target && target.includes(props.expressionid) && (c.body.value && c.body.value.includes(commentFilter))){
           return (
             <div key={i} style={{borderLeft: "1px solid black"}}>
-              <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment} setTagFilter={setComments}/>
+              <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment} setTagFilter={setComments} tagsList={tags}/>
               {
               //<button onClick={() => {removeNote(n.title)}}>x</button>
               }
@@ -285,7 +399,7 @@ useEffect(()=>{
         else if (c.body.value && c.body.value.includes(commentFilter)){
           return (
             <div key={i}>
-              <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment} setTagFilter={setComments}/>
+              <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment} setTagFilter={setComments} tagsList={tags}/>
               {
               //<button onClick={() => {removeNote(n.title)}}>x</button>
               }

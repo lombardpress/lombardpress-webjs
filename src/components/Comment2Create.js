@@ -64,7 +64,7 @@ function Comment2Create(props) {
         </div>
         }
         <FormControl as="textarea" type="text" id="comment" rows="3" value={comment} placeholder={t("comment")} className="mr-sm-2" onChange={(e) => {setComment(e.target.value)}}/>
-        <span>Position: <Form.Text as="input" inline="true" type="input" id="orderNumber" value={orderNumber} className="mr-sm-2" onChange={(e) => {setOrderNumber(e.target.value)}} style={{border: 0, width: "25px", display: "inline"}}/></span>
+        {/* <span>Position: <Form.Text as="input" inline="true" type="input" id="orderNumber" value={orderNumber} className="mr-sm-2" onChange={(e) => {setOrderNumber(e.target.value)}} style={{border: 0, width: "25px", display: "inline"}}/></span> */}
         <span>Has Target: <input type="checkbox" inline="true" label="has target" checked={!noTarget} onChange={(e) => {setNoTarget(!noTarget)}} style={{display: "inline"}}/></span>
         <span>Tags: <Form.Text as="input" value={inputTags.join(" ")} className="mr-sm-2" onChange={(e) => setInputTags(e.target.value.split(" "))}></Form.Text></span>
       </div>
