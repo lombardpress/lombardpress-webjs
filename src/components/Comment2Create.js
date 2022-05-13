@@ -13,12 +13,13 @@ function Comment2Create(props) {
   const [editedText, setEditedText] = useState((props.selectionRange && props.selectionRange.textEdited) ? props.selectionRange.textEdited : editedTextDefault);
   const [noTarget, setNoTarget] = useState(props.noTarget || false); // if noTarget is set to true, annotation is made without a target
   const [orderNumber, setOrderNumber] = useState(props.orderNumber);
+  const [inputTags, setInputTags] = useState(props.tags || []);
   
   
   const handleCommentUpdate = (e) => {
     e.preventDefault()
     const commentType = motivation;
-    props.submitComment(comment, commentType, editedText, props.selectionRange, orderNumber, noTarget)
+    props.submitComment(comment, commentType, editedText, props.selectionRange, orderNumber, noTarget, inputTags)
     setComment('')
   }
   useEffect(() => {
@@ -65,6 +66,7 @@ function Comment2Create(props) {
         <FormControl as="textarea" type="text" id="comment" rows="3" value={comment} placeholder={t("comment")} className="mr-sm-2" onChange={(e) => {setComment(e.target.value)}}/>
         <span>Position: <Form.Text as="input" inline="true" type="input" id="orderNumber" value={orderNumber} className="mr-sm-2" onChange={(e) => {setOrderNumber(e.target.value)}} style={{border: 0, width: "25px", display: "inline"}}/></span>
         <span>Has Target: <input type="checkbox" inline="true" label="has target" checked={!noTarget} onChange={(e) => {setNoTarget(!noTarget)}} style={{display: "inline"}}/></span>
+        <span>Tags: <Form.Text as="input" value={inputTags.join(" ")} className="mr-sm-2" onChange={(e) => setInputTags(e.target.value.split(" "))}></Form.Text></span>
       </div>
       <Button size="sm"  type="submit" block style={{margin: "2px"}}>{t("Submit")}</Button>
    </Form>

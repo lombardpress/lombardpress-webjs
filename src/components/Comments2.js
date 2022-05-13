@@ -26,10 +26,9 @@ function Comments2(props) {
   const {t} = useTranslation();
   //const [lists, setLists] = useState(JSON.parse(localStorage.getItem("sctaCommentsState2"))|| {"local": []})
   const [lists, setLists] = useState({"local": []})
-  const [comments, setComments] = useState("print");
+  const [comments, setComments] = useState(""); // tagFilter
   const [annotations, setAnnotations] = useState({})
-  const [tags, setTags] = useState({"print": {}, "newList": {}, "extra": {}})
-  const [showAll, setShowAll] = useState(false);
+  const [tags, setTags] = useState({})
   const [showFocusComments, setShowFocusComments] = useState(true)
   const [commentFilter, setCommentFilter] = useState("")
   const [mentionedBy, setMentionedBy] = useState([])
@@ -45,8 +44,8 @@ useEffect(()=>{
         const dbResult = snapshot.val()
         console.log("db result", dbResult)
         if (dbResult) {
-          setAnnotations(dbResult.annotations)
-          setTags(dbResult.tags)
+          setAnnotations(dbResult.annotations || {})
+          setTags(dbResult.tags || {})
         }
       })
     }, [])
@@ -57,21 +56,28 @@ useEffect(()=>{
    * @param {string} comment 
    * @public
    */
-  const submitComment = (comment, motivation, editedText, selectionRange, orderNumber, noTarget) => {
+  const submitComment = (comment, motivation, editedText, selectionRange, orderNumber, noTarget, inputTags) => {
     const randomid = uuidv4();
     const annoId = "http://inbox.scta.info/notifications/" + randomid
     const akey = prefixedId(annoId)
     const dateObject = new Date();
     const userId = "http://scta.info/resource/jeffreycwitt"
-    const tagsPerComment = ["print", "newList"]
+    const tagsPerComment = inputTags
     const tagsBlock = {}
-    const tagsNewList = tags
+    const tagsNewList = {...tags}
     
     tagsPerComment.forEach((t) => {
       tagsBlock[t] = true
-      tagsNewList[t][akey] = true
+      if (tagsNewList[t]){
+        tagsNewList[t][akey] = true
+      }
+      else{
+        tagsNewList[t] = {}
+        tagsNewList[t][akey] = true
+      }
     })
 
+    console.log("tagsNewList", tagsNewList)
     const selector = [
       {
         "type": "TextQuoteSelector",
@@ -116,12 +122,13 @@ useEffect(()=>{
     //})
     setCommentFilter('')
     
-    const annotationsNewList = annotations
+    const annotationsNewList = {...annotations}
     annotationsNewList[akey] = annotation
 
     //console.log("annotations1", annotationsNewList)
     //console.log("tags1", tagsNewList)
     setAnnotations(annotationsNewList)
+    console.log("setTags", tagsNewList)
     setTags(tagsNewList)
 
   }
@@ -137,7 +144,7 @@ useEffect(()=>{
     // replace current list value with filtered list
     setAnnotations(clonedAnnotations)
   }
-  const updateComment = (id, update, editedText, motivation, selectionRange, orderNumber, noTarget) => {
+  const updateComment = (id, update, editedText, motivation, selectionRange, orderNumber, noTarget, tags) => {
     let clonedAnnotations = { ...annotations};
     const targetComment = clonedAnnotations[prefixedId(id)]
     targetComment.body.value = update
@@ -208,22 +215,38 @@ useEffect(()=>{
     // its currently there so that database won't be re-written on load, but it is completely acceptable for local to be 0
     // and this will prevent writing to other lists, when local list is empty
     // it is temporary to get db synch to work. 
+
     if (db && Object.keys(annotations).length > 0) {
+      console.log('firing annotations', annotations)
       db.ref("jeff").set({annotations: annotations, tags: tags})
     }
   }, [annotations, lists, tags])
   // bug here; lists needs to be included or update won't happen
+
+  // useEffect(() => {
+  //   //localStorage.setItem("sctaCommentsState2", JSON.stringify(lists))
+  //   //NOTE/TODO: this conditional lists['local'].length > 0 is temporary and MUST BE changed
+  //   // its currently there so that database won't be re-written on load, but it is completely acceptable for local to be 0
+  //   // and this will prevent writing to other lists, when local list is empty
+  //   // it is temporary to get db synch to work. 
+
+  //   if (db && tags && Object.keys(tags).length > 0) {
+  //     console.log('firing tags', tags)
+  //     db.ref("jeff").set({tags: tags})
+  //   }
+  // }, [tags])
+  // bug here; lists needs to be included or update won't happen
   
   const displayComments = () => {
     let fullList = []
-    if (showAll){
+    if (!comments){
        Object.keys(annotations).forEach((k) => {
          fullList.push(annotations[k])
       })
     }
     else{
       Object.keys(annotations).map((a) => {
-        if (Object.keys(tags[comments]).includes(a)) {
+        if (tags && tags[comments] && Object.keys(tags[comments]).includes(a)) {
           return fullList.push(annotations[a])
         }
      })
@@ -285,21 +308,12 @@ useEffect(()=>{
         textEdit={props.textEdit}
         orderNumber={Object.keys(annotations).length}
         />
-      <Button size="sm" style={{margin: "2px"}} block onClick={() => setShowFilters(!showFilters)}><FaFilter/> Filters</Button>
-      { showFilters &&
-      <div>
-        <span>Select Annotation List</span>
-      <Button size="sm" style={{margin: "2px", margin: "10px 0"}} block onClick={() => setShowAll(!showAll)}>{showAll ? "Focus List" : "All Lists"}</Button>
-      <FormControl size="sm" as="select" onChange={(e) => {setComments(e.target.value)}} value={comments}>
-                {tags && Object.keys(tags).map((e, i) => {
-                    return (<option key={e} value={e}>{e}</option>)
-                  })
-                }
-      </FormControl>
+      <hr/>
+      {showFocusComments ? <Button size="sm" disabled>{t("Show Comments For Focused Passage")}</Button> : <Button id="btnAllCommentsToggle" size="sm" onClick={() => setShowFocusComments(true)}>{t("Show Comments For Focused Passage")}</Button>}
+      {!showFocusComments ? <Button size="sm" disabled>{t("Show Comments Regardless of Target")}</Button> : <Button id="btnAllCommentsToggle" size="sm" onClick={() => setShowFocusComments(false)}>{t("Show Comments Regardless of Target")}</Button>}
+      {comments && <><br/><span>Filter <span onClick={() => {setComments("")}}>X</span><span>{comments}</span></span></>}
       <FormControl size="sm" style={{margin: "10px 0"}} type="text" value={commentFilter} placeholder={t("filter comments by text")} className="mr-sm-2" onChange={(e) => {setCommentFilter(e.target.value)}}/>
-      <Button id="btnAllCommentsToggle" size="sm" style={{margin: "2px"}} block onClick={() => setShowFocusComments(!showFocusComments)}>{showFocusComments ? t("Show All Comments") : t("Show Comments For Focused Passage") }</Button>
-      </div>
-      }
+      
       <hr/>
       {mentionedBy.length > 0 && 
       <div>

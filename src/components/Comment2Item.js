@@ -56,7 +56,7 @@ function Comment2Item(props) {
   }
 
   const displayTags = (tags) => {
-    const displayTags = Object.keys(tags).map((t) => {
+    const displayTags = tags && Object.keys(tags).map((t) => {
       return (<span className="lbp-span-link" onClick={() => props.setTagFilter(t)}>{t} </span>)
     })
     return displayTags
