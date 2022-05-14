@@ -220,23 +220,23 @@ useEffect(()=>{
   }, [props.resourceid])
   
   const getMentionedBy = () => {
-    // if (lists[comments].length > 0){
-    //   let mentionedBy = lists[comments].map((c) => {
-    //     if (c.body.value && c.body.value.includes(props.resourceid)){
-    //       const target =  typeof(c.target) === 'string' ? c.target : c.target.source;
-    //       return target
-    //     }
-    //     else{
-    //       return undefined
-    //     }
-    //   })
-    //   mentionedBy = mentionedBy.filter((i) => {return i !== undefined})
-    //   return mentionedBy
-    // }
-    // else{
-    //   return []
-    // }
-    return []
+    if (Object.keys(annotations).length > 0){
+      console.log("firing2")
+      let mentionedBy = Object.keys(annotations).map((c) => {
+        if (annotations[c].body.value && annotations[c].body.value.includes(props.resourceid.split("/resource/")[1].split("/")[0])){
+          const target =  typeof(annotations[c].target) === 'string' ? annotations[c].target : annotations[c].target.source;
+          return target
+        }
+        else{
+          return undefined
+        }
+      })
+      mentionedBy = mentionedBy.filter((i) => {return i !== undefined})
+      return mentionedBy
+    }
+    else{
+      return []
+    }
   }
   // expect list to be in already parsed JSON
   const handleImportList = (list, listname) => {
@@ -382,7 +382,7 @@ useEffect(()=>{
         />
       <hr/>
       {showFocusComments ? <Button size="sm" disabled>{t("Show Comments For Focused Passage")}</Button> : <Button id="btnAllCommentsToggle" size="sm" onClick={() => setShowFocusComments(true)}>{t("Show Comments For Focused Passage")}</Button>}
-      {!showFocusComments ? <Button size="sm" disabled>{t("Show Comments Regardless of Target")}</Button> : <Button id="btnAllCommentsToggle" size="sm" onClick={() => setShowFocusComments(false)}>{t("Show Comments Regardless of Target")}</Button>}
+      {!showFocusComments ? <Button size="sm" disabled>Show Comments Regardless of Target</Button> : <Button id="btnAllCommentsToggle" size="sm" onClick={() => setShowFocusComments(false)}>Show Comments Regardless of Target</Button>}
       {comments && <><br/><span>Filter: <span onClick={() => {setComments("")}}>X</span><span>{comments}</span></span></>}
       <FormControl size="sm" style={{margin: "10px 0"}} type="text" value={commentFilter} placeholder={t("filter comments by text")} className="mr-sm-2" onChange={(e) => {setCommentFilter(e.target.value)}}/>
       

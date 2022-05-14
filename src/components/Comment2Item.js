@@ -68,7 +68,7 @@ function Comment2Item(props) {
   }
   const getTagOrderNumber = (annoid, t) => {
     const annoShortId = annoid.replace("http://inbox.scta.info/notifications/", "sctan:")
-    if (props.tagsList[t][annoShortId] && props.tagsList[t][annoShortId].order) {
+    if (props.tagsList[t] && props.tagsList[t][annoShortId] && props.tagsList[t][annoShortId].order) {
       return props.tagsList[t][annoShortId].order
     }
     else{
