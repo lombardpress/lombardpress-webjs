@@ -44,7 +44,7 @@ function NavBar(props) {
         <a className="nav-link" href="https://scta.info/donate">{t("Donate")}</a>
       </Nav>
       </Navbar.Collapse>
-      <LoginPage handleUserIdUpdate={props.handleUserIdUpdate}/>
+      <LoginPage user={props.user}/>
     </Navbar>
 
   );

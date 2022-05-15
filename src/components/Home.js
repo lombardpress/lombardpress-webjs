@@ -16,6 +16,7 @@ function Home(props) {
     //   return <Text resourceid={props.location.search.resourceid}/>
     // }
     // else
+    console.log("home props", props)
     return (
       <div className="Home">
         <Container id="lbp-home" fluid>

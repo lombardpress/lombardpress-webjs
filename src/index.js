@@ -7,14 +7,31 @@ import './i18n';
 import './firebase/firebase';
 import { firebase } from './firebase/firebase';
 
-ReactDOM.render(<AppRouter/>, document.getElementById('root'));
+//ReactDOM.render(<AppRouter/>, document.getElementById('root'));
+
+
+let hasRendered = false; 
+const renderApp = (user) => {
+  if (!hasRendered){
+    ReactDOM.render(
+      //<React.StrictMode> // commented out because it is causing setStates to run twice; but this should be a problem if my setState functions were pure functions as they should be; but apparently mine are not: see https://github.com/facebook/react/issues/12856#issuecomment-390206425
+        <AppRouter user={user}/>,
+      //</React.StrictMode>
+      document.getElementById('root')
+    );
+    //hasRendered = true
+  }
+}
 
 firebase.auth().onAuthStateChanged((user) => {
   if (user){
     console.log("log in")
+    renderApp(user)
   }
   else {
     console.log("log out")
+    const user = {uid: "jeff"}
+    renderApp(user)
   }
 })
 
