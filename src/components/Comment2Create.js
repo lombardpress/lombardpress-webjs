@@ -12,7 +12,7 @@ function Comment2Create(props) {
   const editedTextDefault = props.selectionRange && props.selectionRange.text ? props.selectionRange.text : ""
   const [editedText, setEditedText] = useState((props.selectionRange && props.selectionRange.textEdited) ? props.selectionRange.textEdited : editedTextDefault);
   const [noTarget, setNoTarget] = useState(props.noTarget || false); // if noTarget is set to true, annotation is made without a target
-  const [orderNumber, setOrderNumber] = useState(props.orderNumber);
+  const [orderNumber] = useState(props.orderNumber);
   const [inputTags, setInputTags] = useState(props.tags || []);
   
   

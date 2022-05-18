@@ -58,7 +58,7 @@ function Comment2Item(props) {
   const getTagsWithOrderNumbers = (annoid, tags) => {
     const tagsWithOrder = []
     if (Object.keys(props.tagsList).length > 0){
-      tags && Object.keys(tags).map((t) => {
+      tags && Object.keys(tags).forEach((t) => {
       const orderNumber = getTagOrderNumber(annoid, t)
       const fullTag = orderNumber ? t + ":" + orderNumber : t
       tagsWithOrder.push(fullTag)

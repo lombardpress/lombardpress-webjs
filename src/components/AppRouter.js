@@ -1,4 +1,4 @@
-import React, {Suspense, useState} from 'react';
+import React, {Suspense} from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import Home from "./Home"
 import Search3 from "./Search3"
@@ -7,7 +7,7 @@ import About from "./About"
 import NavBar from './NavBar';
 import Spinner from './Spinner';
 import Footer from './Footer';
-import OSDInstance from './OSDInstance';
+
 
 import 'bootstrap/dist/css/bootstrap.css'
 import '../styles/App.scss';

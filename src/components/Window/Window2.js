@@ -216,7 +216,7 @@ class Window2 extends React.Component {
               &&
               (this.state.windowLoad === "comments" || this.state.mountStatus.comments) 
               &&  
-              (this.props.userId && this.props.userId != "jeff") ? 
+              (this.props.userId && this.props.userId !== "jeff") ? 
               <Comments2 
                 resourceid={this.props.resourceid + this.props.mtFocus}
                 expressionid={this.props.resourceid} 

@@ -1,9 +1,9 @@
 import React, {useState} from 'react'
 import Axios from 'axios'
-import {FaDownload, FaCloudDownloadAlt, FaUpload, FaPlusCircle} from 'react-icons/fa';
+import {FaDownload, FaCloudDownloadAlt, FaUpload} from 'react-icons/fa';
 
 const ImportExport = (props) =>{
-  const [newListName, setNewListName] = useState('');
+  //const [newListName, setNewListName] = useState('');
   const [newListUrl, setNewListUrl] = useState('');
   const [showImport, setShowImport] = useState(false);
   const [pdfStatus, setPdfStatus] = useState(null)
@@ -48,12 +48,12 @@ const ImportExport = (props) =>{
 
 
   }
-  const createNewList = (e) => {
-    e.preventDefault();
-    //NOTE: first argument needs to be string that will be parsed in the parent component, in this case to an array
-    props.handleImportList([], newListName)
-    setNewListName('')
-  }
+  // const createNewList = (e) => {
+  //   e.preventDefault();
+  //   //NOTE: first argument needs to be string that will be parsed in the parent component, in this case to an array
+  //   props.handleImportList([], newListName)
+  //   setNewListName('')
+  // }
   const packageData = () =>
    {
     const data = JSON.stringify(props.currentList, null, 2);

@@ -2,17 +2,17 @@ import React, {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import FormControl from 'react-bootstrap/FormControl';
-import PropTypes, { object } from 'prop-types';
+import PropTypes from 'prop-types';
 import Comment2Create from './Comment2Create.js'
 import Comment2Item from './Comment2Item.js'
 import Comments2ImportExport from './Comments2ImportExport'
 
 import uuidv4 from 'uuid/v4';
 import Button from 'react-bootstrap/Button';
-import {FaClipboard, FaFilter} from 'react-icons/fa';
+import {FaClipboard} from 'react-icons/fa';
 import {useTranslation} from 'react-i18next'
 import {copyToClipboard} from './utils'
-import { firebase, db } from '../firebase/firebase'
+import {db } from '../firebase/firebase'
 import {camelCase} from './utils'
 
 
@@ -32,7 +32,7 @@ function Comments2(props) {
   const [showFocusComments, setShowFocusComments] = useState(true)
   const [commentFilter, setCommentFilter] = useState("")
   const [mentionedBy, setMentionedBy] = useState([])
-  const [showFilters, setShowFilters] = useState(false)
+  //const [showFilters, setShowFilters] = useState(false)
   const [userId, setUserId] = useState("")
 
   
@@ -79,7 +79,7 @@ useEffect(()=>{
        if (tagsNewList[t]){
          // if this new entry has an order, then bump the order of all following annos
          if (tagsOrderMap[t]){
-           const renumberingCounter = tagsOrderMap[t]
+           //const renumberingCounter = tagsOrderMap[t]
            Object.keys(tagsNewList[t]).forEach((nt) => {
              if (tagsNewList[t][nt].order && tagsNewList[t][nt].order >= tagsOrderMap[t]){
                tagsNewList[t][nt].order = tagsNewList[t][nt].order + 1
@@ -273,6 +273,7 @@ useEffect(()=>{
         console.log("error in db update", e)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [annotations, lists, tags])
   // bug here; lists needs to be included or update won't happen
 
@@ -305,6 +306,10 @@ useEffect(()=>{
           }
           return fullList.push(newAnnotations[a])
         }
+        else {
+          return null
+        }
+        
      })
      fullList.sort((a,b) => {
        if (a.order > b.order){
@@ -314,9 +319,10 @@ useEffect(()=>{
          return -1
        }
        else {
-         return
+         return 0
        }
-     })
+       
+      })
     }
     return fullList
 
