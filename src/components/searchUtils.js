@@ -74,14 +74,13 @@ export function displayFigureResults(results){
         const imgurl = r.imgurl
         console.log("imgurl", imgurl)
         return (
-          <div key={i}>
-          <p><Link to={"/text?resourceid=http://scta.info/resource/" + r.pid}>{r.pid}</Link></p>
-          <img src={imgurl} alt="figure" style={{"width": "300px"}}></img>
+          <div key={i} className="figure-tile">
+          <Link to={"/text?resourceid=http://scta.info/resource/" + r.pid}><img src={imgurl} alt="figure"></img></Link>
           </div>
         )
       })
       return (
-        <div>
+        <div className="figure-grid">
             <p>{results.length + " results"}</p>
             {figureResults}
         </div>
