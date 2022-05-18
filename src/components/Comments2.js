@@ -34,6 +34,7 @@ function Comments2(props) {
   const [mentionedBy, setMentionedBy] = useState([])
   //const [showFilters, setShowFilters] = useState(false)
   const [userId, setUserId] = useState("")
+  const [tagFilter, setTagFilter] = useState()
 
   
   
@@ -377,6 +378,26 @@ useEffect(()=>{
     })
     return displayComments
   }
+  const displayTagSuggestions = () => {
+    const possibleTags = Object.keys(tags).map((t) => {
+      if (tagFilter === "?"){
+        return (<span onClick={(() => setComments(t))} key={"tsuggest-" + t}>{t}</span>)
+      }
+      else if (t.toLowerCase().includes(tagFilter.toLowerCase())){
+        return (<span onClick={(() => setComments(t))} key={"tsuggest-" + t}>{t}</span>)
+      }
+      else {
+        return null
+      }
+    })
+    return possibleTags
+  }
+  const handelOnEnterPress = (e) => {
+    if (e.charCode === 13) {
+      setComments(e.target.value)
+      setTagFilter("")
+    }
+  }
   return (
     <Container className={props.hidden ? "hidden" : "showing"}>
       {/* <LoginPage handleUserIdUpdate={handleUserIdUpdate}/> */}
@@ -391,6 +412,8 @@ useEffect(()=>{
       {!showFocusComments ? <Button size="sm" disabled>Show Comments Regardless of Target</Button> : <Button id="btnAllCommentsToggle" size="sm" onClick={() => setShowFocusComments(false)}>Show Comments Regardless of Target</Button>}
       {comments && <><br/><span>Filter: <span onClick={() => {setComments("")}}>X</span><span>{comments}</span></span></>}
       <FormControl size="sm" style={{margin: "10px 0"}} type="text" value={commentFilter} placeholder={t("filter comments by text")} className="mr-sm-2" onChange={(e) => {setCommentFilter(e.target.value)}}/>
+      <FormControl size="sm" style={{margin: "10px 0 0 0"}} type="text" value={tagFilter} placeholder="search for tags; type ? to see all tags" className="mr-sm-2" onChange={(e) => {setTagFilter(e.target.value)}} onKeyPress={((e) => {handelOnEnterPress(e)})}/>
+      {tagFilter && <div className="tagSuggestionList">{displayTagSuggestions()}</div>}
       
       <hr/>
       {mentionedBy.length > 0 && 

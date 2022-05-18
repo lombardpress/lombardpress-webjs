@@ -1,0 +1,13 @@
+.tagSuggestionList{
+  background-color: white;
+  padding: 2px;
+  margin-top: 0px;
+  max-height: 300px;
+  overflow: scroll;
+}
+.tagSuggestionList span{
+  display: block;
+}
+.tagSuggestionList span:hover{
+  background-color: $dark;
+}
