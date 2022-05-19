@@ -79,7 +79,7 @@ function Comment2Item(props) {
     if (Object.keys(props.tagsList).length > 0){
     const displayTags = tags && Object.keys(tags).map((t) => {
       const orderNumber = getTagOrderNumber(props.comment.id, t)
-      return (<span className="lbp-span-link" onClick={() => props.setTagFilter(t)}>{t} {orderNumber && <span>({orderNumber})</span>} </span>)
+      return (<span key={"tag-" + t} className="lbp-span-link" onClick={() => props.setTagFilter(t)}>{t} {orderNumber && <span>({orderNumber})</span>} </span>)
     })
     return displayTags
     }

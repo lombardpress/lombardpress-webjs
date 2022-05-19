@@ -95,6 +95,16 @@ class Text extends React.Component {
     _this.markWithElement(selectionRange)
   }
 
+  $('.js-show-figure-image').click(function(e) {
+    e.preventDefault();
+    const figureid = $(this).attr('id');
+    _this.props.setFocus(figureid)
+    if (scrollTo){
+      scrollToParagraph(scrollTo, true)
+    }
+    
+  });
+
    $('.js-show-folio-image').click(function(e) {
      e.preventDefault();
      const surfaceid = $(this).attr('data-surfaceid');
@@ -135,10 +145,14 @@ class Text extends React.Component {
       });
 
       $(document).on("click", '.js-show-info', function(e) {
-         e.preventDefault();
-         const id = $(this).attr('data-pid')
-         _this.props.setFocus(id)
-         _this.props.openWindow("window1")
+        // this conditional is used prevent click event from binding event 
+        // to children (like line numbers which have their own click bind)
+        if (e.target === this){
+          e.preventDefault();
+          const id = $(this).attr('data-pid')
+          _this.props.setFocus(id)
+          _this.props.openWindow("window1")
+        }
        });
        // this seems like a repetition of line 88
        if (scrollTo){
@@ -161,39 +175,45 @@ class Text extends React.Component {
       });
 
       $(document).on("click", '.js-show-reference-paragraph', function(e){
-       e.preventDefault();
-       /** @type {string} */
-       const targetParagraph = $(this).attr('data-target-resource')
-       /** @type {string} */
-       const targetIds = $(this).attr('data-url')
-       /** @type {Array} */
-       const splitTargetId = targetIds.split(" ")
-       /** @type {string} */
-       const targetRange = $(this).attr('data-target-range')
-       /** @type {Array} */
-       const splitTargetRange = targetRange ? targetRange.split(" ") : null
-       /** @type {Array} */
-       const targetObjects = splitTargetId.map((i, index) => {
-         return {
-           id: i,
-           range: splitTargetRange ? splitTargetRange[index] : null
-         }
-       })
-      
-       // set the desired text preview focus to the target of the reference
-       _this.props.handleTextPreviewFocusChange(targetObjects)
-       //opening bottomw window 2 to textPreview
-       _this.props.openWindow("window2", "textPreview")
+        // this conditional is used prevent click event from binding event 
+        // to children (like line numbers which have their own click bind)
+        if (e.target === this){
+        
+          e.preventDefault();
+          /** @type {string} */
+          const targetParagraph = $(this).attr('data-target-resource')
+          /** @type {string} */
+          const targetIds = $(this).attr('data-url')
+          /** @type {Array} */
+          const splitTargetId = targetIds.split(" ")
+          /** @type {string} */
+          const targetRange = $(this).attr('data-target-range')
+          /** @type {Array} */
+          const splitTargetRange = targetRange ? targetRange.split(" ") : null
+          /** @type {Array} */
+          const targetObjects = splitTargetId.map((i, index) => {
+            return {
+              id: i,
+              range: splitTargetRange ? splitTargetRange[index] : null
+            }
+            
+          })
+          
+          // set the desired text preview focus to the target of the reference
+          _this.props.handleTextPreviewFocusChange(targetObjects)
+          //opening bottomw window 2 to textPreview
+          _this.props.openWindow("window2", "textPreview")
 
-   // NOTE: Order seems to make a difference here (at least in the production version)
-   // calling this.props.setFocus before handleTextPreviewFocusChange and openWindow
-   // was causing a reload that prevented desired functionality (but not on local version, only on production/deployed version)
-   // TODO: investigate further, because even thought the re-arranged order seems to be working
-   // the problem is likely to do with async timing (i.e. on job finish before another)
-   //which could vary in different enviornments
+      // NOTE: Order seems to make a difference here (at least in the production version)
+      // calling this.props.setFocus before handleTextPreviewFocusChange and openWindow
+      // was causing a reload that prevented desired functionality (but not on local version, only on production/deployed version)
+      // TODO: investigate further, because even thought the re-arranged order seems to be working
+      // the problem is likely to do with async timing (i.e. on job finish before another)
+      //which could vary in different enviornments
 
-       //setting paragraph focus for paragraph containing target footnote
-       _this.props.setFocus(targetParagraph)
+          //setting paragraph focus for paragraph containing target footnote
+          _this.props.setFocus(targetParagraph)
+      }
      })
 
 
