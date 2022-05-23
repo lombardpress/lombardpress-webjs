@@ -26,7 +26,7 @@ const ResourceTypeList = (props) => {
       resources.map((r) => {
         //check against error resources with ids
         if (r.resource.value !== "http://scta.info/resource/"){
-          if (r.resourceTitle.value.includes(filter)){
+          if (r.resourceTitle.value.toLowerCase().includes(filter.toLowerCase())){
             return <p key={r.resource.value}><Link to={"/text?resourceid=" + r.resource.value}>{r.resourceTitle.value}</Link></p>
           }
           else{

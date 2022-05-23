@@ -11,3 +11,47 @@
 .tagSuggestionList span:hover{
   background-color: $dark;
 }
+
+#commentToggleButtons{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  flex-direction: row;
+}
+
+#commentToggleButtons button{
+  width: 49%; 
+  margin: 5px 1px 5px 1px;
+}
+
+#commentFilterInputs{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  flex-direction: row;
+}
+
+#commentFilterInputs div{
+  width: 100%; 
+}
+#commentFilterInputs div input{
+  margin: 5px 0px 5px 0px;
+}
+
+@media only screen and (max-width: 1000px){
+  #commentToggleButtons button{
+    width: 100%; 
+    margin: 5px 0px 5px 0px;
+  }
+}
+@media only screen and (max-width: 1000px){
+  #commentFilterInputs div{
+    width: 100%; 
+  }
+  #commentFilterInputs div input{
+    margin: 5px 0px 5px 0px;
+  }
+}
+

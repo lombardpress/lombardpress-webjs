@@ -12,7 +12,7 @@ function NavBar(props) {
 
   
   return (
-    <Navbar bg="dark" variant="light" expand="lg" fixed="top">
+    <Navbar bg="dark" variant="light" expand="lg" fixed="top" style={{borderBottom: "1px solid #dee2e6"}}>
       <Nav>
         <NavLink className="nav-link" to="/">{t("Title")}</NavLink>
       </Nav>
@@ -41,10 +41,19 @@ function NavBar(props) {
         {
           //<NavLink className="nav-link" to="/about">{t("About")}</NavLink>
         }
-        <a className="nav-link" href="https://scta.info/donate">{t("Donate")}</a>
+        <a className="nav-link" href="https://secure.qgiv.com/for/givescta">{t("Donate")}</a>
+      </Nav>
+      
+      </Navbar.Collapse>
+      <Navbar.Collapse id="basic-navbar-nav-right" className="float-right" style={{flexGrow: "0"}}>
+      <Nav>
+          <LoginPage user={props.user}/>
       </Nav>
       </Navbar.Collapse>
-      <LoginPage user={props.user}/>
+      
+
+      
+      
     </Navbar>
 
   );

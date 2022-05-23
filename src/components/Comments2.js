@@ -41,6 +41,7 @@ function Comments2(props) {
 //retrieve annotations on mount
 useEffect(()=>{
   setUserId(props.userId)
+    if (props.userId && props.userId !== "jeff") {
     db.ref(props.userId)
       .once('value')
       .then((snapshot) => {
@@ -54,6 +55,7 @@ useEffect(()=>{
           setTags({})
         }
       })
+    }
     }, [props.userId])
 
 
@@ -400,7 +402,8 @@ useEffect(()=>{
   }
   return (
     <Container className={props.hidden ? "hidden" : "showing"}>
-      {/* <LoginPage handleUserIdUpdate={handleUserIdUpdate}/> */}
+      {(props.userId && props.userId !== "jeff") ? 
+      <>
       <Comment2Create 
         submitComment={submitComment} 
         selectionRange={props.selectionRange}
@@ -408,13 +411,22 @@ useEffect(()=>{
         orderNumber={Object.keys(annotations).length}
         />
       <hr/>
-      {showFocusComments ? <Button size="sm" disabled>{t("Show Comments For Focused Passage")}</Button> : <Button id="btnAllCommentsToggle" size="sm" onClick={() => setShowFocusComments(true)}>{t("Show Comments For Focused Passage")}</Button>}
-      {!showFocusComments ? <Button size="sm" disabled>Show Comments Regardless of Target</Button> : <Button id="btnAllCommentsToggle" size="sm" onClick={() => setShowFocusComments(false)}>Show Comments Regardless of Target</Button>}
-      {comments && <><br/><span>Filter: <span onClick={() => {setComments("")}}>X</span><span>{comments}</span></span></>}
-      <FormControl size="sm" style={{margin: "10px 0"}} type="text" value={commentFilter} placeholder={t("filter comments by text")} className="mr-sm-2" onChange={(e) => {setCommentFilter(e.target.value)}}/>
-      <FormControl size="sm" style={{margin: "10px 0 0 0"}} type="text" value={tagFilter} placeholder="search for tags; type ? to see all tags" className="mr-sm-2" onChange={(e) => {setTagFilter(e.target.value)}} onKeyPress={((e) => {handelOnEnterPress(e)})}/>
-      {tagFilter && <div className="tagSuggestionList">{displayTagSuggestions()}</div>}
-      
+      <div id="commentToggleButtons">
+        
+          {showFocusComments ? <Button size="sm" disabled>{t("Show Comments For Focused Passage")}</Button> : <Button id="btnAllCommentsToggle" size="sm" onClick={() => setShowFocusComments(true)}>{t("Show Comments For Focused Passage")}</Button>}
+          {!showFocusComments ? <Button size="sm" disabled>Show Comments Regardless of Target</Button> : <Button id="btnAllCommentsToggle" size="sm" onClick={() => setShowFocusComments(false)}>Show Comments Regardless of Target</Button>}
+        
+      </div>
+      <div id="commentFilterInputs">
+        <div>
+        <FormControl size="sm" type="text" value={commentFilter} placeholder={t("filter comments by text")} className="mr-sm-2" onChange={(e) => {setCommentFilter(e.target.value)}}/>
+        </div>
+        <div>
+          <FormControl size="sm" type="text" value={tagFilter} placeholder="search for tags; type ? to see all tags" className="mr-sm-2" onChange={(e) => {setTagFilter(e.target.value)}} onKeyPress={((e) => {handelOnEnterPress(e)})}/>
+          {tagFilter && <div className="tagSuggestionList">{displayTagSuggestions()}</div>}
+        </div>
+      </div>
+      {comments && <span>Filter: <span onClick={() => {setComments("")}}>X</span><span>{comments}</span></span>}
       <hr/>
       {mentionedBy.length > 0 && 
       <div>
@@ -437,7 +449,8 @@ useEffect(()=>{
       {
       <Comments2ImportExport currentList={generateFullList()} currentListName={comments || "all"} handleImportList={handleImportList} />
     }
-
+    </> : 
+    <p> You must be logged in to comment</p> }
     </Container>
   );
 }

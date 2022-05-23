@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { firebase, googleAuthProvider } from '../firebase/firebase';
+import Button from 'react-bootstrap/Button';
 
 function LoginPage(props) {
   const [userDisplayName, setUserDisplayName] = useState(props.user && props.user.displayName);
@@ -23,7 +24,7 @@ function LoginPage(props) {
   }, [props.user])
   return (
     <div>
-    {userDisplayName ? <div><button onClick={startLogout}>Logout</button> <span>{userDisplayName}</span> <img src={userPicture} alt="usrImage" height="25px"></img></div> : <button onClick={startLogin}>Login</button>}
+    {userDisplayName ? <span><span>{userDisplayName}</span> <img src={userPicture} alt="usrImage" height="25px"></img> <Button  size="sm" onClick={startLogout}>Logout</Button> </span> : <Button size="sm" onClick={startLogin}>Login</Button>}
     </div>
   );
 }

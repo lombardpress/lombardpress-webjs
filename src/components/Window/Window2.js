@@ -216,7 +216,6 @@ class Window2 extends React.Component {
               &&
               (this.state.windowLoad === "comments" || this.state.mountStatus.comments) 
               &&  
-              (this.props.userId && this.props.userId !== "jeff") ? 
               <Comments2 
                 resourceid={this.props.resourceid + this.props.mtFocus}
                 expressionid={this.props.resourceid} 
@@ -224,7 +223,6 @@ class Window2 extends React.Component {
                 selectionRange={this.props.selectionRange} // this will only apply at resourceType=text level
                 userId={this.props.userId}
               /> 
-              : <p>You need to login in order to comment</p>
             }
             {displayComponents.includes("xml") 
             && (this.state.windowLoad === "xml" || this.state.mountStatus.xml) 
