@@ -36,13 +36,12 @@ class SurfaceInfo extends React.Component {
     })
   }
   handleSurface3Manifestations(manifestations, eid){
-    console.log("test", manifestations, eid)
     let newManifestations = ""
     if (typeof manifestations === "object"){
       newManifestations = manifestations.map((m) =>{
         return {
-          manifestation: m,
-          manifestationTitle: m.split("/resource/")[1],
+          manifestation: m.replace("sctar:", "http://scta.info/resource/"),
+          manifestationTitle: m.replace("sctar:", "http://scta.info/resource/").split("/resource/")[1],
           transcription: ""
         }
       })
@@ -108,12 +107,10 @@ class SurfaceInfo extends React.Component {
         const data = d.data["@graph"]
         const expressions = [] 
         data.forEach((e) => {
-          console.log("e", e)
           if (e.hasManifestation){
-            const surface3Manifestations = this.handleSurface3Manifestations(e.hasManifestation, e["@id"])
-            console.log("test", surface3Manifestations)
+            const surface3Manifestations = this.handleSurface3Manifestations(e.hasManifestation, e["@id"].replace("sctar:", "http://scta.info/resource/"))
             expressions.push({
-              expressionid: e["@id"],
+              expressionid: e["@id"].replace("sctar:", "http://scta.info/resource/"),
               manifestations: e.hasManifestation,
               surface3Manifestations: surface3Manifestations,
               showComments: false,
@@ -128,10 +125,9 @@ class SurfaceInfo extends React.Component {
         let surfaceMap = {}
         data.forEach((e) => {
           if (e.isOnSurface){
-            surfaceMap[e["@id"]] = e.isOnSurface
+            surfaceMap[e["@id"].replace("sctar:", "http://scta.info/resource/")] = e.isOnSurface.replace("sctar:", "http://scta.info/resource/")
           }
         })
-        console.log("expressions", expressions)
         this.setState({
           expressions: expressions,
           surfaceMap: surfaceMap,
@@ -155,8 +151,9 @@ class SurfaceInfo extends React.Component {
         const expressions = this.state.expressions.map((e) => {
           let manifestations = ""
           // sometimes there are several manifestations
-          if (typeof(e.hasManifestation) === "object"){
-            manifestations = e.hasManifestation.map((m) => {
+          if (Array.isArray(e.manifestations)){
+            manifestations = e.manifestations.map((mShort) => {
+              const m = mShort.replace("sctar:", "http://scta.info/resource/")
               return (
                   <div key={m}>
                   <span>{m} <Link to={"/text?resourceid=" + m}><FaExternalLinkAlt/></Link></span>
@@ -169,12 +166,13 @@ class SurfaceInfo extends React.Component {
               })
             }
             // sometimes there is only manifestation
-            else if (e.hasManifestation){
+            else if (e.manifestations){
+              const m = e.manifestations.replace("sctar:", "http://scta.info/resource/")
               manifestations = (
-                  <div key={e.hasManifestation}>
-                  <span>{e.hasManifestation} <Link to={"/text?resourceid=" + e.hasManifestation}><FaExternalLinkAlt/></Link></span>
+                  <div key={m}>
+                  <span>{m} <Link to={"/text?resourceid=" + m}><FaExternalLinkAlt/></Link></span>
                   <br/>
-                  <span style={{"textIndent": "10px"}}>...Appearing on Surface {this.state.surfaceMap[e.hasManifestation]} <Link to={"/text?resourceid=" + this.state.surfaceMap[e.hasManifestation]}><FaExternalLinkAlt/></Link></span>
+                  <span style={{"textIndent": "10px"}}>...Appearing on Surface {this.state.surfaceMap[m]} <Link to={"/text?resourceid=" + this.state.surfaceMap[m]}><FaExternalLinkAlt/></Link></span>
                   <br/>
                   <br/>
                   </div>
