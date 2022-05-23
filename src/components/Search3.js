@@ -160,7 +160,6 @@ const Search3 = (props) => {
     }
     return newResults
   }
-
   return(
     <Container className={props.hidden ? "hidden" : "showing"}>
       <Form onSubmit={handleRunSearch}>

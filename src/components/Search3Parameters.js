@@ -37,7 +37,7 @@ const Search3Parameters = (props) => {
   }
 
   //begin effects to update hooks when props change
-  // perhaps this could be combined into a single custom hood
+  // perhaps this could be combined into a single custom hook
   useEffect(() => {
     setSearchType(props.searchType ? props.searchType : "text")
   }, [props.searchType])
@@ -47,6 +47,9 @@ const Search3Parameters = (props) => {
   useEffect(() => {
     setSearchEid(props.searchEid)
   }, [props.searchEid])
+  useEffect(() => {
+    setSearchEType(props.searchEType)
+  }, [props.searchEType])
   useEffect(() => {
     setSearchWorkGroup(props.searchWorkGroup)
   }, [props.searchWorkGroup])
@@ -73,7 +76,6 @@ const Search3Parameters = (props) => {
     searchAuthorsListDispatch(searchAuthorsListActions.fetchAuthorsList(searchParameters, searchAuthorsListDispatch))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchWorkGroup])
-
 
   return(
     <div>

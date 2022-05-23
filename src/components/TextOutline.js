@@ -72,7 +72,7 @@ class TextOutline extends React.Component {
     //this.setState({showChildren: this.props.showChildren})
     this.mounted = true;
     this.retrieveParts(this.props.resourceid)
-
+    
     if (this.props.membersOf){
       if (this.props.membersOf.includes(this.props.resourceid)) {
         this.setState({showChildren: true})
@@ -131,6 +131,7 @@ class TextOutline extends React.Component {
         key={p.part}
         focusResourceid={this.props.focusResourceid}
         showChildren={this.state.showChildren}
+        showFirstLevelChildren={false}
         resourceid={p.part}
         title={p.title}
         level={p.level}
@@ -169,6 +170,7 @@ class TextOutline extends React.Component {
         {this.props.collectionLink && <a href={"https://mirador.scta.info?resourceid=" + this.props.resourceid} target="_blank" rel="noopener noreferrer"> <img alt="view in mirador" style={{width: "12px", height: "12px"}} src="https://projectmirador.org/img/mirador-logo.svg"></img></a>}
         </p>
         {this.state.showChildren && displayChildren()}
+        {this.props.showFirstLevelChildren && displayChildren()}
       </div>
     );
   }
