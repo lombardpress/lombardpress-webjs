@@ -8,7 +8,6 @@ function WindowNavBar(props) {
   const displayTabs = () => {
     const tabs = props.availableTabs && props.availableTabs.map((t, idx) => {
       if (t.show){
-        console.log("t description", t.desc)
         return (
           <Nav.Item key={"tab-" + t.name}>
             <Nav.Link active={props.windowLoad === t.name} title={t.desc} onClick={() => {props.handleTabChange(t.name, props.windowId)}}>{t.icon}</Nav.Link>

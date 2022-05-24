@@ -688,7 +688,7 @@ export function getAuthorInformation(authorid){
           "?part <http://scta.info/property/questionTitle> ?questionTitle .",
           "}",
         "}",
-        "ORDER BY ?order"].join('');
+        "ORDER BY ?order ?authorTitle"].join('');
         return query
       }
       //gets lines and zone order for
