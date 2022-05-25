@@ -128,7 +128,7 @@
   //  ].join(' ');
 
   const query = [
-  "SELECT DISTINCT ?isRelatedTo ?label ?element ?longTitle ?author ?authorTitle ?isRelatedToRangeStart ?isRelatedToRangeEnd ",
+  "SELECT DISTINCT ?isRelatedTo ?label ?element ?longTitle ?author ?authorTitle ?isRelatedToRangeStart ?isRelatedToRangeEnd ?parentBlock ",
   "WHERE",
   "{ ",
     "BIND (<" + itemExpressionUri  + "> AS ?resource) .",
@@ -183,6 +183,12 @@
       "{ ",
         "?isRelatedTo <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementRef> . ",
         "BIND ('isReferencedBy' as ?label) . ",
+      "}",
+      "OPTIONAL",
+      "{",
+        "?isRelatedTo <http://scta.info/property/isPartOfStructureBlock> ?parentBlock .",
+        //"?isRelatedTo <http://scta.info/property/isMemberOf> ?parentBlock .",
+        //"?parentBlock <http://scta.info/property/structureType> <http://scta.info/resource/stuctureBlock> .",
       "}",
     "}",
     "?isRelatedTo <http://scta.info/property/longTitle> ?longTitle . ",

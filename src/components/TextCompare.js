@@ -10,10 +10,12 @@ class TextCompare extends React.Component {
   constructor(props){
     super(props)
     this.handleToggleShowAll = this.handleToggleShowAll.bind(this)
+    this.handleToggleShowAllImages = this.handleToggleShowAllImages.bind(this)
     this.mounted = ""
     this.state = {
       info: "",
       show: false,
+      showImages: false,
       baseText: ""
     }
   }
@@ -22,6 +24,13 @@ class TextCompare extends React.Component {
     this.setState((prevState) => {
       return{
         show: !prevState.show
+      }
+    })
+  }
+  handleToggleShowAllImages(){
+    this.setState((prevState) => {
+      return{
+        showImages: !prevState.showImages
       }
     })
   }
@@ -68,6 +77,7 @@ class TextCompare extends React.Component {
     //instead this should probably be controlled by parent 
     //(handleToggleShowAll should probably change parent which would then pass down the required prop rather than setting prop to state)
     this.setState({show: this.props.show})
+    this.setState({showImages: this.props.showImages})
     //NOTE: this conditional, does set prop to state, but there is a reason. 
     // the point is that the information has already been achieved, thus we save one async call by using props. 
     // otherwise an async request is called.
@@ -88,6 +98,16 @@ class TextCompare extends React.Component {
       else{
         this.getTextInfo(this.props.expressionid)
       }
+    }
+    //NOTE: setting state from props here is an anti pattern; 
+    //view either needs to be controlled by props or state, but not both
+    if (this.props.show !== prevProps.show){
+      this.handleToggleShowAll()
+    }
+    //NOTE: setting state from props here is an anti pattern
+    //view either needs to be controlled by props or state, but not both
+    if (this.props.showImages !== prevProps.showImages){
+      this.handleToggleShowAllImages()
     }
   }
   componentWillUnmount(){
@@ -117,6 +137,7 @@ class TextCompare extends React.Component {
             targetRange={this.props.targetRange}
             isMainText={this.props.isMainText}
             relationLabel={this.props.relationLabel}
+            showImages={this.state.showImages}
             />
           )
         })
@@ -143,6 +164,7 @@ class TextCompare extends React.Component {
         this.props.authorTitle || this.props.longTitle ? <span> {this.props.authorTitle} {this.props.longTitle}</span> : this.state.info.resourceid
         }
         {this.state.info.resourceid && <span onClick={() => this.handleToggleShowAll()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>}
+        <a href={"https://mirador.scta.info?blockid=" + this.state.info.resourceid} target="_blank" rel="noopener noreferrer"><img alt="view in mirador" style={{width: "12px", height: "12px"}} src="https://projectmirador.org/img/mirador-logo.svg"></img></a>
       </div>
       <div className={this.state.show ? "unhidden" : "hidden"} style={{"paddingLeft": "10px"}}>
         {displayComparisons()}
