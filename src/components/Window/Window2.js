@@ -374,6 +374,7 @@ class Window2 extends React.Component {
       && <NextPrevBar 
       info={this.props.info} 
       handleBlockFocusChange={this.props.handleBlockFocusChange}
+      handleFocusChange={this.props.handleFocusChange}
       selectionRange={this.props.selectionRange}
       />}
 

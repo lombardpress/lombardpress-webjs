@@ -34,7 +34,7 @@ function Comments2(props) {
   const [mentionedBy, setMentionedBy] = useState([])
   //const [showFilters, setShowFilters] = useState(false)
   const [userId, setUserId] = useState("")
-  const [tagFilter, setTagFilter] = useState()
+  const [tagFilter, setTagFilter] = useState("")
 
   
   
