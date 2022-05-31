@@ -5,6 +5,8 @@ import Button from 'react-bootstrap/Button';
 import {useTranslation} from 'react-i18next'
 import {FaEdit, FaComment} from 'react-icons/fa';
 
+import Comments2TagSuggestions from './Comments2TagSuggestions'
+
 function Comment2Create(props) {
   const {t} = useTranslation();
   const [comment, setComment] = useState(props.comment);
@@ -13,9 +15,24 @@ function Comment2Create(props) {
   const [editedText, setEditedText] = useState((props.selectionRange && props.selectionRange.textEdited) ? props.selectionRange.textEdited : editedTextDefault);
   const [noTarget, setNoTarget] = useState(props.noTarget || false); // if noTarget is set to true, annotation is made without a target
   const [orderNumber] = useState(props.orderNumber);
-  const [inputTags, setInputTags] = useState(props.tags || []);
+  const [inputTags, setInputTags] = useState(props.tagsList || []);
   
   
+  const handleOnClickTag = (t) => {
+    setInputTags([...inputTags, t])
+  }
+  const handleDropTag = (t) => {
+    const newInputTags = inputTags.filter((ot) => {
+      if (ot.split(":")[0] !== t.split(":")[0]){
+        return ot
+      }
+      else{
+        return null
+      }
+    })
+    setInputTags(newInputTags)
+
+  }
   const handleCommentUpdate = (e) => {
     e.preventDefault()
     const commentType = motivation;
@@ -34,6 +51,7 @@ function Comment2Create(props) {
   }, [motivation])
 
   const wordRange = (props.selectionRange && props.selectionRange.wordRange) ? props.selectionRange.wordRange.start + "-" + props.selectionRange.wordRange.end : ""
+
   return (
     <Form onSubmit={handleCommentUpdate}>
       
@@ -66,7 +84,16 @@ function Comment2Create(props) {
         
         <span>Has Target: <input type="checkbox" inline="true" label="has target" checked={!noTarget} onChange={(e) => {setNoTarget(!noTarget)}} style={{display: "inline"}}/></span>
         <FormControl as="textarea" type="text" id="comment" rows="3" value={comment} placeholder={t("comment")} className="mr-sm-2" onChange={(e) => {setComment(e.target.value)}}/>
-        <FormControl type="text" size="sm" as="input" placeholder="add tags (e.g beauty faith); use colon to indicate order (e.g. beauty:1 faith:2)" value={inputTags.join(" ")} className="mr-sm-2" onChange={(e) => setInputTags(e.target.value.split(" "))} style={{margin: "5px 0"}}></FormControl>
+        {inputTags && <span>Selected Tags: {
+          
+          inputTags.map((t) => {
+            return (<span key={"tag-"+ t}><span onClick={() => {handleDropTag(t)}}>X</span><span>{t}</span></span>)
+          })
+        }
+        </span>
+        }
+        <Comments2TagSuggestions tagsList={props.availableTagsList} handleOnClickTag={handleOnClickTag} placeHolderText="add tags (e.g beauty, faith:1, faith:2); type ? to see in-use tags"/>
+
       </div>
       <Button size="sm"  type="submit" block style={{margin: "2px"}}>{t("Submit")}</Button>
    </Form>

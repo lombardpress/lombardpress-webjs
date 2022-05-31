@@ -102,7 +102,8 @@ function Comment2Item(props) {
           motivation={props.comment.motivation}
           noTarget={props.comment.target ? false : true}
           orderNumber={props.orderNumber}
-          tags={getTagsWithOrderNumbers(props.comment.id, props.comment.tags)}
+          tagsList={getTagsWithOrderNumbers(props.comment.id, props.comment.tags)}
+          availableTagsList={props.tagsList}
           /> :
           <p>
           {

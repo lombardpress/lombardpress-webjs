@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import Comment2Create from './Comment2Create.js'
 import Comment2Item from './Comment2Item.js'
 import Comments2ImportExport from './Comments2ImportExport'
+import Comments2TagSuggestions from './Comments2TagSuggestions'
 
 import uuidv4 from 'uuid/v4';
 import Button from 'react-bootstrap/Button';
@@ -34,7 +35,6 @@ function Comments2(props) {
   const [mentionedBy, setMentionedBy] = useState([])
   //const [showFilters, setShowFilters] = useState(false)
   const [userId, setUserId] = useState("")
-  const [tagFilter, setTagFilter] = useState("")
 
   
   
@@ -224,7 +224,6 @@ useEffect(()=>{
   
   const getMentionedBy = () => {
     if (Object.keys(annotations).length > 0){
-      console.log("firing2")
       let mentionedBy = Object.keys(annotations).map((c) => {
         if (annotations[c].body.value && annotations[c].body.value.includes(props.resourceid.split("/resource/")[1].split("/")[0])){
           const target =  typeof(annotations[c].target) === 'string' ? annotations[c].target : annotations[c].target.source;
@@ -380,26 +379,6 @@ useEffect(()=>{
     })
     return displayComments
   }
-  const displayTagSuggestions = () => {
-    const possibleTags = Object.keys(tags).map((t) => {
-      if (tagFilter === "?"){
-        return (<span onClick={(() => setComments(t))} key={"tsuggest-" + t}>{t}</span>)
-      }
-      else if (t.toLowerCase().includes(tagFilter.toLowerCase())){
-        return (<span onClick={(() => setComments(t))} key={"tsuggest-" + t}>{t}</span>)
-      }
-      else {
-        return null
-      }
-    })
-    return possibleTags
-  }
-  const handelOnEnterPress = (e) => {
-    if (e.charCode === 13) {
-      setComments(e.target.value)
-      setTagFilter("")
-    }
-  }
   return (
     <Container className={props.hidden ? "hidden" : "showing"}>
       {(props.userId && props.userId !== "jeff") ? 
@@ -409,6 +388,7 @@ useEffect(()=>{
         selectionRange={props.selectionRange}
         textEdit={props.textEdit}
         orderNumber={Object.keys(annotations).length}
+        availableTagsList={tags}
         />
       <hr/>
       <div id="commentToggleButtons">
@@ -421,10 +401,7 @@ useEffect(()=>{
         <div>
         <FormControl size="sm" type="text" value={commentFilter} placeholder={t("filter comments by text")} className="mr-sm-2" onChange={(e) => {setCommentFilter(e.target.value)}}/>
         </div>
-        <div>
-          <FormControl size="sm" type="text" value={tagFilter} placeholder="search for tags; type ? to see all tags" className="mr-sm-2" onChange={(e) => {setTagFilter(e.target.value)}} onKeyPress={((e) => {handelOnEnterPress(e)})}/>
-          {tagFilter && <div className="tagSuggestionList">{displayTagSuggestions()}</div>}
-        </div>
+        <Comments2TagSuggestions tagsList={tags} handleOnClickTag={setComments} placeHolderText="search for tags; type ? to see all tags"/>
       </div>
       {comments && <span>Filter: <span onClick={() => {setComments("")}}>X</span><span>{comments}</span></span>}
       <hr/>
