@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
 import {useTranslation} from 'react-i18next'
@@ -19,7 +18,9 @@ function Comment2Create(props) {
   
   
   const handleOnClickTag = (t) => {
-    setInputTags([...inputTags, t])
+    if (!inputTags.includes(t)){
+      setInputTags([...inputTags, t])
+    }
   }
   const handleDropTag = (t) => {
     const newInputTags = inputTags.filter((ot) => {
@@ -53,8 +54,7 @@ function Comment2Create(props) {
   const wordRange = (props.selectionRange && props.selectionRange.wordRange) ? props.selectionRange.wordRange.start + "-" + props.selectionRange.wordRange.end : ""
 
   return (
-    <Form onSubmit={handleCommentUpdate}>
-      
+      <div>
       {motivation === "editing" && 
       <div>
         <span>Suggest Edit for : 
@@ -95,8 +95,8 @@ function Comment2Create(props) {
         <Comments2TagSuggestions tagsList={props.availableTagsList} handleOnClickTag={handleOnClickTag} placeHolderText="add tags (e.g beauty, faith:1, faith:2); type ? to see in-use tags"/>
 
       </div>
-      <Button size="sm"  type="submit" block style={{margin: "2px"}}>{t("Submit")}</Button>
-   </Form>
+      <Button size="sm"  type="submit" onClick={handleCommentUpdate} block style={{margin: "2px"}}>{t("Submit")}</Button>
+   </div>
   );
 }
 
