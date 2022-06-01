@@ -163,14 +163,19 @@ class TextOutline extends React.Component {
         }
         {this.props.title}
         {this.props.questionTitle && <span>: {this.props.questionTitle}</span>}
+        
+        {!this.props.showFirstLevelChildren &&
+        <>
         {(this.state.parts.length > 0 && !this.state.showChildren) && <span className="outlineArrow" onClick={this.handleToggleChildren}><FaChevronDown/></span>}
         {(this.state.parts.length > 0 && this.state.showChildren) && <span className="outlineArrow" onClick={this.handleToggleChildren}><FaChevronUp/></span>}
+        </>
+        }
+        
         {/** Note this conditional below ("this.props.resourceid &&"") was added mostly to allow current tests to pass; if required documentation of required props is improved; tests could be improved and this conditional likely wouldn't be necessary */}
         {this.props.resourceid && <Link to={"/text?resourceid=" + this.props.resourceid + this.props.mtFocus} ><FaExternalLinkAlt/></Link>}
         {this.props.collectionLink && <a href={"https://mirador.scta.info?resourceid=" + this.props.resourceid} target="_blank" rel="noopener noreferrer"> <img alt="view in mirador" style={{width: "12px", height: "12px"}} src="https://projectmirador.org/img/mirador-logo.svg"></img></a>}
         </p>
-        {this.state.showChildren && displayChildren()}
-        {this.props.showFirstLevelChildren && displayChildren()}
+        {this.props.showFirstLevelChildren ? displayChildren() : this.state.showChildren && displayChildren()}
       </div>
     );
   }
