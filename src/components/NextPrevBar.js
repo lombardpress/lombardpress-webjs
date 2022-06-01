@@ -24,7 +24,20 @@ function NextPrevBar(props) {
   }
   const handelOnEnterPress = (e) => {
     if (e.charCode === 13) {
-      props.handleFocusChange(e.target.value)
+      let target = e.target.value
+      if (target.includes("https://scta.info/resource/")){
+        target = target.replace("https://scta.info/resource/", "http://scta.info/resource/")
+      }
+      else if (target.includes("sctar:")){
+        target = target.replace("sctar:", "http://scta.info/resource/")
+      }
+      else if (target.includes("http://scta.info/resource/")){
+
+      }
+      else(
+        target = "http://scta.info/resource/" + target
+      )
+      props.handleFocusChange(target)
       setCustomResourceTarget("")
       //setShowCustomResourceTarget(false)
     }
