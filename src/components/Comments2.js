@@ -248,9 +248,19 @@ useEffect(()=>{
     //filter current list
     
     let clonedAnnotations = { ...annotations};
+    
+    //get list of tags who members need to be updated
+    const affectedTags = Object.keys(clonedAnnotations[prefixedId(id)].tags)
+
     delete clonedAnnotations[prefixedId(id)]
+    let clonedTags = { ...tags};
+    affectedTags.forEach((at) => {
+      delete clonedTags[at][prefixedId(id)]
+    })
+    
     // replace current list value with filtered list
     setAnnotations(clonedAnnotations)
+    setTags(clonedTags)
   }
   const updateComment = (id, update, editedText, motivation, selectionRange, orderNumber, noTarget, inputTags) => {
     let clonedAnnotations = { ...annotations};
