@@ -27,7 +27,7 @@ function Comments2(props) {
   const {t} = useTranslation();
   //const [lists, setLists] = useState(JSON.parse(localStorage.getItem("sctaCommentsState2"))|| {"local": []})
   const [lists, setLists] = useState({"local": []})
-  const [comments, setComments] = useState(""); // tagFilter
+  const [filterTags, setFilterTags] = useState([]); // tagFilter
   const [annotations, setAnnotations] = useState({})
   const [tags, setTags] = useState({})
   const [showFocusComments, setShowFocusComments] = useState(true)
@@ -35,6 +35,8 @@ function Comments2(props) {
   const [mentionedBy, setMentionedBy] = useState([])
   //const [showFilters, setShowFilters] = useState(false)
   const [userId, setUserId] = useState("")
+  const [tagsToDelete, setTagsToDelete] = useState([])
+  const [showManageTags, setShowManageTags] = useState(false)
 
   
   
@@ -179,6 +181,69 @@ useEffect(()=>{
     const prefixedId = "sctan:" + id.split("/notifications/")[1]
     return prefixedId
   }
+  const handleRemoveTags = (tagsToRemove) => {
+    let clonedAnnotations = { ...annotations};
+    let clonedTags = { ...tags};
+    
+    const modifiedAnnos = []
+    // first remove all tags from affected annotations
+    tagsToRemove.forEach((t) => {
+      const annosToModify = Object.keys(clonedTags[t])
+      modifiedAnnos.push(annosToModify)
+      annosToModify.forEach((a)=> {
+        delete clonedAnnotations[a].tags[t]
+      })
+    // then delete tags
+      delete clonedTags[t]
+    })
+    alert("Are you sure you want to remove these tags; This will modify " + modifiedAnnos.length + "annotations")
+    setTags(clonedTags)
+    setAnnotations(clonedAnnotations)
+
+  }
+  // const handleRemoveTagsAndTaggedComments = () => {
+
+  // }
+
+  const handleDropTagToDelete = (t) => {
+    const newTagsToDelete = tagsToDelete.filter((ot) => {
+      if (ot.split(":")[0] !== t.split(":")[0]){
+        return ot
+      }
+      else{
+        return null
+      }
+    })
+    setTagsToDelete(newTagsToDelete)
+
+  }
+  const handleOnClickTagToDelete = (t) => {
+    if (!tagsToDelete.includes(t)){
+    setTagsToDelete([...tagsToDelete, t])
+    }
+  }
+
+  const handleAddFilterTag = (t) => {
+    if (!filterTags.includes(t)){
+      setFilterTags([...filterTags, t])
+    }
+  }
+  const handleAddSingleFilterTag = (t) => {
+    setFilterTags([t])
+  }
+  const handleDropFilterTag = (t) => {
+    const newFilterTags = filterTags.filter((ot) => {
+      if (ot.split(":")[0] !== t.split(":")[0]){
+        return ot
+      }
+      else{
+        return null
+      }
+    })
+    setFilterTags(newFilterTags)
+
+  }
+
   const removeComment = (id) => {
     //filter current list
     
@@ -294,25 +359,42 @@ useEffect(()=>{
   // bug here; lists needs to be included or update won't happen
   const generateFullList = () => {
     let fullList = []
-    if (!comments){
+    if (!filterTags){
        Object.keys(annotations).forEach((k) => {
          fullList.push(annotations[k])
       })
     }
-    else{
+    else if (filterTags.length === 1){
+      const ft = filterTags[0]
       const newAnnotations = {...annotations}
-      Object.keys(newAnnotations).map((a) => {
-        if (tags && tags[comments] && Object.keys(tags[comments]).includes(a)) {
-          if (tags[comments][a].order){
-            newAnnotations[a]["order"] = tags[comments][a].order
+        Object.keys(newAnnotations).forEach((a) => {
+        if (tags && tags[ft] && Object.keys(tags[ft]).includes(a)) {
+          if (tags[ft][a].order){
+            newAnnotations[a]["order"] = tags[ft][a].order
           }
           return fullList.push(newAnnotations[a])
         }
         else {
           return null
         }
-        
-     })
+      })
+    }
+    else{
+      const newAnnotations = {...annotations}
+        Object.keys(newAnnotations).forEach((a) => {
+          if (newAnnotations[a].tags){
+            if (filterTags.every(element => Object.keys(newAnnotations[a].tags).includes(element))) {
+              return fullList.push(newAnnotations[a])
+            }
+            else {
+              return null
+            }
+          }
+          else {
+            return null
+          }
+      })
+    }
      fullList.sort((a,b) => {
        if (a.order > b.order){
          return 1
@@ -325,7 +407,6 @@ useEffect(()=>{
        }
        
       })
-    }
     return fullList
 
   }
@@ -340,7 +421,7 @@ useEffect(()=>{
           return (
             <div key={i}>
               <Comment2Item comment={c} focused={true} removeComment={removeComment} updateComment={updateComment}
-              handleOnClickComment={props.handleOnClickComment} setTagFilter={setComments} tagsList={tags}/>
+              handleOnClickComment={props.handleOnClickComment} setTagFilter={handleAddSingleFilterTag} tagsList={tags}/>
               {
               //<button onClick={() => {removeNote(n.title)}}>x</button>
               }
@@ -355,7 +436,7 @@ useEffect(()=>{
         if (target && target.includes(props.expressionid) && (c.body.value && c.body.value.includes(commentFilter))){
           return (
             <div key={i} style={{borderLeft: "1px solid black"}}>
-              <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment} setTagFilter={setComments} tagsList={tags}/>
+              <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment} setTagFilter={handleAddSingleFilterTag} tagsList={tags}/>
               {
               //<button onClick={() => {removeNote(n.title)}}>x</button>
               }
@@ -365,7 +446,7 @@ useEffect(()=>{
         else if (c.body.value && c.body.value.includes(commentFilter)){
           return (
             <div key={i}>
-              <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment} setTagFilter={setComments} tagsList={tags}/>
+              <Comment2Item comment={c} removeComment={removeComment} updateComment={updateComment} setTagFilter={handleAddSingleFilterTag} tagsList={tags}/>
               {
               //<button onClick={() => {removeNote(n.title)}}>x</button>
               }
@@ -401,9 +482,16 @@ useEffect(()=>{
         <div>
         <FormControl size="sm" type="text" value={commentFilter} placeholder={t("filter comments by text")} className="mr-sm-2" onChange={(e) => {setCommentFilter(e.target.value)}}/>
         </div>
-        <Comments2TagSuggestions tagsList={tags} handleOnClickTag={setComments} placeHolderText="search for tags; type ? to see all tags"/>
+        <Comments2TagSuggestions tagsList={tags} handleOnClickTag={handleAddFilterTag} placeHolderText="search for tags; type ? to see all tags"/>
       </div>
-      {comments && <span>Filter: <span onClick={() => {setComments("")}}>X</span><span>{comments}</span></span>}
+      {filterTags && <span>Filter Tags: {
+          
+          filterTags.map((t) => {
+            return (<span key={"tag-"+ t}><span onClick={() => {handleDropFilterTag(t)}}>X</span><span>{t}</span></span>)
+          })
+        }
+        </span>
+        }
       <hr/>
       {mentionedBy.length > 0 && 
       <div>
@@ -423,9 +511,27 @@ useEffect(()=>{
       <div>
         {displayComments()}
       </div>
+      
+      <div>
+        <span className="lbp-span-link" onClick={() => {setShowManageTags(!showManageTags)}}>Manage Tags</span>
+        { showManageTags &&
+        <div>
+        {tagsToDelete && <span>Selected Tags: {
+          
+          tagsToDelete.map((t) => {
+            return (<span key={"tag-"+ t}><span onClick={() => {handleDropTagToDelete(t)}}>X</span><span>{t}</span></span>)
+          })
+        }
+        </span>
+        }
+        <div><Comments2TagSuggestions tagsList={tags} handleOnClickTag={handleOnClickTagToDelete} placeHolderText="search for tags; type ? to see all tags"/></div>
+        <p onClick={() => {handleRemoveTags(tagsToDelete)}}>Delete Tags</p>
+      </div>
+      }
+      </div>
       {
-      <Comments2ImportExport currentList={generateFullList()} currentListName={comments || "all"} handleImportList={handleImportList} />
-    }
+      <Comments2ImportExport currentList={generateFullList()} currentListName={filterTags.join("-") || "all"} handleImportList={handleImportList} />
+      }
     </> : 
     <p> You must be logged in to comment</p> }
     </Container>
