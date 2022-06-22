@@ -3,6 +3,7 @@ import {NavLink} from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { withTranslation } from 'react-i18next';
+import MemberBanner from "./MemberBanner"
 
 
 const TextNavBar = (props) => {
@@ -17,8 +18,10 @@ const TextNavBar = (props) => {
           {props.next && <NavLink className="nav-link" to={"/text?resourceid=" + props.next + props.mtFocus}>{t("Next")}</NavLink>}
           {props.topLevel && <NavLink className="nav-link" to={"/text?resourceid=" + props.topLevel}>{t("Text Home")}</NavLink>}
           {props.pdfView ? <span className="nav-link" onClick={()=>props.handleTogglePdfView()}>{t("Web View")}</span> : <span className="nav-link" onClick={()=>props.handleTogglePdfView()}>{t("Print View")}</span>}
+          
         </Nav>
         </Navbar.Collapse>
+        <MemberBanner/>
       </Navbar>
 
     );

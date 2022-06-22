@@ -4,6 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import {useTranslation} from 'react-i18next'
 
+import MemberBanner from "./MemberBanner"
 
 
 
@@ -21,7 +22,9 @@ function Footer() {
       <Nav.Link href="http://lombardpress.org">{t("A LombardPress Publication")}</Nav.Link>
       <Nav.Link href="http://scta.info">{t("Powered by SCTA Data")} </Nav.Link>
       <Nav.Link href="http://jeffreycwitt.com">{t("Designed by Jeffrey C Witt")}</Nav.Link>
+      <MemberBanner/>
     </Nav>
+    
     </Navbar.Collapse>
 
     </Navbar>
