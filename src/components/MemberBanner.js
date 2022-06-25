@@ -41,9 +41,7 @@ const MemberBanner = (props) => {
     }
     else{
       const indexValue = Math.floor(Math.random()*Object.keys(ipRangeLogoMap).length);
-      console.log("index Value", indexValue)
       const keyValue = Object.keys(ipRangeLogoMap)[indexValue]
-      console.log("keyValue", keyValue)
       return ipRangeLogoMap[keyValue]
     }
   }
