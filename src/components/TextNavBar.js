@@ -18,10 +18,9 @@ const TextNavBar = (props) => {
           {props.next && <NavLink className="nav-link" to={"/text?resourceid=" + props.next + props.mtFocus}>{t("Next")}</NavLink>}
           {props.topLevel && <NavLink className="nav-link" to={"/text?resourceid=" + props.topLevel}>{t("Text Home")}</NavLink>}
           {props.pdfView ? <span className="nav-link" onClick={()=>props.handleTogglePdfView()}>{t("Web View")}</span> : <span className="nav-link" onClick={()=>props.handleTogglePdfView()}>{t("Print View")}</span>}
-          
+          <MemberBanner/>
         </Nav>
         </Navbar.Collapse>
-        <MemberBanner/>
       </Navbar>
 
     );
