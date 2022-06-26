@@ -20,14 +20,14 @@ class TextSwitch extends React.Component {
       resourceTitle: "",
       author: "",
       authorTitle: "",
-      tokenRange: ""
-
+      tokenRange: "",
     }
   }
+
   handleUpdateUrlResource(fullid){
     this.props.history.push({search: '?resourceid=' + fullid})
   }
-  getInfo(resourceid){
+  getInfo(resourceid, attemptNumber){
     let tokenRange;
     if (resourceid.split("@")[1]){
       tokenRange = {start: parseInt(resourceid.split("@")[1].split("-")[0]), end: parseInt(resourceid.split("@")[1].split("-")[1])}
@@ -170,7 +170,20 @@ class TextSwitch extends React.Component {
         });
       }
       else{
-        this.setState({displayType: "notFound"})
+        // the secondTryResourceID is meant to be a fallback when a transcription or manifestation fails, 
+        // the fall back is meant to revert on available expression id, which will then default to the available canonical manifestation
+        // NOTE: i'm not sure this is the best way to do this, but it seems to work.
+        const secondTryResourceId = resourceid.split("/resource/")[0] + "/resource/" + resourceid.split("/resource/")[1].split("/")[0]
+        // NOTE: if secondTryResourceId is different, make a second attempt
+        if (resourceid !== secondTryResourceId){
+          console.log("no record for " + resourceid + ". Trying second attempt with " + secondTryResourceId)
+          // update with new resource;
+          this.handleUpdateUrlResource(secondTryResourceId)
+        }
+        else{
+          console.log("failed on second request")
+          this.setState({displayType: "notFound"})
+        }
       }
     });
   }
