@@ -84,6 +84,7 @@ exports[`should render and conform to snapshot  1`] = `
       >
         Designed by Jeffrey C Witt
       </NavLink>
+      <MemberBanner />
     </Nav>
   </NavbarCollapse>
 </Navbar>

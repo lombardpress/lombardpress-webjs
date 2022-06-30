@@ -15,7 +15,7 @@ import '../styles/App.scss';
 
 const AppRouter = (props) => {
   
-  const uid = props.user.uid
+  const uid = props.user ? props.user.uid : ""
   return (
   <Suspense fallback={<Spinner/>}>
     <BrowserRouter forceRefresh={false}>
