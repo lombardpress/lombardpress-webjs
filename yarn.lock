@@ -8717,6 +8717,11 @@ next-tick@~1.0.0:
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
   integrity sha1-yobR/ogoFpsBICCOPchCS524NCw=
 
+ngram-diff@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/ngram-diff/-/ngram-diff-1.0.0.tgz#06808f7736e476dddc7a07201f528223e4968cbe"
+  integrity sha512-DR2+37yCeb+bUygEbdYP60GfbVGyxulDVxkDk+aEnvPOVGPwxjW687RgnrCSNxNP+4umcFbAf2PGvLR2Bh9+4w==
+
 nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"

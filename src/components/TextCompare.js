@@ -131,7 +131,8 @@ class TextCompare extends React.Component {
             manifestation={m.manifestation}
             handleChangeBase={this.props.handleChangeBase}
             show={this.state.show}
-            showCompare={this.props.isMainText ? true : false}
+            showCompare={this.props.isMainText ? true : true}
+            showCompareType={this.props.isMainText ? 'editDistance' : 'ngram'}
             surfaceWidth={this.props.surfaceWidth}
             isRelatedToRange={this.props.isRelatedToRange}
             targetRange={this.props.targetRange}
