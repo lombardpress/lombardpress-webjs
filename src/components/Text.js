@@ -175,12 +175,16 @@ class Text extends React.Component {
       });
 
       $(document).on("click", '.js-show-reference-paragraph', function(e){
-        // this conditional is used prevent click event from binding event 
-        // to children (like line numbers which have their own click bind)
         e.preventDefault();
-        if (e.target === this){
         
-          e.preventDefault();
+        // this conditional is used prevent click event from binding event 
+        // to children (like line numbers which have their own click bind) within diplomatic type transcriptions
+        // but within "critical transcriptions" we want the event to fire even if a child node is clicked.
+        // so the conditional below first checks if the data attribute data-bind-to-children is true. If it is true, then it fires
+        // if it is not true, then it only fires if the e.target is the same as this.
+        const transcriptionType = $(this).attr('data-bind-to-children')
+        if (transcriptionType === "true" || e.target === this){
+          
           /** @type {string} */
           const targetParagraph = $(this).attr('data-target-resource')
           /** @type {string} */
