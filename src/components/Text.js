@@ -177,6 +177,7 @@ class Text extends React.Component {
       $(document).on("click", '.js-show-reference-paragraph', function(e){
         // this conditional is used prevent click event from binding event 
         // to children (like line numbers which have their own click bind)
+        e.preventDefault();
         if (e.target === this){
         
           e.preventDefault();

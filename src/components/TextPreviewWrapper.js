@@ -1,10 +1,11 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
-import TextPreview from '@bit/jeffreycwitt.lbp.text-preview'
+//import TextPreview from '@bit/jeffreycwitt.lbp.text-preview'
+import {TextView} from '@jeffreycwitt/lbp2.text-view'
 import {runQuery} from './utils'
 import {getCanonicalTranscription} from '../queries/TextPreviewWrapperQueries'
-import {FaToggleOn, FaToggleOff} from 'react-icons/fa';
+//import {FaToggleOn, FaToggleOff} from 'react-icons/fa';
 
 class TextPreviewWrapper extends React.Component {
   constructor(props){
@@ -70,8 +71,8 @@ class TextPreviewWrapper extends React.Component {
       {
        this.state.tresourceid && 
        <div>
-         <TextPreview tresourceid={this.state.tresourceid} start={parseInt(this.props.textPreviewStart)} stop={parseInt(this.props.textPreviewEnd)} context={true} showTokenPosition={this.state.showTokenPosition}/>
-      <span className="lbp-span-link" alt="show word token position" onClick={this.handleToggleShowTokenPosition}>{this.state.showTokenPosition ? <FaToggleOn/> : <FaToggleOff/>}</span>
+         <TextView tresourceid={this.state.tresourceid} start={parseInt(this.props.textPreviewStart)} stop={parseInt(this.props.textPreviewEnd)} context={true}/>
+      {/* <span className="lbp-span-link" alt="show word token position" onClick={this.handleToggleShowTokenPosition}>{this.state.showTokenPosition ? <FaToggleOn/> : <FaToggleOff/>}</span> */}
        </div>
       }
       </Container>
