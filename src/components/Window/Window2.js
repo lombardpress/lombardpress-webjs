@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Surface2 from "../Surface2"
-import Surface3Wrapper from "../Surface3Wrapper"
+//import Surface3Wrapper from "../Surface3Wrapper"
+import {Surface3Wrapper} from "@jeffreycwitt/lbp2.surface3wrapper"
 import XmlView from "../XmlView"
 import WindowNavBar from "./WindowNavBar"
 import NextPrevBar from "../NextPrevBar"
@@ -201,12 +202,14 @@ class Window2 extends React.Component {
             (this.state.windowLoad === "surface3" || this.state.mountStatus.surface3) 
             &&  
             <Surface3Wrapper
+            className="surfaceWrapper"
             manifestations={this.props.info.manifestations}
+            //expressionid={this.props.resourceid}
             focusedManifestation={this.props.defaultManifestationSlug ? this.props.resourceid + "/" + this.props.defaultManifestationSlug : this.props.resourceid + "/" + this.props.mtFocus.split("/")[1]}
             annotationsDisplay={this.props.annotationsDisplay}
             handleToggleTextLinesView={this.handleToggleTextLinesView}
             handleChangeManifestation={this.handleChangeManifestation}
-            width={this.props.windowType === 'bottomWindow' ? "1000" : "501"}
+            width={this.props.windowType === 'bottomWindow' ? 1000 : 501}
             lineFocusId={this.props.lineFocusId}
             hidden={this.state.windowLoad !== "surface3"}/>
             }
