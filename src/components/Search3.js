@@ -6,12 +6,15 @@ import {questionTitleQuery} from '../queries/questionTitleQuery'
 import Spinner from './Spinner';
 import Container from 'react-bootstrap/Container';
 import Search3Parameters from './Search3Parameters';
-import {retrieveSearchResults, displayTextResults, displayFigureResults, displayQuestionResults} from './searchUtils'
+import {retrieveSearchResults, displayTextResults, displayFigureResults, displayQuestionResults, createIdTitleMap, getValueLongTitlesAndAuthors} from './searchUtils'
 
 const Search3 = (props) => {
   const [searchParameters, setSearchParameters] = useState({})
   const [results, setResults] = useState([])
   const [questionResults, setQuestionResults] = useState([])
+  const [idTitleMap, setIdTitleMap] = useState()
+  const [offset, setOffset] = useState(1)
+  const [showMore, setShowMore] = useState(true)
   
   useEffect(() => {
     if (searchParameters.searchType === "questionTitles"){
@@ -21,14 +24,50 @@ const Search3 = (props) => {
       displayQuestionResults(filterQuestionResults(results, searchParameters.resultsFilter), searchParameters.resultsFilter)
     }
     else if (searchParameters.searchType === "text"){
-      displayTextResults(filterResults(results, searchParameters.resultsFilter))
+        displayTextResults(filterResults(results, searchParameters.resultsFilter), idTitleMap)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParameters.resultsFilter])
   
   useEffect(() => {
+    if (results !== "fetching"){
+      const idTitleArray = runQuery(getValueLongTitlesAndAuthors(results))
+      idTitleArray.then((d) => {
+        setIdTitleMap(createIdTitleMap(d.data.results.bindings))
+      })
+    }
+  }, [results])
+  
+  useEffect(() => {
     setResults([])
   }, [searchParameters.searchType])
+
+  useEffect(() => {
+    console.log("firing")
+    if (searchParameters.searchEid || searchParameters.searchAuthor || searchParameters.searchWorkGroup || searchParameters.searchEType){
+      const textResults = retrieveSearchResults(searchParameters.searchTerm, 
+        searchParameters.searchEid, 
+        searchParameters.searchWorkGroup, 
+        searchParameters.searchAuthor, 
+        searchParameters.searchEType,
+        searchParameters.searchType,
+        offset)
+      textResults.then((d) => {
+        console.log("d", offset)
+        console.log('more length', d.data.results.length)
+        if (!d.data.results || d.data.results.length < 10){
+          setShowMore(false)
+        }
+        if (d.data.results.length > 0){
+          setResults((prevState) => {
+            console.log("prevState", prevState)
+            console.log("newState", d.data.results)
+            return [...prevState, ...d.data.results]
+          })
+        }
+      })
+    }
+  }, [offset])
   
   const handleSetSearchParameters = (parameters) => {
     setSearchParameters(parameters)
@@ -36,6 +75,7 @@ const Search3 = (props) => {
 
   const handleRunSearch = (e) => {
     e.preventDefault()
+    setShowMore(true)
     if (!searchParameters.searchTerm){
       setResults([])
     }
@@ -49,9 +89,10 @@ const Search3 = (props) => {
               searchParameters.searchWorkGroup, 
               searchParameters.searchAuthor, 
               searchParameters.searchEType,
-              searchParameters.searchType)
+              searchParameters.searchType,
+              offset)
             textResults.then((d) => {
-            setResults(d.data.results)
+                setResults(d.data.results)              
           })
         }
         
@@ -118,7 +159,7 @@ const Search3 = (props) => {
       return displayFigureResults(results);
     }
     else if (searchParameters.searchType === "text"){
-      return displayTextResults(filterResults(results, searchParameters.resultsFilter))
+        return displayTextResults(filterResults(results, searchParameters.resultsFilter), idTitleMap)
     }
   }
   const filterResults = (results, resultsFilter) => {
@@ -180,6 +221,7 @@ const Search3 = (props) => {
       
     </Form>
     {displayResults(results)}
+    {(results.length > 0 && showMore === true) && <p onClick={(() => {setOffset(offset + 1)})}>Show More</p>}
     </Container>
 
   )
