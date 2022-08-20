@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import Axios from 'axios'
-import {runQuery} from './utils'
+
 
 //TODO: these retrieves need to be refactored into; 
 // if exist db api is improved then a single request should be easier
@@ -30,7 +30,6 @@ import {runQuery} from './utils'
 
 // }
 export function retrieveFigureResults(searchTerm, searchEid){
-  console.log("running retrieve")
   const expressionShortId = searchEid === "all" ? searchEid : searchEid.split("/resource/")[1]
   const url = "https://exist2.scta.info/exist/apps/scta-app/jsonsearch/json-search-text-by-figure.xq?query=" + searchTerm + "&expressionid=" + expressionShortId
   const queryPromise = Axios.get(url)
@@ -67,42 +66,51 @@ export function retrieveSearchResults(searchTerm, searchEid, searchWorkGroup, se
   return queryPromise
 }
 
-export function displayFigureResults(results){
+export function displayFigureResults(results, idTitleMap){
     if (!results || results.length === 0){
       return (<div>
         <p>No results found</p>
       </div>)
     }
     else if (results.length > 0){
+      console.log("results", results)
       const figureResults = results.map((r, i) => {
         const imgurl = r.imgurl
-        console.log("imgurl", imgurl)
+        const longTitle = idTitleMap["http://scta.info/resource/" + r.pid] ?  idTitleMap["http://scta.info/resource/" + r.pid].longTitle : ""
+          //const author = idTitleMap["http://scta.info/resource/" + r.pid] ?  idTitleMap["http://scta.info/resource/" + r.pid].author : ""
+          const authorTitle = idTitleMap["http://scta.info/resource/" + r.pid] ?  idTitleMap["http://scta.info/resource/" + r.pid].authorTitle : ""
         return (
           <div key={i} className="figure-tile">
-          <Link to={"/text?resourceid=http://scta.info/resource/" + r.pid}><img src={imgurl} alt="figure"></img></Link>
+          {/* <Link to={"/text?resourceid=http://scta.info/resource/" + r.pid}><img src={imgurl} alt="figure"></img></Link> */}
+          <Link to={"/text?resourceid=http://scta.info/resource/" + r.pid}>
+            <span className="image-description">{authorTitle + ", " + longTitle + " (" + r.pid + ")"}</span>
+            <img src={imgurl} alt="figure"></img>
+          </Link>
+          
           </div>
         )
       })
       return (
         <div className="figure-grid">
-            <p>{results.length + " results"}</p>
+            {/* <p>{results.length + " results"}</p> */}
             {figureResults}
         </div>
       )
     }
-    else if (results){
-      const r = results
-      const imgurl = r.imgurl
-      return (
-        <div>
-          <p>{1 + " results"}</p>
-          <div key={results.pid}>
-            <p><Link to={"/text?resourceid=http://scta.info/resource/" + r.pid}>{r.pid}</Link></p>
-            <img src={imgurl} alt="figure" style={{"width": "300px"}}></img>
-          </div>
-        </div>
-        )
-      }
+    // TODO: i think this can be deleted
+    // else if (results){
+    //   const r = results
+    //   const imgurl = r.imgurl
+    //   return (
+    //     <div>
+    //       <p>{1 + " results"}</p>
+    //       <div key={results.pid}>
+    //         <p><Link to={"/text?resourceid=http://scta.info/resource/" + r.pid}>{r.pid}</Link></p>
+    //         <img src={imgurl} alt="figure" style={{"width": "300px"}}></img>
+    //       </div>
+    //     </div>
+    //     )
+    //   }
     else {
       return (
         <div><p>No results</p></div>
@@ -118,12 +126,12 @@ export function displayTextResults(results, idTitleMap){
     </div>)
   }
   else {
-      if (results.length > 1){
+      if (results.length > 0){
         const textResults = results.map((r, i) => {
           const textString = r.previous + " <span class='highlight'>" + r.hit + "</span> " + r.next
           const range = r.start + "-" + r.end
           const longTitle = idTitleMap["http://scta.info/resource/" + r.pid] ?  idTitleMap["http://scta.info/resource/" + r.pid].longTitle : ""
-          const author = idTitleMap["http://scta.info/resource/" + r.pid] ?  idTitleMap["http://scta.info/resource/" + r.pid].author : ""
+          //const author = idTitleMap["http://scta.info/resource/" + r.pid] ?  idTitleMap["http://scta.info/resource/" + r.pid].author : ""
           const authorTitle = idTitleMap["http://scta.info/resource/" + r.pid] ?  idTitleMap["http://scta.info/resource/" + r.pid].authorTitle : ""
           return (
             <div key={i}>
@@ -136,25 +144,25 @@ export function displayTextResults(results, idTitleMap){
         })
         return (
           <div>
-              <p>{results.length + " results"}</p>
               {textResults}
           </div>
         )
       }
-      else if (results){
-        const r = results
-        const textString = r.previous + " <span class='highlight'>" + r.hit + "</span> " + r.next
-        const range = r.start + "-" + r.end
-        return (
-          <div>
-            <p>{1 + " results"}</p>
-          <div key={results.pid}>
-          <p><Link to={"/text?resourceid=http://scta.info/resource/" + r.pid + "@" + range}>{r.pid + "@" + range}</Link></p>
-          <p dangerouslySetInnerHTML={{ __html: textString}}/>
-          </div>
-          </div>
-        )
-      }
+      // don't think this is necessary now that I've forced all results to be an array 
+      // else if (results){
+      //   const r = results
+      //   const textString = r.previous + " <span class='highlight'>" + r.hit + "</span> " + r.next
+      //   const range = r.start + "-" + r.end
+      //   return (
+      //     <div>
+      //       <p>{1 + " results"}</p>
+      //     <div key={results.pid}>
+      //     <p><Link to={"/text?resourceid=http://scta.info/resource/" + r.pid + "@" + range}>{r.pid + "@" + range}</Link></p>
+      //     <p dangerouslySetInnerHTML={{ __html: textString}}/>
+      //     </div>
+      //     </div>
+      //   )
+      // }
       else{
         return (
           <div><p>No results</p></div>
@@ -192,28 +200,30 @@ export function displayQuestionResults(results, searchParameters){
 
 export const getValueLongTitlesAndAuthors = (results) => {
   let values = []
-  if (results.length > 1){
-    values = results.map((r) => {
-      return "<http://scta.info/resource/" + r.pid + ">"
-    })
-  }
-  else {
-    values = [results.pid]
-  }
-  const valuesString = values.join(" ")
+  if (results){
+    //if (results.length > 0){
+      values = results.map((r) => {
+        return "<http://scta.info/resource/" + r.pid + ">"
+      })
+    //}
+    // else {
+    //   values = ["<http://scta.info/resource/" + results.pid + ">"]
+    // }
+    const valuesString = values.join(" ")
 
-  const query = [
-    "SELECT DISTINCT ?id ?longTitle ?author ?authorTitle ",
-      "{",
-      "VALUES ?id {" + valuesString + "}",
-      "?id <http://scta.info/property/longTitle> ?longTitle .",
-      "OPTIONAL {",
-        "?id <http://scta.info/property/isPartOfTopLevelExpression> ?topLevel .",
-         "?topLevel <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
-         "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
-      "}",
-    "}"].join('')
-   return query
+    const query = [
+      "SELECT DISTINCT ?id ?longTitle ?author ?authorTitle ",
+        "{",
+        "VALUES ?id {" + valuesString + "}",
+        "?id <http://scta.info/property/longTitle> ?longTitle .",
+        "OPTIONAL {",
+          "?id <http://scta.info/property/isPartOfTopLevelExpression> ?topLevel .",
+          "?topLevel <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
+          "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
+        "}",
+      "}"].join('')
+    return query
+  }
 }
 
 export const createIdTitleMap = (bindings) => {

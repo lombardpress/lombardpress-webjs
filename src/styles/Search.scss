@@ -12,3 +12,23 @@
   width: 100px;
   border-radius: 15px;
 }
+.image-description{
+  display: none;
+  position: absolute;
+  background-color: white;
+  opacity: 0.75;
+  padding: 5px;
+  box-shadow: 3px 3px 8px 0px rgba(0,0,0,0.3); 
+  border-radius: 15px;
+  z-index: 1;
+  font-size: 12px;
+  width: 100px;
+  margin: 10px;
+
+}
+.figure-tile:hover .image-description {
+  display: block;
+}
+.figure-tile{
+  position: relative
+}
