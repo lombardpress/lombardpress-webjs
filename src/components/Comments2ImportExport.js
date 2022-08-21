@@ -9,12 +9,14 @@ const ImportExport = (props) =>{
   const [pdfStatus, setPdfStatus] = useState(null)
 
   const handleGetPdfStatus = () => {
-    Axios.post("http://localhost:5000/api/v1/annolist", props.currentList).then((data) => {
+    const printApiEndpoint = "https://print.lombardpress.org/api/v1/"
+
+    Axios.post(printApiEndpoint + "annolist", props.currentList).then((data) => {
       if (data.data.url){
         console.log("first condition passed", data.data.url)
         const hashWithExtension = data.data.url
         //setPdfStatus({pdf: "https://print.lombardpress.org/api/v1/" + hashWithExtension})
-        setPdfStatus({pdf: "http://localhost:5000/api/v1/" + hashWithExtension})
+        setPdfStatus({pdf: printApiEndpoint + hashWithExtension})
       }
       else{
         setPdfStatus({status: data.data.Status + "Please check back in a few minutes", pdf: ""})
@@ -74,7 +76,7 @@ const ImportExport = (props) =>{
     }
     else if (pdfStatus.pdf){
       return (
-      <p><a href={pdfStatus.pdf} target="_blank" rel="noopener noreferrer">View PDF</a></p>
+      <p><a href={pdfStatus.pdf} rel="noopener noreferrer">View PDF</a></p>
       )
     }
     else{
