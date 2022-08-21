@@ -16,7 +16,7 @@ const ImportExport = (props) =>{
         console.log("first condition passed", data.data.url)
         const hashWithExtension = data.data.url
         //setPdfStatus({pdf: "https://print.lombardpress.org/api/v1/" + hashWithExtension})
-        setPdfStatus({pdf: printApiEndpoint + hashWithExtension})
+        setPdfStatus({pdf: printApiEndpoint + "cache/" + hashWithExtension})
       }
       else{
         setPdfStatus({status: data.data.Status + "Please check back in a few minutes", pdf: ""})
