@@ -15,21 +15,21 @@ import {runNgramQuery} from '../queries/ngramRelatedQuery'
 
 function NgramDisplay(props) {
   const [relatedExpressions, setRelatedExpressions] = useState([])
-  const [scoreMinimumInput, setScoreMinimumInput] = useState(".02")
-  const [scoreMinimumUse, setScoreMinimumUse] = useState(".02")
+  //const [scoreMinimumInput, setScoreMinimumInput] = useState(".02")
+  //const [scoreMinimumUse, setScoreMinimumUse] = useState(".02")
   useEffect(() => {
-    const ngramRelated = runNgramQuery(ngramRelatedQuery(props.resourceid, scoreMinimumUse));
+    const ngramRelated = runNgramQuery(ngramRelatedQuery(props.resourceid));
     const expressions = [];
     ngramRelated.then((d) => {
       const bindings = d.data.results.bindings
       bindings.forEach((r) => {
         expressions.push({
-          id: r.other.value,
-          relationLabel: "ngram: " + r.text.value,
+          id: r.target.value,
+          relationLabel: "cosineSimilarity: " + (parseFloat(r.cosineScore.value) * 100).toFixed(2) + "% | cosineIntersection:" + r.intersectionTotal.value,
           referringResource: "",
-          author: "",
-          authorTitle: "",
-          longTitle: "",
+          author: r.author ? r.author.value : "",
+          authorTitle: r.authorTitle ? r.authorTitle.value : "",
+          longTitle: r.targetLongTitle ? r.targetLongTitle.value : "",
           show: false,
           isRelatedToRange: ""
         })
@@ -37,7 +37,7 @@ function NgramDisplay(props) {
       setRelatedExpressions(expressions)
     })
     
-  }, [props.resourceid, scoreMinimumUse])
+  }, [props.resourceid])
   
   const displayExpressions = () => {
     const displayExpressions = relatedExpressions.map((i, index) => {
@@ -68,11 +68,11 @@ function NgramDisplay(props) {
   }
   return(
     <div>
+      <hr/>
+      <p>Potential Related Passages</p>
       
-      <input type="text" value={scoreMinimumInput} onChange={(e) => setScoreMinimumInput(e.target.value)}></input>
-      <button onClick={() => {setScoreMinimumUse(scoreMinimumInput)}}>Re-run Query with new minimum</button>
-
-      
+      {/* <input type="text" value={scoreMinimumInput} onChange={(e) => setScoreMinimumInput(e.target.value)}></input>
+      <button onClick={() => {setScoreMinimumUse(scoreMinimumInput)}}>Re-run Query with new minimum</button> */}
       {relatedExpressions === "retrieving" ? <Spinner/> : displayExpressions()}
     </div>
   )
