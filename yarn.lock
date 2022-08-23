@@ -1276,19 +1276,19 @@
     core-js "^3.0.0"
     prop-types "^15.8.1"
 
-"@jeffreycwitt/lbp2.image-text-wrapper@0.0.8":
-  version "0.0.8"
-  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.image-text-wrapper/-/@jeffreycwitt-lbp2.image-text-wrapper-0.0.8.tgz#b52c6a2d3e458351b437a6a2059159c9af5d5409"
-  integrity sha1-tSxqLT5Fg1G0N6aiBZFZya9dVAk=
+"@jeffreycwitt/lbp2.image-text-wrapper@0.0.11":
+  version "0.0.11"
+  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.image-text-wrapper/-/@jeffreycwitt-lbp2.image-text-wrapper-0.0.11.tgz#1831b10028f54a0596bfc1e0f236fa86b646f0e2"
+  integrity sha1-GDGxACj1SgWWv8Hg8jb6hrZG8OI=
   dependencies:
-    "@jeffreycwitt/lbp2.osd-instance" "0.0.4"
+    "@jeffreycwitt/lbp2.osd-instance" "0.0.7"
     core-js "^3.0.0"
     prop-types "^15.8.1"
 
-"@jeffreycwitt/lbp2.osd-instance@0.0.4":
-  version "0.0.4"
-  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.osd-instance/-/@jeffreycwitt-lbp2.osd-instance-0.0.4.tgz#7a272c12cc0bdc5d208fe8262b7e073b0cfd451f"
-  integrity sha1-eicsEswL3F0gj+gmK34HOwz9RR8=
+"@jeffreycwitt/lbp2.osd-instance@0.0.7":
+  version "0.0.7"
+  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.osd-instance/-/@jeffreycwitt-lbp2.osd-instance-0.0.7.tgz#8e6e2013f861cebcaa7650841cec9d32976da943"
+  integrity sha1-jm4gE/hhzryqdlCEHOydMpdtqUM=
   dependencies:
     axios "^0.27.2"
     core-js "^3.0.0"
@@ -1296,23 +1296,24 @@
     prop-types "^15.8.1"
     uuid "^8.3.2"
 
-"@jeffreycwitt/lbp2.surface3@0.0.13":
-  version "0.0.13"
-  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.surface3/-/@jeffreycwitt-lbp2.surface3-0.0.13.tgz#dc50e025e7b600c7fd2c35fcc85e96778131e176"
-  integrity sha1-3FDgJee2AMf9LDX8yF6Wd4Ex4XY=
+"@jeffreycwitt/lbp2.surface3@0.0.16":
+  version "0.0.16"
+  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.surface3/-/@jeffreycwitt-lbp2.surface3-0.0.16.tgz#96b0d5653740f21ca211e491a3bc096a2f33d1b0"
+  integrity sha1-lrDVZTdA8hyiEeSRo7wJai8z0bA=
   dependencies:
     "@jeffreycwitt/lbp2.iiif-image-logo" "0.0.5"
-    "@jeffreycwitt/lbp2.image-text-wrapper" "0.0.8"
+    "@jeffreycwitt/lbp2.image-text-wrapper" "0.0.11"
+    "@jeffreycwitt/lbp2.osd-instance" "0.0.7"
     axios "^0.27.2"
     core-js "^3.0.0"
     prop-types "^15.8.1"
 
-"@jeffreycwitt/lbp2.surface3wrapper@^0.0.17":
-  version "0.0.17"
-  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.surface3wrapper/-/@jeffreycwitt-lbp2.surface3wrapper-0.0.17.tgz#8b1571d0906cfe2ecda14fc803c3545e276a3d4d"
-  integrity sha1-ixVx0JBs/i7NoU/IA8NUXidqPU0=
+"@jeffreycwitt/lbp2.surface3wrapper@^0.0.20":
+  version "0.0.20"
+  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.surface3wrapper/-/@jeffreycwitt-lbp2.surface3wrapper-0.0.20.tgz#a94408d4c0ceeac821893f8c730bc72a38956e65"
+  integrity sha1-qUQI1MDO6sghiT+McwvHKjiVbmU=
   dependencies:
-    "@jeffreycwitt/lbp2.surface3" "0.0.13"
+    "@jeffreycwitt/lbp2.surface3" "0.0.16"
     axios "^0.27.2"
     core-js "^3.0.0"
     prop-types "^15.8.1"
