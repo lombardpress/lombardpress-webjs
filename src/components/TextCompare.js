@@ -168,7 +168,10 @@ class TextCompare extends React.Component {
         {this.state.info.resourceid && <span className="lbp-span-link" onClick={() => this.handleToggleShowAll()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>}
         <span> | </span>
         {this.props.expressionid && <span className="lbp-span-link" title="add to collation table" onClick={this.props.isMainText ? this.props.handleShowCollationOverlay : () => 
-        { const fullEid = this.props.isRelatedToRange ? this.props.expressionid + "@" + this.props.isRelatedToRange : this.props.expressionid
+        { 
+          // this conditional checks checks if there is a wordRange and the target is active; if true then it adds the wordRange
+          // otherwise no WordRange is added
+          const fullEid = ((this.props.relationLabel !== "isQuotedBy" && this.props.relationLabel !== "isReferencedBy") && this.props.isRelatedToRange) ? this.props.expressionid + "@" + this.props.isRelatedToRange : this.props.expressionid
           this.props.handleAddCtRelatedExpressions(fullEid)}}><FaTable/></span>
         }
         <span> | </span>
