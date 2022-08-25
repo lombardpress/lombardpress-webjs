@@ -289,9 +289,9 @@ class Window2 extends React.Component {
             <Dictionary text={this.props.selectionRange.text} hidden={this.state.windowLoad !== "dictionary"}/>
           }
           {
-            this.state.windowLoad === "collationTable" &&  <CollationTable expressionId={this.props.selectionRange.wordRange 
-              ? this.props.resourceid + "@" + this.props.selectionRange.wordRange.start + "-" + this.props.selectionRange.wordRange.end 
-              : this.props.resourceid} />
+            this.state.windowLoad === "collationTable" &&  <CollationTable expressionIds={this.props.selectionRange.wordRange 
+              ? [this.props.resourceid + "@" + this.props.selectionRange.wordRange.start + "-" + this.props.selectionRange.wordRange.end] 
+              : [this.props.resourceid]} />
           }
           {
             this.state.windowLoad === "surface2" 
