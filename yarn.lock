@@ -1267,10 +1267,10 @@
   resolved "https://registry.yarnpkg.com/@iiif/vocabulary/-/vocabulary-1.0.22.tgz#743d6cb1914e090137c56a4e44decbe7f8b21bdc"
   integrity sha512-KOIZgRpDERMK4YGeSwPBNjpJETapMWp8pvEvSGUQkuTlqkiNLirZH65CIcEENZEL5A6mxrYLJX6okDYq7W1+RA==
 
-"@jeffreycwitt/lbp2.collation-table@^0.0.7":
-  version "0.0.7"
-  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.collation-table/-/@jeffreycwitt-lbp2.collation-table-0.0.7.tgz#cc138bbbea928389770fa1b2d7e51ad2689d10c4"
-  integrity sha1-zBOLu+qSg4l3D6Gy1+Ua0midEMQ=
+"@jeffreycwitt/lbp2.collation-table@^0.0.8":
+  version "0.0.8"
+  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.collation-table/-/@jeffreycwitt-lbp2.collation-table-0.0.8.tgz#b1aa14b53eec02c5dce843b770f7d259a007071b"
+  integrity sha1-saoUtT7sAsXc6EO3cPfSWaAHBxs=
   dependencies:
     "@jeffreycwitt/lbp2.surface3" "0.0.18"
     axios "^0.27.2"
