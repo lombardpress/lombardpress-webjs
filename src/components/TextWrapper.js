@@ -38,6 +38,7 @@ class TextWrapper extends React.Component {
     this.handleToggleTextLinesView = this.handleToggleTextLinesView.bind(this)
     this.handleChangeManifestation = this.handleChangeManifestation.bind(this)
     this.handleTextPreviewFocusChange = this.handleTextPreviewFocusChange.bind(this)
+    this.handleShowCollationOverlay = this.handleShowCollationOverlay.bind(this)
     this.handleTogglePdfView = this.handleTogglePdfView.bind(this)
     this.handleUpdateSelectionRange = this.handleUpdateSelectionRange.bind(this)
     this.state = {
@@ -232,6 +233,12 @@ class TextWrapper extends React.Component {
     //if so split by white space 
     this.setState({textPreviewObjects: targetObjects})
   }
+
+  handleShowCollationOverlay(){
+    console.log("firing")
+    this.openWindow("window2", "collationTable")
+  }
+
   //TODO
   //These two function should be refactored into one
   setFocus(id){
@@ -512,6 +519,7 @@ class TextWrapper extends React.Component {
               selectionRange={this.state.selectionRange}
               codexResourceType={this.props.codexResourceType}
               userId={this.props.userId}
+              handleShowCollationOverlay={this.handleShowCollationOverlay}
               />
             )
           }

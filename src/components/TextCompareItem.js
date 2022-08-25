@@ -10,7 +10,8 @@ import { FaEyeSlash, FaEye, FaStar, FaToggleOn, FaToggleOff, FaRegImage} from 'r
 
 import {textReduce} from './utils'
 
-import Surface3Wrapper from './Surface3Wrapper'
+//import Surface3Wrapper from './Surface3Wrapper'
+import {Surface3Wrapper} from "@jeffreycwitt/lbp2.surface3wrapper"
 
 class TextCompareItem extends React.Component {
   constructor(props){
@@ -182,10 +183,12 @@ class TextCompareItem extends React.Component {
                   <Surface3Wrapper
                   manifestations={newManifestations}
                   focusedManifestation={this.props.manifestation}
-                  width={this.props.surfaceWidth}
+                  width={parseInt(this.props.surfaceWidth)}
                   hideSelectionList={true}
                   isDependentSurface3={true}
-                />
+                  startWord={(this.props.isMainText && this.props.targetRange) && parseInt(this.props.targetRange.split("-")[0])}
+                  endWord={(this.props.isMainText && this.props.targetRange) && parseInt(this.props.targetRange.split("-")[1])}
+                  />
                 </div>
                 }
             </div>

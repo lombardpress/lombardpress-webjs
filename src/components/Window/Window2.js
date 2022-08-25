@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Surface2 from "../Surface2"
 //import Surface3Wrapper from "../Surface3Wrapper"
 import {Surface3Wrapper} from "@jeffreycwitt/lbp2.surface3wrapper"
+import {CollationTable} from "@jeffreycwitt/lbp2.collation-table"
 import XmlView from "../XmlView"
 import WindowNavBar from "./WindowNavBar"
 import NextPrevBar from "../NextPrevBar"
@@ -148,6 +149,7 @@ class Window2 extends React.Component {
               surfaceWidth={this.props.windowType === 'bottomWindow' ? "1000" : "501"}
               hidden={this.state.windowLoad !== "textCompare"}
               selectionRange={this.props.selectionRange}
+              handleShowCollationOverlay={this.props.handleShowCollationOverlay}
             />
             }
             {
@@ -211,7 +213,9 @@ class Window2 extends React.Component {
             handleChangeManifestation={this.handleChangeManifestation}
             width={this.props.windowType === 'bottomWindow' ? 1000 : 501}
             lineFocusId={this.props.lineFocusId}
-            hidden={this.state.windowLoad !== "surface3"}/>
+            hidden={this.state.windowLoad !== "surface3"}
+            startWord={this.props.selectionRange.wordRange && this.props.selectionRange.wordRange.start}
+            endWord={this.props.selectionRange.wordRange && this.props.selectionRange.wordRange.end}/>
             }
             
             {
@@ -283,6 +287,11 @@ class Window2 extends React.Component {
           {
             (this.state.windowLoad === "dictionary" && this.props.selectionRange.text) &&
             <Dictionary text={this.props.selectionRange.text} hidden={this.state.windowLoad !== "dictionary"}/>
+          }
+          {
+            this.state.windowLoad === "collationTable" &&  <CollationTable expressionId={this.props.selectionRange.wordRange 
+              ? this.props.resourceid + "@" + this.props.selectionRange.wordRange.start + "-" + this.props.selectionRange.wordRange.end 
+              : this.props.resourceid} />
           }
           {
             this.state.windowLoad === "surface2" 

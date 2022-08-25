@@ -1267,6 +1267,16 @@
   resolved "https://registry.yarnpkg.com/@iiif/vocabulary/-/vocabulary-1.0.22.tgz#743d6cb1914e090137c56a4e44decbe7f8b21bdc"
   integrity sha512-KOIZgRpDERMK4YGeSwPBNjpJETapMWp8pvEvSGUQkuTlqkiNLirZH65CIcEENZEL5A6mxrYLJX6okDYq7W1+RA==
 
+"@jeffreycwitt/lbp2.collation-table@^0.0.5":
+  version "0.0.5"
+  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.collation-table/-/@jeffreycwitt-lbp2.collation-table-0.0.5.tgz#269a31ffd4a9095b23248fb963af5bfe5d766428"
+  integrity sha1-Jpox/9SpCVsjJI+5Y69b/l12ZCg=
+  dependencies:
+    "@jeffreycwitt/lbp2.surface3" "0.0.18"
+    axios "^0.27.2"
+    core-js "^3.0.0"
+    react-icons "^4.4.0"
+
 "@jeffreycwitt/lbp2.iiif-image-logo@0.0.5":
   version "0.0.5"
   resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.iiif-image-logo/-/@jeffreycwitt-lbp2.iiif-image-logo-0.0.5.tgz#e2c4903dc4b857bb0d63bcaaeaaea5ef78e7ef6d"
@@ -1296,10 +1306,10 @@
     prop-types "^15.8.1"
     uuid "^8.3.2"
 
-"@jeffreycwitt/lbp2.surface3@0.0.16":
-  version "0.0.16"
-  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.surface3/-/@jeffreycwitt-lbp2.surface3-0.0.16.tgz#96b0d5653740f21ca211e491a3bc096a2f33d1b0"
-  integrity sha1-lrDVZTdA8hyiEeSRo7wJai8z0bA=
+"@jeffreycwitt/lbp2.surface3@0.0.18":
+  version "0.0.18"
+  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.surface3/-/@jeffreycwitt-lbp2.surface3-0.0.18.tgz#22fa6723866a676aa5fd05a3a28e6fb411abc19b"
+  integrity sha1-IvpnI4ZqZ2ql/QWjoo5vtBGrwZs=
   dependencies:
     "@jeffreycwitt/lbp2.iiif-image-logo" "0.0.5"
     "@jeffreycwitt/lbp2.image-text-wrapper" "0.0.11"
@@ -1308,12 +1318,12 @@
     core-js "^3.0.0"
     prop-types "^15.8.1"
 
-"@jeffreycwitt/lbp2.surface3wrapper@^0.0.20":
-  version "0.0.20"
-  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.surface3wrapper/-/@jeffreycwitt-lbp2.surface3wrapper-0.0.20.tgz#a94408d4c0ceeac821893f8c730bc72a38956e65"
-  integrity sha1-qUQI1MDO6sghiT+McwvHKjiVbmU=
+"@jeffreycwitt/lbp2.surface3wrapper@^0.0.22":
+  version "0.0.22"
+  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.surface3wrapper/-/@jeffreycwitt-lbp2.surface3wrapper-0.0.22.tgz#736d17bf6c57957b59603f461a0bb8c9e98ffb13"
+  integrity sha1-c20Xv2xXlXtZYD9GGgu4yemP+xM=
   dependencies:
-    "@jeffreycwitt/lbp2.surface3" "0.0.16"
+    "@jeffreycwitt/lbp2.surface3" "0.0.18"
     axios "^0.27.2"
     core-js "^3.0.0"
     prop-types "^15.8.1"
