@@ -60,6 +60,8 @@ function NgramDisplay(props) {
               show={i.show}
               surfaceWidth={props.surfaceWidth}
               isRelatedToRange={i.isRelatedToRange}
+              handleAddCtRelatedExpressions={props.handleAddCtRelatedExpressions}
+              handleShowCollationOverlay={props.handleShowCollationOverlay}
             />}
           </div>
           )

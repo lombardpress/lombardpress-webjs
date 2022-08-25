@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import { FaEyeSlash, FaEye } from 'react-icons/fa';
+import { FaEyeSlash, FaEye, FaTable } from 'react-icons/fa';
 
 import {runQuery} from './utils'
 import {basicInfoQuery} from './Queries'
@@ -164,7 +164,14 @@ class TextCompare extends React.Component {
         </Link> :
         this.props.authorTitle || this.props.longTitle ? <span> {this.props.authorTitle} {this.props.longTitle}</span> : this.state.info.resourceid
         }
-        {this.state.info.resourceid && <span onClick={() => this.handleToggleShowAll()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>}
+        <span> | </span>
+        {this.state.info.resourceid && <span className="lbp-span-link" onClick={() => this.handleToggleShowAll()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>}
+        <span> | </span>
+        {this.props.expressionid && <span className="lbp-span-link" title="add to collation table" onClick={this.props.isMainText ? this.props.handleShowCollationOverlay : () => 
+        { const fullEid = this.props.isRelatedToRange ? this.props.expressionid + "@" + this.props.isRelatedToRange : this.props.expressionid
+          this.props.handleAddCtRelatedExpressions(fullEid)}}><FaTable/></span>
+        }
+        <span> | </span>
         <a href={"https://mirador.scta.info?blockid=" + this.state.info.resourceid} target="_blank" rel="noopener noreferrer"><img alt="view in mirador" style={{width: "12px", height: "12px"}} src="https://projectmirador.org/img/mirador-logo.svg"></img></a>
       </div>
       <div className={this.state.show ? "unhidden" : "hidden"} style={{"paddingLeft": "10px"}}>

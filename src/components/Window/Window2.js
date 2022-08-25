@@ -29,6 +29,7 @@ class Window2 extends React.Component {
     super(props)
     this.handleToggleTextLinesView = this.handleToggleTextLinesView.bind(this)
     this.handleChangeManifestation = this.handleChangeManifestation.bind(this)
+    
     this.state = {
       windowLoad: "",
       mountStatus: {
@@ -43,6 +44,7 @@ class Window2 extends React.Component {
 
     }
   }
+  
   // used to control default iamge view prop for surface3 component
   handleToggleTextLinesView(view){
     this.props.handleToggleTextLinesView(this.props.windowId, view)
@@ -77,8 +79,10 @@ class Window2 extends React.Component {
       // then, the mount status of the opening window load is changed to true
       newMountStatus[this.props.windowLoad] = true
       this.setState(
-        {windowLoad: this.props.windowLoad,
-        mountStatus: newMountStatus}
+        {
+          windowLoad: this.props.windowLoad,
+          mountStatus: newMountStatus,
+        }
       )
     }
     else if (this.props.windowLoad !== prevProps.windowLoad){
@@ -150,6 +154,7 @@ class Window2 extends React.Component {
               hidden={this.state.windowLoad !== "textCompare"}
               selectionRange={this.props.selectionRange}
               handleShowCollationOverlay={this.props.handleShowCollationOverlay}
+              handleAddCtRelatedExpressions={this.props.handleAddCtRelatedExpressions}
             />
             }
             {
@@ -289,9 +294,10 @@ class Window2 extends React.Component {
             <Dictionary text={this.props.selectionRange.text} hidden={this.state.windowLoad !== "dictionary"}/>
           }
           {
-            this.state.windowLoad === "collationTable" &&  <CollationTable expressionIds={this.props.selectionRange.wordRange 
-              ? [this.props.resourceid + "@" + this.props.selectionRange.wordRange.start + "-" + this.props.selectionRange.wordRange.end] 
-              : [this.props.resourceid]} />
+            this.state.windowLoad === "collationTable" &&  
+            <CollationTable expressionIds={this.props.selectionRange.wordRange 
+              ? [this.props.resourceid + "@" + this.props.selectionRange.wordRange.start + "-" + this.props.selectionRange.wordRange.end, ...this.props.ctRelatedExpressions] 
+              : [this.props.resourceid, ...this.props.ctRelatedExpressions]} />
           }
           {
             this.state.windowLoad === "surface2" 
