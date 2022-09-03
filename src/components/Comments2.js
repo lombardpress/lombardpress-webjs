@@ -134,12 +134,12 @@ useEffect(()=>{
       const selector = [
       {
         "type": "TextQuoteSelector",
-        "exact": selectionRange.text ? selectionRange.text : ""
+        "exact": selectionRange ? selectionRange.text : ""
       },
       {
         "type": "TextPositionSelector",
-        "start": selectionRange.wordRange ? selectionRange.wordRange.start : "",
-        "end": selectionRange.wordRange ? selectionRange.wordRange.end : ""
+        "start": selectionRange ? selectionRange.wordRange.start : "",
+        "end": selectionRange ? selectionRange.wordRange.end : ""
       }
     ]
     const annotation = {

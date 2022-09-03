@@ -10,6 +10,7 @@ const ImportExport = (props) =>{
 
   const handleGetPdfStatus = () => {
     const printApiEndpoint = "https://print.lombardpress.org/api/v1/"
+    //const printApiEndpoint = "http://localhost:5000/api/v1/"
 
     Axios.post(printApiEndpoint + "annolist", props.currentList).then((data) => {
       if (data.data.url){
