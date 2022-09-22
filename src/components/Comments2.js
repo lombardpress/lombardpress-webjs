@@ -130,7 +130,14 @@ useEffect(()=>{
     const userId = "http://scta.info/resource/jeffreycwitt" //TODO; needs to adjust to user logged in info
     
     const tagsNewList = generateTagList(inputTags, akey)
-    
+      
+    let start = ""
+    let end = ""
+
+    if (selectionRange && selectionRange.wordRange){
+      start = selectionRange.wordRange.start
+      end = selectionRange.wordRange.end
+    }
       const selector = [
       {
         "type": "TextQuoteSelector",
@@ -138,8 +145,8 @@ useEffect(()=>{
       },
       {
         "type": "TextPositionSelector",
-        "start": selectionRange ? selectionRange.wordRange.start : "",
-        "end": selectionRange ? selectionRange.wordRange.end : ""
+        "start": start,
+        "end": end
       }
     ]
     const annotation = {
