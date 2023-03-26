@@ -37,7 +37,11 @@ class AuthorCollection extends React.Component {
       //change due to fuseki 4.3.1 update 
       //const author = d.data["@graph"].filter((i) => i["@id"] === "sctar:peter-plaoulresourceid)[0]
       // const author = d.data["@graph"].filter((i) => i["@id"] === "sctar:" + authorShortId)[0]
-      const author = d.data["@graph"].filter((i) => i["@id"] === resourceid.replace("http://scta.info/resource/", "sctar:"))[0]
+      
+      let author = d.data["@graph"].filter((i) => i["@id"] === resourceid.replace("http://scta.info/resource/", "sctar:"))[0]
+      if (!author){
+        author = d.data["@graph"].filter((i) => i["@id"] === resourceid)[0]
+      }
       //const authorExpressions = d.data["@graph"].filter((i) => {i["@id"] === author.hasTopLevelExpression})
       console.log("d", d)
       console.log("author", author)
