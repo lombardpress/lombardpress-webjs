@@ -1267,12 +1267,12 @@
   resolved "https://registry.yarnpkg.com/@iiif/vocabulary/-/vocabulary-1.0.22.tgz#743d6cb1914e090137c56a4e44decbe7f8b21bdc"
   integrity sha512-KOIZgRpDERMK4YGeSwPBNjpJETapMWp8pvEvSGUQkuTlqkiNLirZH65CIcEENZEL5A6mxrYLJX6okDYq7W1+RA==
 
-"@jeffreycwitt/lbp2.collation-table@^0.0.8":
-  version "0.0.8"
-  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.collation-table/-/@jeffreycwitt-lbp2.collation-table-0.0.8.tgz#b1aa14b53eec02c5dce843b770f7d259a007071b"
-  integrity sha1-saoUtT7sAsXc6EO3cPfSWaAHBxs=
+"@jeffreycwitt/lbp2.collation-table@^0.0.10":
+  version "0.0.10"
+  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.collation-table/-/@jeffreycwitt-lbp2.collation-table-0.0.10.tgz#8976974a9d60a44f906a579314129ef133e10344"
+  integrity sha1-iXaXSp1gpE+QaleTFBKe8TPhA0Q=
   dependencies:
-    "@jeffreycwitt/lbp2.surface3" "0.0.18"
+    "@jeffreycwitt/lbp2.surface3" "0.0.19"
     axios "^0.27.2"
     core-js "^3.0.0"
     prop-types "^15.8.1"
@@ -1311,6 +1311,18 @@
   version "0.0.18"
   resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.surface3/-/@jeffreycwitt-lbp2.surface3-0.0.18.tgz#22fa6723866a676aa5fd05a3a28e6fb411abc19b"
   integrity sha1-IvpnI4ZqZ2ql/QWjoo5vtBGrwZs=
+  dependencies:
+    "@jeffreycwitt/lbp2.iiif-image-logo" "0.0.5"
+    "@jeffreycwitt/lbp2.image-text-wrapper" "0.0.11"
+    "@jeffreycwitt/lbp2.osd-instance" "0.0.7"
+    axios "^0.27.2"
+    core-js "^3.0.0"
+    prop-types "^15.8.1"
+
+"@jeffreycwitt/lbp2.surface3@0.0.19":
+  version "0.0.19"
+  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.surface3/-/@jeffreycwitt-lbp2.surface3-0.0.19.tgz#5af90137429d3eb162173962b9119418f897e07a"
+  integrity sha1-WvkBN0KdPrFiFzliuRGUGPiX4Ho=
   dependencies:
     "@jeffreycwitt/lbp2.iiif-image-logo" "0.0.5"
     "@jeffreycwitt/lbp2.image-text-wrapper" "0.0.11"
