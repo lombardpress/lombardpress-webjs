@@ -40,7 +40,8 @@ class Window2 extends React.Component {
         search:  false,
         textOutline: false,
         citation: false
-      }
+      },
+      collationTableWithRange: false
 
     }
   }
@@ -295,9 +296,18 @@ class Window2 extends React.Component {
           }
           {
             this.state.windowLoad === "collationTable" &&  
-            <CollationTable expressionIds={this.props.selectionRange.wordRange 
+            <div>
+              {this.state.collationTableWithRange ? 
+              <CollationTable expressionIds={this.props.selectionRange.wordRange 
               ? [this.props.resourceid + "@" + this.props.selectionRange.wordRange.start + "-" + this.props.selectionRange.wordRange.end, ...this.props.ctRelatedExpressions] 
-              : [this.props.resourceid, ...this.props.ctRelatedExpressions]} />
+              : [this.props.resourceid, ...this.props.ctRelatedExpressions]} 
+              handleOnSegClick={this.props.handleFocusChange}/>
+              :
+              <CollationTable expressionIds={[this.props.resourceid, ...this.props.ctRelatedExpressions]} 
+                handleOnSegClick={this.props.handleFocusChange}/>
+              }
+              <p onClick={() => {this.setState({collationTableWithRange: !this.state.collationTableWithRange})}}>{this.state.collationTableWithRange ? "Show without range constraint" : "Show with range constraint"}</p>
+            </div>
           }
           {
             this.state.windowLoad === "surface2" 
