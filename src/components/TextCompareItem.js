@@ -45,6 +45,7 @@ class TextCompareItem extends React.Component {
       }
     })
   }
+  // TODO: should be replaced by function in utils.js file
   textClean(text){
     // remove most punctuation
     let punctuationless = text.replace(/[.,/#!$%^&*;:{}=\-_`~()/\u00B6/|/\u204B/]/g,"");

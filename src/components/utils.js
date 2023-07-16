@@ -398,3 +398,22 @@ export function camelCase(str) {
      return index === 0 ? word.toLowerCase() : word.toUpperCase();
  }).replace(/\s+/g, '');
 }
+
+//copied from TextCompareItem
+//TODO: TextCompareItem instances should be removed and this function should be used
+export function textClean(text){
+  // remove most punctuation
+  let punctuationless = text.replace(/[.,/#!$%^&*;:{}=\-_`~()/\u00B6/|/\u204B/]/g,"");
+  //convert v->u, ae->e, oe-e>
+  punctuationless = punctuationless.replace(/v/g, "u");
+  punctuationless = punctuationless.replace(/ae/g, "e");
+  punctuationless = punctuationless.replace(/oe/g, "e");
+  punctuationless = punctuationless.replace(/oe/g, "e");
+  punctuationless = punctuationless.replace(/y/g, "i");
+  //remove space
+  punctuationless = punctuationless.replace(/\s{2,}/g," ");
+  //lowercase
+  const finalFinalString = punctuationless.toLowerCase()
+  return finalFinalString
+
+}

@@ -5,7 +5,9 @@ import {Link} from 'react-router-dom';
 import TextCompare from './TextCompare'
 import Spinner from './Spinner'
 import {ngramRelatedQuery} from '../queries/ngramRelatedQuery'
+import {ngramFragmentQuery} from '../queries/ngramRelatedQuery'
 import {runNgramQuery} from '../queries/ngramRelatedQuery'
+import {textClean} from './utils'
 
 /**
  * 
@@ -13,31 +15,56 @@ import {runNgramQuery} from '../queries/ngramRelatedQuery'
  * @public
  */
 
+const createExpressionsList = (bindings) => {
+  const expressions = [];
+  bindings.forEach((r) => {
+    expressions.push({
+      id: r.target.value,
+      relationLabel: "Ngram Intersections:" + r.count.value,
+      referringResource: "",
+      author: r.author?.value,
+      authorTitle: r.authorTitle?.value,
+      longTitle: r.longTitle?.value,
+      show: false,
+      isRelatedToRange: ""
+    })
+  })
+  return expressions
+}
+
 function NgramDisplay(props) {
   const [relatedExpressions, setRelatedExpressions] = useState([])
-  //const [scoreMinimumInput, setScoreMinimumInput] = useState(".02")
-  //const [scoreMinimumUse, setScoreMinimumUse] = useState(".02")
   useEffect(() => {
-    const ngramRelated = runNgramQuery(ngramRelatedQuery(props.resourceid));
-    const expressions = [];
-    ngramRelated.then((d) => {
-      const bindings = d.data.results.bindings
-      bindings.forEach((r) => {
-        expressions.push({
-          id: r.target.value,
-          relationLabel: "cosineSimilarity: " + (parseFloat(r.cosineScore.value) * 100).toFixed(2) + "% | cosineIntersection:" + r.intersectionTotal.value,
-          referringResource: "",
-          author: r.author ? r.author.value : "",
-          authorTitle: r.authorTitle ? r.authorTitle.value : "",
-          longTitle: r.targetLongTitle ? r.targetLongTitle.value : "",
-          show: false,
-          isRelatedToRange: ""
-        })
+    // if targetRange is presents forces query to wait until baseText is present
+    if (props.baseText && props.targetRange){
+      console.log("firing1")
+      const tokenizedText = textClean(props.baseText).split(" ");
+      const ngramArray = []  
+      console.log("baseText", props.baseText)
+      console.log("tokenizedText", tokenizedText)
+      // create a for loop the length of the number of words props.baseText
+      for (let i = 0; i < (tokenizedText.length - 3); i++){
+        const ngramId = `<http://scta.info/resource/ngram/${tokenizedText.slice(i, (i + 4)).join("")}>`
+        ngramArray.push(ngramId)
+      }
+      const ngramRelated = runNgramQuery(ngramFragmentQuery(ngramArray.join(" ")));
+      ngramRelated.then((d) => {
+        const bindings = d.data.results.bindings;
+        const expressions = createExpressionsList(bindings);
+        setRelatedExpressions(expressions)
       })
-      setRelatedExpressions(expressions)
-    })
-    
-  }, [props.resourceid])
+    }
+    // NOTE: prevents general query if a targetRange is present
+    // TODO: probably needs to be refactored; useEffect can probably be used better
+    else if (!props.targetRange){
+      const ngramRelated = runNgramQuery(ngramRelatedQuery(props.resourceid));
+      ngramRelated.then((d) => {
+        const bindings = d.data.results.bindings
+        const expressions = createExpressionsList(bindings);
+        setRelatedExpressions(expressions)
+      })
+    }
+  }, [props.resourceid, props.baseText, props.targetRange])
   
   const displayExpressions = () => {
     const displayExpressions = relatedExpressions.map((i, index) => {

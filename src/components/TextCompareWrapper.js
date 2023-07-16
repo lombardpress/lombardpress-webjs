@@ -283,6 +283,7 @@ class TextCompareWrapper extends React.Component {
           markedExpressions={this.state.expressionsCumulative}
           handleAddCtRelatedExpressions={this.props.handleAddCtRelatedExpressions}
           handleShowCollationOverlay={this.props.handleShowCollationOverlay}
+          targetRange={(this.props.selectionRange && this.props.selectionRange.wordRange) ? this.props.selectionRange.wordRange.start + "-" + this.props.selectionRange.wordRange.end : ""}
           />
         </div>
 
