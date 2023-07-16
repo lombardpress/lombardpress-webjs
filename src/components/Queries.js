@@ -560,7 +560,7 @@ export function getAuthorInformation(authorid){
       "CONSTRUCT",
       "{",
       "?author  <http://purl.org/dc/elements/1.1/title> ?authorTitle ;",
-      "<http://scta.info/resource/hasTopLevelExpression> ?expression ;",
+      "<http://scta.info/property/hasTopLevelExpression> ?expression ;",
       "<http://scta.info/property/authorArticle> ?authorArticle;",
       "<http://scta.info/property/textArticle> ?textArticle .",
     	"?authorArticle <http://purl.org/dc/elements/1.1/title> ?authorArticleTitle . ",

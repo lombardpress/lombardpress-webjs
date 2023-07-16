@@ -33,77 +33,63 @@ class AuthorCollection extends React.Component {
   }
   arrangeItems(itemsPromise, resourceid){
     itemsPromise.then((d) => {
-      //const authorShortId = resourceid.split("/resource/")[1]
-      //change due to fuseki 4.3.1 update 
-      //const author = d.data["@graph"].filter((i) => i["@id"] === "sctar:peter-plaoulresourceid)[0]
-      // const author = d.data["@graph"].filter((i) => i["@id"] === "sctar:" + authorShortId)[0]
-
       // author get with conditional fall back due to strange changing behavior in results
       let author = d.data["@graph"].filter((i) => i["@id"] === resourceid.replace("http://scta.info/resource/", "sctar:"))[0]
       if (!author){
         author = d.data["@graph"].filter((i) => i["@id"] === resourceid)[0]
       }
-      //const authorExpressions = d.data["@graph"].filter((i) => {i["@id"] === author.hasTopLevelExpression})
-      console.log("d", d)
-      console.log("author", author)
-      const authorTitle = author["title"]
+      const authorTitle = author["dc:title"]
+      
       let authorArticles = null
-      if(Array.isArray(author.authorArticle)){
-        authorArticles =  author.authorArticle.map((a) => {
+      if(Array.isArray(author["sctap:authorArticle"])){
+        authorArticles =  author["sctap:authorArticle"].map((a) => {
           return {
-            id: a.replace("sctar:", "http://scta.info/resource/"),
+            id: a["@id"].replace("sctar:", "http://scta.info/resource/"),
             //change due to fuseki 4.3.1 update 
             //title: d.data["@graph"].filter((i) => i["@id"] === a)[0]["http://purl.org/dc/elements/1.1/title"]
-            title: d.data["@graph"].filter((i) => i["@id"] === a)[0]["title"]
+            title: d.data["@graph"].filter((i) => i["@id"] === a["@id"])[0]["dc:title"]
           }
         })
       }
-      else if (author.authorArticle){
-        //change due to fuseki 4.3.1 update 
-        //authorArticles = [{id: author.authorArticle, title: d.data["@graph"].filter((i) => i["@id"] === author.authorArticle)[0]["http://purl.org/dc/elements/1.1/title"]}]
-        authorArticles = [{id: author.authorArticle.replace("sctar:", "http://scta.info/resource/"), title: d.data["@graph"].filter((i) => i["@id"] === author.authorArticle)[0]["http://purl.org/dc/elements/1.1/title"]}]
+      else if (author["sctap:authorArticle"]){
+        authorArticles = [{id: author["sctap:authorArticle"]["@id"].replace("sctar:", "http://scta.info/resource/"), title: d.data["@graph"].filter((i) => i["@id"] === author["sctap:authorArticle"]["@id"])[0]["dc:title"]}]
       }
       let textArticles = null
-      if(Array.isArray(author.textArticle)){
+      if(Array.isArray(author["sctap:textArticle"])){
           textArticles =  author.textArticle.map((a) => {
           return {
-            id: a.replace("sctar:", "http://scta.info/resource/"),
-            //change due to fuseki 4.3.1 update
-            //title: d.data["@graph"].filter((i) => i["@id"] === a)[0]["http://purl.org/dc/elements/1.1/title"]
-            title: d.data["@graph"].filter((i) => i["@id"] === a)[0]["title"]
+            id: a["@id"].replace("sctar:", "http://scta.info/resource/"),
+            title: d.data["@graph"].filter((i) => i["@id"] === a["@id"])[0]["dc:title"]
           }
         })
       }
-      else if (author.textArticle){
-        //change due to fuseki 4.3.1 update
-        //textArticles = [{id: author.textArticle, title: d.data["@graph"].filter((i) => i["@id"] === author.textArticle)[0]["http://purl.org/dc/elements/1.1/title"]}]
-        textArticles = [{id: author.textArticle.replace("sctar:", "http://scta.info/resource/"), title: d.data["@graph"].filter((i) => i["@id"] === author.textArticle)[0]["title"]}]
+      else if (author["sctap:textArticle"]){
+        textArticles = [{id: author["sctap:textArticle"]["@id"].replace("sctar:", "http://scta.info/resource/"), title: d.data["@graph"].filter((i) => i["@id"] === author["sctap:textArticle"]["@id"])[0]["dc:title"]}]
       }
 
       let expressions = null
-      if(Array.isArray(author.hasTopLevelExpression)){
-        expressions =  author.hasTopLevelExpression.map((a) => {
+      if(Array.isArray(author["sctap:hasTopLevelExpression"])){
+        expressions =  author["sctap:hasTopLevelExpression"].map((a) => {
           return {
-            id: a.replace("sctar:", "http://scta.info/resource/"),
-            //change due to fuseki 4.3.1 update
-            //title: d.data["@graph"].filter((i) => i["@id"] === a)[0]["http://purl.org/dc/elements/1.1/title"]
-            title: d.data["@graph"].filter((i) => i["@id"] === a)[0]["title"]
+            id: a["@id"].replace("sctar:", "http://scta.info/resource/"),
+            title: d.data["@graph"].filter((i) => i["@id"] === a["@id"])[0]["dc:title"]
           }
         })
       }
-      else if (author.hasTopLevelExpression){
-        //change due to fuseki 4.3.1 update
-        //expressions = [{id: author.hasTopLevelExpression, title: d.data["@graph"].filter((i) => i["@id"] === author.hasTopLevelExpression)[0]["http://purl.org/dc/elements/1.1/title"]}]
-        expressions = [{id: author.hasTopLevelExpression.replace("sctar:", "http://scta.info/resource/"), title: d.data["@graph"].filter((i) => i["@id"] === author.hasTopLevelExpression)[0]["title"]}]
+      else if (author["sctap:hasTopLevelExpression"]){
+        expressions = [{id: author["sctap:hasTopLevelExpression"]["@id"].replace("sctar:", "http://scta.info/resource/"), title: d.data["@graph"].filter((i) => i["@id"] === author["sctap:hasTopLevelExpression"]["@id"])[0]["dc:title"]}]
       }
+      console.log("expressions", expressions)
       if (this.mount){
         this.setState({authorArticles: authorArticles, textArticles: textArticles, expressions: expressions, authorTitle: authorTitle })
       }
+      
     })
     .catch((err) => {
       console.log(err)
     })
   }
+
   retrieveAuthorCollectionInfo(resourceid){
     const authorCollectionInfo = runQuery(getAuthorInformation(resourceid))
     /// add items to state
