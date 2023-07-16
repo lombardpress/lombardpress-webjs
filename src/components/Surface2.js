@@ -188,11 +188,9 @@ componentDidMount(){
     }
     const displayImages = () => {
       if (this.state.annotations && this.state.annotationsDisplay){
-        console.log("single annotation", this.state.annotations)
         let imageTextWrappers = []
         if (!this.state.annotations.length){
           const imageResult = displayImage(this.state.annotations, 0)
-          console.log(imageResult)
           imageTextWrappers = imageResult
         }
         else{
@@ -200,7 +198,6 @@ componentDidMount(){
             return displayImage(h, i)
           });
         }
-        console.log("test", imageTextWrappers)
         return imageTextWrappers
       }
       else{

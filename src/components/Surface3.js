@@ -223,7 +223,6 @@ componentDidMount(){
           }
         }
         if (imageUrl){
-
           return (
             <ImageTextWrapper
               key={surface.currentSurfaceId + "-" + surface.order}

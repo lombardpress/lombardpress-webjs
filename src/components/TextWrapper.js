@@ -38,9 +38,12 @@ class TextWrapper extends React.Component {
     this.handleToggleTextLinesView = this.handleToggleTextLinesView.bind(this)
     this.handleChangeManifestation = this.handleChangeManifestation.bind(this)
     this.handleTextPreviewFocusChange = this.handleTextPreviewFocusChange.bind(this)
+    this.handleShowCollationOverlay = this.handleShowCollationOverlay.bind(this)
+    this.handleAddCtRelatedExpressions = this.handleAddCtRelatedExpressions.bind(this)
     this.handleTogglePdfView = this.handleTogglePdfView.bind(this)
     this.handleUpdateSelectionRange = this.handleUpdateSelectionRange.bind(this)
     this.state = {
+      ctRelatedExpressions: [],
       doc: "",
       focus: "",
       //focusRelatedExpressions: "",
@@ -74,6 +77,7 @@ class TextWrapper extends React.Component {
       }
     }
   }
+
   handleTogglePdfView(){
     this.setState((prevState) => {
         return {
@@ -231,6 +235,22 @@ class TextWrapper extends React.Component {
     //if so split by white space 
     this.setState({textPreviewObjects: targetObjects})
   }
+
+  handleShowCollationOverlay(){
+    console.log("firing")
+    this.openWindow("window2", "collationTable")
+  }
+  
+  handleAddCtRelatedExpressions(expressionId){
+    this.handleShowCollationOverlay(true)
+    this.setState((prevState) => {
+      return{
+        ctRelatedExpressions: [...prevState.ctRelatedExpressions, expressionId]
+      }
+    })
+
+  }
+
   //TODO
   //These two function should be refactored into one
   setFocus(id){
@@ -428,7 +448,8 @@ class TextWrapper extends React.Component {
             return {
               mtFocus: "/" + mFocus + "/" + tFocus,
               selectionRange: selectionRange,
-              windows: windows
+              windows: windows,
+              ctRelatedExpressions: []
             }
           })
         }
@@ -439,7 +460,8 @@ class TextWrapper extends React.Component {
             this.setState(
               {
                 focus: "",
-                selectionRange: ""
+                selectionRange: "",
+                ctRelatedExpressions: []
             });
           }
           else {
@@ -450,7 +472,8 @@ class TextWrapper extends React.Component {
                 selectedElementTargetId: this.props.expressionid && this.props.expressionid.split("/resource/")[1],
               } : {}
               return({
-              selectionRange: selectionRange
+              selectionRange: selectionRange,
+              ctRelatedExpressions: []
               })  
             })
             this.retrieveFocusInfo(this.props.expressionid)
@@ -464,7 +487,8 @@ class TextWrapper extends React.Component {
               selectedElementTargetId: this.props.expressionid && this.props.expressionid.split("/resource/")[1],
             } : {}
             return({
-            selectionRange: selectionRange
+            selectionRange: selectionRange,
+            ctRelatedExpressions: []
           })
           })
         }
@@ -510,6 +534,10 @@ class TextWrapper extends React.Component {
               handleLineFocusChange={this.handleLineFocusChange}
               selectionRange={this.state.selectionRange}
               codexResourceType={this.props.codexResourceType}
+              userId={this.props.userId}
+              handleShowCollationOverlay={this.handleShowCollationOverlay}
+              handleAddCtRelatedExpressions={this.handleAddCtRelatedExpressions}
+              ctRelatedExpressions={this.state.ctRelatedExpressions}
               />
             )
           }

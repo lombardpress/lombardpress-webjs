@@ -13,14 +13,16 @@ class Print extends React.Component {
     }
   }
   getPdf(url){
-    Axios.get("https://print.lombardpress.org/api/v1/resource?url=" + url)
+    const printApiUrlBase = "https://print.lombardpress.org"
+    //const printApiUrlBase = "localhost:5000"
+    Axios.get(printApiUrlBase + "/api/v1/resource?url=" + url)
       .then((data) => {
         console.log(data)
         if (data.data.url){
           console.log("first condition passed", data.data.url)
           const hashWithExtension = data.data.url
           //window.location = "http://print.lombardpress.org/api/v1/cache/" + hashWithExtension
-          this.setState({pdf: "https://print.lombardpress.org/api/v1/cache/" + hashWithExtension})
+          this.setState({pdf: printApiUrlBase + "/api/v1/cache/" + hashWithExtension})
         }
         else{
           this.setState({status: data.data.Status + "Please check back in a few minutes", pdf: ""})

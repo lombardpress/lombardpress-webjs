@@ -47,6 +47,7 @@ class TextOutlineWrapper extends React.Component {
         <TextOutline
           key={this.props.resourceid}
           showChildren={true}
+          showFirstLevelChildren={this.props.showFirstLevelChildren}
           focusResourceid={this.props.focusResourceid}
           resourceid={this.props.resourceid}
           title={this.props.title}

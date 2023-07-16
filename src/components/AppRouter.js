@@ -7,25 +7,27 @@ import About from "./About"
 import NavBar from './NavBar';
 import Spinner from './Spinner';
 import Footer from './Footer';
-import OSDInstance from './OSDInstance';
+
 
 import 'bootstrap/dist/css/bootstrap.css'
 import '../styles/App.scss';
 //import '../styles/index.scss';
 
-const AppRouter = () => {
+const AppRouter = (props) => {
+  
+  const uid = props.user ? props.user.uid : ""
   return (
   <Suspense fallback={<Spinner/>}>
     <BrowserRouter forceRefresh={false}>
       <div>
-        <NavBar/>
+        <NavBar  user={props.user}/>
         <Switch>
-          <Route path="/" exact={true} component={Home}/>
-          <Route path="/res" exact={true} component={TextSwitch}/>
-          <Route path="/text"  exact={true} component={TextSwitch}/>
-          <Route path="/about" exact={true} component={About}/>
-          <Route path="/search" exact={true} component={Search3}/>
-          <Route path="/osd" exact={true} component={OSDInstance}/>
+          <Route path="/" exact={true} render={(props) => <Home {...props} userId={uid}/>}/>
+          <Route path="/res" exact={true} render={(props) => <TextSwitch {...props} userId={uid}/>}/>
+          <Route path="/text"  exact={true} render={(props) => <TextSwitch {...props} userId={uid}/>}/>
+          <Route path="/about" exact={true} render={(props) => <About {...props} userId={uid}/>}/>
+          <Route path="/search" exact={true} render={(props) => <Search3 {...props} userId={uid}/>}/>
+          <Route path="/osd" exact={true} render={(props) => <TextSwitch {...props} userId={uid}/>}/>
           {
             //<Route path="/edit/:id" exact={true} component={EditExpensePage}/>
           //<Route path="/help" exact={true} component={HelpPage}/>

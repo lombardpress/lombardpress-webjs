@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Surface2 from "../Surface2"
-import Surface3Wrapper from "../Surface3Wrapper"
+//import Surface3Wrapper from "../Surface3Wrapper"
+import {Surface3Wrapper} from "@jeffreycwitt/lbp2.surface3wrapper"
+import {CollationTable} from "@jeffreycwitt/lbp2.collation-table"
 import XmlView from "../XmlView"
 import WindowNavBar from "./WindowNavBar"
 import NextPrevBar from "../NextPrevBar"
@@ -27,6 +29,7 @@ class Window2 extends React.Component {
     super(props)
     this.handleToggleTextLinesView = this.handleToggleTextLinesView.bind(this)
     this.handleChangeManifestation = this.handleChangeManifestation.bind(this)
+    
     this.state = {
       windowLoad: "",
       mountStatus: {
@@ -37,10 +40,12 @@ class Window2 extends React.Component {
         search:  false,
         textOutline: false,
         citation: false
-      }
+      },
+      collationTableWithRange: false
 
     }
   }
+  
   // used to control default iamge view prop for surface3 component
   handleToggleTextLinesView(view){
     this.props.handleToggleTextLinesView(this.props.windowId, view)
@@ -75,8 +80,10 @@ class Window2 extends React.Component {
       // then, the mount status of the opening window load is changed to true
       newMountStatus[this.props.windowLoad] = true
       this.setState(
-        {windowLoad: this.props.windowLoad,
-        mountStatus: newMountStatus}
+        {
+          windowLoad: this.props.windowLoad,
+          mountStatus: newMountStatus,
+        }
       )
     }
     else if (this.props.windowLoad !== prevProps.windowLoad){
@@ -147,6 +154,8 @@ class Window2 extends React.Component {
               surfaceWidth={this.props.windowType === 'bottomWindow' ? "1000" : "501"}
               hidden={this.state.windowLoad !== "textCompare"}
               selectionRange={this.props.selectionRange}
+              handleShowCollationOverlay={this.props.handleShowCollationOverlay}
+              handleAddCtRelatedExpressions={this.props.handleAddCtRelatedExpressions}
             />
             }
             {
@@ -201,14 +210,18 @@ class Window2 extends React.Component {
             (this.state.windowLoad === "surface3" || this.state.mountStatus.surface3) 
             &&  
             <Surface3Wrapper
+            className="surfaceWrapper"
             manifestations={this.props.info.manifestations}
+            //expressionid={this.props.resourceid}
             focusedManifestation={this.props.defaultManifestationSlug ? this.props.resourceid + "/" + this.props.defaultManifestationSlug : this.props.resourceid + "/" + this.props.mtFocus.split("/")[1]}
             annotationsDisplay={this.props.annotationsDisplay}
             handleToggleTextLinesView={this.handleToggleTextLinesView}
             handleChangeManifestation={this.handleChangeManifestation}
-            width={this.props.windowType === 'bottomWindow' ? "1000" : "501"}
+            width={this.props.windowType === 'bottomWindow' ? 1000 : 501}
             lineFocusId={this.props.lineFocusId}
-            hidden={this.state.windowLoad !== "surface3"}/>
+            hidden={this.state.windowLoad !== "surface3"}
+            startWord={this.props.selectionRange.wordRange && this.props.selectionRange.wordRange.start}
+            endWord={this.props.selectionRange.wordRange && this.props.selectionRange.wordRange.end}/>
             }
             
             {
@@ -221,7 +234,8 @@ class Window2 extends React.Component {
                 expressionid={this.props.resourceid} 
                 hidden={this.state.windowLoad !== "comments"}
                 selectionRange={this.props.selectionRange} // this will only apply at resourceType=text level
-              />
+                userId={this.props.userId}
+              /> 
             }
             {displayComponents.includes("xml") 
             && (this.state.windowLoad === "xml" || this.state.mountStatus.xml) 
@@ -279,6 +293,21 @@ class Window2 extends React.Component {
           {
             (this.state.windowLoad === "dictionary" && this.props.selectionRange.text) &&
             <Dictionary text={this.props.selectionRange.text} hidden={this.state.windowLoad !== "dictionary"}/>
+          }
+          {
+            this.state.windowLoad === "collationTable" &&  
+            <div>
+              {this.state.collationTableWithRange ? 
+              <CollationTable expressionIds={this.props.selectionRange.wordRange 
+              ? [this.props.resourceid + "@" + this.props.selectionRange.wordRange.start + "-" + this.props.selectionRange.wordRange.end, ...this.props.ctRelatedExpressions] 
+              : [this.props.resourceid, ...this.props.ctRelatedExpressions]} 
+              handleOnSegClick={this.props.handleFocusChange}/>
+              :
+              <CollationTable expressionIds={[this.props.resourceid, ...this.props.ctRelatedExpressions]} 
+                handleOnSegClick={this.props.handleFocusChange}/>
+              }
+              <p onClick={() => {this.setState({collationTableWithRange: !this.state.collationTableWithRange})}}>{this.state.collationTableWithRange ? "Show without range constraint" : "Show with range constraint"}</p>
+            </div>
           }
           {
             this.state.windowLoad === "surface2" 
@@ -373,6 +402,7 @@ class Window2 extends React.Component {
       && <NextPrevBar 
       info={this.props.info} 
       handleBlockFocusChange={this.props.handleBlockFocusChange}
+      handleFocusChange={this.props.handleFocusChange}
       selectionRange={this.props.selectionRange}
       />}
 

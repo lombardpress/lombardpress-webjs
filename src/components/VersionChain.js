@@ -109,7 +109,7 @@ class VersionChain extends React.Component {
           const topLevelShortId = version.versionDoc.includes("github.com") && version.versionDoc.split("/scta-texts/")[1].split("/")[0]
           const gitHubIssues = "https://github.com/scta-texts/" + topLevelShortId + "/issues";
           
-          return (<Alert variant="info">
+          return (<Alert className="versioninfobox" variant="info">
             <span className="small">{t("Version")}: {version.versionLabel} 
             | 
             {t("Data Source")}: <a href={version.versionDoc}>{version.versionDoc}</a> 

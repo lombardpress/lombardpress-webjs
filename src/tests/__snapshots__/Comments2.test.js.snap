@@ -5,33 +5,8 @@ exports[`should render and conform to snapshot  1`] = `
   className="showing"
   fluid={false}
 >
-  <Comment2Create
-    orderNumber={0}
-    submitComment={[Function]}
-  />
-  <Button
-    active={false}
-    block={true}
-    disabled={false}
-    onClick={[Function]}
-    size="sm"
-    style={
-      Object {
-        "margin": "2px",
-      }
-    }
-    type="button"
-    variant="primary"
-  >
-    <FaFilter />
-     Filters
-  </Button>
-  <hr />
-  <div />
-  <ImportExport
-    currentList={Array []}
-    currentListName="local"
-    handleImportList={[Function]}
-  />
+  <p>
+     You must be logged in to comment
+  </p>
 </Container>
 `;

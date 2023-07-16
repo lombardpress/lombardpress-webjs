@@ -13,6 +13,12 @@
 	.lbp-text {
   	width: 90%;
   }
+	.fullText{
+		padding-left: 80px;
+	}
+	.skinnyText{
+		padding-left: 20px;
+	}
 }
 #lbp-pub-info{
 	font-size: 12px;
@@ -164,4 +170,16 @@ sub, sup{
 .lbp-quote-clickable:hover, .lbp-ref-clickable:hover{
 	cursor: pointer;
 	border-bottom: 3px solid $dark
+}
+
+.js-show-figure-image{
+		margin: 10px;
+		//border: 3px solid #000;
+		box-shadow: 3px 3px 8px 0px rgba(0,0,0,0.3); 
+		border-radius: 15px;
+}
+.js-show-figure-image:hover{
+	box-shadow: 3px 3px 8px 0px rgb(242, 255, 0); 
+	cursor: pointer;
+
 }

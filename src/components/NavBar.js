@@ -2,13 +2,17 @@ import React from 'react';
 import {NavLink} from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+
+import LoginPage from './LoginPage.js'
 import {resourceEndpoint} from './config';
 import {useTranslation} from 'react-i18next'
 
-function NavBar() {
+function NavBar(props) {
   const {t} = useTranslation();
+
+  
   return (
-    <Navbar bg="dark" variant="light" expand="lg" fixed="top">
+    <Navbar bg="dark" variant="light" expand="lg" fixed="top" style={{borderBottom: "1px solid #dee2e6"}}>
       <Nav>
         <NavLink className="nav-link" to="/">{t("Title")}</NavLink>
       </Nav>
@@ -37,9 +41,19 @@ function NavBar() {
         {
           //<NavLink className="nav-link" to="/about">{t("About")}</NavLink>
         }
-        <a className="nav-link" href="https://scta.info/donate">{t("Donate")}</a>
+        <a className="nav-link" href="https://secure.qgiv.com/for/givescta">{t("Donate")}</a>
+      </Nav>
+      
+      </Navbar.Collapse>
+      <Navbar.Collapse id="basic-navbar-nav-right" className="float-right" style={{flexGrow: "0"}}>
+      <Nav>
+          <LoginPage user={props.user}/>
       </Nav>
       </Navbar.Collapse>
+      
+
+      
+      
     </Navbar>
 
   );

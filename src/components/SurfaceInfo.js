@@ -6,12 +6,19 @@ import Button from 'react-bootstrap/Button';
 import {Link} from 'react-router-dom';
 import {FaExternalLinkAlt} from 'react-icons/fa';
 
+import {Surface3Wrapper} from "@jeffreycwitt/lbp2.surface3wrapper"
 
 //internal imports
-import Surface3Wrapper from './Surface3Wrapper'
+//import Surface3Wrapper from './Surface3Wrapper'
+
 //import Comments from './Comments'
 import {runQuery} from './utils'
 import {getSurfaceInfo} from '../queries/SurfaceInfoQuery'
+
+
+//TODO: the result of the CONSTRUCT query is returning prefixed uris, and arrays for multiple results and objects for single results; 
+// it is creating all kind of type confusion that requires extra conditionals
+// it would be better stop using the CONSTRUCT query or abstract this variations away into a separate utility function
 
 class SurfaceInfo extends React.Component {
   constructor(props){
@@ -36,13 +43,14 @@ class SurfaceInfo extends React.Component {
     })
   }
   handleSurface3Manifestations(manifestations, eid){
-    console.log("test", manifestations, eid)
     let newManifestations = ""
-    if (typeof manifestations === "object"){
+    
+    //if (typeof manifestations === "object"){
+    if (manifestations instanceof Array){
       newManifestations = manifestations.map((m) =>{
         return {
-          manifestation: m,
-          manifestationTitle: m.split("/resource/")[1],
+          manifestation: m["@id"].replace("sctar:", "http://scta.info/resource/"),
+          manifestationTitle: m["@id"].replace("sctar:", "http://scta.info/resource/").split("/resource/")[1],
           transcription: ""
         }
       })
@@ -50,11 +58,12 @@ class SurfaceInfo extends React.Component {
     // sometimes there is only manifestation not in an array
     else if (manifestations){
       newManifestations = [{
-        manifestation: manifestations,
-        manifestationTitle: manifestations.split("/resource/")[1],
+        manifestation: manifestations["@id"].replace("sctar:", "http://scta.info/resource/"),
+        manifestationTitle: manifestations["@id"].replace("sctar:", "http://scta.info/resource/").split("/resource/")[1],
         transcription: ""
       }]
     }
+    console.log("newManifestations", newManifestations)
     const split1 = this.props.surfaceid.split("/resource/")[1]
     const codexSlug = split1.split("/")[0]
     const surface3FocusedManifestation = newManifestations ? newManifestations.filter((m) => m.manifestation.includes(codexSlug))[0].manifestation : ""
@@ -106,15 +115,14 @@ class SurfaceInfo extends React.Component {
     surfaceInfo.then((d) => {
       if (d.data["@graph"]){
         const data = d.data["@graph"]
+        console.log("data", data)
         const expressions = [] 
         data.forEach((e) => {
-          console.log("e", e)
-          if (e.hasManifestation){
-            const surface3Manifestations = this.handleSurface3Manifestations(e.hasManifestation, e["@id"])
-            console.log("test", surface3Manifestations)
+          if (e["sctap:hasManifestation"]){
+            const surface3Manifestations = this.handleSurface3Manifestations(e["sctap:hasManifestation"], e["@id"].replace("sctar:", "http://scta.info/resource/"))
             expressions.push({
-              expressionid: e["@id"],
-              manifestations: e.hasManifestation,
+              expressionid: e["@id"].replace("sctar:", "http://scta.info/resource/"),
+              manifestations: e["sctap:hasManifestation"],
               surface3Manifestations: surface3Manifestations,
               showComments: false,
               showRelatedSurfaces: false,
@@ -127,11 +135,10 @@ class SurfaceInfo extends React.Component {
         })
         let surfaceMap = {}
         data.forEach((e) => {
-          if (e.isOnSurface){
-            surfaceMap[e["@id"]] = e.isOnSurface
+          if (e["sctap:isOnSurface"]){
+            surfaceMap[e["@id"].replace("sctar:", "http://scta.info/resource/")] = e["sctap:isOnSurface"]["@id"].replace("sctar:", "http://scta.info/resource/")
           }
         })
-        console.log("expressions", expressions)
         this.setState({
           expressions: expressions,
           surfaceMap: surfaceMap,
@@ -155,8 +162,9 @@ class SurfaceInfo extends React.Component {
         const expressions = this.state.expressions.map((e) => {
           let manifestations = ""
           // sometimes there are several manifestations
-          if (typeof(e.hasManifestation) === "object"){
-            manifestations = e.hasManifestation.map((m) => {
+          if (Array.isArray(e.manifestations)){
+            manifestations = e.manifestations.map((mShort) => {
+              const m = mShort["@id"].replace("sctar:", "http://scta.info/resource/")
               return (
                   <div key={m}>
                   <span>{m} <Link to={"/text?resourceid=" + m}><FaExternalLinkAlt/></Link></span>
@@ -169,12 +177,13 @@ class SurfaceInfo extends React.Component {
               })
             }
             // sometimes there is only manifestation
-            else if (e.hasManifestation){
+            else if (e.manifestations){
+              const m = e.manifestations["@id"].replace("sctar:", "http://scta.info/resource/")
               manifestations = (
-                  <div key={e.hasManifestation}>
-                  <span>{e.hasManifestation} <Link to={"/text?resourceid=" + e.hasManifestation}><FaExternalLinkAlt/></Link></span>
+                  <div key={m}>
+                  <span>{m} <Link to={"/text?resourceid=" + m}><FaExternalLinkAlt/></Link></span>
                   <br/>
-                  <span style={{"textIndent": "10px"}}>...Appearing on Surface {this.state.surfaceMap[e.hasManifestation]} <Link to={"/text?resourceid=" + this.state.surfaceMap[e.hasManifestation]}><FaExternalLinkAlt/></Link></span>
+                  <span style={{"textIndent": "10px"}}>...Appearing on Surface {this.state.surfaceMap[m]} <Link to={"/text?resourceid=" + this.state.surfaceMap[m]}><FaExternalLinkAlt/></Link></span>
                   <br/>
                   <br/>
                   </div>

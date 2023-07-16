@@ -6,26 +6,75 @@ import {questionTitleQuery} from '../queries/questionTitleQuery'
 import Spinner from './Spinner';
 import Container from 'react-bootstrap/Container';
 import Search3Parameters from './Search3Parameters';
-import {retrieveAuthorResults, retrieveExpressionResults, retrieveWorkGroupResults, retrieveFigureResults, displayTextResults, displayFigureResults, displayQuestionResults} from './searchUtils'
+import {retrieveSearchResults, displayTextResults, displayFigureResults, displayQuestionResults, createIdTitleMap, getValueLongTitlesAndAuthors} from './searchUtils'
 
 const Search3 = (props) => {
   const [searchParameters, setSearchParameters] = useState({})
   const [results, setResults] = useState([])
   const [questionResults, setQuestionResults] = useState([])
+  const [idTitleMap, setIdTitleMap] = useState()
+  const [offset, setOffset] = useState(1)
+  const [showMore, setShowMore] = useState(true)
   
+  // TODO: check this; i don't think it is doing anything
   useEffect(() => {
     if (searchParameters.searchType === "questionTitles"){
       displayQuestionResults(filterQuestionResults(questionResults, searchParameters.resultsFilter), searchParameters)
     }
     if (searchParameters.searchType === "figure"){
-      displayQuestionResults(filterQuestionResults(results, searchParameters.resultsFilter), searchParameters.resultsFilter)
+      displayQuestionResults(filterQuestionResults(results, searchParameters.resultsFilter), searchParameters.resultsFilter, )
     }
     else if (searchParameters.searchType === "text"){
-      displayTextResults(filterResults(results, searchParameters.resultsFilter))
+        displayTextResults(filterResults(results, searchParameters.resultsFilter), idTitleMap)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParameters.resultsFilter])
+  // TODO check above; might be deletable 
+
+  useEffect(() => {
+    if (results !== "fetching"){
+      const idTitleArray = runQuery(getValueLongTitlesAndAuthors(results))
+      idTitleArray.then((d) => {
+        setIdTitleMap(createIdTitleMap(d.data.results.bindings))
+      })
+    }
+  }, [results])
   
+  useEffect(() => {
+    setResults([])
+  }, [searchParameters.searchType])
+
+  useEffect(() => {
+    if (searchParameters.searchEid || searchParameters.searchAuthor || searchParameters.searchWorkGroup || searchParameters.searchEType){
+      const textResults = retrieveSearchResults(searchParameters.searchTerm, 
+        searchParameters.searchEid, 
+        searchParameters.searchWorkGroup, 
+        searchParameters.searchAuthor, 
+        searchParameters.searchEType,
+        searchParameters.searchType,
+        offset)
+        setResults("fetching")
+        textResults.then((d) => {
+          if (d.data.results){
+            if (Array.isArray(d.data.results)){
+              setResults(d.data.results)     
+              const showMore = d.data.results[0].moreResults === "true" ? true : false
+              setShowMore(showMore)
+            }
+            else{
+              console.log("results when null", results)
+              setResults([d.data.results])     
+              const showMore = d.data.results[0].moreResults === "true" ? true : false
+              setShowMore(showMore)
+            } 
+          }
+          else{
+            setResults([])
+          }
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [offset])
   
   const handleSetSearchParameters = (parameters) => {
     setSearchParameters(parameters)
@@ -33,35 +82,39 @@ const Search3 = (props) => {
 
   const handleRunSearch = (e) => {
     e.preventDefault()
+    setShowMore(true)
+    setOffset(1)
     if (!searchParameters.searchTerm){
       setResults([])
     }
     else{
-      if (searchParameters.searchType === "text"){
+      if (searchParameters.searchType === "text" || searchParameters.searchType === "figure"){
         setResults("fetching")
         setQuestionResults([])
-        if (searchParameters.searchEid){
-          const textResults = retrieveExpressionResults(searchParameters.searchTerm, searchParameters.searchEid)
-          textResults.then((d) => {
-            setResults(d.data.results)
-          })
-        }
-        else if (searchParameters.searchAuthor){
-            const textResults = retrieveAuthorResults(searchParameters.searchTerm, searchParameters.searchAuthor)
+        if (searchParameters.searchEid || searchParameters.searchAuthor || searchParameters.searchWorkGroup || searchParameters.searchEType){
+            const textResults = retrieveSearchResults(searchParameters.searchTerm, 
+              searchParameters.searchEid, 
+              searchParameters.searchWorkGroup, 
+              searchParameters.searchAuthor, 
+              searchParameters.searchEType,
+              searchParameters.searchType,
+              offset)
             textResults.then((d) => {
-              setResults(d.data.results)
-            })
-          }
-        else if (searchParameters.searchWorkGroup){
-          const textResults = retrieveWorkGroupResults(searchParameters.searchTerm, searchParameters.searchWorkGroup)
-          textResults.then((d) => {
-            setResults(d.data.results)
-          })
-        }
-        else{
-          const textResults = retrieveExpressionResults(searchParameters.searchTerm, "all")
-          textResults.then((d) => {
-            setResults(d.data.results)
+              if (d.data.results){
+                if (Array.isArray(d.data.results)){
+                  setResults(d.data.results)     
+                  const showMore = d.data.results[0].moreResults === "true" ? true : false
+                  setShowMore(showMore)
+                }
+                else{
+                  setResults([d.data.results])     
+                  const showMore = d.data.results.moreResults === "true" ? true : false
+                  setShowMore(showMore)
+                }         
+              }
+              else{
+                setResults([])
+              }
           })
         }
       }
@@ -73,23 +126,6 @@ const Search3 = (props) => {
           setQuestionResults(d.data.results.bindings)
         })
       }
-      else if (searchParameters.searchType === "figure"){
-        if (searchParameters.searchEid){
-          const figureResults = retrieveFigureResults(searchParameters.searchTerm, searchParameters.searchEid)
-            figureResults.then((d) => {
-              console.log("data", d)
-              setResults(d.data.results)
-          })
-        }
-        else
-        {
-          const figureResults = retrieveFigureResults(searchParameters.searchTerm, "all")
-            figureResults.then((d) => {
-              console.log("data", d)
-              setResults(d.data.results)
-          })
-        }
-      }
     }
   }
   const displayResults = (results) => {
@@ -100,10 +136,10 @@ const Search3 = (props) => {
       return displayQuestionResults(filterQuestionResults(questionResults, searchParameters.resultsFilter), searchParameters)
     }
     else if (searchParameters.searchType === "figure"){
-      return displayFigureResults(results);
+      return displayFigureResults(results, idTitleMap);
     }
     else if (searchParameters.searchType === "text"){
-      return displayTextResults(filterResults(results, searchParameters.resultsFilter))
+        return displayTextResults(filterResults(results, searchParameters.resultsFilter), idTitleMap)
     }
   }
   const filterResults = (results, resultsFilter) => {
@@ -111,18 +147,22 @@ const Search3 = (props) => {
     if (!results || results.length === 0){
       newResults = [] 
     }
-    else if (results.length > 1){
+    else if (results.length > 0){
       results.forEach((r) => {
-        const combinedString = [r.previous.toLowerCase(), r.hit.toLowerCase(), r.next.toLowerCase()].join(" ")
-        if (combinedString.includes(resultsFilter.toLowerCase())){
-          newResults.push(r)
+        if (r.previous && r.hit && r.next){
+          const combinedString = [ r.previous.toLowerCase(), r.hit.toLowerCase(), r.next.toLowerCase()].join(" ")
+          if (combinedString.includes(resultsFilter.toLowerCase())){
+            newResults.push(r)
+          }
         }
       })
     }
     else if (results){
       const r = results;
-      const combinedString = [r.previous.toLowerCase(), r.hit.toLowerCase(), r.next.toLowerCase()].join(" ")
-      newResults = combinedString.includes(resultsFilter.toLowerCase()) ? results : "";
+      if (r.previous && r.hit && r.next){
+        const combinedString = [r.previous.toLowerCase(), r.hit.toLowerCase(), r.next.toLowerCase()].join(" ")
+        newResults = combinedString.includes(resultsFilter.toLowerCase()) ? results : "";
+      }
     }
     return newResults
   }
@@ -141,7 +181,6 @@ const Search3 = (props) => {
     }
     return newResults
   }
-
   return(
     <Container className={props.hidden ? "hidden" : "showing"}>
       <Form onSubmit={handleRunSearch}>
@@ -161,7 +200,12 @@ const Search3 = (props) => {
           
       
     </Form>
+    {results && results.length > 0 && <p>{(offset !==1) && <span onClick={(() => {setOffset(offset - 20)})}>Show Previous</span>} 
+    <span> | </span>
+    {/* <span>{"page " + offset + " (results" + results.length + ")"}</span> */}
+    {(showMore === true) && <span onClick={(() => {setOffset(offset + 20)})}>Show More</span>}</p>}
     {displayResults(results)}
+    
     </Container>
 
   )

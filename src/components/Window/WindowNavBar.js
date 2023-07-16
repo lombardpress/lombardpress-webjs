@@ -10,7 +10,7 @@ function WindowNavBar(props) {
       if (t.show){
         return (
           <Nav.Item key={"tab-" + t.name}>
-            <Nav.Link active={props.windowLoad === t.name} title={t.description} onClick={() => {props.handleTabChange(t.name, props.windowId)}}>{t.icon}</Nav.Link>
+            <Nav.Link active={props.windowLoad === t.name} title={t.desc} onClick={() => {props.handleTabChange(t.name, props.windowId)}}>{t.icon}</Nav.Link>
           </Nav.Item>
         )
       }

@@ -29,6 +29,10 @@ const Search3Parameters = (props) => {
 
   const [displayAllParameters, setDisplayAllParameters] = useState(false)
 
+  // this is temporary to allow list of figure tags to be viewed; it is not a final solution; if keeping tags is important, available tags should be received from a service -->
+  const availableFigureTagsList = ["light/shadow", "physical objects", "concrete elements", "letters", "text", "woodcut", "integrated in the layout", "3d and perspective", "plasticity", "tree", "related to an experiment", "specimen", "material", "polarity", "magnetic force", "scientific", "analogy, allegory and symbols", "practice", "geometrical forms", "abstract elements", "inclination", "arrows", "knife", "hand", "persons or human body"]
+  availableFigureTagsList.sort()
+
   const handleSetSearchParameters = () => {
     props.handleSetSearchParameters(searchParameters)
   }
@@ -37,7 +41,7 @@ const Search3Parameters = (props) => {
   }
 
   //begin effects to update hooks when props change
-  // perhaps this could be combined into a single custom hood
+  // perhaps this could be combined into a single custom hook
   useEffect(() => {
     setSearchType(props.searchType ? props.searchType : "text")
   }, [props.searchType])
@@ -47,6 +51,9 @@ const Search3Parameters = (props) => {
   useEffect(() => {
     setSearchEid(props.searchEid)
   }, [props.searchEid])
+  useEffect(() => {
+    setSearchEType(props.searchEType)
+  }, [props.searchEType])
   useEffect(() => {
     setSearchWorkGroup(props.searchWorkGroup)
   }, [props.searchWorkGroup])
@@ -74,7 +81,6 @@ const Search3Parameters = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchWorkGroup])
 
-
   return(
     <div>
       <InputGroup size="sm" className="mb-2">
@@ -91,6 +97,20 @@ const Search3Parameters = (props) => {
         NOTE: if this parameters is removed, then filterResults() and filterQuestionResults() functions 
         in Search3 should be removed
         } */}
+
+      {searchType === 'figure' && 
+      <InputGroup size="sm" className="mb-2">
+        <InputGroup.Prepend>
+          <InputGroup.Text>Search by Figure Tag</InputGroup.Text>
+        </InputGroup.Prepend>
+        <Form.Control as="select" onChange={(e) => {setSearchTerm(e.target.value)}} value={searchParameters.searchTerm}>
+            <option value=""></option>
+            {availableFigureTagsList.map((ft) => {
+              return <option value={"'" + ft + "'"}>{ft}</option>
+            })}
+          </Form.Control>
+      </InputGroup>
+      }
       <InputGroup size="sm" className="mb-2">
           <InputGroup.Prepend>
             <InputGroup.Text>Filter Results</InputGroup.Text>

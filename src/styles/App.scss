@@ -13,6 +13,10 @@
 @import "TextSwitch";
 @import "OSDInstance";
 @import "Dictionary";
+@import "Comments2";
+@import "Search";
+@import "VersionChain";
+@import "TextCompareItem";
 
 body {
   margin: 0;
@@ -56,3 +60,4 @@ table.table.table-striped tr > td:first-child {
   cursor: pointer;
   text-decoration: underline;
 }
+

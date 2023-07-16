@@ -128,7 +128,7 @@
   //  ].join(' ');
 
   const query = [
-  "SELECT DISTINCT ?isRelatedTo ?label ?element ?longTitle ?author ?authorTitle ?isRelatedToRangeStart ?isRelatedToRangeEnd ",
+  "SELECT DISTINCT ?isRelatedTo ?label ?element ?longTitle ?author ?authorTitle ?isRelatedToRangeStart ?isRelatedToRangeEnd ?parentBlock ",
   "WHERE",
   "{ ",
     "BIND (<" + itemExpressionUri  + "> AS ?resource) .",
@@ -183,6 +183,12 @@
       "{ ",
         "?isRelatedTo <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementRef> . ",
         "BIND ('isReferencedBy' as ?label) . ",
+      "}",
+      "OPTIONAL",
+      "{",
+        "?isRelatedTo <http://scta.info/property/isPartOfStructureBlock> ?parentBlock .",
+        //"?isRelatedTo <http://scta.info/property/isMemberOf> ?parentBlock .",
+        //"?parentBlock <http://scta.info/property/structureType> <http://scta.info/resource/stuctureBlock> .",
       "}",
     "}",
     "?isRelatedTo <http://scta.info/property/longTitle> ?longTitle . ",
@@ -554,7 +560,7 @@ export function getAuthorInformation(authorid){
       "CONSTRUCT",
       "{",
       "?author  <http://purl.org/dc/elements/1.1/title> ?authorTitle ;",
-      "<http://scta.info/resource/hasTopLevelExpression> ?expression ;",
+      "<http://scta.info/property/hasTopLevelExpression> ?expression ;",
       "<http://scta.info/property/authorArticle> ?authorArticle;",
       "<http://scta.info/property/textArticle> ?textArticle .",
     	"?authorArticle <http://purl.org/dc/elements/1.1/title> ?authorArticleTitle . ",
@@ -688,7 +694,7 @@ export function getAuthorInformation(authorid){
           "?part <http://scta.info/property/questionTitle> ?questionTitle .",
           "}",
         "}",
-        "ORDER BY ?order"].join('');
+        "ORDER BY ?order ?authorTitle"].join('');
         return query
       }
       //gets lines and zone order for

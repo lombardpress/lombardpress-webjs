@@ -2,6 +2,7 @@ import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import {Link} from 'react-router-dom';
 import {runQuery} from './utils'
 import {basicStructureAllItemsInfoQuery, partsInfoQuery,workGroupExpressionQuery} from './Queries'
 import TextOutlineWrapper from "./TextOutlineWrapper"
@@ -171,7 +172,6 @@ class Collection extends React.Component {
       <Row>
         <Col xs={9}>
           <Container>
-
               <TextOutlineWrapper
                 focusResourceid={this.state.resourceid}
                 resourceid={this.state.resourceid}
@@ -181,26 +181,17 @@ class Collection extends React.Component {
                 collectionLink={true}
                 showAuthor={true}
                 showParentLink={true}
+                showChildren={true}
+                showFirstLevelChildren={true}
                 />
-                {
-              /* <Container className="collectionFilter">
-              <FormControl ref={this.filter} id="filter" placeholder="type to filter by title" onChange={this.handleFilter}/>
-            </Container>
-            {displayParts()}
-            {displayQuestions()}
-            */
-          }
           </Container>
         </Col>
-        {/* <Col>
-          <Container>
-          <Search3 searchWorkGroup={this.props.resourceid}
-          showSubmit={true}
-          showAdvancedParameters={true}
-          showLabels={false}/>
-          </Container>
-        </Col> */}
       </Row>
+      {this.state.resourceid === "http://scta.info/resource/scta" &&
+      <div>
+        <h1>Special Collections</h1>
+        <p><Link to={"/res?resourceid=http://scta.info/resource/et-000004"}>Magnetica</Link>: A collection of texts on "Magnets"</p>
+      </div>}
       </Container>
 
     );

@@ -3,13 +3,15 @@ import Diff from 'diff-match-patch'
 import Axios from 'axios'
 import PropTypes from 'prop-types';
 
+import { getHtmlDiff } from 'ngram-diff';
 import Spinner from './Spinner';
 import {Link} from 'react-router-dom';
 import { FaEyeSlash, FaEye, FaStar, FaToggleOn, FaToggleOff, FaRegImage} from 'react-icons/fa';
 
 import {textReduce} from './utils'
 
-import Surface3Wrapper from './Surface3Wrapper'
+//import Surface3Wrapper from './Surface3Wrapper'
+import {Surface3Wrapper} from "@jeffreycwitt/lbp2.surface3wrapper"
 
 class TextCompareItem extends React.Component {
   constructor(props){
@@ -18,13 +20,15 @@ class TextCompareItem extends React.Component {
     this.handleToggleCompare = this.handleToggleCompare.bind(this)
     this.mounted = ""
     this.state = {
-      showCompare: false,
+      showCompare: true,
+      showCompareType: "ngram", //could also be editDistance
       compareText: "",
       rawText: "",
       show: true,
       levenshteinDistance: undefined, 
       usedBase: undefined,
-      usedCompareTranscription: undefined
+      usedCompareTranscription: undefined,
+      showImage: false
     }
   }
   handleToggleShow(){
@@ -41,6 +45,7 @@ class TextCompareItem extends React.Component {
       }
     })
   }
+  // TODO: should be replaced by function in utils.js file
   textClean(text){
     // remove most punctuation
     let punctuationless = text.replace(/[.,/#!$%^&*;:{}=\-_`~()/\u00B6/|/\u204B/]/g,"");
@@ -98,13 +103,16 @@ class TextCompareItem extends React.Component {
             // Result: [(-1, "Hell"), (1, "G"), (0, "o"), (1, "odbye"), (0, " World.")]
             dmp.diff_cleanupSemantic(diff);
             const levenshteinDistance = dmp.diff_levenshtein(diff)
-            const ds = dmp.diff_prettyHtml(diff);
+            //const ds = dmp.diff_prettyHtml(diff);
+
+            
+            const compareDisplayHtml = (this.state.showCompareType === "ngram") ? getHtmlDiff(base, reducedText).compare : dmp.diff_prettyHtml(diff)
             if (this.mounted === true && base){
               // TODO: setting showCompare to "derivedState" is an ANTI-PATTERN. Better would be to let it be entirely controlled by parent. 
               // NOTE: usedBase and usedCompare transcription are used to record data used to make compare 
               // so that componentDidUpdate can efficiently decide if a new comparison is or is not needed
-              this.setState({compareText: ds, rawText: reducedText, levenshteinDistance: levenshteinDistance, showCompare: this.props.showCompare, 
-                usedBase: this.props.base, usedCompareTranscription: this.props.compareTranscription})
+              this.setState({compareText: compareDisplayHtml, rawText: reducedText, levenshteinDistance: levenshteinDistance, showCompare: this.props.showCompare,
+                showCompareType: this.props.showCompareType, usedBase: this.props.base, usedCompareTranscription: this.props.compareTranscription})
             }
             else if(this.mounted){
               // TODO: setting showCompare to "derivedState" is an ANTI-PATTERN. Better would be to let it be entirely controlled by parent.
@@ -121,7 +129,7 @@ class TextCompareItem extends React.Component {
   componentDidMount(){
     this.mounted = true;
     // TODO: setting showCompare to "derivedState" is an ANTI-PATTERN. Better would be to let it be entirely controlled by parent.
-    this.setState({rawText: "", compareText: "", showCompare: this.props.showCompare})  
+    this.setState({rawText: "", compareText: "", showCompare: this.props.showCompare, showCompareType: this.props.showCompareType, showImage: this.props.showImages})  
     //conditional attempts to restrict async call to only those components who are intended to be visible at mount
     // NOTE: this conditional will important when scaling. (i.e. when there hundres of references and hundreds of transcriptons)
     if (this.props.show){
@@ -143,6 +151,11 @@ class TextCompareItem extends React.Component {
       )
       {
         this.createCompare(this.props.base, this.props.compareTranscription)
+      }
+      //NOTE: setting state from props here is an anti pattern
+      //view either needs to be controlled by props or state, but not both
+      if (this.props.showImages !== prevProps.showImages){
+        this.setState({showImage: this.props.showImages})
       }
 
   }
@@ -171,10 +184,12 @@ class TextCompareItem extends React.Component {
                   <Surface3Wrapper
                   manifestations={newManifestations}
                   focusedManifestation={this.props.manifestation}
-                  width={this.props.surfaceWidth}
+                  width={parseInt(this.props.surfaceWidth)}
                   hideSelectionList={true}
                   isDependentSurface3={true}
-                />
+                  startWord={(this.props.isMainText && this.props.targetRange) && parseInt(this.props.targetRange.split("-")[0])}
+                  endWord={(this.props.isMainText && this.props.targetRange) && parseInt(this.props.targetRange.split("-")[1])}
+                  />
                 </div>
                 }
             </div>
