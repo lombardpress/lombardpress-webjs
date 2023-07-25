@@ -4,10 +4,11 @@
 
  export function getSurfaceInfo(surfaceid){
    const query = [
+     "PREFIX sctap: <http://scta.info/property/>",
      "CONSTRUCT",
      "{",
-     "?expression <http://scta.info/property/hasManifestation> ?manifestation2 .",
-     "?manifestation2 <http://scta.info/property/isOnSurface> ?surface2 .",
+     "?expression sctap:hasManifestation ?manifestation2 .",
+     "?manifestation2 sctap:isOnSurface ?surface2 .",
      "}",
      "WHERE",
      "{",

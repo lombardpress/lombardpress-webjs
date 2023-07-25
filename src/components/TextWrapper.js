@@ -290,7 +290,8 @@ class TextWrapper extends React.Component {
           return {
             manifestation: b.manifestation.value,
             manifestationTitle: b.manifestationTitle.value,
-            transcription: b.manifestationCTranscription ? b.manifestationCTranscription.value : ""
+            transcription: b.manifestationCTranscription ? b.manifestationCTranscription.value : "",
+            transcriptionDoc: b.manifestationCTranscriptionDoc?.value
           }
         })
 

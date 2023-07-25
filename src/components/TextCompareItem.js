@@ -6,9 +6,10 @@ import PropTypes from 'prop-types';
 import { getHtmlDiff } from 'ngram-diff';
 import Spinner from './Spinner';
 import {Link} from 'react-router-dom';
-import { FaEyeSlash, FaEye, FaStar, FaToggleOn, FaToggleOff, FaRegImage} from 'react-icons/fa';
+import { FaEyeSlash, FaEdit, FaEye, FaStar, FaToggleOn, FaToggleOff, FaRegImage} from 'react-icons/fa';
 
-import {textReduce} from './utils'
+
+import {textReduce, goToGitHubEdit} from './utils'
 
 //import Surface3Wrapper from './Surface3Wrapper'
 import {Surface3Wrapper} from "@jeffreycwitt/lbp2.surface3wrapper"
@@ -205,9 +206,15 @@ class TextCompareItem extends React.Component {
         return (
           <div style={{borderLeft: "5px solid rgba(" + heatColor + ", 0, 255, 1)", paddingLeft: "5px"}}>
             <span><Link to={"/text?resourceid=" + this.props.compareTranscription + ((this.props.relationLabel !== "isQuotedBy" && this.props.relationLabel !== "isReferencedBy" && this.props.isRelatedToRange) ? "@" + this.props.isRelatedToRange : "")}>{this.props.manifestationTitle}</Link> </span>
+            <span> | </span>
             <span className="lbp-span-link" title="show/hide" onClick={() => this.handleToggleShow()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>
+            <span> | </span>
             <span className="lbp-span-link" title="toggle comparison off" onClick={() => this.handleToggleCompare()}><FaToggleOn/></span>
+            {!isBase && <span> | </span>}
             {!isBase && <span className="lbp-span-link" title="set as base" onClick={() => this.props.handleChangeBase(this.state.rawText)}><FaStar/></span>}
+            {this.props.compareTranscriptionDoc && <span> | </span>}
+            {this.props.compareTranscriptionDoc && <span className="lbp-span-link" title="edit on github" onClick={() => {goToGitHubEdit(this.props.compareTranscriptionDoc.split("#")[0], "", this.props.compareTranscriptionDoc.split("#")[1]) }}><FaEdit/></span>}
+            <span> | </span>
             <span style={{fontSize: "14px", paddingLeft: "4px"}} title="levenshtein distance">{levenNum}</span>
             <div className={this.state.show ? "unhidden" : "hidden"}>
               <div ref="text" dangerouslySetInnerHTML={{ __html: this.state.compareText}}></div>
@@ -222,10 +229,14 @@ class TextCompareItem extends React.Component {
         return (
           <div>
             <span><Link to={"/text?resourceid=" + this.props.compareTranscription + ((this.props.relationLabel !== "isQuotedBy" && this.props.relationLabel !== "isReferencedBy" && this.props.isRelatedToRange) ? "@" + this.props.isRelatedToRange : "")}>{this.props.manifestationTitle}</Link></span> |
+            <span> | </span>
             <span className="lbp-span-link" title="show/hide" onClick={() => this.handleToggleShow()}>{this.state.show ? <FaEyeSlash/> : <FaEye/>}</span>
+            <span> | </span>
             <span className="lbp-span-link" title="toggle comparison on" onClick={() => this.handleToggleCompare()}><FaToggleOff/></span>
+            {!isBase && <span> | </span>}
             {!isBase && <span className="lbp-span-link" title="set as base" onClick={() => this.props.handleChangeBase(this.state.rawText)}><FaStar/></span>}
-
+            {this.props.compareTranscriptionDoc && <span> | </span>}
+            {this.props.compareTranscriptionDoc && <span className="lbp-span-link" title="edit on github" onClick={() => {goToGitHubEdit(this.props.compareTranscriptionDoc.split("#")[0], "", this.props.compareTranscriptionDoc.split("#")[1]) }}><FaEdit/></span>}
             <div className={this.state.show ? "unhidden" : "hidden"}>
               <div ref="text" dangerouslySetInnerHTML={{ __html: this.state.rawText}}></div>
               {displayImage()}

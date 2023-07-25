@@ -263,7 +263,7 @@
 // query info block, division, or item (possible also collection)
 export function basicInfoQuery(itemExpressionUri){
   const query = [
-    "SELECT DISTINCT ?title ?structureType ?cmanifestation ?cmanifestationTitle ?manifestation ?manifestationTitle ?ctranscription ?manifestationCTranscription ?cdoc ?cxml ?expressionShortId ?longTitle ?topLevelExpression ?next ?previous ?inbox ?author ?authorTitle ?parent ",
+    "SELECT DISTINCT ?title ?structureType ?cmanifestation ?cmanifestationTitle ?manifestation ?manifestationTitle ?ctranscription ?manifestationCTranscription ?manifestationCTranscriptionDoc ?cdoc ?cxml ?expressionShortId ?longTitle ?topLevelExpression ?next ?previous ?inbox ?author ?authorTitle ?parent ",
     "WHERE { ",
     "<" + itemExpressionUri + "> <http://purl.org/dc/elements/1.1/title> ?title .",
     "<" + itemExpressionUri + "> <http://scta.info/property/structureType> ?structureType .",
@@ -273,6 +273,7 @@ export function basicInfoQuery(itemExpressionUri){
     "?manifestation <http://purl.org/dc/elements/1.1/title> ?manifestationTitle .",
     "OPTIONAL {",
     "?manifestation <http://scta.info/property/hasCanonicalTranscription> ?manifestationCTranscription .",
+    "?manifestationCTranscription <http://scta.info/property/hasDocument> ?manifestationCTranscriptionDoc .",
     "?cmanifestation <http://scta.info/property/hasCanonicalTranscription> ?ctranscription .",
     "?ctranscription <http://scta.info/property/hasDocument> ?cdoc . ",
     "?ctranscription <http://scta.info/property/hasXML> ?cxml . ",
@@ -557,15 +558,17 @@ export function basicInfoQuery(itemExpressionUri){
 //surface id query, gets canvas and manifestation
 export function getAuthorInformation(authorid){
     const query = [
+      "PREFIX dc: <http://purl.org/dc/elements/1.1/>",
+      "PREFIX sctap: <http://scta.info/property/>",
       "CONSTRUCT",
       "{",
-      "?author  <http://purl.org/dc/elements/1.1/title> ?authorTitle ;",
-      "<http://scta.info/property/hasTopLevelExpression> ?expression ;",
-      "<http://scta.info/property/authorArticle> ?authorArticle;",
-      "<http://scta.info/property/textArticle> ?textArticle .",
-    	"?authorArticle <http://purl.org/dc/elements/1.1/title> ?authorArticleTitle . ",
-      "?textArticle <http://purl.org/dc/elements/1.1/title> ?textArticleTitle . ",
-    	"?expression <http://purl.org/dc/elements/1.1/title> ?topLevelExpressionTitle .",
+      "?author dc:title ?authorTitle ;",
+      "sctap:hasTopLevelExpression ?expression ;",
+      "sctap:authorArticle ?authorArticle;",
+      "sctap:textArticle ?textArticle .",
+    	"?authorArticle dc:title ?authorArticleTitle . ",
+      "?textArticle dc:title ?textArticleTitle . ",
+    	"?expression dc:title ?topLevelExpressionTitle .",
       "}",
       "WHERE ",
       "{",

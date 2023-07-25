@@ -44,7 +44,8 @@ class TextCompare extends React.Component {
         return {
           manifestation: b.manifestation.value,
           manifestationTitle: b.manifestationTitle.value,
-          transcription: b.manifestationCTranscription ? b.manifestationCTranscription.value : ""
+          transcription: b.manifestationCTranscription ? b.manifestationCTranscription.value : "",
+          transcriptionDoc: b.manifestationCTranscriptionDoc?.value
         }
       })
       if (this.mounted === true && bindings){
@@ -127,6 +128,7 @@ class TextCompare extends React.Component {
             key={m.transcription}
             base={this.props.baseText}
             compareTranscription={m.transcription}
+            compareTranscriptionDoc={m.transcriptionDoc}
             manifestationTitle={m.manifestationTitle}
             manifestation={m.manifestation}
             handleChangeBase={this.props.handleChangeBase}
