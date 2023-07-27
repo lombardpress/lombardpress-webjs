@@ -5,7 +5,7 @@
   "homepage": "http://sctalab.lombardpress.org",
   "dependencies": {
     "@bit/jeffreycwitt.lbp.text-preview": "^0.0.6",
-    "@jeffreycwitt/lbp2.collation-table": "^0.0.11",
+    "@jeffreycwitt/lbp2.collation-table": "^0.0.12",
     "@jeffreycwitt/lbp2.surface3wrapper": "^0.0.22",
     "@jeffreycwitt/lbp2.text-view": "^0.0.1",
     "axios": "^0.18.0",

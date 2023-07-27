@@ -301,10 +301,10 @@ class Window2 extends React.Component {
               <CollationTable expressionIds={this.props.selectionRange.wordRange 
               ? [this.props.resourceid + "@" + this.props.selectionRange.wordRange.start + "-" + this.props.selectionRange.wordRange.end, ...this.props.ctRelatedExpressions] 
               : [this.props.resourceid, ...this.props.ctRelatedExpressions]} 
-              handleOnSegClick={this.props.handleFocusChange}/>
+              handleOnSegDoubleClick={this.props.handleFocusChange}/>
               :
               <CollationTable expressionIds={[this.props.resourceid, ...this.props.ctRelatedExpressions]} 
-                handleOnSegClick={this.props.handleFocusChange}/>
+                handleOnSegDoubleClick={this.props.handleFocusChange}/>
               }
               <p onClick={() => {this.setState({collationTableWithRange: !this.state.collationTableWithRange})}}>{this.state.collationTableWithRange ? "Show without range constraint" : "Show with range constraint"}</p>
             </div>
