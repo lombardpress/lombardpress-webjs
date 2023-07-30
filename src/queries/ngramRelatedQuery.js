@@ -1,6 +1,6 @@
 import Axios from 'axios'
 
-export function ngramRelatedQuery(id, intersectionTotal = "4"){
+export function ngramRelatedQuery(id, intersectionTotal = 4){
   // const query = [
   //   "SELECT ?s ?start ?other ?text ?cosineScore ",
   //     "WHERE {",
@@ -98,7 +98,7 @@ export function ngramRelatedQuery(id, intersectionTotal = "4"){
  return query
 }
 
-export function ngramFragmentQuery(ngramIds, intersectionTotal = "4"){
+export function ngramFragmentQuery(ngramIds, intersectionTotal = 4){
   const query = `SELECT (COUNT(*) as ?count) ?target ?longTitle ?author ?authorTitle
             WHERE {
               VALUES ?ngram { ${ngramIds} }

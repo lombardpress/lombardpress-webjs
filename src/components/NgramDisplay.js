@@ -34,6 +34,7 @@ const createExpressionsList = (bindings) => {
 
 function NgramDisplay(props) {
   const [relatedExpressions, setRelatedExpressions] = useState([])
+  const [intersectionTotal, setIntersectionTotal] = useState(4)
   useEffect(() => {
     // if targetRange is presents forces query to wait until baseText is present
     if (props.baseText && props.targetRange){
@@ -47,7 +48,7 @@ function NgramDisplay(props) {
         const ngramId = `<http://scta.info/resource/ngram/${tokenizedText.slice(i, (i + 4)).join("")}>`
         ngramArray.push(ngramId)
       }
-      const ngramRelated = runNgramQuery(ngramFragmentQuery(ngramArray.join(" ")));
+      const ngramRelated = runNgramQuery(ngramFragmentQuery(ngramArray.join(" "), intersectionTotal));
       ngramRelated.then((d) => {
         const bindings = d.data.results.bindings;
         const expressions = createExpressionsList(bindings);
@@ -57,14 +58,14 @@ function NgramDisplay(props) {
     // NOTE: prevents general query if a targetRange is present
     // TODO: probably needs to be refactored; useEffect can probably be used better
     else if (!props.targetRange){
-      const ngramRelated = runNgramQuery(ngramRelatedQuery(props.resourceid));
+      const ngramRelated = runNgramQuery(ngramRelatedQuery(props.resourceid, intersectionTotal));
       ngramRelated.then((d) => {
         const bindings = d.data.results.bindings
         const expressions = createExpressionsList(bindings);
         setRelatedExpressions(expressions)
       })
     }
-  }, [props.resourceid, props.baseText, props.targetRange])
+  }, [props.resourceid, props.baseText, props.targetRange, intersectionTotal])
   
   const displayExpressions = () => {
     const displayExpressions = relatedExpressions.map((i, index) => {
@@ -98,7 +99,14 @@ function NgramDisplay(props) {
   return(
     <div>
       <hr/>
-      <p>Potential Related Passages</p>
+      <p>
+        Potential Related Passages 
+        <br/>
+        <span style={{"fontSize": '12px'}}>Ngram Intersection Threshold: {intersectionTotal}
+          (<span className='lbp-span-link' title="increase intersection threshold" onClick={() => setIntersectionTotal(intersectionTotal + 1)}> + </span>
+          {intersectionTotal > 0 && <> | <span className='lbp-span-link' title="decrease intersection threshold" onClick={() => setIntersectionTotal(intersectionTotal - 1)}> - </span></>})
+        </span> 
+        </p>
       
       {/* <input type="text" value={scoreMinimumInput} onChange={(e) => setScoreMinimumInput(e.target.value)}></input>
       <button onClick={() => {setScoreMinimumUse(scoreMinimumInput)}}>Re-run Query with new minimum</button> */}
