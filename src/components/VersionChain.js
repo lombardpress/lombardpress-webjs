@@ -87,7 +87,7 @@ class VersionChain extends React.Component {
           {currentlyViewing ? <span>{v.versionLabel} {t("(Currently Viewing)")}</span> : <span className="lbp-span-link" onClick={()=>{this.props.handleFocusChange(v.versionTranscription)}}>{v.versionLabel}</span>}
           {v.versionReviewInfo.html_link && <span> {t("Peer Reviewed")}: <a href={v.versionReviewInfo.html_link}><img alt="review" src={v.versionReviewInfo.img_url}/></a> </span>}
           <span className="small"> {t("Data Source")}: <a href={v.versionDoc}>{v.versionDoc}</a> </span>
-          {gitHubEdit && <span className="small"> | <a href={gitHubEdit} target="_blank" rel="noopener noreferrer"> Edit on <img src="github-octocat-logo.png" alt="github" height="25px"/> Github</a> or <a href={gitHubIssues} target="_blank" rel="noopener noreferrer">Create a GitHub Issue</a></span>}
+          {gitHubEdit && <span className="small"> | <a href={gitHubEdit} target="_blank" rel="noopener noreferrer"> Edit on <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="github" height="25px"/> Github</a> or <a href={gitHubIssues} target="_blank" rel="noopener noreferrer">Create a GitHub Issue</a></span>}
           </p>)
       })
       return versions
@@ -114,7 +114,7 @@ class VersionChain extends React.Component {
             | 
             {t("Data Source")}: <a href={version.versionDoc}>{version.versionDoc}</a> 
             </span>
-            {gitHubEdit && <span className="small"> | <a href={gitHubEdit} target="_blank" rel="noopener noreferrer"> Edit on <img src="github-octocat-logo.png" alt="github" height="25px"/> Github</a> or <a href={gitHubIssues} target="_blank" rel="noopener noreferrer">Create a GitHub Issue</a></span>}
+            {gitHubEdit && <span className="small"> | <a href={gitHubEdit} target="_blank" rel="noopener noreferrer"> Edit on <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="github" height="25px"/> Github</a> or <a href={gitHubIssues} target="_blank" rel="noopener noreferrer">Create a GitHub Issue</a></span>}
           </Alert>
           )
         }
