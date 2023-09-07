@@ -44,7 +44,8 @@
     "predeploy": "yarn build",
     "deploy": "gh-pages -d build",
     "styleguide": "styleguidist server",
-    "styleguide:build": "styleguidist build"
+    "styleguide:build": "styleguidist build",
+    "sync": "rsync -avP --delete build/ jcwitt@facresearch09.ad.loyola.edu:/home/jcwitt/static-site-data/lbp-webjs-data/"
   },
   "eslintConfig": {
     "extends": "react-app"
