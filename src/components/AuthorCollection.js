@@ -56,7 +56,7 @@ class AuthorCollection extends React.Component {
       }
       let textArticles = null
       if(Array.isArray(author["sctap:textArticle"])){
-          textArticles =  author.textArticle.map((a) => {
+          textArticles =  author["sctap:textArticle"].map((a) => {
           return {
             id: a["@id"].replace("sctar:", "http://scta.info/resource/"),
             title: d.data["@graph"].filter((i) => i["@id"] === a["@id"])[0]["dc:title"]
