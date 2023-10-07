@@ -9,7 +9,11 @@ import Search3Parameters from './Search3Parameters';
 import {retrieveSearchResults, displayTextResults, displayFigureResults, displayQuestionResults, createIdTitleMap, getValueLongTitlesAndAuthors} from './searchUtils'
 
 const Search3 = (props) => {
-  const [searchParameters, setSearchParameters] = useState({})
+  const urlParams = new URLSearchParams(window.location.search);
+  const defaultSearchTerm = urlParams?.get("searchTerm") || undefined
+  const defaultSearchWorkGroup = !defaultSearchTerm ? undefined : "http://scta.info/resource/scta"
+
+  const [searchParameters, setSearchParameters] = useState({"searchTerm": defaultSearchTerm, "searchWorkGroup": defaultSearchWorkGroup})
   const [results, setResults] = useState([])
   const [questionResults, setQuestionResults] = useState([])
   const [idTitleMap, setIdTitleMap] = useState()
@@ -41,11 +45,17 @@ const Search3 = (props) => {
   }, [results])
   
   useEffect(() => {
-    setResults([])
+    if (results !== "fetching"){
+      setResults([])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParameters.searchType])
+
+  
 
   useEffect(() => {
     if (searchParameters.searchEid || searchParameters.searchAuthor || searchParameters.searchWorkGroup || searchParameters.searchEType){
+      
       const textResults = retrieveSearchResults(searchParameters.searchTerm, 
         searchParameters.searchEid, 
         searchParameters.searchWorkGroup, 
@@ -62,7 +72,6 @@ const Search3 = (props) => {
               setShowMore(showMore)
             }
             else{
-              console.log("results when null", results)
               setResults([d.data.results])     
               const showMore = d.data.results[0].moreResults === "true" ? true : false
               setShowMore(showMore)
@@ -80,8 +89,10 @@ const Search3 = (props) => {
     setSearchParameters(parameters)
   }
 
-  const handleRunSearch = (e) => {
-    e.preventDefault()
+  const handleRunSearch = (e = null) => {
+    if (e){
+      e.preventDefault()
+    }
     setShowMore(true)
     setOffset(1)
     if (!searchParameters.searchTerm){
@@ -147,7 +158,7 @@ const Search3 = (props) => {
     if (!results || results.length === 0){
       newResults = [] 
     }
-    else if (results.length > 0){
+    else if ((results.length > 0) && results !== "fetching"){
       results.forEach((r) => {
         if (r.previous && r.hit && r.next){
           const combinedString = [ r.previous.toLowerCase(), r.hit.toLowerCase(), r.next.toLowerCase()].join(" ")
@@ -183,27 +194,28 @@ const Search3 = (props) => {
   }
   return(
     <Container className={props.hidden ? "hidden" : "showing"}>
+      <br/>
       <Form onSubmit={handleRunSearch}>
         <Search3Parameters
           handleSetSearchParameters={handleSetSearchParameters}
           searchAuthor={props.searchAuthor}
           searchEid={props.searchEid}
           searchEType={props.searchEType}
-          searchWorkGroup={props.searchWorkGroup}
+          searchWorkGroup={props.searchWorkGroup || defaultSearchWorkGroup}
           showAdvancedParameters={props.showAdvancedParameters}
           showLabels={props.showLabels}
           searchType={props.searchType}
-          searchTerm={props.searchTerm}
+          searchTerm={props.searchTerm || defaultSearchTerm}
           >
             {props.showSubmit && <Button onClick={handleRunSearch} className="btn-sm" style={{marginRight: "5px"}}>Submit</Button>}
             </Search3Parameters>
           
       
     </Form>
-    {results && results.length > 0 && <p>{(offset !==1) && <span onClick={(() => {setOffset(offset - 20)})}>Show Previous</span>} 
+    {results &&  results !== "fetching" && results.length > 0 && <p>{(offset !==1) && <span onClick={(() => {setOffset(offset - 30)})}>Show Previous</span>} 
     <span> | </span>
     {/* <span>{"page " + offset + " (results" + results.length + ")"}</span> */}
-    {(showMore === true) && <span onClick={(() => {setOffset(offset + 20)})}>Show More</span>}</p>}
+    {results && results !== "fetching" && showMore === true && <span onClick={(() => {setOffset(offset + 30)})}>Show More</span>}</p>}
     {displayResults(results)}
     
     </Container>

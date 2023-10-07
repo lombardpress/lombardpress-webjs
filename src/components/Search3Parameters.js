@@ -17,7 +17,7 @@ const Search3Parameters = (props) => {
   const [searchAuthor, setSearchAuthor] = useState(props.searchAuthor)
   const [searchEid, setSearchEid] = useState(props.searchEid)
   const [searchEType, setSearchEType] = useState(props.searchEType)
-  const [searchWorkGroup, setSearchWorkGroup] = useState(props.searchWorkGroup)
+  const [searchWorkGroup, setSearchWorkGroup] = useState(props.searchWorkGroup ? props.searchWorkGroup : "http://scta.info/resource/scta")
 
   const [resultsFilter, setResultsFilter] = useState("")
 
@@ -98,6 +98,8 @@ const Search3Parameters = (props) => {
         in Search3 should be removed
         } */}
 
+      {displayAllParameters &&
+        <div>
       {searchType === 'figure' && 
       <InputGroup size="sm" className="mb-2">
         <InputGroup.Prepend>
@@ -111,14 +113,14 @@ const Search3Parameters = (props) => {
           </Form.Control>
       </InputGroup>
       }
+      
       <InputGroup size="sm" className="mb-2">
           <InputGroup.Prepend>
             <InputGroup.Text>Filter Results</InputGroup.Text>
           </InputGroup.Prepend>
         <Form.Control as="input" type="secondary results filter" placeholder="secondary results filter" onChange={(e) => handleSetResultsFilter(e.target.value)} value={resultsFilter}/>
       </InputGroup>
-      {displayAllParameters &&
-        <div>
+      
           <InputGroup size="sm" className="mb-2">
             <InputGroup.Prepend>
               <InputGroup.Text>Search Type</InputGroup.Text>
