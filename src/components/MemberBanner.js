@@ -20,20 +20,21 @@ const MemberBanner = (props) => {
   const ipRangeLogoMap = {
     "144.126.4": {
       "name": "Loyola Notre Dame Library",
-      "logoUrl": "https://www.lndl.org/~/media/library/images/utility/lndl_logo.svg",
+      "logoUrl": "https://www.lndl.org/_resources/images/lndllogo.svg",
       "linkUrl": "https://www.lndl.org"
     },
     "192.124.249": {
       "name": "Loyola Notre Dame Library",
-      "logoUrl": "https://www.lndl.org/~/media/library/images/utility/lndl_logo.svg",
+      "logoUrl": "https://www.lndl.org/_resources/images/lndllogo.svg",
       "linkUrl": "https://www.lndl.org"
-    },
-    "34.196.56": {
-      "name": "Universidad de los Andes",
-      "logoUrl": "https://uniandes.edu.co/caribe/sites/default/files/logo_negro_0.png",
-      "linkUrl": "https://uniandes.edu.co"
     }
   }
+
+  // "34.196.56": {
+  //   "name": "Universidad de los Andes",
+  //   "logoUrl": "https://uniandes.edu.co/caribe/sites/default/files/logo_negro_0.png",
+  //   "linkUrl": "https://uniandes.edu.co"
+  // }
 
   const getMemberInfo = () => {
     if (ipRangeLogoMap[ipAddressRange]){
