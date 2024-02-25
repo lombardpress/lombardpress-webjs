@@ -138,10 +138,15 @@ useEffect(()=>{
       start = selectionRange.wordRange.start
       end = selectionRange.wordRange.end
     }
+
+    let selectorText = ""
+    if (selectionRange && selectionRange.text){
+      selectorText = selectionRange.text
+    }
       const selector = [
       {
         "type": "TextQuoteSelector",
-        "exact": selectionRange ? selectionRange.text : ""
+        "exact": selectorText
       },
       {
         "type": "TextPositionSelector",
@@ -376,7 +381,7 @@ useEffect(()=>{
   // bug here; lists needs to be included or update won't happen
   const generateFullList = () => {
     let fullList = []
-    if (!filterTags){
+    if (!filterTags || filterTags.length === 0){
        Object.keys(annotations).forEach((k) => {
          fullList.push(annotations[k])
       })
@@ -430,7 +435,6 @@ useEffect(()=>{
   
   const displayComments = () => {
     const fullList = generateFullList()
-
     const displayComments = fullList.length > 0 && fullList.slice(0).map((c,i) => {
       const target = typeof(c.target) === 'string' ? c.target : c.target.source;
       if (showFocusComments){
