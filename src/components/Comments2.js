@@ -262,7 +262,7 @@ useEffect(()=>{
     let clonedAnnotations = { ...annotations};
     
     //get list of tags who members need to be updated
-    const affectedTags = Object.keys(clonedAnnotations[prefixedId(id)].tags)
+    const affectedTags = Object.keys(clonedAnnotations[prefixedId(id)]?.tags || {})
 
     delete clonedAnnotations[prefixedId(id)]
     let clonedTags = { ...tags};
